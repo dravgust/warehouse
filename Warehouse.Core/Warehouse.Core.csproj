@@ -1,23 +1,25 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <LangVersion>latest</LangVersion>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Application\" />
-    <Folder Include="Commands\Handler\" />
     <Folder Include="Commands\Command\" />
-    <Folder Include="Domain\Services\" />
+    <Folder Include="Commands\Handler\" />
     <Folder Include="Domain\Repositories\" />
-    <Folder Include="Persistence\Repositories\" />
+    <Folder Include="Domain\Services\" />
     <Folder Include="Queries\Handler\" />
     <Folder Include="Queries\Query\" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Vayosoft.Core\Vayosoft.Core.csproj" />
+    <ProjectReference Include="..\Vayosoft.Data.EF.MySQL\Vayosoft.Data.EF.MySQL.csproj" />
     <ProjectReference Include="..\Vayosoft.Data.MongoDB\Vayosoft.Data.MongoDB.csproj" />
+    <ProjectReference Include="..\Vayosoft.WebAPI\Vayosoft.WebAPI.csproj" />
   </ItemGroup>
 
 </Project>

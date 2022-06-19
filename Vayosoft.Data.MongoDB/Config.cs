@@ -6,7 +6,7 @@ namespace Vayosoft.Data.MongoDB
     public static class Config
     {
         public static IServiceCollection AddMongoDbContext(this IServiceCollection services,
-            Action? configureOptions = null)
+            Action configureOptions = null)
         {
             services.AddSingleton<IMongoContext, MongoContext>();
             configureOptions?.Invoke();

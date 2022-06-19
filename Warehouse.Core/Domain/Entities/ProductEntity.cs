@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Vayosoft.Core.SharedKernel.Entities;
+﻿using Vayosoft.Core.SharedKernel.Entities;
 
 namespace Warehouse.Core.Domain.Entities
 {

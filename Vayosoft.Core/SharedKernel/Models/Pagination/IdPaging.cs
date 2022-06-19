@@ -2,8 +2,8 @@
 
 namespace Vayosoft.Core.SharedKernel.Models.Pagination
 {
-    public class IdPaging<TEntity>: IdPaging<TEntity, ulong>
-        where TEntity : class, IEntity<ulong>
+    public class IdPaging<TEntity>: IdPaging<TEntity, long>
+        where TEntity : class, IEntity<long>
     {
         public IdPaging(int page, int take, SortOrder orderBy)
             : base(page, take, orderBy)

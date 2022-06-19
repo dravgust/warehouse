@@ -6,7 +6,7 @@ namespace Vayosoft.Data.MongoDB
 {
     public class AutoRegistration
     {
-        public static void RegisterClassMap(Assembly? domainAssembly)
+        public static void RegisterClassMap(Assembly domainAssembly)
         {
             if (domainAssembly == null)
                 domainAssembly = Assembly.GetCallingAssembly();

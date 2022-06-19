@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Reflection;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Entities;
@@ -8,13 +9,13 @@ namespace Vayosoft.Data.EF.MySQL
 {
     public sealed class DataContext : DbContext, ILinqProvider, IUnitOfWork
     {
-        private readonly ILoggerFactory loggerFactory;
-        private readonly ILogger<DataContext> logger;
+        private readonly ILoggerFactory _loggerFactory;
+        private readonly ILogger<DataContext> _logger;
 
-        public DataContext(DbContextOptions options, ILoggerFactory loggerFactory, ILogger<DataContext> logger) : base(options)
+        public DataContext(DbContextOptions options, ILoggerFactory loggerFactory) : base(options)
         {
-            this.loggerFactory = loggerFactory;
-            this.logger = logger;
+            this._loggerFactory = loggerFactory;
+            this._logger = loggerFactory.CreateLogger<DataContext>();
 
             Database.EnsureCreated();
         }
@@ -49,12 +50,22 @@ namespace Vayosoft.Data.EF.MySQL
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseLoggerFactory(this.loggerFactory);
+            optionsBuilder.UseLoggerFactory(this._loggerFactory);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
+            base.OnModelCreating(modelBuilder);
+
+            var typesToRegister = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
+                .Where(type => !string.IsNullOrEmpty(type.Namespace))
+                .Where(type => type.BaseType is { IsGenericType: true } && type.BaseType.GetGenericTypeDefinition() == typeof(EntityConfigurationMapper<>));
+
+            foreach (var type in typesToRegister)
+            {
+                dynamic configInstance = Activator.CreateInstance(type)!;
+                modelBuilder.ApplyConfiguration(configInstance);
+            }
         }
     }
 }

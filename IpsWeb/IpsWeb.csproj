@@ -15,8 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Vayosoft.Data.MongoDB\Vayosoft.Data.MongoDB.csproj" />
-    <ProjectReference Include="..\Vayosoft.WebAPI\Vayosoft.WebAPI.csproj" />
     <ProjectReference Include="..\Warehouse.Core\Warehouse.Core.csproj" />
   </ItemGroup>
 

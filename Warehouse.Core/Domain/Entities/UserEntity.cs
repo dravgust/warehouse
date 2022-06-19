@@ -2,7 +2,7 @@
 
 namespace Warehouse.Core.Domain.Entities
 {
-    public class UserEntity : EntityBase<string>
+    public class UserEntity : EntityBase<long>
     {
         public string Username { get; set; }
         public string Email { get; set; }

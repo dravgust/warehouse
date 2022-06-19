@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using IpsWeb;
 using Serilog;
+using Vayosoft.Core;
 using Vayosoft.WebAPI.Middlewares.ExceptionHandling;
 
 Log.Logger = new LoggerConfiguration()
@@ -29,6 +30,8 @@ try
     //services.AddAppMetricsCollectors();
 
     var configuration = builder.Configuration;
+
+    builder.Services.AddCoreServices();
     builder.Services.AddDependencies(configuration);
 
     builder.Services.AddCors(options =>
