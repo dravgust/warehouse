@@ -1,6 +1,7 @@
 
 using System.Diagnostics;
 using IpsWeb;
+using Microsoft.OpenApi.Models;
 using Serilog;
 using Vayosoft.Core;
 using Vayosoft.WebAPI.Middlewares.ExceptionHandling;
@@ -48,6 +49,11 @@ try
     // Add services to the container.
     builder.Services.AddControllersWithViews();
 
+    builder.Services.AddSwaggerGen(c =>
+    {
+        c.SwaggerDoc("v1", new OpenApiInfo { Title = "IPS Dashboard", Version = "v1" });
+    });
+
     var app = builder.Build();
 
     // Configure the HTTP request pipeline.
@@ -77,6 +83,16 @@ try
     app.MapControllerRoute(
         name: "default",
         pattern: "{controller=Home}/{action=Index}/{id?}");
+
+    // Enable middleware to serve generated Swagger as a JSON endpoint.
+    app.UseSwagger();
+
+    // Enable middleware to serve swagger-ui (HTML, JS, CSS etc.), specifying the Swagger JSON endpoint.
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("swagger/v1/swagger.json", "IPS Dashboard V1");
+        c.RoutePrefix = string.Empty;
+    });
 
     app.Run();
 }

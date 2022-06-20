@@ -4,7 +4,7 @@ using Warehouse.Core.Domain.Entities;
 
 namespace Warehouse.Core.Application.Features.Users.Specifications
 {
-    public class GetAllUsersSpec : IdPaging<UserEntity>, ILinqSpecification<UserEntity>
+    public class GetAllUsersSpec : IdPaging<UserEntityDto>, ILinqSpecification<UserEntity>
     {
         public GetAllUsersSpec(int page, int take)
         {

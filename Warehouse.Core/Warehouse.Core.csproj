@@ -4,6 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Vayosoft.AutoMapper\Vayosoft.AutoMapper.csproj" />
     <ProjectReference Include="..\Vayosoft.Core\Vayosoft.Core.csproj" />
     <ProjectReference Include="..\Vayosoft.Data.EF.MySQL\Vayosoft.Data.EF.MySQL.csproj" />
     <ProjectReference Include="..\Vayosoft.Data.MongoDB\Vayosoft.Data.MongoDB.csproj" />

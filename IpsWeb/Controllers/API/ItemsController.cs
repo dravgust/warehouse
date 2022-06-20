@@ -37,6 +37,7 @@ namespace IpsWeb.Controllers.API
             };
         }
 
+        [HttpGet("")]
         public async Task<dynamic> Get(int page, int size, string? searchTerm = null, CancellationToken token = default)
         {
             var query = new FilteredPaging<ProductEntity>(page, size, searchTerm, p => p.Name, p => p.Name, SortOrder.Asc);

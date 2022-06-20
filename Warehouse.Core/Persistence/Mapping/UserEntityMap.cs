@@ -11,6 +11,7 @@ namespace Warehouse.Core.Persistence.Mapping
         {
             builder.ToTable("users").HasKey(t => t.Id);
             builder.Property(t => t.Id).HasColumnName("userid").ValueGeneratedOnAdd();
+            builder.Property(t => t.Username).HasColumnName("username");
             builder.Property(t => t.Email).HasColumnName("email");
             builder.Property(t => t.Password).HasColumnName("pwdhash");
         }

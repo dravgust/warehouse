@@ -1,5 +1,8 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
+using Vayosoft.AutoMapper;
 using Vayosoft.Core.Persistence;
+using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.SharedKernel.Queries.Handler;
 using Vayosoft.Core.SharedKernel.Queries.Query;
@@ -22,8 +25,21 @@ namespace IpsWeb
             services.AddScoped<IUnitOfWork>(s => s.GetRequiredService<DataContext>());
             services.AddScoped<ILinqProvider>(s => s.GetRequiredService<DataContext>());
 
-            //services.AddScoped<IRequestHandler<PagedQuery<GetAllUsersSpec, IPagedEnumerable<UserEntity>>,
-            //    IPagedEnumerable<UserEntity>>, PagedQueryHandler<long, GetAllUsersSpec, UserEntity, UserEntity>>();
+            var domainAssembly = AppDomain.CurrentDomain.GetAssemblies();
+            services.AddSingleton(provider =>
+            {
+                var mapperConfiguration = new MapperConfiguration(cfg =>
+                {
+                    ConventionalProfile.Scan(domainAssembly);
+                    cfg.AddProfile<ConventionalProfile>();
+                });
+                return new AutoMapperWrapper(mapperConfiguration);
+            });
+            services.AddSingleton(typeof(IProjector), provider => provider.GetRequiredService<AutoMapperWrapper>());
+            services.AddSingleton(typeof(Vayosoft.Core.SharedKernel.IMapper), provider => provider.GetRequiredService<AutoMapperWrapper>());
+
+            services.AddScoped<IRequestHandler<PagedQuery<GetAllUsersSpec, IPagedEnumerable<UserEntityDto>>, IPagedEnumerable<UserEntityDto>>,
+                PagedQueryHandler<long, GetAllUsersSpec, UserEntity, UserEntityDto>>();
         }
     }
 }
