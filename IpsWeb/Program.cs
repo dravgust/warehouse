@@ -1,10 +1,16 @@
 
 using System.Diagnostics;
+using System.Net;
 using IpsWeb;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Vayosoft.Core;
+using Vayosoft.WebAPI;
+using Vayosoft.WebAPI.Authorization;
 using Vayosoft.WebAPI.Middlewares.ExceptionHandling;
+using Vayosoft.WebAPI.Middlewares.Jwt;
+using Vayosoft.WebAPI.Services;
+using Warehouse.Core.Domain.Entities;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Debug()
@@ -46,8 +52,22 @@ try
             });
     });
 
+    //builder.Services.AddAuthorization(options =>
+    //{
+    //    options.AddPolicy("Over18",
+    //        policy => policy.Requirements.Add(new Over18Requirement()));
+    //});
+
     // Add services to the container.
     builder.Services.AddControllersWithViews();
+
+    // configure strongly typed settings object
+    builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
+
+    // configure DI for application services
+    builder.Services.AddScoped<IJwtUtils, JwtUtils>();
+    builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+    builder.Services.AddScoped<IUserService, UserService<UserEntity>>();
 
     builder.Services.AddSwaggerGen(c =>
     {
@@ -66,7 +86,11 @@ try
         app.UseDeveloperExceptionPage();
     }
 
-    app.UseMiddleware(typeof(ExceptionHandlingMiddleware));
+    app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+    // custom jwt auth middleware
+    app.UseMiddleware<JwtMiddleware>();
+
     app.UseStaticFiles();
 
     // Write streamlined request completion events, instead of the more verbose ones from the framework.
@@ -79,6 +103,7 @@ try
     app.UseCors("AllowCors");
 
     app.UseAuthorization();
+    //app.UseSession();
 
     app.MapControllerRoute(
         name: "default",

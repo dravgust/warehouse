@@ -1,9 +1,10 @@
 ﻿using System;
+using Vayosoft.Core.ValueObjects;
 using Warehouse.Core.Domain.Enums;
 
 namespace Warehouse.Core.Domain.ValueObjects
 {
-    public class Price
+    public class Price : ValueObject
     {
         // For Entity Framework Core
         protected Price() { }
@@ -34,6 +35,11 @@ namespace Warehouse.Core.Domain.ValueObjects
                 Unit != MoneyUnit.UnSpecified ?
                     Amount + " " + MoneySymbols.GetSymbol(Unit) :
                     Amount.ToString();
+        }
+
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            return new List<object> { Amount, Unit};
         }
     }
 }

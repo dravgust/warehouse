@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
-namespace IpsWeb.Lib.API.Helpers
+namespace Vayosoft.WebAPI.Helpers
 {
     public class Crypto
     {

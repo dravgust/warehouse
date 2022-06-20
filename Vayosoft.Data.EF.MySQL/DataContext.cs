@@ -31,7 +31,7 @@ namespace Vayosoft.Data.EF.MySQL
                ? EntityState.Modified 
                : EntityState.Added;
         }
-
+        
         public void Delete<TEntity>(TEntity entity) where TEntity : class, IEntity
         {
             Set<TEntity>().Remove(entity);

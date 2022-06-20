@@ -40,6 +40,9 @@ namespace IpsWeb
 
             services.AddScoped<IRequestHandler<PagedQuery<GetAllUsersSpec, IPagedEnumerable<UserEntityDto>>, IPagedEnumerable<UserEntityDto>>,
                 PagedQueryHandler<long, GetAllUsersSpec, UserEntity, UserEntityDto>>();
+            services
+                .AddScoped<IRequestHandler<GetEntityByIdQuery<UserEntityDto>, UserEntityDto>,
+                    GetEntityByIdQueryHandler<long, UserEntity, UserEntityDto>>();
         }
     }
 }
