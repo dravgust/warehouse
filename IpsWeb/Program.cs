@@ -1,7 +1,13 @@
 
 using System.Diagnostics;
+using System.Globalization;
 using System.Net;
 using IpsWeb;
+using IpsWeb.Lib.API.Services;
+using IpsWeb.Resources;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Vayosoft.Core;
@@ -64,6 +70,31 @@ try
     builder.Services.AddControllersWithViews(options =>
     {
         //options.Filters.Add(new AuthorizeAttribute());
+    }).AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix,
+    options =>
+    {
+        options.ResourcesPath = "Resources";
+    }).AddDataAnnotationsLocalization(resOptions =>
+    {
+        resOptions.DataAnnotationLocalizerProvider = (type, factory) => factory.Create(typeof(SharedResources));
+    });
+
+    builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+    builder.Services.AddSingleton<SharedLocalizationService>();
+
+    builder.Services.Configure<RequestLocalizationOptions>(options =>
+    {
+        var supportedCultures = new[]
+        {
+            new CultureInfo("en"),
+            new CultureInfo("he"),
+        };
+
+        options.DefaultRequestCulture = new RequestCulture("he");
+        options.SupportedCultures = supportedCultures;
+        options.SupportedUICultures = supportedCultures;
+
+        options.ApplyCurrentCultureToResponseHeaders = true;
     });
 
     // configure strongly typed settings object
@@ -99,6 +130,9 @@ try
 
     // custom jwt auth middleware
     app.UseMiddleware<JwtMiddleware>();
+
+    var locOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
+    app.UseRequestLocalization(locOptions!.Value);
 
     app.UseStaticFiles();
 

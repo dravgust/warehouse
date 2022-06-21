@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Reflection;
+using IpsWeb.Lib.TagHelpers;
+using IpsWeb.Resources;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using Vayosoft.WebAPI.Models;
 using Vayosoft.WebAPI.Services;
 
@@ -11,16 +15,25 @@ namespace IpsWeb.Controllers.API
     public class AccountController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IStringLocalizerFactory _stringLocalizerFactory;
 
-        public AccountController(IUserService userService)
+        public AccountController(IUserService userService, IStringLocalizerFactory stringLocalizerFactory)
         {
             _userService = userService;
+            _stringLocalizerFactory = stringLocalizerFactory;
         }
 
         [HttpGet("bootstrap")]
         public IActionResult Get()
         {
-            return new JsonResult(new {  });
+            var resourceNames = new List<string> { nameof(SharedResources) };
+            var groupedResources = resourceNames.Select(x =>
+            {
+                IStringLocalizer localizer = _stringLocalizerFactory.Create(x, Assembly.GetEntryAssembly()!.FullName!);
+                return new ResourceGroup { Name = x, Entries = localizer.GetAllStrings(true).ToList() };
+            });
+
+            return new JsonResult(new { groupedResources });
         }
 
         [AllowAnonymous]
