@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Vayosoft.Core.Helpers
+namespace Vayosoft.Core.Extensions
 {
     public static class ListExtensions
     {

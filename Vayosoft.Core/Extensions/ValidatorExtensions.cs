@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Vayosoft.Core.Helpers
+namespace Vayosoft.Core.Extensions
 {
     public static class ValidatorExtensions
     {

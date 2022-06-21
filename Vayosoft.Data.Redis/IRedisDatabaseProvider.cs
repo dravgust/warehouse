@@ -2,7 +2,7 @@
 
 namespace Vayosoft.Data.Redis
 {
-    public interface IRedisDatabaseConnection
+    public interface IRedisDatabaseProvider
     {
         public IDatabase Database { get; }
     }

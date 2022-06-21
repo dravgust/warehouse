@@ -8,9 +8,10 @@ namespace Vayosoft.Data.Redis
         public static IServiceCollection AddRedisConnection(this IServiceCollection services)
         {
 
-            services.AddSingleton<RedisConnection>();
-            services.AddSingleton<IRedisDatabaseConnection>(s => s.GetRequiredService<RedisConnection>());
-            services.AddSingleton<IRedisSubscriberConnection>(s => s.GetRequiredService<RedisConnection>());
+            services.AddSingleton<RedisProvider>();
+            services.AddSingleton<IRedisConnectionProvider>(s => s.GetRequiredService<RedisProvider>());
+            services.AddSingleton<IRedisDatabaseProvider>(s => s.GetRequiredService<RedisProvider>());
+            services.AddSingleton<IRedisSubscriberProvider>(s => s.GetRequiredService<RedisProvider>());
             return services;
         }
 

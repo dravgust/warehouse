@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Vayosoft.Core.Helpers;
+using Vayosoft.Core.Extensions;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.SharedKernel.Queries.Query;

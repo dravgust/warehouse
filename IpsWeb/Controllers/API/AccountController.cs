@@ -1,9 +1,11 @@
 ﻿using System.Reflection;
-using IpsWeb.Lib.TagHelpers;
+using IpsWeb.Lib.API.TagHelpers;
 using IpsWeb.Resources;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Localization;
+using Vayosoft.Core.Caching;
 using Vayosoft.WebAPI.Models;
 using Vayosoft.WebAPI.Services;
 
@@ -15,11 +17,13 @@ namespace IpsWeb.Controllers.API
     public class AccountController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IDistributedMemoryCache _cache;
         private readonly IStringLocalizerFactory _stringLocalizerFactory;
 
-        public AccountController(IUserService userService, IStringLocalizerFactory stringLocalizerFactory)
+        public AccountController(IUserService userService, IDistributedMemoryCache cache, IStringLocalizerFactory stringLocalizerFactory)
         {
             _userService = userService;
+            _cache = cache;
             _stringLocalizerFactory = stringLocalizerFactory;
         }
 
@@ -32,6 +36,10 @@ namespace IpsWeb.Controllers.API
                 IStringLocalizer localizer = _stringLocalizerFactory.Create(x, Assembly.GetEntryAssembly()!.FullName!);
                 return new ResourceGroup { Name = x, Entries = localizer.GetAllStrings(true).ToList() };
             });
+
+            _cache.TryGetValue("test_key", out var dt);
+
+            _cache.Set("test_key", DateTime.UtcNow, DateTime.Now.AddMinutes(5));
 
             return new JsonResult(new { groupedResources });
         }

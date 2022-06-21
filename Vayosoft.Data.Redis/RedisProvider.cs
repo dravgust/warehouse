@@ -5,29 +5,29 @@ using StackExchange.Redis;
 
 namespace Vayosoft.Data.Redis
 {
-    public class RedisConnection : IRedisDatabaseConnection, IRedisSubscriberConnection, IDisposable
+    public class RedisProvider : IRedisConnectionProvider, IRedisDatabaseProvider, IRedisSubscriberProvider, IDisposable
     {
-        private readonly Lazy<ConnectionMultiplexer> LazyConnection;
+        private readonly Lazy<IConnectionMultiplexer> LazyConnection;
         
         [ActivatorUtilitiesConstructor]
-        public RedisConnection(IConfiguration config)
-            : this(ConfigurationOptions.Parse(config["Redis:Connection"])) { }
-        public RedisConnection()
+        public RedisProvider(IConfiguration config)
+            : this(ConfigurationOptions.Parse(config["ConnectionStrings:RedisConnectionString"])) { }
+        public RedisProvider()
             : this(new ConfigurationOptions
             {
                 AbortOnConnectFail = false,
                 EndPoints = { "127.0.0.1:6379" }
             })
         { }
-        public RedisConnection(string connectionString)
+        public RedisProvider(string connectionString)
             : this(ConfigurationOptions.Parse(connectionString))
         { }
-        public RedisConnection(ConfigurationOptions options)
+        public RedisProvider(ConfigurationOptions options)
         {
-            LazyConnection = new Lazy<ConnectionMultiplexer>(() => ConnectionMultiplexer.Connect(options));
+            LazyConnection = new Lazy<IConnectionMultiplexer>(() => ConnectionMultiplexer.Connect(options));
         }
 
-        public ConnectionMultiplexer Connection => LazyConnection.Value;
+        public IConnectionMultiplexer Connection => LazyConnection.Value;
 
         public IDatabase Database => Connection.GetDatabase();
         public ISubscriber Subscriber => Connection.GetSubscriber();

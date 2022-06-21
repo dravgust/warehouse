@@ -2,7 +2,7 @@
 
 namespace Vayosoft.Data.Redis
 {
-    public interface IRedisSubscriberConnection
+    public interface IRedisSubscriberProvider
     {
         public ISubscriber Subscriber { get; }
     }

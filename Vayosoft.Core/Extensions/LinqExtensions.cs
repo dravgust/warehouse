@@ -6,7 +6,7 @@ using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.SharedKernel.Specifications;
 
-namespace Vayosoft.Core.Helpers
+namespace Vayosoft.Core.Extensions
 {
     public static class LinqExtensions
     {
@@ -28,11 +28,11 @@ namespace Vayosoft.Core.Helpers
         public static IQueryable<TDest> Project<TSource, TDest>(this IQueryable<TSource> source, IProjector projector)
             => projector.Project<TSource, TDest>(source);
 
-        public static TEntity? ById<TEntity>(this ILinqProvider linqProvider, int id)
+        public static TEntity ById<TEntity>(this ILinqProvider linqProvider, int id)
             where TEntity : class, IEntity<int>
             => linqProvider.GetQueryable<TEntity>().ById(id);
 
-        public static TEntity? ById<TEntity>(this IQueryable<TEntity> queryable, int id)
+        public static TEntity ById<TEntity>(this IQueryable<TEntity> queryable, int id)
             where TEntity : class, IEntity<int>
             => queryable.SingleOrDefault(x => x.Id == id);
     }

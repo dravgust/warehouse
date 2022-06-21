@@ -13,11 +13,11 @@ using Serilog;
 using Vayosoft.Core;
 using Vayosoft.Data.Redis;
 using Vayosoft.WebAPI;
-using Vayosoft.WebAPI.Attributes;
 using Vayosoft.WebAPI.Middlewares.ExceptionHandling;
 using Vayosoft.WebAPI.Middlewares.Jwt;
 using Vayosoft.WebAPI.Services;
 using Warehouse.Core.Domain.Entities;
+using IpsWeb.Lib.Cache;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Debug()
@@ -110,9 +110,11 @@ try
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "IPS Dashboard", Version = "v1" });
     });
 
-    builder.Services.AddMemoryCache();
+    builder.Services.AddRedisConnection();
+    builder.Services.AddCaching(configuration);
+    //builder.Services.AddRedisCache(configuration);
+    //builder.Services.AddMemoryCache();
     //builder.Services.AddDistributedMemoryCache();
-    builder.Services.AddRedisCache(configuration);
 
     var app = builder.Build();
 
