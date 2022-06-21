@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32519.379
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IpsWeb", "IpsWeb.csproj", "{5C5BD329-4D73-4794-93BE-7D7CC3ECF3F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IpsWeb", ".\IpsWeb\IpsWeb.csproj", "{5C5BD329-4D73-4794-93BE-7D7CC3ECF3F8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{D93C441B-2A4E-491E-8D66-9A27436A84BA}"
 EndProject
@@ -11,19 +11,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{1C76B171-C55B-49F6-B269-16B8CF027FF2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Data.MongoDB", "..\Vayosoft.Data.MongoDB\Vayosoft.Data.MongoDB.csproj", "{DD340776-3399-4E35-9544-199098A658E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Data.MongoDB", ".\Vayosoft.Data.MongoDB\Vayosoft.Data.MongoDB.csproj", "{DD340776-3399-4E35-9544-199098A658E4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.WebAPI", "..\Vayosoft.WebAPI\Vayosoft.WebAPI.csproj", "{AB3CD6CB-FF5A-4FC0-B151-81426016D5D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.WebAPI", ".\Vayosoft.WebAPI\Vayosoft.WebAPI.csproj", "{AB3CD6CB-FF5A-4FC0-B151-81426016D5D8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Data.EF.MySQL", "..\Vayosoft.Data.EF.MySQL\Vayosoft.Data.EF.MySQL.csproj", "{20C6708C-51F1-4B87-B2AF-9B93243690E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Data.EF.MySQL", ".\Vayosoft.Data.EF.MySQL\Vayosoft.Data.EF.MySQL.csproj", "{20C6708C-51F1-4B87-B2AF-9B93243690E6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Core", "..\Vayosoft.Core\Vayosoft.Core.csproj", "{C7115E9F-5F26-4AFD-9175-224F10AC8FDA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Core", ".\Vayosoft.Core\Vayosoft.Core.csproj", "{C7115E9F-5F26-4AFD-9175-224F10AC8FDA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warehouse.Core", "..\Warehouse.Core\Warehouse.Core.csproj", "{5E4A111D-80E8-470F-B900-B037ACEF6B52}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warehouse.Core", ".\Warehouse.Core\Warehouse.Core.csproj", "{5E4A111D-80E8-470F-B900-B037ACEF6B52}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vayosoft.AutoMapper", "..\Vayosoft.AutoMapper\Vayosoft.AutoMapper.csproj", "{AB8D60A4-1D10-4677-8998-772BB46B78E2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vayosoft.AutoMapper", ".\Vayosoft.AutoMapper\Vayosoft.AutoMapper.csproj", "{AB8D60A4-1D10-4677-8998-772BB46B78E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vayosoft.Data.Redis", "..\Vayosoft.Data.Redis\Vayosoft.Data.Redis.csproj", "{6BFEDA15-CA11-4464-9D4B-3D04F7036EB9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vayosoft.Data.Redis", ".\Vayosoft.Data.Redis\Vayosoft.Data.Redis.csproj", "{6BFEDA15-CA11-4464-9D4B-3D04F7036EB9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
