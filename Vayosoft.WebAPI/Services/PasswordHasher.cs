@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Text;
-using Vayosoft.WebAPI.Entities;
+using Vayosoft.Core.Utilities;
 
 namespace Vayosoft.WebAPI.Services
 {
@@ -22,7 +22,7 @@ namespace Vayosoft.WebAPI.Services
             return false;
         }
 
-        private static string ReversePassword(string value)
+        protected virtual string ReversePassword(string value)
         {
             // SHA512 is disposable by inheritance.  
             using var sha256 = SHA256.Create();
@@ -38,6 +38,16 @@ namespace Vayosoft.WebAPI.Services
             using var keyGenerator = RandomNumberGenerator.Create();
             keyGenerator.GetBytes(bytes);
             return BitConverter.ToString(bytes).Replace("-", "").ToLower();
+        }
+    }
+
+    public class MD5PasswordHasher : PasswordHasher
+    {
+        protected override string ReversePassword(string value)
+        {
+            using var sha256 = MD5.Create();
+            var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(value));
+            return Base64Utils.EncodeBase64(hashedBytes);
         }
     }
 }

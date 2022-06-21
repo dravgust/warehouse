@@ -15,14 +15,14 @@ namespace Vayosoft.Data.MongoDB
     {
         private readonly MongoClient _client;
         public IMongoDatabase Database { get; }
-        public IClientSessionHandle? Session { get; private set; }
+        public IClientSessionHandle Session { get; private set; }
 
         public event OnTraceLine? TraceLine;
 
         [ActivatorUtilitiesConstructor]
         public MongoContext(IConfiguration config) : this(config.GetConnectionSetting()) { }
         public MongoContext(ConnectionSetting config) : this(config.ConnectionString, config.ReplicaSet?.BootstrapServers) { }
-        public MongoContext(string? connectionString, string[]? bootstrapServers)
+        public MongoContext(string connectionString, string[] bootstrapServers)
         {
             if (!string.IsNullOrWhiteSpace(connectionString))
             {
