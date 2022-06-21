@@ -20,7 +20,7 @@ namespace IpsWeb.Controllers.API
         [HttpGet("bootstrap")]
         public IActionResult Get()
         {
-            return new JsonResult(new { });
+            return new JsonResult(new {  });
         }
 
         [AllowAnonymous]

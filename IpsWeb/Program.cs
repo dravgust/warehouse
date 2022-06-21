@@ -5,7 +5,9 @@ using IpsWeb;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Vayosoft.Core;
+using Vayosoft.Data.Redis;
 using Vayosoft.WebAPI;
+using Vayosoft.WebAPI.Attributes;
 using Vayosoft.WebAPI.Middlewares.ExceptionHandling;
 using Vayosoft.WebAPI.Middlewares.Jwt;
 using Vayosoft.WebAPI.Services;
@@ -47,7 +49,8 @@ try
             {
                 policy.WithOrigins("http://localhost:3000")
                     .AllowAnyHeader()
-                    .AllowAnyMethod();
+                    .AllowAnyMethod()
+                    .AllowCredentials();
             });
     });
 
@@ -58,20 +61,27 @@ try
     //});
 
     // Add services to the container.
-    builder.Services.AddControllersWithViews();
+    builder.Services.AddControllersWithViews(options =>
+    {
+        //options.Filters.Add(new AuthorizeAttribute());
+    });
 
     // configure strongly typed settings object
     builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
     // configure DI for application services
     builder.Services.AddScoped<IJwtUtils, JwtUtils>();
-    builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+    builder.Services.AddScoped<IPasswordHasher, MD5PasswordHasher>();
     builder.Services.AddScoped<IUserService, UserService<UserEntity>>();
 
     builder.Services.AddSwaggerGen(c =>
     {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "IPS Dashboard", Version = "v1" });
     });
+
+    builder.Services.AddMemoryCache();
+    //builder.Services.AddDistributedMemoryCache();
+    builder.Services.AddRedisCache(configuration);
 
     var app = builder.Build();
 
@@ -103,6 +113,7 @@ try
 
     app.UseAuthorization();
     //app.UseSession();
+    // app.UseResponseCaching();
 
     app.MapControllerRoute(
         name: "default",

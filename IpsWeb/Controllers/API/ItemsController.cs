@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using IpsWeb.Lib.API.ViewModels;
+﻿using IpsWeb.Lib.API.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Helpers;
 using Vayosoft.Core.Persistence;
@@ -10,6 +9,7 @@ using Warehouse.Core.Domain.Entities;
 namespace IpsWeb.Controllers.API
 {
     //v1/items/
+    [Vayosoft.WebAPI.Attributes.Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ItemsController : ControllerBase

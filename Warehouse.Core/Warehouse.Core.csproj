@@ -21,6 +21,7 @@
     <ProjectReference Include="..\Vayosoft.Core\Vayosoft.Core.csproj" />
     <ProjectReference Include="..\Vayosoft.Data.EF.MySQL\Vayosoft.Data.EF.MySQL.csproj" />
     <ProjectReference Include="..\Vayosoft.Data.MongoDB\Vayosoft.Data.MongoDB.csproj" />
+    <ProjectReference Include="..\Vayosoft.Data.Redis\Vayosoft.Data.Redis.csproj" />
     <ProjectReference Include="..\Vayosoft.WebAPI\Vayosoft.WebAPI.csproj" />
   </ItemGroup>
 

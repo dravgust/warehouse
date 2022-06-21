@@ -8,6 +8,7 @@ using Warehouse.Core.Domain.Entities;
 
 namespace IpsWeb.Controllers.API
 {
+    [Vayosoft.WebAPI.Attributes.Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
