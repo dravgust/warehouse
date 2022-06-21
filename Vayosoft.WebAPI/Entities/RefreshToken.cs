@@ -6,7 +6,7 @@ namespace Vayosoft.WebAPI.Entities
     public class RefreshToken
     {
         [JsonIgnore]
-        public IIdentityUser User { get; set; }
+        public virtual IIdentityUser User { get; set; }
         [JsonIgnore]
         public long UserId { get; set; }
 

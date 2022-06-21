@@ -19,4 +19,8 @@
     <ProjectReference Include="..\Warehouse.Core\Warehouse.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Lib\API\Services\" />
+  </ItemGroup>
+
 </Project>

@@ -17,6 +17,8 @@ namespace Vayosoft.Data.EF.MySQL
             this._loggerFactory = loggerFactory;
             this._logger = loggerFactory.CreateLogger<DataContext>();
 
+            //this.ChangeTracker.LazyLoadingEnabled = false;
+
             Database.EnsureCreated();
         }
 
@@ -50,7 +52,8 @@ namespace Vayosoft.Data.EF.MySQL
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseLoggerFactory(this._loggerFactory);
+            optionsBuilder
+                .UseLoggerFactory(this._loggerFactory);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

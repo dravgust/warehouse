@@ -6,7 +6,6 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using Vayosoft.Core;
 using Vayosoft.WebAPI;
-using Vayosoft.WebAPI.Authorization;
 using Vayosoft.WebAPI.Middlewares.ExceptionHandling;
 using Vayosoft.WebAPI.Middlewares.Jwt;
 using Vayosoft.WebAPI.Services;

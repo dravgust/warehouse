@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Entities;
@@ -10,7 +11,6 @@ using Vayosoft.WebAPI.Models;
 
 namespace Vayosoft.WebAPI.Services
 {
-    //"72ab994fa2eb426c051ef59cad617750bfe06d7cf6311285ff79c19c32afd236"
     public class UserService<TEntity> : IUserService where TEntity : class, IEntity, IIdentityUser
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -53,7 +53,7 @@ namespace Vayosoft.WebAPI.Services
             _unitOfWork.Add(user);
             _unitOfWork.Commit();
 
-            return new AuthenticateResponse(user, jwtToken, refreshToken.Token);
+            return new AuthenticateResponse(user, jwtToken, refreshToken.Token, refreshToken.Expires);
         }
 
         public AuthenticateResponse RefreshToken(string token, string ipAddress)
@@ -86,7 +86,7 @@ namespace Vayosoft.WebAPI.Services
             // generate new jwt
             var jwtToken = _jwtUtils.GenerateJwtToken(user);
 
-            return new AuthenticateResponse(user, jwtToken, newRefreshToken.Token);
+            return new AuthenticateResponse(user, jwtToken, newRefreshToken.Token, newRefreshToken.Expires);
         }
 
         public void RevokeToken(string token, string ipAddress)
@@ -115,9 +115,9 @@ namespace Vayosoft.WebAPI.Services
         private IIdentityUser GetUserByRefreshToken(string token)
         {
             var user = _linqProvider.GetQueryable<TEntity>().SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
+
             if (user == null)
                 throw new ApplicationException("Invalid token");
-
             return user;
         }
 

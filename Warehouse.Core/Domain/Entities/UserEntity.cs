@@ -9,7 +9,7 @@ namespace Warehouse.Core.Domain.Entities
         public string? Username { get; set; }
         public string? Email { get; set; }
         public string? PasswordHash { get; set; }
-        public List<RefreshToken> RefreshTokens { get; set; } = new();
+        public virtual List<RefreshToken> RefreshTokens { get; set; } = new();
     }
 
     [ConventionalMap(typeof(UserEntity))]

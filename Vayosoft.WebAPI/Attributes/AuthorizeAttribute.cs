@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Vayosoft.WebAPI.Entities;
 
-namespace Vayosoft.WebAPI.Authorization
+namespace Vayosoft.WebAPI.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class AuthorizeAttribute : Attribute, IAuthorizationFilter
@@ -16,8 +16,7 @@ namespace Vayosoft.WebAPI.Authorization
             if (SkipAuthorization(context))
                 return;
 
-            var user = (IIdentityUser)context.HttpContext.Items["User"];
-            if (user == null)
+            if (context.HttpContext.Items["User"] is not IIdentityUser user)
             {
                 context.Result = new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };
             }

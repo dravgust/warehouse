@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using System.Text.Json.Serialization;
 using Vayosoft.WebAPI.Entities;
 
 namespace Vayosoft.WebAPI.Models
@@ -9,16 +10,18 @@ namespace Vayosoft.WebAPI.Models
         public string Username { get; set; }
         public string Email { get; set; }
         public string Token { get; set; }
+        public long TokenExpirationTime { get; set; }
 
         [JsonIgnore] // refresh token is returned in http only cookie
         public string RefreshToken { get; set; }
 
-        public AuthenticateResponse(IIdentityUser user, string jwtToken, string refreshToken)
+        public AuthenticateResponse(IIdentityUser user, string jwtToken, string refreshToken, DateTime expirationTime)
         {
             Id = user.Id;
             Username = user.Username;
             Username = user.Email;
             Token = jwtToken;
+            TokenExpirationTime = ((DateTimeOffset) expirationTime).ToUnixTimeSeconds();
             RefreshToken = refreshToken;
         }
     }
