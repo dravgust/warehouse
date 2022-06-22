@@ -33,7 +33,7 @@ namespace Vayosoft.Core.Persistence
 
     public interface IPageableRepository<TEntity, in TKey> : IRepositoryBase<TEntity, TKey> where TEntity : class, IEntity
     {
-        Task<IPagedReadOnlyCollection<TEntity>> GetByPageAsync(IPaging<TEntity, object> query, CancellationToken cancellationToken);
+        Task<IPagedEnumerable<TEntity>> GetByPageAsync(IPaging<TEntity, object> query, CancellationToken cancellationToken);
     }
 
     public interface IEntityRepository<TEntity, TKey> : IPageableRepository<TEntity, TKey>,

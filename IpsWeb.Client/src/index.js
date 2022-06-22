@@ -14,7 +14,7 @@ Coded by www.creative-tim.com
 */
 
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from "react-router-dom";
 import App from "App";
 
@@ -24,7 +24,10 @@ import { SoftUIControllerProvider } from "context";
 import { AuthProvider } from "context/auth.context";
 import { AppProviders } from "context/app.context";
 
-ReactDOM.render(
+const container = document.getElementById("root");
+const root = createRoot(container); 
+
+root.render(
   <BrowserRouter>
     <SoftUIControllerProvider>
       <AppProviders>
@@ -33,6 +36,5 @@ ReactDOM.render(
         </AuthProvider>
       </AppProviders>
     </SoftUIControllerProvider>
-  </BrowserRouter>,
-  document.getElementById("root")
+  </BrowserRouter>
 );

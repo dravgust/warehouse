@@ -27,7 +27,7 @@ namespace Vayosoft.Data.MongoDB
         public IQueryable<TEntity> GetQueryable(Expression<Func<TEntity, bool>> predicate) =>
                  _collection.AsQueryable().Where(predicate);
 
-        public Task<IPagedReadOnlyCollection<TEntity>> GetByPageAsync(IPaging<TEntity, object> query, CancellationToken cancellationToken = default)
+        public Task<IPagedEnumerable<TEntity>> GetByPageAsync(IPaging<TEntity, object> query, CancellationToken cancellationToken = default)
         {
             return _collection.AggregateByPage(query, cancellationToken);
         }

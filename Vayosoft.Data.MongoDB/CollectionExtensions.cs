@@ -499,7 +499,7 @@ namespace Vayosoft.Data.MongoDB
 
         #endregion
 
-        public static Task<IPagedReadOnlyCollection<T>> AggregateByPage<T>(this IMongoCollection<T> collection, IPaging<T, object> query, CancellationToken cancellationToken = default) where T : class, IEntity<string>
+        public static Task<IPagedEnumerable<T>> AggregateByPage<T>(this IMongoCollection<T> collection, IPaging<T, object> query, CancellationToken cancellationToken = default) where T : class, IEntity<string>
         {
             var sortDefinition = query.OrderBy.SortOrder == SortOrder.Asc
                 ? Builders<T>.Sort.Ascending(query.OrderBy.Expression)
@@ -518,7 +518,7 @@ namespace Vayosoft.Data.MongoDB
             return collection.AggregateByPage(filterDefinition, sortDefinition, query.Page, query.Take, cancellationToken);
         }
 
-        public static async Task<IPagedReadOnlyCollection<T>> AggregateByPage<T>(
+        public static async Task<IPagedEnumerable<T>> AggregateByPage<T>(
             this IMongoCollection<T> collection,
             FilterDefinition<T> filterDefinition,
             SortDefinition<T> sortDefinition,
@@ -555,7 +555,7 @@ namespace Vayosoft.Data.MongoDB
                 .Facets.First(x => x.Name == "data")
                 .Output<T>();
 
-            return new PagedReadOnlyCollection<T>(data, count, pageSize);
+            return new PagedEnumerable<T>(data, count);
         }
     }
 }

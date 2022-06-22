@@ -23,12 +23,19 @@ namespace IpsWeb.Controllers.API
         }
 
         [HttpGet]
-        public Task<IPagedEnumerable<UserEntityDto>> Get(int page, int take)
+        public async Task<dynamic> Get(int page, int take)
         {
             var spec = new GetAllUsersSpec(page, take);
             var query = new PagedQuery<GetAllUsersSpec, IPagedEnumerable<UserEntityDto>>(spec);
 
-            return queryBus.Send<PagedQuery<GetAllUsersSpec, IPagedEnumerable<UserEntityDto>>, IPagedEnumerable<UserEntityDto>>(query);
+            var result = await queryBus.Send<PagedQuery<GetAllUsersSpec, IPagedEnumerable<UserEntityDto>>, IPagedEnumerable<UserEntityDto>>(query);
+
+            return new
+            {
+                data = result,
+                totalItems = result.TotalCount,
+                totalPages = (long)Math.Ceiling((double)result.TotalCount / take)
+            };
         }
 
         [HttpGet("{id}")]

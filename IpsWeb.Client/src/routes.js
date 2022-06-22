@@ -56,6 +56,8 @@ import CreditCard from "examples/Icons/CreditCard";
 import Cube from "examples/Icons/Cube";
 import Products from "layouts/products";
 import FormatListNumberedOutlinedIcon from '@mui/icons-material/FormatListNumberedOutlined';
+import Users from "layouts/users";
+import Warehouse from "layouts/warehouse";
 
 const routes = [
   {
@@ -75,6 +77,16 @@ const routes = [
     route: "/products",
     icon: <FormatListNumberedOutlinedIcon size="12px" />,
     component: <Products />,
+    noCollapse: true,
+    protected: true,
+  },
+  {
+    type: "collapse",
+    name: "Warehouse",
+    key: "warehouse",
+    route: "/warehouse",
+    icon: <Cube size="12px" />,
+    component: <Warehouse />,
     noCollapse: true,
     protected: true,
   },
@@ -116,6 +128,16 @@ const routes = [
     route: "/profile",
     icon: <CustomerSupport size="12px" />,
     component: <Profile />,
+    noCollapse: true,
+    protected: true,
+  },
+  {
+    type: "collapse",
+    name: "Users",
+    key: "users",
+    route: "/users",
+    icon: <FormatListNumberedOutlinedIcon size="12px" />,
+    component: <Users />,
     noCollapse: true,
     protected: true,
   },

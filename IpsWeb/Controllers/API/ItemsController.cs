@@ -48,9 +48,9 @@ namespace IpsWeb.Controllers.API
 
             return new
             {
-                data = result.Items,
+                data = result,
                 totalItems = result.TotalCount,
-                totalPages = result.TotalPages
+                totalPages = (long)Math.Ceiling((double)result.TotalCount / size)
             };
         }
 
