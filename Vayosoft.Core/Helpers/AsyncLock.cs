@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Vayosoft.Core.SharedKernel
+namespace Vayosoft.Core.Helpers
 {
     //https://stackoverflow.com/questions/31138179/asynchronous-locking-based-on-a-key
     //Asynchronous locking based on a string key

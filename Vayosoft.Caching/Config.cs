@@ -1,7 +1,9 @@
-﻿using IpsWeb.Lib.Cache.Redis;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Vayosoft.Caching.Redis;
 using Vayosoft.Core.Caching;
 
-namespace IpsWeb.Lib.Cache
+namespace Vayosoft.Caching
 {
     public static class Config
     {
@@ -23,7 +25,7 @@ namespace IpsWeb.Lib.Cache
             else
             {
                 //Use MemoryCache decorator to use global platform cache settings
-                services.AddSingleton<IDistributedMemoryCache, DistributedMemoryCache>();
+                services.AddSingleton<IDistributedMemoryCache, MemoryCacheWrapper>();
             }
 
             return services;

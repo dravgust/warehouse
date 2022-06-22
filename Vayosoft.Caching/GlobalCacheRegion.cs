@@ -1,6 +1,6 @@
 ﻿using Vayosoft.Core.Caching;
 
-namespace Warehouse.Core.Caching
+namespace Vayosoft.Caching
 {
     public class GlobalCacheRegion : CancellableCacheRegion<GlobalCacheRegion>
     {

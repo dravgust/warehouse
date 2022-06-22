@@ -1,4 +1,4 @@
-﻿namespace IpsWeb.Lib.Cache.Redis
+﻿namespace Vayosoft.Caching.Redis
 {
     public class RedisCachingMessage
     {

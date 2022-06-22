@@ -1,23 +1,22 @@
-﻿using System.Diagnostics;
+﻿using System.Text.Json;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using StackExchange.Redis;
 using Vayosoft.Core.Caching;
 using Vayosoft.Core.Extensions;
 using Vayosoft.Data.Redis;
-using Warehouse.Core.Caching;
 
-namespace IpsWeb.Lib.Cache.Redis
+namespace Vayosoft.Caching.Redis
 {
-    public class RedisMemoryCache : DistributedMemoryCache
+    public class RedisMemoryCache : MemoryCacheWrapper
     {
         private static string InstanceId { get; } = $"{Environment.MachineName}_{Guid.NewGuid():N}";
         private readonly IRedisSubscriberProvider _bus;
         private readonly CachingOptions _cachingOptions;
         private readonly RedisCachingOptions _redisCachingOptions;
         private readonly IRedisConnectionProvider _connectionProvider;
-        private readonly ILogger _log;
+        private readonly ILogger<MemoryCacheWrapper> _log;
         private bool _isSubscribed;
         private readonly object _lock = new();
         private bool _disposed;
@@ -28,7 +27,7 @@ namespace IpsWeb.Lib.Cache.Redis
             IRedisSubscriberProvider pubSub,
             IOptions<CachingOptions> cachingOptions,
             IOptions<RedisCachingOptions> redisCachingOptions,
-            ILogger<RedisMemoryCache> log) : base(memoryCache, cachingOptions, log)
+            ILogger<MemoryCacheWrapper> log) : base(memoryCache, cachingOptions, log)
         {
             _connectionProvider = connectionProvider;
             _bus = pubSub;
@@ -55,7 +54,7 @@ namespace IpsWeb.Lib.Cache.Redis
             _log.LogTrace($"Published token cancellation message {message.ToString()}");
         }
 
-        protected virtual void OnConnectionFailed(object sender, ConnectionFailedEventArgs e)
+        protected virtual void OnConnectionFailed(object? sender, ConnectionFailedEventArgs e)
         {
             _log.LogError($"Redis disconnected from instance {InstanceId}. Endpoint is {e.EndPoint}, failure type is {e.FailureType}");
 
@@ -67,7 +66,7 @@ namespace IpsWeb.Lib.Cache.Redis
             GlobalCacheRegion.ExpireRegion();
         }
 
-        protected virtual void OnConnectionRestored(object sender, ConnectionFailedEventArgs e)
+        protected virtual void OnConnectionRestored(object? sender, ConnectionFailedEventArgs e)
         {
             _log.LogTrace($"Redis backplane connection restored for instance {InstanceId}");
 
@@ -81,7 +80,7 @@ namespace IpsWeb.Lib.Cache.Redis
 
         protected virtual void OnMessage(RedisChannel channel, RedisValue redisValue)
         {
-            var message = JsonConvert.DeserializeObject<RedisCachingMessage>(redisValue);
+            var message = JsonSerializer.Deserialize<RedisCachingMessage>(redisValue);
 
             if (!string.IsNullOrEmpty(message.InstanceId) && !message.InstanceId.EqualsInvariant(InstanceId))
             {
@@ -115,7 +114,7 @@ namespace IpsWeb.Lib.Cache.Redis
         private void Publish(RedisCachingMessage message)
         {
             EnsureRedisServerConnection();
-            _bus.Subscriber.Publish(_redisCachingOptions.ChannelName, JsonConvert.SerializeObject(message), CommandFlags.FireAndForget);
+            _bus.Subscriber.Publish(_redisCachingOptions.ChannelName, JsonSerializer.Serialize(message), CommandFlags.FireAndForget);
         }
 
         private void EnsureRedisServerConnection()

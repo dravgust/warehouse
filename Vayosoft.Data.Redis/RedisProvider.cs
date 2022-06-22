@@ -5,9 +5,9 @@ using StackExchange.Redis;
 
 namespace Vayosoft.Data.Redis
 {
-    public class RedisProvider : IRedisConnectionProvider, IRedisDatabaseProvider, IRedisSubscriberProvider, IDisposable
+    public class RedisProvider : IRedisProvider
     {
-        private readonly Lazy<IConnectionMultiplexer> LazyConnection;
+        private readonly Lazy<IConnectionMultiplexer> Lazy;
         
         [ActivatorUtilitiesConstructor]
         public RedisProvider(IConfiguration config)
@@ -24,10 +24,10 @@ namespace Vayosoft.Data.Redis
         { }
         public RedisProvider(ConfigurationOptions options)
         {
-            LazyConnection = new Lazy<IConnectionMultiplexer>(() => ConnectionMultiplexer.Connect(options));
+            Lazy = new Lazy<IConnectionMultiplexer>(() => ConnectionMultiplexer.Connect(options));
         }
 
-        public IConnectionMultiplexer Connection => LazyConnection.Value;
+        public IConnectionMultiplexer Connection => Lazy.Value;
 
         public IDatabase Database => Connection.GetDatabase();
         public ISubscriber Subscriber => Connection.GetSubscriber();

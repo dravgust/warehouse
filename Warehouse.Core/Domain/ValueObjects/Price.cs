@@ -1,5 +1,5 @@
 ﻿using System;
-using Vayosoft.Core.ValueObjects;
+using Vayosoft.Core.SharedKernel.ValueObjects;
 using Warehouse.Core.Domain.Enums;
 
 namespace Warehouse.Core.Domain.ValueObjects

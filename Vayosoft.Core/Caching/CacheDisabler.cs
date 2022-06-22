@@ -20,7 +20,7 @@ namespace Vayosoft.Core.Caching
                 Dispose(true);
             }
 
-            public void Dispose(bool disposing)
+            private void Dispose(bool disposing)
             {
                 if (disposing)
                 {
@@ -35,9 +35,9 @@ namespace Vayosoft.Core.Caching
 
         /// <summary>
         /// The method disables caching in current and inherited threads and set up
-        /// enabling of it as callback action wich runs when returting object is disposed.
+        /// enabling of it as callback action witch runs when returning object is disposed.
         /// </summary>
-        /// <returns>Disposable object wich enables cache back on disposing</returns>
+        /// <returns>Disposable object witch enables cache back on disposing</returns>
         public static IDisposable DisableCache()
         {
             CacheDisablerStorage.Value = true;

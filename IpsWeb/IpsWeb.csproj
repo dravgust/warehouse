@@ -8,20 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MongoDB.Driver" Version="2.16.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.16.1" />
     <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
     <PackageReference Include="Serilog.Enrichers.CorrelationId" Version="3.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.19.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.20.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Vayosoft.Caching\Vayosoft.Caching.csproj" />
     <ProjectReference Include="..\Warehouse.Core\Warehouse.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Lib\Extensions\" />
-    <Folder Include="Lib\Helpers\" />
   </ItemGroup>
 
 </Project>

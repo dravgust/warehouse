@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using Vayosoft.Caching;
 using Vayosoft.Core;
 using Vayosoft.Data.Redis;
 using Vayosoft.WebAPI;
@@ -17,7 +18,6 @@ using Vayosoft.WebAPI.Middlewares.ExceptionHandling;
 using Vayosoft.WebAPI.Middlewares.Jwt;
 using Vayosoft.WebAPI.Services;
 using Warehouse.Core.Domain.Entities;
-using IpsWeb.Lib.Cache;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Debug()

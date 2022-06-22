@@ -1,4 +1,4 @@
-﻿namespace IpsWeb.Lib.Cache
+﻿namespace Vayosoft.Caching
 {
     public class CachingOptions
     {

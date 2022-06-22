@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Vayosoft.Core.Helpers;
 
-namespace Vayosoft.Core.SharedKernel.AsyncLoop
+namespace Vayosoft.Core.Helpers.AsyncLoop
 {
     public sealed class AsyncLoopFactory : IAsyncLoopFactory
     {

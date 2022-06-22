@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Vayosoft.Core.SharedKernel.AsyncLoop
+namespace Vayosoft.Core.Helpers.AsyncLoop
 {
     public interface IAsyncLoopFactory
     {

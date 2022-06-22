@@ -1,18 +1,18 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Vayosoft.Core.Caching;
-using Warehouse.Core.Caching;
 
-namespace IpsWeb.Lib.Cache
+namespace Vayosoft.Caching
 {
-    public class DistributedMemoryCache : IDistributedMemoryCache
+    public class MemoryCacheWrapper : IDistributedMemoryCache
     {
         private readonly IMemoryCache _memoryCache;
         private bool _disposed;
-        private readonly ILogger<DistributedMemoryCache> _log;
+        private readonly ILogger<MemoryCacheWrapper> _log;
 
-        public DistributedMemoryCache(IMemoryCache memoryCache, IOptions<CachingOptions> options,
-            ILogger<DistributedMemoryCache> log)
+        public MemoryCacheWrapper(IMemoryCache memoryCache, IOptions<CachingOptions> options,
+            ILogger<MemoryCacheWrapper> log)
         {
             _memoryCache = memoryCache;
             var cachingOptions = options.Value;
@@ -75,7 +75,7 @@ namespace IpsWeb.Lib.Cache
             return result;
         }
 
-        ~DistributedMemoryCache()
+        ~MemoryCacheWrapper()
         {
             Dispose(false);
         }

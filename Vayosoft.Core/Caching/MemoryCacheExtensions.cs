@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Vayosoft.Core.Extensions;
-using Vayosoft.Core.SharedKernel;
+using Vayosoft.Core.Helpers;
 using Vayosoft.Core.SharedKernel.Entities;
 
 namespace Vayosoft.Core.Caching
