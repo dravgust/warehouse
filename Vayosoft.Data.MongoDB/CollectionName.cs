@@ -11,26 +11,32 @@ namespace Vayosoft.Data.MongoDB
     /// Returns a camelCase collection from any type while removing some forbidden suffixes:
     /// "Document", "Entity", "View", "Projection", "ProjectionDocument", "ProjectionEntity"
     /// </summary>
-    public class CollectionName : IEquatable<CollectionName> {
+    public class CollectionName : IEquatable<CollectionName>
+    {
         public static readonly CollectionName Default = new("");
         private static readonly Pluralizer Pluralizer = new();
 
         private readonly string _value;
-        
+
         private CollectionName(string value) => _value = value;
 
         public bool Equals(CollectionName other) => string.Equals(_value, other?._value, StringComparison.Ordinal);
 
-        public static CollectionName For<T>(string? prefix = null) => For(typeof(T), prefix);
+        public static CollectionName For<T>(string prefix = null) => For(typeof(T), prefix);
 
-        public static CollectionName For(Type type, string prefix = null) {
+        public static CollectionName For(Type type, string prefix = null)
+        {
+            var attributeName = type.GetAttributeValue((CollectionNameAttribute entity) => entity.Name);
+            if (!IsNullOrWhiteSpace(attributeName))
+                return new CollectionName(attributeName);
+
             var collectionName = type.Name;
-
-            var suffixes = new[] {"Document", "Entity", "View", "Projection", "ProjectionDocument", "ProjectionEntity"};
+            var suffixes = new[]
+                {"Document", "Entity", "View", "Projection", "ProjectionDocument", "ProjectionEntity"};
 
             foreach (var suffix in suffixes)
                 if (collectionName.EndsWith(suffix, StringComparison.OrdinalIgnoreCase))
-                    collectionName = collectionName.Substring(0, collectionName.Length - suffix.Length);
+                    collectionName = collectionName[..^suffix.Length];
             collectionName = Pluralizer.Pluralize(collectionName).ToLowerFirstChar();
 
             if (!IsNullOrWhiteSpace(prefix)) collectionName = $"{prefix}-{collectionName}";

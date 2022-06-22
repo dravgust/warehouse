@@ -58,15 +58,26 @@ import Products from "layouts/products";
 import FormatListNumberedOutlinedIcon from '@mui/icons-material/FormatListNumberedOutlined';
 import Users from "layouts/users";
 import Warehouse from "layouts/warehouse";
+import Home from "layouts/home";
 
 const routes = [
   {
-    type: "collapse",
+    type: "route",
     name: "Dashboard",
     key: "dashboard",
     route: "/dashboard",
     icon: <Shop size="12px" />,
     component: <Dashboard />,
+    noCollapse: true,
+    protected: true,
+  },
+  {
+    type: "collapse",
+    name: "Dashboard",
+    key: "home",
+    route: "/home",
+    icon: <Shop size="12px" />,
+    component: <Home />,
     noCollapse: true,
     protected: true,
   },
@@ -120,9 +131,9 @@ const routes = [
     noCollapse: true,
     protected: true,
   },
-  { type: "title", title: "Account Pages", key: "account-pages" },
+  { type: "title", title: "Administration", key: "account-pages" },
   {
-    type: "collapse",
+    type: "route",
     name: "Profile",
     key: "profile",
     route: "/profile",

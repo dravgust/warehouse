@@ -44,5 +44,15 @@ namespace Vayosoft.Core.Extensions
                 ? $"{nameParts[0]}<{new string(',', genericArguments.Length - 1)}>"
                 : $"{nameParts[0]}<{string.Join(",", genericArguments.Select(t => PrettyPrintRecursive(t, depth + 1)))}>";
         }
+
+        public static TValue GetAttributeValue<TAttribute, TValue>(this Type type, Func<TAttribute, TValue> valueSelector) where TAttribute : Attribute
+        {
+            var attr = type.GetCustomAttributes<TAttribute>(true).FirstOrDefault();
+            if (attr != null)
+            {
+                return valueSelector(attr);
+            }
+            return default;
+        }
     }
 }

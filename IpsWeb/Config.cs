@@ -18,6 +18,7 @@ namespace IpsWeb
         public static void AddDependencies(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddMongoDbContext(Warehouse.Core.Persistence.Config.ConfigureMongoDb);
+            services.AddScoped<IEntityRepository<BeaconEventEntity, string>, MongoRepository<BeaconEventEntity>>();
             services.AddScoped<IEntityRepository<ProductEntity, string>, MongoRepository<ProductEntity>>();
             services.AddScoped<IEntityRepository<FileEntity, string>, MongoRepository<FileEntity>>();
 
