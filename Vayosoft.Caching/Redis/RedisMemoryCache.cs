@@ -80,11 +80,11 @@ namespace Vayosoft.Caching.Redis
 
         protected virtual void OnMessage(RedisChannel channel, RedisValue redisValue)
         {
-            var message = JsonSerializer.Deserialize<RedisCachingMessage>(redisValue);
+            var message = JsonSerializer.Deserialize<RedisCachingMessage>(redisValue!);
 
-            if (!string.IsNullOrEmpty(message.InstanceId) && !message.InstanceId.EqualsInvariant(InstanceId))
+            if (!string.IsNullOrEmpty(message?.InstanceId) && !message.InstanceId.EqualsInvariant(InstanceId))
             {
-                _log.LogTrace($"Received message {message.ToString()}");
+                _log.LogTrace($"Received message {message}");
 
                 foreach (var key in message.CacheKeys?.OfType<string>() ?? Array.Empty<string>())
                 {

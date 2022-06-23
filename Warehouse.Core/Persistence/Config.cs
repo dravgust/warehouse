@@ -22,7 +22,8 @@ namespace Warehouse.Core.Persistence
             public override void Map(BsonClassMap<FileEntity> cm)
             {
                 cm.AutoMap();
-                cm.MapIdProperty(c => c.Id).SetIdGenerator(StringObjectIdGenerator.Instance);
+                cm.MapIdProperty(c => c.Id)
+                    .SetIdGenerator(StringObjectIdGenerator.Instance);
             }
         }
 

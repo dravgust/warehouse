@@ -54,7 +54,7 @@ function SignIn() {
     }
 
     if (user && user.token) {
-      return navigate("/dashboard");
+      return navigate("/home");
     }
     if (email === "") {
       return setError("You must enter your email.");
@@ -66,7 +66,7 @@ function SignIn() {
     setButtonText("Signing in");
     try {
       await signIn({ email, password });
-      return navigate("/dashboard");
+      return navigate("/home");
     } catch (err) {
       if(err.error){
         return setError(err.error);

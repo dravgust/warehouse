@@ -127,8 +127,8 @@ function ProductList({
                 }}
               />
             ))}
-          {isLoading && <p>Loading..</p>}
-          {error && <SuiTypography>Error occurred!</SuiTypography>}
+          {isLoading && <SuiTypography color="secondary">Loading..</SuiTypography>}
+          {error && <SuiTypography color="error">Error occurred!</SuiTypography>}
         </SuiBox>
         {isSuccess && page && (
           <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>

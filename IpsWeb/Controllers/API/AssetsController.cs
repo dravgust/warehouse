@@ -9,21 +9,21 @@ namespace IpsWeb.Controllers.API
     [Vayosoft.WebAPI.Attributes.Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class EventsController : ControllerBase
+    public class AssetsController : ControllerBase
     {
-        private readonly IEntityRepository<BeaconEventEntity, string> _productRepository;
+        private readonly IEntityRepository<BeaconIndoorPositionEntity, string> _beaconEventRepository;
 
-        public EventsController(IEntityRepository<BeaconEventEntity, string> productRepository)
+        public AssetsController(IEntityRepository<BeaconIndoorPositionEntity, string> beaconEventRepository)
         {
-            _productRepository = productRepository;
+            _beaconEventRepository = beaconEventRepository;
         }
 
         [HttpGet("")]
         public async Task<dynamic> Get(int page, int size, string? searchTerm = null, CancellationToken token = default)
         {
-            var query = new FilteredPaging<BeaconEventEntity>(page, size, searchTerm, p => p.MacAddress, p => p.TimeStamp, SortOrder.Desc);
+            var query = new FilteredPaging<BeaconIndoorPositionEntity>(page, size, searchTerm, p => p.MacAddress, p => p.TimeStamp, SortOrder.Desc);
 
-            var result = await _productRepository
+            var result = await _beaconEventRepository
                 .GetByPageAsync(query, token);
 
             return new

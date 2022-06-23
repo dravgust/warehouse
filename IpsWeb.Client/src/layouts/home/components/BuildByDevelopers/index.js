@@ -24,7 +24,7 @@ import SuiTypography from "components/SuiTypography";
 
 // Images
 import wavesWhite from "assets/images/shapes/waves-white.svg";
-import rocketWhite from "assets/images/illustrations/rocket-white.png";
+import rocketWhite from "assets/images/illustrations/forklift.png";
 
 function BuildByDevelopers() {
   return (
@@ -82,7 +82,7 @@ function BuildByDevelopers() {
               display="grid"
               justifyContent="center"
               alignItems="center"
-              bgColor="info"
+              bgColor="white"
               borderRadius="lg"
               variant="gradient"
             >
@@ -96,7 +96,7 @@ function BuildByDevelopers() {
                 width="100%"
                 height="100%"
               />
-              <SuiBox component="img" src={rocketWhite} alt="rocket" width="100%" pt={3} />
+              <SuiBox component="img" src={rocketWhite} alt="" width="100%" pt={3} />
             </SuiBox>
           </Grid>
         </Grid>

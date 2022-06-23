@@ -19,11 +19,29 @@ import Table from "examples/Tables/Table";
 import { useQuery } from "react-query";
 import { client } from "utils/api-client";
 import * as auth from "auth-provider";
+import { format } from 'date-fns'
 
 // Images
 import userIcon from "assets/images/user.png";
 
-function Author({ image, name, email }) {
+function ProviderName(providerId){
+  switch(providerId){
+    case 1:
+      return 'Electra';
+    case 2:
+      return 'Dolav';
+    case 3: 
+      return 'Meitav';
+    case 4:
+      return 'Tel-Aviv University';
+    case 1000:
+      return 'Vayosoft';
+      default:
+        return 'Unknown';
+  }
+}
+
+function User({ image, name, email }) {
   return (
     <SuiBox display="flex" alignItems="center" px={1} py={0.5}>
       <SuiBox mr={2}>
@@ -104,13 +122,13 @@ function Users() {
                     isSuccess &&
                     response.data.map((item) => ({
                       user: (
-                        <Author
+                        <User
                           image={userIcon}
                           name={item.username}
                           email={item.email}
                         />
                       ),
-                      function: <Function job={item.kind} org={item.providerId} />,
+                      function: <Function job={item.kind} org={ProviderName(item.providerId)} />,
                       status: (
                         <SuiBadge
                           variant="gradient"
@@ -122,7 +140,7 @@ function Users() {
                       ),
                       registed: (
                         <SuiTypography variant="caption" color="secondary" fontWeight="medium">
-                          {item.registrationDate}
+                          {format(new Date(item.registrationDate), 'dd/mm/yyy HH:mm:ss')}
                         </SuiTypography>
                       ),
                       action: (
@@ -143,8 +161,8 @@ function Users() {
                   onPageChange={(event, value) => setPage(value)}
                 />
               )}
-              {isLoading && <p>Loading..</p>}
-              {error && <SuiTypography>Error occurred!</SuiTypography>}
+              {isLoading && <SuiTypography color="secondary">Loading..</SuiTypography>}
+              {error && <SuiTypography color="error">Error occurred!</SuiTypography>}
             </SuiBox>
           </Card>
         </SuiBox>

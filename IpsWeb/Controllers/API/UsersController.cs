@@ -28,7 +28,8 @@ namespace IpsWeb.Controllers.API
             var spec = new GetAllUsersSpec(page, take);
             var query = new PagedQuery<GetAllUsersSpec, IPagedEnumerable<UserEntityDto>>(spec);
 
-            var result = await queryBus.Send<PagedQuery<GetAllUsersSpec, IPagedEnumerable<UserEntityDto>>, IPagedEnumerable<UserEntityDto>>(query);
+            var result = await queryBus.Send<PagedQuery<GetAllUsersSpec,
+                IPagedEnumerable<UserEntityDto>>, IPagedEnumerable<UserEntityDto>>(query);
 
             return new
             {

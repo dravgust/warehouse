@@ -19,6 +19,8 @@ namespace IpsWeb
         {
             services.AddMongoDbContext(Warehouse.Core.Persistence.Config.ConfigureMongoDb);
             services.AddScoped<IEntityRepository<BeaconEventEntity, string>, MongoRepository<BeaconEventEntity>>();
+            services.AddScoped<IEntityRepository<BeaconIndoorPositionEntity, string>, MongoRepository<BeaconIndoorPositionEntity>>();
+            services.AddScoped<IEntityRepository<WarehouseSiteEntity, string>, MongoRepository<WarehouseSiteEntity>>();
             services.AddScoped<IEntityRepository<ProductEntity, string>, MongoRepository<ProductEntity>>();
             services.AddScoped<IEntityRepository<FileEntity, string>, MongoRepository<FileEntity>>();
 
