@@ -10,6 +10,7 @@ using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 
+
 namespace Vayosoft.Data.MongoDB
 {
     public class MongoRepository<TEntity> : IEntityRepository<TEntity, string> where TEntity : class, IEntity<string>
@@ -21,13 +22,12 @@ namespace Vayosoft.Data.MongoDB
             _collection = Guard.NotNull(context, nameof(context)).Database.GetCollection<TEntity>(CollectionName.For<TEntity>());
         }
 
-        public IQueryable<TEntity> GetQueryable() =>
-            _collection.AsQueryable();
+        public IEnumerable<TEntity> GetByCriteria(Expression<Func<TEntity, bool>> criteria)
+        {
+            return _collection.AsQueryable().Where(criteria).AsEnumerable();
+        }
 
-        public IQueryable<TEntity> GetQueryable(Expression<Func<TEntity, bool>> predicate) =>
-                 _collection.AsQueryable().Where(predicate);
-
-        public Task<IPagedEnumerable<TEntity>> GetByPageAsync(IPaging<TEntity, object> query, CancellationToken cancellationToken = default)
+        public Task<IPagedEnumerable<TEntity>> GetByPageAsync(IPagingModel<TEntity, object> query, CancellationToken cancellationToken = default)
         {
             return _collection.AggregateByPage(query, cancellationToken);
         }

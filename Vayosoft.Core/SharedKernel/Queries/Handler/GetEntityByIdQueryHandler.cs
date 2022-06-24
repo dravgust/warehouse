@@ -26,7 +26,7 @@ namespace Vayosoft.Core.SharedKernel.Queries.Handler
         public virtual Task<TResult> Handle(GetEntityByIdQuery<TResult> specification, CancellationToken cancellationToken)
         {
             var result = Projector.Project<TEntity, TResult>(LinqProvider
-                    .GetQueryable<TEntity>()
+                    .AsQueryable<TEntity>()
                     .Where(x => specification.Id.Equals(x.Id)))
                 .SingleOrDefault();
 

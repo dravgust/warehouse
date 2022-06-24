@@ -14,7 +14,7 @@ namespace Vayosoft.Core.SharedKernel.Queries.Handler
         IQueryHandler<PagedQuery<TSpec, IPagedEnumerable<TDto>>, IPagedEnumerable<TDto>>
         where TEntity : class, IEntity
         where TDto : class, IEntity
-        where TSpec : IPaging<TDto, TSortKey>
+        where TSpec : IPagingModel<TDto, TSortKey>
     {
         public PagedQueryHandler(ILinqProvider linqProvider, IProjector projector)
             : base(linqProvider, projector) { }

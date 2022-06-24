@@ -35,7 +35,7 @@ namespace Vayosoft.WebAPI.Services
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model, string ipAddress)
         {
-            var user = _linqProvider.GetQueryable<TEntity>().SingleOrDefault(x => x.Username == model.Email);
+            var user = _linqProvider.AsQueryable<TEntity>().SingleOrDefault(x => x.Username == model.Email);
             // validate
             if (user == null || !_passwordHasher.VerifyHashedPassword(user.PasswordHash, model.Password))
                 throw new ApplicationException("Username or password is incorrect");
@@ -113,7 +113,7 @@ namespace Vayosoft.WebAPI.Services
 
         private IIdentityUser GetUserByRefreshToken(string token)
         {
-            var user = _linqProvider.GetQueryable<TEntity>().SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
+            var user = _linqProvider.AsQueryable<TEntity>().SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
 
             if (user == null)
                 throw new ApplicationException("Invalid token");

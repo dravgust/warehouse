@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.SharedKernel.Exceptions;
+using Vayosoft.Core.SharedKernel.Specifications;
 
 namespace Vayosoft.Data.EF.MySQL
 {
@@ -22,9 +23,22 @@ namespace Vayosoft.Data.EF.MySQL
             Database.EnsureCreated();
         }
 
-        public IQueryable<TEntity> GetQueryable<TEntity>() where TEntity : class, IEntity
+        public IQueryable<TEntity> AsQueryable<TEntity>() where TEntity : class, IEntity
         {
-            return Set<TEntity>();
+            return Set<TEntity>().AsQueryable();
+        }
+
+        public IEnumerable<TEntity> GetBySpecification<TEntity>(IEntitySpecification<TEntity> specification) where TEntity : class, IEntity
+        {
+            var queryableResultWithIncludes = specification
+                .Includes
+                .Aggregate(AsQueryable<TEntity>(), (current, include) => current.Include(include));
+
+            var secondaryResult = specification
+                .IncludeStrings
+                .Aggregate(queryableResultWithIncludes, (current, include) => current.Include(include));
+
+            return secondaryResult.Where(specification.Criteria).AsEnumerable();
         }
 
         public new void Add<TEntity>(TEntity entity) where TEntity : class, IEntity

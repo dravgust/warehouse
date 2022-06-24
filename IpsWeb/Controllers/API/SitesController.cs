@@ -4,6 +4,7 @@ using Vayosoft.Core.Helpers;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Models;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
+using Warehouse.Core.Application.Features;
 using Warehouse.Core.Domain.Entities;
 
 namespace IpsWeb.Controllers.API
@@ -23,10 +24,13 @@ namespace IpsWeb.Controllers.API
         [HttpGet("")]
         public async Task<dynamic> Get(int page, int size, string? searchTerm = null, CancellationToken token = default)
         {
-            var query = new FilteredPaging<WarehouseSiteEntity>(page, size, searchTerm, p => p.Name, p => p.Name, SortOrder.Asc);
+            var sorting = new Sorting<WarehouseSiteEntity, object>(p => p.Name, SortOrder.Asc);
+            var filtering = new Filtering<WarehouseSiteEntity>(p => p.Name, searchTerm);
+
+            var model = new PagingModelModel<WarehouseSiteEntity>(page, size, sorting, filtering);
 
             var result = await _siteRepository
-                .GetByPageAsync(query, token);
+                .GetByPageAsync(model, token);
 
             return new
             {

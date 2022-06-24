@@ -30,7 +30,7 @@ namespace Vayosoft.Core.Extensions
 
         public static TEntity ById<TEntity>(this ILinqProvider linqProvider, int id)
             where TEntity : class, IEntity<int>
-            => linqProvider.GetQueryable<TEntity>().ById(id);
+            => linqProvider.AsQueryable<TEntity>().ById(id);
 
         public static TEntity ById<TEntity>(this IQueryable<TEntity> queryable, int id)
             where TEntity : class, IEntity<int>

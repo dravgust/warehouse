@@ -25,10 +25,10 @@ namespace IpsWeb.Controllers.API
         [HttpGet]
         public async Task<dynamic> Get(int page, int take)
         {
-            var spec = new GetAllUsersSpec(page, take);
-            var query = new PagedQuery<GetAllUsersSpec, IPagedEnumerable<UserEntityDto>>(spec);
+            var spec = new GetUserEntitiesSpec(page, take);
+            var query = new PagedQuery<GetUserEntitiesSpec, IPagedEnumerable<UserEntityDto>>(spec);
 
-            var result = await queryBus.Send<PagedQuery<GetAllUsersSpec,
+            var result = await queryBus.Send<PagedQuery<GetUserEntitiesSpec,
                 IPagedEnumerable<UserEntityDto>>, IPagedEnumerable<UserEntityDto>>(query);
 
             return new

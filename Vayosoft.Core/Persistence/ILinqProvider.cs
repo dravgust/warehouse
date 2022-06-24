@@ -6,7 +6,7 @@ namespace Vayosoft.Core.Persistence
     public interface ILinqProvider
 
     {
-        IQueryable<TEntity> GetQueryable<TEntity>()
+        IQueryable<TEntity> AsQueryable<TEntity>()
             where TEntity : class, IEntity;
     }
 }

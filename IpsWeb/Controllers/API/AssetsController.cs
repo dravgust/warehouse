@@ -21,10 +21,12 @@ namespace IpsWeb.Controllers.API
         [HttpGet("")]
         public async Task<dynamic> Get(int page, int size, string? searchTerm = null, CancellationToken token = default)
         {
-            var query = new FilteredPaging<BeaconIndoorPositionEntity>(page, size, searchTerm, p => p.MacAddress, p => p.TimeStamp, SortOrder.Desc);
+            var sorting = new Sorting<BeaconIndoorPositionEntity>(p => p.TimeStamp, SortOrder.Desc);
+            var filtering = new Filtering<BeaconIndoorPositionEntity>(p => p.MacAddress, searchTerm);
+            var model = new PagingModelModel<BeaconIndoorPositionEntity>(page, size, sorting, filtering);
 
             var result = await _beaconEventRepository
-                .GetByPageAsync(query, token);
+                .GetByPageAsync(model, token);
 
             return new
             {

@@ -499,23 +499,23 @@ namespace Vayosoft.Data.MongoDB
 
         #endregion
 
-        public static Task<IPagedEnumerable<T>> AggregateByPage<T>(this IMongoCollection<T> collection, IPaging<T, object> query, CancellationToken cancellationToken = default) where T : class, IEntity<string>
+        public static Task<IPagedEnumerable<T>> AggregateByPage<T>(this IMongoCollection<T> collection, IPagingModel<T, object> model, CancellationToken cancellationToken = default) where T : class, IEntity<string>
         {
-            var sortDefinition = query.OrderBy.SortOrder == SortOrder.Asc
-                ? Builders<T>.Sort.Ascending(query.OrderBy.Expression)
-                : Builders<T>.Sort.Descending(query.OrderBy.Expression);
+            var sortDefinition = model.OrderBy.SortOrder == SortOrder.Asc
+                ? Builders<T>.Sort.Ascending(model.OrderBy.Expression)
+                : Builders<T>.Sort.Descending(model.OrderBy.Expression);
 
             FilterDefinition<T> filterDefinition;
 
-            if (query is not FilteredPaging<T> filtering || IsNullOrEmpty(filtering.FilterPattern))
+            if (IsNullOrEmpty(model.FilterBy.Filter))
                 filterDefinition = Builders<T>.Filter.Empty;
             else
             {
-                var pattern = "/.*" + filtering.FilterPattern + ".*/i";
-                filterDefinition = Builders<T>.Filter.Regex(filtering.FilterBy, new BsonRegularExpression(pattern));
+                var pattern = "/.*" + model.FilterBy.Filter + ".*/i";
+                filterDefinition = Builders<T>.Filter.Regex(model.FilterBy.Expression, new BsonRegularExpression(pattern));
             }
 
-            return collection.AggregateByPage(filterDefinition, sortDefinition, query.Page, query.Take, cancellationToken);
+            return collection.AggregateByPage(filterDefinition, sortDefinition, model.Page, model.Take, cancellationToken);
         }
 
         public static async Task<IPagedEnumerable<T>> AggregateByPage<T>(

@@ -26,7 +26,7 @@ namespace Vayosoft.Core.SharedKernel.Queries.Handler
 
         protected virtual IQueryable<TDest> GetQueryable(TSpecification spec)
             => LinqProvider
-                .GetQueryable<TSource>()
+                .AsQueryable<TSource>()
                 .ApplyIfPossible(spec)
                 .Project<TSource, TDest>(Projector)
                 .ApplyIfPossible(spec);

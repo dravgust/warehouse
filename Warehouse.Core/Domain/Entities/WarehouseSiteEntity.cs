@@ -3,7 +3,7 @@ using Vayosoft.Data.MongoDB;
 
 namespace Warehouse.Core.Domain.Entities
 {
-    [CollectionName("dolav_beacon_ip")]
+    [CollectionName("dolav_sites")]
     public class WarehouseSiteEntity : EntityBase<string>
     {
         public string Name { get; set; }
