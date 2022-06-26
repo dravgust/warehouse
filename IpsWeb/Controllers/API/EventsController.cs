@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Models;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
+using Vayosoft.Core.SharedKernel.Queries;
+using Vayosoft.Data.MongoDB.Queries;
 using Warehouse.Core.Domain.Entities;
 
 namespace IpsWeb.Controllers.API
@@ -11,11 +12,11 @@ namespace IpsWeb.Controllers.API
     [ApiController]
     public class EventsController : ControllerBase
     {
-        private readonly IEntityRepository<BeaconEventEntity, string> _productRepository;
+        private readonly IQueryBus _queryBus;
 
-        public EventsController(IEntityRepository<BeaconEventEntity, string> productRepository)
+        public EventsController(IQueryBus queryBus)
         {
-            _productRepository = productRepository;
+            _queryBus = queryBus;
         }
 
         [HttpGet("")]
@@ -23,10 +24,9 @@ namespace IpsWeb.Controllers.API
         {
             var sorting = new Sorting<BeaconEventEntity>(p => p.TimeStamp, SortOrder.Desc);
             var filtering = new Filtering<BeaconEventEntity>(p => p.MacAddress, searchTerm);
-            var model = new PagingModelModel<BeaconEventEntity>(page, size, sorting, filtering);
 
-            var result = await _productRepository
-                .GetByPageAsync(model, token);
+            var query = new PagedQuery<BeaconEventEntity>(page, size, sorting, filtering);
+            var result = await _queryBus.Send<PagedQuery<BeaconEventEntity>, IPagedEnumerable<BeaconEventEntity>>(query, token);
 
             return new
             {

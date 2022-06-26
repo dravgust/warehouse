@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Warehouse.Core.Domain.Entities;
 
-namespace IpsWeb.Lib.API.ViewModels
+namespace Warehouse.Core.Application.ViewModels
 {
     public class WarehouseSiteViewModel
     {

@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Models;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
+using Vayosoft.Core.SharedKernel.Queries;
+using Vayosoft.Data.MongoDB.Queries;
 using Warehouse.Core.Domain.Entities;
 
 namespace IpsWeb.Controllers.API
@@ -11,11 +12,11 @@ namespace IpsWeb.Controllers.API
     [ApiController]
     public class AssetsController : ControllerBase
     {
-        private readonly IEntityRepository<BeaconIndoorPositionEntity, string> _beaconEventRepository;
+        private readonly IQueryBus _queryBus;
 
-        public AssetsController(IEntityRepository<BeaconIndoorPositionEntity, string> beaconEventRepository)
+        public AssetsController(IQueryBus queryBus)
         {
-            _beaconEventRepository = beaconEventRepository;
+            this._queryBus = queryBus;
         }
 
         [HttpGet("")]
@@ -23,10 +24,9 @@ namespace IpsWeb.Controllers.API
         {
             var sorting = new Sorting<BeaconIndoorPositionEntity>(p => p.TimeStamp, SortOrder.Desc);
             var filtering = new Filtering<BeaconIndoorPositionEntity>(p => p.MacAddress, searchTerm);
-            var model = new PagingModelModel<BeaconIndoorPositionEntity>(page, size, sorting, filtering);
 
-            var result = await _beaconEventRepository
-                .GetByPageAsync(model, token);
+            var query = new PagedQuery<BeaconIndoorPositionEntity>(page, size, sorting, filtering);
+            var result = await _queryBus.Send<PagedQuery<BeaconIndoorPositionEntity>, IPagedEnumerable<BeaconIndoorPositionEntity>>(query, token);
 
             return new
             {

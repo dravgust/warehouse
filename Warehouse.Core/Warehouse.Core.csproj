@@ -8,12 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Commands\Command\" />
-    <Folder Include="Commands\Handler\" />
+    <Folder Include="Commands\" />
     <Folder Include="Domain\Repositories\" />
     <Folder Include="Domain\Services\" />
-    <Folder Include="Queries\Handler\" />
-    <Folder Include="Queries\Query\" />
+    <Folder Include="Queries\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
   </ItemGroup>
 
   <ItemGroup>

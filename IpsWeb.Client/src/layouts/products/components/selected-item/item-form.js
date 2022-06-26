@@ -97,8 +97,8 @@ export default function ItemForm({ onSave = () => {}, onDelete = () => {}, item 
       autoComplete="off"
     >
       {mutation.isError && (
-        <SuiAlert color={"error"} dismissible>
-          {mutation.error.title}
+        <SuiAlert style={{fontSize:"12px"}} color={"error"} dismissible>
+          {mutation.error.title || mutation.error.error}
         </SuiAlert>
       )}
 

@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Vayosoft.Core.SharedKernel.Queries.Query;
@@ -13,9 +14,9 @@ namespace Vayosoft.Core.SharedKernel.Queries
             this.mediator = mediator;
         }
 
-        public Task<TResponse> Send<TQuery, TResponse>(TQuery query) where TQuery : IQuery<TResponse>
+        public Task<TResponse> Send<TQuery, TResponse>(TQuery query, CancellationToken cancellationToken = default) where TQuery : IQuery<TResponse>
         {
-            return mediator.Send(query);
+            return mediator.Send(query, cancellationToken);
         }
     }
 }

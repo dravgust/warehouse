@@ -22,12 +22,4 @@ namespace Warehouse.Core.Domain.Entities
         public bool IsRequired { set; get; }
     }
 
-    public class FileEntity : IEntity<string>
-    {
-        object IEntity.Id => Id;
-
-        public string Id { get; }
-        public string Content { set; get; }
-    }
-
 }

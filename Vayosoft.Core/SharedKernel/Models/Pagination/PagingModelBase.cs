@@ -3,7 +3,7 @@ using Vayosoft.Core.SharedKernel.Entities;
 
 namespace Vayosoft.Core.SharedKernel.Models.Pagination
 {
-    public abstract class PagingModelModelBase<TEntity, TOrderKey> : IPagingModel<TEntity, TOrderKey>
+    public abstract class PagingModelBase<TEntity, TOrderKey> : IPagingModel<TEntity, TOrderKey>
         where TEntity : class, IEntity
     {
         private readonly Sorting<TEntity, TOrderKey> _orderBy;
@@ -12,7 +12,7 @@ namespace Vayosoft.Core.SharedKernel.Models.Pagination
 
         private int _take;
 
-        protected PagingModelModelBase(int page, int take, Sorting<TEntity, TOrderKey> orderBy)
+        protected PagingModelBase(int page, int take, Sorting<TEntity, TOrderKey> orderBy)
         {
             Page = page;
             Take = take;
@@ -20,12 +20,12 @@ namespace Vayosoft.Core.SharedKernel.Models.Pagination
             _orderBy = orderBy ?? throw new ArgumentException("OrderBy can't be null", nameof(orderBy));
         }
 
-        protected PagingModelModelBase(int page, int take, Sorting<TEntity, TOrderKey> orderBy, Filtering<TEntity> filterBy) : this(page, take, orderBy)
+        protected PagingModelBase(int page, int take, Sorting<TEntity, TOrderKey> orderBy, Filtering<TEntity> filterBy) : this(page, take, orderBy)
         {
             FilterBy = filterBy ?? throw new ArgumentException("FilterBy can't be null", nameof(filterBy));
         }
 
-        protected PagingModelModelBase()
+        protected PagingModelBase()
         {
             Page = 1;
             Take = 30;

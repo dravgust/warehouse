@@ -1,7 +1,6 @@
-﻿using Warehouse.Core.Domain.Entities;
-using Warehouse.Core.Domain.Enums;
+﻿using Warehouse.Core.Domain.Enums;
 
-namespace IpsWeb.Lib.API.ViewModels
+namespace Warehouse.Core.Application.ViewModels
 {
     public class GatewayViewModel
     {

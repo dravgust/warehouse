@@ -4,7 +4,9 @@ using Vayosoft.Core.Helpers;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Models;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
-using Warehouse.Core.Application.Features;
+using Vayosoft.Core.SharedKernel.Queries;
+using Vayosoft.Data.MongoDB.Queries;
+using Warehouse.Core.Application.ViewModels;
 using Warehouse.Core.Domain.Entities;
 
 namespace IpsWeb.Controllers.API
@@ -15,10 +17,12 @@ namespace IpsWeb.Controllers.API
     public class SitesController : ControllerBase
     {
         private readonly IEntityRepository<WarehouseSiteEntity, string> _siteRepository;
+        private readonly IQueryBus _queryBus;
 
-        public SitesController(IEntityRepository<WarehouseSiteEntity, string> siteRepository)
+        public SitesController(IEntityRepository<WarehouseSiteEntity, string> siteRepository, IQueryBus queryBus)
         {
             _siteRepository = siteRepository;
+            _queryBus = queryBus;
         }
 
         [HttpGet("")]
@@ -27,10 +31,8 @@ namespace IpsWeb.Controllers.API
             var sorting = new Sorting<WarehouseSiteEntity, object>(p => p.Name, SortOrder.Asc);
             var filtering = new Filtering<WarehouseSiteEntity>(p => p.Name, searchTerm);
 
-            var model = new PagingModelModel<WarehouseSiteEntity>(page, size, sorting, filtering);
-
-            var result = await _siteRepository
-                .GetByPageAsync(model, token);
+            var query = new PagedQuery<WarehouseSiteEntity>(page, size, sorting, filtering);
+            var result = await _queryBus.Send<PagedQuery<WarehouseSiteEntity>, IPagedEnumerable<WarehouseSiteEntity>>(query, token);
 
             return new
             {

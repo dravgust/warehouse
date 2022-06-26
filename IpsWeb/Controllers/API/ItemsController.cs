@@ -1,11 +1,13 @@
-﻿using IpsWeb.Lib.API.ViewModels;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Extensions;
 using Vayosoft.Core.Helpers;
 using Vayosoft.Core.Persistence;
+using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Models;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
-using Warehouse.Core.Application.Features;
+using Vayosoft.Core.SharedKernel.Queries;
+using Vayosoft.Data.MongoDB.Queries;
+using Warehouse.Core.Application.ViewModels;
 using Warehouse.Core.Domain.Entities;
 
 namespace IpsWeb.Controllers.API
@@ -18,11 +20,15 @@ namespace IpsWeb.Controllers.API
     {
         private readonly IEntityRepository<ProductEntity, string> _productRepository;
         private readonly IEntityRepository<FileEntity, string> _fileRepository;
+        private readonly IQueryBus _queryBus;
+        private readonly IMapper _mapper;
 
-        public ItemsController(IEntityRepository<ProductEntity, string> productRepository, IEntityRepository<FileEntity, string> fileRepository)
+        public ItemsController(IEntityRepository<ProductEntity, string> productRepository, IEntityRepository<FileEntity, string> fileRepository, IQueryBus queryBus, IMapper mapper)
         {
             _productRepository = productRepository;
             _fileRepository = fileRepository;
+            _queryBus = queryBus;
+            _mapper = mapper;
         }
 
         [HttpGet("metadata")]
@@ -42,12 +48,11 @@ namespace IpsWeb.Controllers.API
         [HttpGet("")]
         public async Task<dynamic> Get(int page, int size, string? searchTerm = null, CancellationToken token = default)
         {
-            var sorting = new Sorting<ProductEntity, object>(p => p.Name, SortOrder.Asc);
+            var sorting = new Sorting<ProductEntity>(p => p.Name, SortOrder.Asc);
             var filtering = new Filtering<ProductEntity>(p => p.Name, searchTerm);
-            var model = new PagingModelModel<ProductEntity>(page, size, sorting, filtering);
 
-            var result = await _productRepository
-                .GetByPageAsync(model, token);
+            var query = new PagedQuery<ProductEntity>(page, size, sorting, filtering);
+            var result = await _queryBus.Send<PagedQuery<ProductEntity>, IPagedEnumerable<ProductEntity>>(query, token);
 
             return new
             {
@@ -88,27 +93,16 @@ namespace IpsWeb.Controllers.API
             ProductEntity? entity = null;
             if (!string.IsNullOrEmpty(item.Id))
             {
-                entity = await _productRepository.GetAsync(item.Id, token);
+                entity = await _productRepository.FindAsync(item.Id, token);
             }
 
             if (entity != null)
             {
-                entity.Name = item.Name;
-                entity.Description = item.Description;
-                entity.MacAddress = item.MacAddress;
-                entity.Metadata = item.Metadata;
-                await _productRepository.UpdateAsync(entity, token);
+                await _productRepository.UpdateAsync(_mapper.Map(item, entity), token);
             }
             else
             {
-                entity = new ProductEntity
-                {
-                    Name = item.Name,
-                    Description = item.Description,
-                    MacAddress = item.MacAddress,
-                    Metadata = item.Metadata
-                };
-                await _productRepository.AddAsync(entity, token);
+                await _productRepository.AddAsync(_mapper.Map<ProductEntity>(item), token);
             }
 
             return new

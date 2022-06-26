@@ -1,9 +1,6 @@
 
 using System.Diagnostics;
 using System.Globalization;
-using System.Net;
-using System.Reflection;
-using IpsWeb;
 using IpsWeb.Lib.API.Services;
 using IpsWeb.Resources;
 using Microsoft.AspNetCore.Localization;
@@ -12,13 +9,13 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Vayosoft.Caching;
-using Vayosoft.Core;
 using Vayosoft.Data.Redis;
 using Vayosoft.WebAPI;
 using Vayosoft.WebAPI.Middlewares.ExceptionHandling;
 using Vayosoft.WebAPI.Middlewares.Jwt;
 using Vayosoft.WebAPI.Services;
 using Warehouse.Core.Domain.Entities;
+using Warehouse.Core.Persistence;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Debug()
@@ -46,8 +43,7 @@ try
 
     var configuration = builder.Configuration;
 
-    builder.Services.AddCoreServices();
-    builder.Services.AddDependencies(configuration);
+    builder.Services.AddWarehouseDependencies(configuration);
 
     builder.Services.AddCors(options =>
     {
