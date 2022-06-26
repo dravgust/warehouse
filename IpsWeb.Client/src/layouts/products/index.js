@@ -64,7 +64,10 @@ function Products() {
     const res = await client(`items/metadata`, {token});
     return res.data;
   };
-  const { data: metadata } = useQuery(["metadata"], fetchMetadata);
+  const { data: metadata } = useQuery(["metadata"], fetchMetadata, {
+    keepPreviousData: false,
+    refetchOnWindowFocus: false,
+  });
 
   return (
     <DashboardLayout>

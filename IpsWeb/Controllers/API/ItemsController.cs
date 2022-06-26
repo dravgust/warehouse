@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Vayosoft.Core.Caching;
 using Vayosoft.Core.Extensions;
 using Vayosoft.Core.Helpers;
 using Vayosoft.Core.Persistence;
@@ -22,23 +23,34 @@ namespace IpsWeb.Controllers.API
         private readonly IEntityRepository<FileEntity, string> _fileRepository;
         private readonly IQueryBus _queryBus;
         private readonly IMapper _mapper;
+        private readonly IDistributedMemoryCache _cache;
 
-        public ItemsController(IEntityRepository<ProductEntity, string> productRepository, IEntityRepository<FileEntity, string> fileRepository, IQueryBus queryBus, IMapper mapper)
+        public ItemsController(
+            IEntityRepository<ProductEntity, string> productRepository,
+            IEntityRepository<FileEntity, string> fileRepository,
+            IQueryBus queryBus, IMapper mapper, IDistributedMemoryCache cache)
         {
             _productRepository = productRepository;
             _fileRepository = fileRepository;
             _queryBus = queryBus;
             _mapper = mapper;
+            _cache = cache;
         }
 
         [HttpGet("metadata")]
         public async Task<dynamic> GetMetadataTemplate(CancellationToken token)
         {
-            var entity = await _fileRepository.GetAsync(nameof(ProductMetadata), token);
-            ProductMetadata? data = null;
-            if (!string.IsNullOrEmpty(entity?.Content))
-                data = entity.Content.FromJson<ProductMetadata>();
+            var data = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<ProductMetadata>(), async options =>
+            {
+                options.SlidingExpiration = TimeSpans.FiveMinutes;
+                var entity = await _fileRepository.GetAsync(nameof(ProductMetadata), token);
+                ProductMetadata? data = null;
+                if (!string.IsNullOrEmpty(entity?.Content))
+                    data = entity.Content.FromJson<ProductMetadata>();
 
+                return data;
+            });
+            
             return new
             {
                 data
