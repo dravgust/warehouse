@@ -53,6 +53,8 @@ namespace Warehouse.Core.Persistence
             services.AddMongoDbContext(ConfigureMongoDb);
 
             services.AddScoped<IEntityRepository<ProductEntity, string>, MongoRepository<ProductEntity>>();
+            services.AddScoped<IEntityRepository<WarehouseSiteEntity, string>, MongoRepository<WarehouseSiteEntity>>();
+            services.AddScoped<IEntityRepository<BeaconRegisteredEntity, string>, MongoRepository<BeaconRegisteredEntity>>();
             services.AddScoped<IEntityRepository<FileEntity, string>, MongoRepository<FileEntity>>();
 
             services.AddScoped<IRequestHandler<PagedQuery<BeaconIndoorPositionEntity>, IPagedEnumerable<BeaconIndoorPositionEntity>>, PagedQueryHandler<BeaconIndoorPositionEntity>>();

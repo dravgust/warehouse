@@ -38,7 +38,8 @@ const validationSchema = yup.object({
   ),
 });
 
-export default function ItemForm({ onSave = () => {}, onDelete = () => {}, item = {} }) {
+export default function ItemForm({ onSave = () => {}, onDelete = () => {}, item = {}, beaconsRegistered = [] }) {
+
   const saveItem = async (item) => {
     const token = await auth.getToken();
     const res = await client(`items/set`, {
@@ -64,8 +65,6 @@ export default function ItemForm({ onSave = () => {}, onDelete = () => {}, item 
       console.log("delete-item", err);
     }
   };
-
-  const macList = ["", "MAC 1", "MAC 2"];
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -117,7 +116,7 @@ export default function ItemForm({ onSave = () => {}, onDelete = () => {}, item 
         <Autocomplete
         disablePortal
           onBlur={handleBlur}
-          options={macList}
+          options={["", ...beaconsRegistered]}
           isOptionEqualToValue={(option, value) => option === value}
           sx={{ width: 300 }}
           getOptionLabel={(option) => option}

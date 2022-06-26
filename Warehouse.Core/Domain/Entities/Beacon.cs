@@ -1,4 +1,6 @@
-﻿using Warehouse.Core.Domain.Enums;
+﻿using Vayosoft.Core.SharedKernel.Entities;
+using Vayosoft.Data.MongoDB;
+using Warehouse.Core.Domain.Enums;
 
 namespace Warehouse.Core.Domain.Entities
 {
@@ -12,5 +14,36 @@ namespace Warehouse.Core.Domain.Entities
         public List<double> OriginalRSSIs { set; get; }
         public bool IsGage { set; get; } = false;
         public LocationAnchor Location { set; get; } = LocationAnchor.Unknown;
+    }
+
+    [CollectionName("dolav_beacons_received")]
+    public class BeaconReceivedEntity : IEntity<string>
+    {
+        public string MacAddress { get; set; }
+        public BeaconType BeaconType { get; set; }
+
+        public DateTime ReceivedAt { get; set; }
+        object IEntity.Id => Id;
+
+        public string Id => MacAddress;
+    }
+
+    [CollectionName("dolav_beacons_registered")]
+    public class BeaconRegisteredEntity : IEntity<string>
+    {
+        public string MacAddress { get; set; }
+        public BeaconType BeaconType { get; set; }
+
+        public DateTime ReceivedAt { get; set; }
+        object IEntity.Id => Id;
+
+        public string Id => MacAddress;
+    }
+
+    public enum BeaconType
+    {
+        Unknown = 0,
+        Received = 1,
+        Registered = 2
     }
 }

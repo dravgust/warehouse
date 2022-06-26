@@ -1,7 +1,10 @@
-﻿using IpsWeb.Lib.API.ViewModels;
+﻿using System.Linq.Expressions;
+using IpsWeb.Lib.API.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Vayosoft.Core.Caching;
 using Vayosoft.Core.Helpers;
 using Vayosoft.Core.Persistence;
+using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Models;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.SharedKernel.Queries;
@@ -17,12 +20,21 @@ namespace IpsWeb.Controllers.API
     public class SitesController : ControllerBase
     {
         private readonly IEntityRepository<WarehouseSiteEntity, string> _siteRepository;
+        private readonly IEntityRepository<BeaconRegisteredEntity, string> _beaconRepository;
         private readonly IQueryBus _queryBus;
+        private readonly IMapper _mapper;
+        private readonly IDistributedMemoryCache _cache;
 
-        public SitesController(IEntityRepository<WarehouseSiteEntity, string> siteRepository, IQueryBus queryBus)
+        public SitesController(
+            IEntityRepository<WarehouseSiteEntity, string> siteRepository,
+            IEntityRepository<BeaconRegisteredEntity, string> beaconRepository,
+            IQueryBus queryBus, IMapper mapper, IDistributedMemoryCache cache)
         {
             _siteRepository = siteRepository;
+            _beaconRepository = beaconRepository;
             _queryBus = queryBus;
+            _mapper = mapper;
+            _cache = cache;
         }
 
         [HttpGet("")]
@@ -94,6 +106,22 @@ namespace IpsWeb.Controllers.API
             return new
             {
 
+            };
+        }
+
+        [HttpGet("beacons-registered")]
+        public dynamic GetRegisteredBeaconList()
+        {
+            var data = _cache.GetOrCreateExclusive(CacheKey.With<BeaconRegisteredEntity>("list"), options =>
+            {
+                options.AbsoluteExpirationRelativeToNow = TimeSpans.FiveMinutes;
+                var data = _beaconRepository.GetByCriteria(b => true);
+                return data.Select(b => b.MacAddress);
+            });
+            
+            return new
+            {
+                data
             };
         }
     }

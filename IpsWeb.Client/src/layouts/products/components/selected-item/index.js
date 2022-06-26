@@ -8,7 +8,7 @@ import SuiTypography from "components/SuiTypography";
 import ItemForm from "./item-form";
 import { Card, Icon, IconButton, Tooltip } from "@mui/material";
 
-function SelectedItem({ onSave = () => {}, onDelete = () => {}, onClose = () => {}, item }) {
+function SelectedItem({ onSave = () => {}, onDelete = () => {}, onClose = () => {}, item = {}, beaconsRegistered = [] }) {
 
   return (
     <Card>
@@ -48,7 +48,7 @@ function SelectedItem({ onSave = () => {}, onDelete = () => {}, onClose = () => 
             flexDirection={{ xs: "column", sm: "row" }}
             mb={2}
           ></SuiBox>
-          <ItemForm item={item} onSave={onSave} onDelete={onDelete} />
+          <ItemForm item={item} onSave={onSave} onDelete={onDelete} beaconsRegistered={beaconsRegistered} />
         </SuiBox>
       </SuiBox>
     </Card>
