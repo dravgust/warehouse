@@ -52,7 +52,7 @@ function User({ image, name, email }) {
           {name}
         </SuiTypography>
         <SuiTypography variant="caption" color="secondary">
-          {email}
+          {email || ""}
         </SuiTypography>
       </SuiBox>
     </SuiBox>
@@ -161,8 +161,8 @@ function Users() {
                   onPageChange={(event, value) => setPage(value)}
                 />
               )}
-              {isLoading && <SuiTypography color="secondary">Loading..</SuiTypography>}
-              {error && <SuiTypography color="error">Error occurred!</SuiTypography>}
+              {isLoading && <SuiTypography px={2} color="secondary">Loading..</SuiTypography>}
+              {error && <SuiTypography px={2} color="error">Error occurred!</SuiTypography>}
             </SuiBox>
           </Card>
         </SuiBox>

@@ -111,7 +111,7 @@ TimelineItem.propTypes = {
     "light",
   ]),
   icon: PropTypes.node.isRequired,
-  title: PropTypes.string.isRequired,
+  title: PropTypes.object.isRequired,
   dateTime: PropTypes.string.isRequired,
   description: PropTypes.string,
   badges: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])),
