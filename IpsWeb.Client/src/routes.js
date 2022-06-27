@@ -59,6 +59,7 @@ import FormatListNumberedOutlinedIcon from '@mui/icons-material/FormatListNumber
 import Users from "layouts/users";
 import Warehouse from "layouts/warehouse";
 import Home from "layouts/home";
+import SiteConfiguration from "layouts/site-configuration";
 
 const routes = [
   {
@@ -83,6 +84,16 @@ const routes = [
   },
   {
     type: "collapse",
+    name: "Warehouse",
+    key: "warehouse",
+    route: "/warehouse",
+    icon: <Cube size="12px" />,
+    component: <Warehouse />,
+    noCollapse: true,
+    protected: true,
+  },
+  {
+    type: "collapse",
     name: "Products",
     key: "products",
     route: "/products",
@@ -93,11 +104,11 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Warehouse",
-    key: "warehouse",
-    route: "/warehouse",
-    icon: <Cube size="12px" />,
-    component: <Warehouse />,
+    name: "Sites Configuration",
+    key: "configuration",
+    route: "/configuration",
+    icon: <Settings size="12px" />,
+    component: <SiteConfiguration />,
     noCollapse: true,
     protected: true,
   },

@@ -26,7 +26,7 @@ import SuiTypography from "components/SuiTypography";
 import wavesWhite from "assets/images/shapes/waves-white.svg";
 import rocketWhite from "assets/images/illustrations/forklift.png";
 
-function BuildByDevelopers() {
+function WarehouseSite({siteItem}) {
   return (
     <Card>
       <SuiBox p={2}>
@@ -35,11 +35,11 @@ function BuildByDevelopers() {
             <SuiBox display="flex" flexDirection="column" height="100%">
               <SuiBox pt={1} mb={0.5}>
                 <SuiTypography variant="body2" color="text" fontWeight="medium">
-                  Build by developers
+                  Site
                 </SuiTypography>
               </SuiBox>
               <SuiTypography variant="h5" fontWeight="bold" gutterBottom>
-                Soft UI Dashboard
+                {siteItem.name}
               </SuiTypography>
               <SuiBox mb={6}>
                 <SuiTypography variant="body2" color="text">
@@ -105,4 +105,4 @@ function BuildByDevelopers() {
   );
 }
 
-export default BuildByDevelopers;
+export default WarehouseSite;

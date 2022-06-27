@@ -16,7 +16,6 @@ import Footer from "examples/Footer";
 // Dashboard layout components
 import Assets from "layouts/home/components/Assets";
 import PositionEvents from "layouts/home/components/position-events";
-import BuildByDevelopers from "./components/BuildByDevelopers";
 import GradientLineChart from "examples/Charts/LineCharts/GradientLineChart";
 import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
 
@@ -26,12 +25,29 @@ import gradientLineChartData from "layouts/dashboard/data/gradientLineChartData"
 // Soft UI Dashboard React base styles
 import typography from "assets/theme/base/typography";
 
+import { useQuery } from "react-query";
+import { client } from "utils/api-client";
+import * as auth from "auth-provider";
+import WarehouseSite from "./components/WarehouseSite";
+import { Zoom } from "@mui/material";
+
 function Dashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const onSearch = (value) => setSearchTerm(value);
 
   const { size } = typography;
   const { chart, items } = reportsBarChartData;
+
+  const [selectedSite, setSelectedSite] = useState();
+  const onAssetSelect = async (row) => {
+    if (row && row.siteId) {
+      const token = await auth.getToken();
+      const res = await client(`sites/${row.siteId}`, { token });
+      if (res.data) {
+        setSelectedSite(res.data);
+      }
+    }
+  };
 
   return (
     <DashboardLayout>
@@ -42,13 +58,22 @@ function Dashboard() {
             <PositionEvents searchTerm={searchTerm} />
           </Grid>
           <Grid item xs={12} md={6} lg={8}>
-          <SuiBox mb={3}>
-              <Assets searchTerm={searchTerm}/>
-            </SuiBox>
-            <SuiBox mb={3}>
-              <BuildByDevelopers />
-            </SuiBox>
-            <SuiBox mb={3}>
+            <Grid container spacing={3}>
+              <Grid item xs={6}>
+                <SuiBox mb={3}>
+                  <Assets searchTerm={searchTerm} onRowSelect={onAssetSelect} />
+                </SuiBox>
+              </Grid>
+              <Grid item xs={6}>
+                <Zoom in={Boolean(selectedSite)}>
+                  <SuiBox mb={3}>
+                    {selectedSite && <WarehouseSite siteItem={selectedSite} />}
+                  </SuiBox>
+                </Zoom>
+              </Grid>
+            </Grid>
+
+            {/*<SuiBox mb={3}>
               <Grid container spacing={3}>
                 <Grid item xs={12} lg={5}>
                   <ReportsBarChart
@@ -83,7 +108,7 @@ function Dashboard() {
                   />
                 </Grid>
               </Grid>
-            </SuiBox>
+                  </SuiBox>*/}
           </Grid>
         </Grid>
       </SuiBox>

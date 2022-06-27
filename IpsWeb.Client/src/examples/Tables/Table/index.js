@@ -40,7 +40,7 @@ import colors from "assets/theme/base/colors";
 import typography from "assets/theme/base/typography";
 import borders from "assets/theme/base/borders";
 
-function Table({ columns, rows, page, totalPages, onPageChange = (event, value) => {} }) {
+function Table({ columns, rows, page, totalPages, onPageChange = (event, value) => {}, onSelect }) {
   const { light } = colors;
   const { size, fontWeightBold } = typography;
   const { borderWidth } = borders;
@@ -129,7 +129,17 @@ function Table({ columns, rows, page, totalPages, onPageChange = (event, value) 
       return template;
     });
 
-    return <TableRow key={rowKey}>{tableRow}</TableRow>;
+    return <TableRow
+     key={rowKey}
+      onClick={() => onSelect && onSelect(row.item)} 
+      //bgColor={}
+      style={{ cursor: onSelect ? "pointer" : "default"}}
+      sx={onSelect && {
+        '&:hover': {
+          backgroundColor: "light.main",
+        }
+      }}
+    >{tableRow}</TableRow>;
   });
 
   return useMemo(

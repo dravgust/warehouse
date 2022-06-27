@@ -21,9 +21,9 @@ import * as auth from "auth-provider";
 import { format } from "date-fns";
 
 // Images
-import beaconIcon from "assets/images/lighthouse.png";
+import beaconIcon from "assets/images/hotspot-tower.png";
 
-function Assets({ searchTerm }) {
+function Assets({ searchTerm, onRowSelect = () => {} }) {
   const [page, setPage] = useState(1);
   const fetchItems = async (page, searchTerm) => {
     const token = await auth.getToken();
@@ -128,20 +128,15 @@ function Assets({ searchTerm }) {
             columns={[
               { name: "mac", align: "left" },
               { name: "timeStamp", align: "left" },
-              { name: "site", align: "left" },
             ]}
             rows={
               isSuccess &&
               response.data.map((item) => ({
+                item: item,
                 mac: <Beacon image={beaconIcon} name={item.macAddress} email={'...'} />,
                 timeStamp: (
                   <SuiTypography variant="caption" color="secondary" fontWeight="medium">
                     {format(new Date(item.timeStamp), "dd/mm/yyy HH:mm:ss")}
-                  </SuiTypography>
-                ),
-                site: (
-                  <SuiTypography variant="caption" color="secondary" fontWeight="medium">
-                    {item.siteId}
                   </SuiTypography>
                 ),
               }))
@@ -149,6 +144,7 @@ function Assets({ searchTerm }) {
             page={page}
             totalPages={response.totalPages}
             onPageChange={(event, value) => setPage(value)}
+            onSelect={onRowSelect}
           />
         )}
         {isLoading && (
