@@ -9,6 +9,12 @@ namespace Warehouse.Core.Application
         public MappingProfile()
         {
             CreateMap<ProductViewModel, ProductEntity>();
+
+            CreateMap<GatewayViewModel, Gateway>();
+            CreateMap<BeaconViewModel, Beacon>();
+            CreateMap<WarehouseSiteViewModel, WarehouseSiteEntity>()
+                .ForMember(m => m.Gateways, 
+                    des => des.MapFrom(m => m.Gateways ?? new List<GatewayViewModel>()));
         }
     }
 }

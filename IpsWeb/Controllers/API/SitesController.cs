@@ -24,17 +24,19 @@ namespace IpsWeb.Controllers.API
         private readonly IQueryBus _queryBus;
         private readonly IMapper _mapper;
         private readonly IDistributedMemoryCache _cache;
+        private readonly ILinqProvider _linqProvider;
 
         public SitesController(
             IEntityRepository<WarehouseSiteEntity, string> siteRepository,
             IEntityRepository<BeaconRegisteredEntity, string> beaconRepository,
-            IQueryBus queryBus, IMapper mapper, IDistributedMemoryCache cache)
+            IQueryBus queryBus, IMapper mapper, IDistributedMemoryCache cache, ILinqProvider linqProvider)
         {
             _siteRepository = siteRepository;
             _beaconRepository = beaconRepository;
             _queryBus = queryBus;
             _mapper = mapper;
             _cache = cache;
+            _linqProvider = linqProvider;
         }
 
         [HttpGet("")]
@@ -85,22 +87,16 @@ namespace IpsWeb.Controllers.API
             WarehouseSiteEntity? entity = null;
             if (!string.IsNullOrEmpty(item.Id))
             {
-                entity = await _siteRepository.GetAsync(item.Id, token);
+                entity = await _siteRepository.FindAsync(item.Id, token);
             }
 
             if (entity != null)
             {
-                entity.Name = item.Name;
-
-                await _siteRepository.UpdateAsync(entity, token);
+                await _siteRepository.UpdateAsync(_mapper.Map(item, entity), token);
             }
             else
             {
-                entity = new WarehouseSiteEntity
-                {
-                    Name = item.Name,
-                };
-                await _siteRepository.AddAsync(entity, token);
+                await _siteRepository.AddAsync(_mapper.Map<WarehouseSiteEntity>(item), token);
             }
 
             return new
@@ -108,11 +104,27 @@ namespace IpsWeb.Controllers.API
 
             };
         }
+        
+        [HttpGet("gw-registered")]
+        public dynamic GetRegisteredGwList()
+        {
+            var data = _cache.GetOrCreateExclusive(CacheKey.With<DeviceEntity>("registered-list"), options =>
+            {
+                options.AbsoluteExpirationRelativeToNow = TimeSpans.FiveMinutes;
+                var data = _linqProvider.AsQueryable<DeviceEntity>().Where(d => d.ProviderId == 2).ToList();
+                return data.Select(d => d.MacAddress).OrderBy(macAddress => macAddress);
+            });
+
+            return new
+            {
+                data
+            };
+        }
 
         [HttpGet("beacons-registered")]
         public dynamic GetRegisteredBeaconList()
         {
-            var data = _cache.GetOrCreateExclusive(CacheKey.With<BeaconRegisteredEntity>("list"), options =>
+            var data = _cache.GetOrCreateExclusive(CacheKey.With<BeaconRegisteredEntity>("registered-list"), options =>
             {
                 options.AbsoluteExpirationRelativeToNow = TimeSpans.FiveMinutes;
                 var data = _beaconRepository.GetByCriteria(b => true);

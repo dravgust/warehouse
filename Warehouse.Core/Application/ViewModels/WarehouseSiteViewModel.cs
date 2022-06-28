@@ -10,6 +10,6 @@ namespace Warehouse.Core.Application.ViewModels
         public double TopLength { get; set; }
         public double LeftLength { get; set; }
         public double Error { get; set; }
-        public List<GatewayViewModel> Gateways { get; set; }
+        public List<GatewayViewModel>? Gateways { get; set; }
     }
 }

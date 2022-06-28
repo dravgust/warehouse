@@ -44,7 +44,8 @@ function Gauge({ data }) {
   );
 }
 
-export default function Gateways({ data }) {
+export default function Gateways({ data,  onAdd = () => {}, onEdit = () => {}, onDelete = () => {} }) {
+
   return (
     <Card>
       <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
@@ -53,7 +54,7 @@ export default function Gateways({ data }) {
         </SuiBox>
         {data && (
           <SuiBox display="flex" alignItems="center" mt={{ xs: 2, sm: 0 }} ml={{ xs: -1.5, sm: 0 }}>
-          <SuiButton variant="gradient" color="primary" onClick={()=>{}}>
+          <SuiButton variant="gradient" color="primary" onClick={onAdd}>
             <Icon sx={{ fontWeight: "bold" }}>add</Icon>
             &nbsp;new
           </SuiButton>
@@ -70,7 +71,7 @@ export default function Gateways({ data }) {
           },
         }}
       >
-        {data && (
+        {data && data.gateways  && (
           <Table
             columns={[
               { name: "mac", align: "left" },
@@ -80,7 +81,7 @@ export default function Gateways({ data }) {
               { name: "gauge", align: "center" },
               { name: "", align: "center" },
             ]}
-            rows={data.map((item) => ({
+            rows={data.gateways.map((item) => ({
               mac: (
                 <SuiBox display="flex" alignItems="center">
                   <SuiBox mr={2}>

@@ -1,4 +1,13 @@
-import { Card, Icon, Tooltip, IconButton, Box, TextField, Stack } from "@mui/material";
+import {
+  Card,
+  Icon,
+  Tooltip,
+  IconButton,
+  Box,
+  TextField,
+  Stack,
+  Autocomplete,
+} from "@mui/material";
 import SuiBox from "components/SuiBox";
 import SuiTypography from "components/SuiTypography";
 import { useFormik } from "formik";
@@ -6,23 +15,26 @@ import SuiAlert from "components/SuiAlert";
 import SuiButton from "components/SuiButton";
 import { useMutation } from "react-query";
 import * as yup from "yup";
-import * as auth from "auth-provider"
+import * as auth from "auth-provider";
 import { client } from "utils/api-client";
 
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
 
-export default function SetSite({ item, onClose, onSave = ()=>{} }) {
-
-
-    const saveItem = async (item) => {
-        const token = await auth.getToken();
-        const res = await client(`sites/set`, {
-          data: item,
-          token,
-        });
-        return res;
-      };
+export default function SetGateway({
+  item,
+  onClose,
+  onSave = () => {},
+  gwRegistered = [],
+}) {
+  const saveItem = async (item) => {
+    const token = await auth.getToken();
+    const res = await client(`sites/set-gateway`, {
+      data: item,
+      token,
+    });
+    return res;
+  };
 
   const mutation = useMutation((item) => saveItem(item), {
     onSuccess: () => {
@@ -41,21 +53,23 @@ export default function SetSite({ item, onClose, onSave = ()=>{} }) {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      id: item ? item.id : "",
+      macAddress: item ? item.macAddress : "",
       name: item ? item.name : "",
-      topLength: item ? item.topLength : 0,
-      leftLength: item ? item.leftLength : 0,
-      error: item ? item.error : 0,
+      circumscribedRadius: item ? item.circumscribedRadius : 0,
+      location: item ? item.location : 0,
+      envFactor: item ? item.envFactor : 0,
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => { mutation.mutate(values);},
+    onSubmit: (values) => {
+      mutation.mutate(values);
+    },
   });
 
   return (
     <Card>
       <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <SuiBox>
-          <SuiTypography variant="h6">Set Site</SuiTypography>
+          <SuiTypography variant="h6">Set Gateway</SuiTypography>
         </SuiBox>
         <SuiBox display="flex" alignItems="center" mt={{ xs: -1, sm: 0 }}>
           <IconButton size="xl" color="inherit" onClick={onClose}>
@@ -94,6 +108,27 @@ export default function SetSite({ item, onClose, onSave = ()=>{} }) {
               </SuiAlert>
             )}
 
+            <Autocomplete
+              disablePortal
+              options={["", ...gwRegistered]}
+              isOptionEqualToValue={(option, value) => option === value}
+              sx={{ width: 300 }}
+              getOptionLabel={(option) => option}
+              onChange={(e, value) => {
+                formik.setFieldValue("macAddress", value);
+              }}
+              value={formik.values.macAddress}
+              renderInput={(params) => (
+                <TextField
+                  id="macAddress"
+                  name="macAddress"
+                  label="MacAddress"
+                  {...params}
+                  error={formik.touched.macAddress && Boolean(formik.errors.macAddress)}
+                  helperText={formik.touched.macAddress && formik.errors.macAddress}
+                />
+              )}
+            />
             <Stack direction="row" spacing={2} alignItems="center">
               <TextField
                 fullWidth
@@ -106,43 +141,19 @@ export default function SetSite({ item, onClose, onSave = ()=>{} }) {
                 helperText={formik.touched.name && formik.errors.name}
               />
             </Stack>
-
             <Stack direction="row" spacing={2} alignItems="center">
               <TextField
                 fullWidth
-                id="topLength"
-                name="topLength"
-                label="topLength"
-                value={formik.values.topLength}
+                id="envFactor"
+                name="envFactor"
+                label="envFactor"
+                value={formik.values.envFactor}
                 onChange={formik.handleChange}
-                error={formik.touched.topLength && Boolean(formik.errors.topLength)}
-                helperText={formik.touched.topLength && formik.errors.topLength}
-              />
-              <TextField
-                fullWidth
-                id="leftLength"
-                name="leftLength"
-                label="leftLength"
-                value={formik.values.leftLength}
-                onChange={formik.handleChange}
-                error={formik.touched.leftLength && Boolean(formik.errors.leftLength)}
-                helperText={formik.touched.leftLength && formik.errors.leftLength}
-              />
-
-            </Stack>
-            <Stack direction="row" spacing={2} alignItems="center">
-
-               <TextField
-                fullWidth
-                id="error"
-                name="error"
-                label="error"
-                value={formik.values.error}
-                onChange={formik.handleChange}
-                error={formik.touched.error && Boolean(formik.errors.error)}
-                helperText={formik.touched.error && formik.errors.error}
+                error={formik.touched.envFactor && Boolean(formik.errors.envFactor)}
+                helperText={formik.touched.envFactor && formik.errors.envFactor}
               />
             </Stack>
+
             <Stack my={2} px={1} direction="row" spacing={1} justifyContent="end">
               <SuiButton color="success" variant="contained" type="submit">
                 {mutation.isLoading ? (
@@ -162,10 +173,10 @@ export default function SetSite({ item, onClose, onSave = ()=>{} }) {
 }
 
 // Setting default values
-SetSite.defaultProps = { };
-  
-  // Typechecking props
-  SetSite.propTypes = {
-    item: PropTypes.object.isRequired,
-    onClose: PropTypes.func.isRequired
-  };
+SetGateway.defaultProps = {};
+
+// Typechecking props
+SetGateway.propTypes = {
+  item: PropTypes.object.isRequired,
+  onClose: PropTypes.func.isRequired,
+};

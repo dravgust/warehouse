@@ -52,7 +52,7 @@ function Dashboard() {
   return (
     <DashboardLayout>
       <DashboardNavbar onSearch={onSearch} />
-      <SuiBox py={3}>
+      <SuiBox mb={3} py={3}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={6} lg={4}>
             <PositionEvents searchTerm={searchTerm} />

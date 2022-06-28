@@ -4,22 +4,43 @@ import SuiBox from "components/SuiBox";
 import SuiButton from "components/SuiButton";
 import SuiTypography from "components/SuiTypography";
 import Table from "examples/Tables/Table";
+import DeletePromt from "../delete-promt";
 
 import * as auth from "auth-provider";
 import { client } from "utils/api-client";
 import { useQuery } from "react-query";
 
-export default function Sites({onSelect = () =>{}, onAdd =() => {}, onEdit=()=>{}, onDelete=()=>{}}) {
+export default function Sites({
+  onSelect = () => {},
+  onAdd = () => {},
+  onEdit = () => {},
+  onDelete = () => {},
+  refresh,
+}) {
   const [page, setPage] = useState(1);
   async function fetchSites(page) {
     const token = await auth.getToken();
     const res = await client(`sites?page=${page}&size=10&searchTerm=`, { token });
     return res;
   }
-  const { isLoading, isSuccess, data, error } = useQuery(["site-list", page], () => fetchSites(page), {
-    keepPreviousData: false,
-    refetchOnWindowFocus: false,
-  });
+  const { isLoading, isSuccess, data, error } = useQuery(
+    ["site-list", page, refresh],
+    () => fetchSites(page),
+    {
+      keepPreviousData: false,
+      refetchOnWindowFocus: false,
+    }
+  );
+
+  const handleDelete = async (item) => {
+    const token = await auth.getToken();
+    try {
+      await client(`sites/${item.id}/delete`, { token });
+      return onDelete();
+    } catch (err) {
+      console.log("delete-item", err);
+    }
+  };
 
   return (
     <Card>
@@ -83,9 +104,22 @@ export default function Sites({onSelect = () =>{}, onAdd =() => {}, onEdit=()=>{
                     <SuiButton variant="text" color="dark" onClick={onEdit}>
                       <Icon>edit</Icon>
                     </SuiButton>
-                    <SuiButton variant="text" color="error">
-                      <Icon>delete</Icon>
-                    </SuiButton>
+                    <DeletePromt
+                      renderButton={(handleClickOpen) => (
+                        <SuiButton
+                          variant="text"
+                          color="error"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleClickOpen();
+                            e.preventDefault();
+                          }}
+                        >
+                          <Icon>delete</Icon>
+                        </SuiButton>
+                      )}
+                      onDelete={() => handleDelete(item)}
+                    />
                   </ButtonGroup>
                 ),
               }))

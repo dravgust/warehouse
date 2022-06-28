@@ -82,7 +82,7 @@ function Products() {
   return (
     <DashboardLayout>
       <DashboardNavbar onSearch={onSearch} />
-      <SuiBox mb={3}>
+      <SuiBox mb={3} py={3}>
         <Grid container spacing={3}>
           {/*<Grid item xs={12}>
             <Card sx={(theme) => card(theme, { miniSidenav })}>

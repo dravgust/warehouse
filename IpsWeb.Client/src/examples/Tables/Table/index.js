@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
@@ -44,6 +44,7 @@ function Table({ columns, rows, page, totalPages, onPageChange = (event, value) 
   const { light } = colors;
   const { size, fontWeightBold } = typography;
   const { borderWidth } = borders;
+  const [selectedKey, setSelectedKey] = useState();
 
   const renderColumns = columns.map(({ name, align, width }, key) => {
     let pl;
@@ -129,17 +130,28 @@ function Table({ columns, rows, page, totalPages, onPageChange = (event, value) 
       return template;
     });
 
-    return <TableRow
-     key={rowKey}
-      onClick={() => onSelect && onSelect(row.item)} 
-      //bgColor={}
-      style={{ cursor: onSelect ? "pointer" : "default"}}
-      sx={onSelect && {
-        '&:hover': {
-          backgroundColor: "light.main",
+    return (
+      <TableRow
+        key={rowKey}
+        onClick={() => {
+          if (onSelect) {
+            setSelectedKey(rowKey);
+            onSelect(row.item);
+          }
+        }}
+        selected={rowKey === selectedKey}
+        style={{ cursor: onSelect ? "pointer" : "default" }}
+        sx={
+          onSelect && {
+            "&:hover": {
+              backgroundColor: "rgba(203, 12, 159, 0.08)",
+            },
+          }
         }
-      }}
-    >{tableRow}</TableRow>;
+      >
+        {tableRow}
+      </TableRow>
+    );
   });
 
   return useMemo(

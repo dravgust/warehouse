@@ -31,7 +31,7 @@ function SelectedItem({ onSave = () => {}, onDelete = () => {}, onClose = () => 
         display="flex"
         justifyContent="space-between"
         alignItems="flex-start"
-        bgColor="grey-100"
+        bgColor="rgba(203, 12, 159, 0.08)"
         borderRadius="lg"
         px={2}
         py={2}

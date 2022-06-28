@@ -12,15 +12,17 @@ function ProductItem({ isSelected, item, onClick = () => {} }) {
       display="flex"
       justifyContent="space-between"
       alignItems="flex-start"
-      bgColor={isSelected ? "dark" : "grey-100"}
+      //bgColor={isSelected ? "dark" : "grey-100"}
+
       borderRadius="lg"
       p={2}
       mt={1}
       style={{ cursor: "pointer", border: "1px solid rgba(0, 0, 0, 0.125)" }}
       onClick={onClick}
       sx={{
+          backgroundColor: isSelected ? 'rgba(203, 12, 159, 0.08)' : 'inherit',
         '&:hover': {
-          backgroundColor: isSelected ? 'dark.main' : "light.main",
+          backgroundColor: 'rgba(203, 12, 159, 0.08)',
         }
       }}
     >
@@ -36,7 +38,7 @@ function ProductItem({ isSelected, item, onClick = () => {} }) {
             variant="button"
             fontWeight="medium"
             textTransform="capitalize"
-            color={isSelected ? "white" : "text"}
+
           >
             {item.name}
           </SuiTypography>
@@ -47,7 +49,7 @@ function ProductItem({ isSelected, item, onClick = () => {} }) {
             variant="caption"
             fontWeight="medium"
             textTransform="capitalize"
-            color={isSelected ? "white" : "text"}
+
           >
             {item.description}
           </SuiTypography>
