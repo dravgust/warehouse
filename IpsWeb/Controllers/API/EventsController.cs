@@ -25,7 +25,7 @@ namespace IpsWeb.Controllers.API
             var sorting = new Sorting<BeaconEventEntity>(p => p.TimeStamp, SortOrder.Desc);
             var filtering = new Filtering<BeaconEventEntity>(p => p.MacAddress, searchTerm);
 
-            var query = new PagedQuery<BeaconEventEntity, IPagedEnumerable<BeaconEventEntity>>(page, size, sorting, filtering);
+            var query = new MongoPagedQuery<BeaconEventEntity, IPagedEnumerable<BeaconEventEntity>>(page, size, sorting, filtering);
             var result = await _queryBus.Send(query, token);
 
             return new

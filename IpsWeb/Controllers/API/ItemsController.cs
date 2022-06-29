@@ -19,15 +19,15 @@ namespace IpsWeb.Controllers.API
     [ApiController]
     public class ItemsController : ControllerBase
     {
-        private readonly IEntityRepository<ProductEntity, string> _productRepository;
-        private readonly IEntityRepository<FileEntity, string> _fileRepository;
+        private readonly ICriteriaRepository<ProductEntity, string> _productRepository;
+        private readonly ICriteriaRepository<FileEntity, string> _fileRepository;
         private readonly IQueryBus _queryBus;
         private readonly IMapper _mapper;
         private readonly IDistributedMemoryCache _cache;
 
         public ItemsController(
-            IEntityRepository<ProductEntity, string> productRepository,
-            IEntityRepository<FileEntity, string> fileRepository,
+            ICriteriaRepository<ProductEntity, string> productRepository,
+            ICriteriaRepository<FileEntity, string> fileRepository,
             IQueryBus queryBus, IMapper mapper, IDistributedMemoryCache cache)
         {
             _productRepository = productRepository;
@@ -63,7 +63,7 @@ namespace IpsWeb.Controllers.API
             var sorting = new Sorting<ProductEntity>(p => p.Name, SortOrder.Asc);
             var filtering = new Filtering<ProductEntity>(p => p.Name, searchTerm);
 
-            var query = new PagedQuery<ProductEntity, IPagedEnumerable<ProductEntity>>(page, size, sorting, filtering);
+            var query = new MongoPagedQuery<ProductEntity, IPagedEnumerable<ProductEntity>>(page, size, sorting, filtering);
             var result = await _queryBus.Send(query, token);
 
             return new

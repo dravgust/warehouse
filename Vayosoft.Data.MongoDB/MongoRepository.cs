@@ -13,7 +13,7 @@ using Vayosoft.Core.SharedKernel.Models.Pagination;
 
 namespace Vayosoft.Data.MongoDB
 {
-    public class MongoRepository<TEntity> : IEntityRepository<TEntity, string> where TEntity : class, IEntity<string>
+    public class MongoRepository<TEntity> : ICriteriaRepository<TEntity, string> where TEntity : class, IEntity<string>
     {
         private readonly IMongoCollection<TEntity> _collection;
 

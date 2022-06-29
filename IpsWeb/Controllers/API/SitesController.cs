@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using IpsWeb.Lib.API.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Vayosoft.Core.Caching;
 using Vayosoft.Core.Helpers;
 using Vayosoft.Core.Persistence;
@@ -19,16 +20,16 @@ namespace IpsWeb.Controllers.API
     [ApiController]
     public class SitesController : ControllerBase
     {
-        private readonly IEntityRepository<WarehouseSiteEntity, string> _siteRepository;
-        private readonly IEntityRepository<BeaconRegisteredEntity, string> _beaconRepository;
+        private readonly ICriteriaRepository<WarehouseSiteEntity, string> _siteRepository;
+        private readonly ICriteriaRepository<BeaconRegisteredEntity, string> _beaconRepository;
         private readonly IQueryBus _queryBus;
         private readonly IMapper _mapper;
         private readonly IDistributedMemoryCache _cache;
         private readonly ILinqProvider _linqProvider;
 
         public SitesController(
-            IEntityRepository<WarehouseSiteEntity, string> siteRepository,
-            IEntityRepository<BeaconRegisteredEntity, string> beaconRepository,
+            ICriteriaRepository<WarehouseSiteEntity, string> siteRepository,
+            ICriteriaRepository<BeaconRegisteredEntity, string> beaconRepository,
             IQueryBus queryBus, IMapper mapper, IDistributedMemoryCache cache, ILinqProvider linqProvider)
         {
             _siteRepository = siteRepository;
@@ -45,7 +46,7 @@ namespace IpsWeb.Controllers.API
             var sorting = new Sorting<WarehouseSiteEntity, object>(p => p.Name, SortOrder.Asc);
             var filtering = new Filtering<WarehouseSiteEntity>(p => p.Name, searchTerm);
 
-            var query = new PagedQuery<WarehouseSiteEntity, IPagedEnumerable<WarehouseSiteEntity>>(page, size, sorting, filtering);
+            var query = new MongoPagedQuery<WarehouseSiteEntity, IPagedEnumerable<WarehouseSiteEntity>>(page, size, sorting, filtering);
             var result = await _queryBus.Send(query, token);
 
             return new
@@ -106,12 +107,12 @@ namespace IpsWeb.Controllers.API
         }
         
         [HttpGet("gw-registered")]
-        public dynamic GetRegisteredGwList()
+        public async Task<dynamic> GetRegisteredGwList(CancellationToken token)
         {
-            var data = _cache.GetOrCreateExclusive(CacheKey.With<DeviceEntity>("registered-list"), options =>
+            var data = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<DeviceEntity>("registered-list"), async options =>
             {
                 options.AbsoluteExpirationRelativeToNow = TimeSpans.FiveMinutes;
-                var data = _linqProvider.AsQueryable<DeviceEntity>().Where(d => d.ProviderId == 2).ToList();
+                var data = await _linqProvider.AsQueryable<DeviceEntity>().Where(d => d.ProviderId == 2).ToListAsync(cancellationToken: token);
                 return data.Select(d => d.MacAddress).OrderBy(macAddress => macAddress);
             });
 
