@@ -17,7 +17,7 @@ using Warehouse.Core.Application;
 using Warehouse.Core.Application.Specifications;
 using Warehouse.Core.Domain.Entities;
 
-namespace Warehouse.Core.Persistence
+namespace Warehouse.Core
 {
     public static class Config
     {

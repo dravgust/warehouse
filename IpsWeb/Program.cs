@@ -14,8 +14,8 @@ using Vayosoft.WebAPI;
 using Vayosoft.WebAPI.Middlewares.ExceptionHandling;
 using Vayosoft.WebAPI.Middlewares.Jwt;
 using Vayosoft.WebAPI.Services;
+using Warehouse.Core;
 using Warehouse.Core.Domain.Entities;
-using Warehouse.Core.Persistence;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Debug()
