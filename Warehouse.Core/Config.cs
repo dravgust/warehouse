@@ -57,10 +57,14 @@ namespace Warehouse.Core
             services.AddScoped<IEntityRepository<BeaconRegisteredEntity, string>, MongoRepository<BeaconRegisteredEntity>>();
             services.AddScoped<IEntityRepository<FileEntity, string>, MongoRepository<FileEntity>>();
 
-            services.AddScoped<IRequestHandler<PagedQuery<BeaconIndoorPositionEntity>, IPagedEnumerable<BeaconIndoorPositionEntity>>, PagedQueryHandler<BeaconIndoorPositionEntity>>();
-            services.AddScoped<IRequestHandler<PagedQuery<BeaconEventEntity>, IPagedEnumerable<BeaconEventEntity>>, PagedQueryHandler<BeaconEventEntity>>();
-            services.AddScoped<IRequestHandler<PagedQuery<ProductEntity>, IPagedEnumerable<ProductEntity>>, PagedQueryHandler<ProductEntity>>();
-            services.AddScoped<IRequestHandler<PagedQuery<WarehouseSiteEntity>, IPagedEnumerable<WarehouseSiteEntity>>, PagedQueryHandler<WarehouseSiteEntity>>();
+            services.AddScoped<IRequestHandler<Vayosoft.Data.MongoDB.Queries.PagedQuery<BeaconIndoorPositionEntity, IPagedEnumerable<BeaconIndoorPositionEntity>>, IPagedEnumerable<BeaconIndoorPositionEntity>>,
+                PagedQueryHandler<BeaconIndoorPositionEntity>>();
+            services.AddScoped<IRequestHandler<Vayosoft.Data.MongoDB.Queries.PagedQuery<BeaconEventEntity, IPagedEnumerable<BeaconEventEntity>>, IPagedEnumerable<BeaconEventEntity>>,
+                PagedQueryHandler<BeaconEventEntity>>();
+            services.AddScoped<IRequestHandler<Vayosoft.Data.MongoDB.Queries.PagedQuery<ProductEntity, IPagedEnumerable<ProductEntity>>, IPagedEnumerable<ProductEntity>>,
+                PagedQueryHandler<ProductEntity>>();
+            services.AddScoped<IRequestHandler<Vayosoft.Data.MongoDB.Queries.PagedQuery<WarehouseSiteEntity, IPagedEnumerable<WarehouseSiteEntity>>, IPagedEnumerable<WarehouseSiteEntity>>,
+                PagedQueryHandler<WarehouseSiteEntity>>();
 
             return services;
         }
@@ -71,7 +75,7 @@ namespace Warehouse.Core
             services.AddScoped<IUnitOfWork>(s => s.GetRequiredService<DataContext>());
             services.AddScoped<ILinqProvider>(s => s.GetRequiredService<DataContext>());
 
-            services.AddScoped<IRequestHandler<PagedQuery<GetUserEntitiesSpec, IPagedEnumerable<UserEntityDto>>, IPagedEnumerable<UserEntityDto>>,
+            services.AddScoped<IRequestHandler<Vayosoft.Core.SharedKernel.Queries.Query.PagedQuery<GetUserEntitiesSpec, IPagedEnumerable<UserEntityDto>>, IPagedEnumerable<UserEntityDto>>,
                 PagedQueryHandler<long, GetUserEntitiesSpec, UserEntity, UserEntityDto>>();
             services
                 .AddScoped<IRequestHandler<GetEntityByIdQuery<UserEntityDto>, UserEntityDto>,

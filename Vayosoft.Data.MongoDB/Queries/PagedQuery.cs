@@ -9,7 +9,7 @@ using Vayosoft.Core.SharedKernel.Queries.Query;
 
 namespace Vayosoft.Data.MongoDB.Queries
 {
-    public class PagedQuery<TEntity> : PagingModelBase<TEntity, object>, IQuery<IPagedEnumerable<TEntity>> where TEntity : class, IEntity
+    public class PagedQuery<TEntity, TResult> : PagingModelBase<TEntity, object>, IQuery<TResult> where TEntity : class, IEntity
     {
         public PagedQuery(int page, int take, Sorting<TEntity, object> sorting, Filtering<TEntity> filtering)
             : base(page, take, sorting, filtering)
@@ -31,7 +31,7 @@ namespace Vayosoft.Data.MongoDB.Queries
 
     }
 
-    public class PagedQueryHandler<TEntity> : IQueryHandler<PagedQuery<TEntity>, IPagedEnumerable<TEntity>>
+    public class PagedQueryHandler<TEntity> : IQueryHandler<PagedQuery<TEntity, IPagedEnumerable<TEntity>>, IPagedEnumerable<TEntity>>
         where TEntity : class, IEntity<string>
     {
         protected readonly IMongoCollection<TEntity> Collection;
@@ -41,7 +41,7 @@ namespace Vayosoft.Data.MongoDB.Queries
             Collection = context.Database.GetCollection<TEntity>(CollectionName.For<TEntity>());
         }
 
-        public Task<IPagedEnumerable<TEntity>> Handle(PagedQuery<TEntity> request, CancellationToken cancellationToken)
+        public Task<IPagedEnumerable<TEntity>> Handle(PagedQuery<TEntity, IPagedEnumerable<TEntity>> request, CancellationToken cancellationToken)
         {
             return Collection.AggregateByPage(request, cancellationToken);
         }

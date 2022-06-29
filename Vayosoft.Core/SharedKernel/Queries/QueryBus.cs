@@ -14,7 +14,7 @@ namespace Vayosoft.Core.SharedKernel.Queries
             this.mediator = mediator;
         }
 
-        public Task<TResponse> Send<TQuery, TResponse>(TQuery query, CancellationToken cancellationToken = default) where TQuery : IQuery<TResponse>
+        public Task<TResponse> Send<TResponse>(IQuery<TResponse> query, CancellationToken cancellationToken = default)
         {
             return mediator.Send(query, cancellationToken);
         }

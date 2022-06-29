@@ -25,8 +25,8 @@ namespace IpsWeb.Controllers.API
             var sorting = new Sorting<BeaconIndoorPositionEntity>(p => p.TimeStamp, SortOrder.Desc);
             var filtering = new Filtering<BeaconIndoorPositionEntity>(p => p.MacAddress, searchTerm);
 
-            var query = new PagedQuery<BeaconIndoorPositionEntity>(page, size, sorting, filtering);
-            var result = await _queryBus.Send<PagedQuery<BeaconIndoorPositionEntity>, IPagedEnumerable<BeaconIndoorPositionEntity>>(query, token);
+            var query = new PagedQuery<BeaconIndoorPositionEntity, IPagedEnumerable<BeaconIndoorPositionEntity>>(page, size, sorting, filtering);
+            var result = await _queryBus.Send(query, token);
 
             return new
             {

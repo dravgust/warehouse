@@ -6,6 +6,6 @@ namespace Vayosoft.Core.SharedKernel.Queries
 {
     public interface IQueryBus
     {
-        Task<TResponse> Send<TQuery, TResponse>(TQuery query, CancellationToken cancellationToken = default) where TQuery : IQuery<TResponse>;
+        Task<TResponse> Send<TResponse>(IQuery<TResponse> query, CancellationToken cancellationToken = default);
     }
 }

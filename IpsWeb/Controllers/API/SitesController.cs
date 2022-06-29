@@ -45,8 +45,8 @@ namespace IpsWeb.Controllers.API
             var sorting = new Sorting<WarehouseSiteEntity, object>(p => p.Name, SortOrder.Asc);
             var filtering = new Filtering<WarehouseSiteEntity>(p => p.Name, searchTerm);
 
-            var query = new PagedQuery<WarehouseSiteEntity>(page, size, sorting, filtering);
-            var result = await _queryBus.Send<PagedQuery<WarehouseSiteEntity>, IPagedEnumerable<WarehouseSiteEntity>>(query, token);
+            var query = new PagedQuery<WarehouseSiteEntity, IPagedEnumerable<WarehouseSiteEntity>>(page, size, sorting, filtering);
+            var result = await _queryBus.Send(query, token);
 
             return new
             {
