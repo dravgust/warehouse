@@ -9,24 +9,24 @@ using Vayosoft.Core.SharedKernel.Queries.Query;
 
 namespace Vayosoft.Core.SharedKernel.Queries.Handler
 {
-    public class PagedQueryHandler<TSortKey, TSpec, TEntity, TDto> : ProjectionQueryHandler<TSpec, TEntity, TDto>,
-        IQueryHandler<PagedQuery<TSpec, IPagedEnumerable<TDto>>, IPagedEnumerable<TDto>>
+    public class PagingQueryHandler<TSortKey, TSpec, TEntity, TDto> : ProjectionQueryHandler<TSpec, TEntity, TDto>,
+        IQueryHandler<SpecificationQuery<TSpec, IPagedEnumerable<TDto>>, IPagedEnumerable<TDto>>
         where TEntity : class, IEntity
         where TDto : class, IEntity
         where TSpec : IPagingModel<TDto, TSortKey>
     {
-        public PagedQueryHandler(ILinqProvider linqProvider, IProjector projector)
+        public PagingQueryHandler(ILinqProvider linqProvider, IProjector projector)
             : base(linqProvider, projector) { }
 
-        public IQueryHandler<PagedQuery<TSpec, IPagedEnumerable<TDto>>, IPagedEnumerable<TDto>> AsPaged() => this;
+        public IQueryHandler<SpecificationQuery<TSpec, IPagedEnumerable<TDto>>, IPagedEnumerable<TDto>> AsPaged() => this;
 
-        public Task<IEnumerable<TDto>> Handle(PagedQuery<TSpec, IEnumerable<TDto>> request, CancellationToken cancellationToken)
+        public override Task<IEnumerable<TDto>> Handle(SpecificationQuery<TSpec, IEnumerable<TDto>> request, CancellationToken cancellationToken)
         {
             var result = GetQueryable(request.Specification).Paginate(request.Specification).ToArray();
             return Task.FromResult<IEnumerable<TDto>>(result);
         }
 
-        public Task<IPagedEnumerable<TDto>> Handle(PagedQuery<TSpec, IPagedEnumerable<TDto>> request, CancellationToken cancellationToken)
+        public Task<IPagedEnumerable<TDto>> Handle(SpecificationQuery<TSpec, IPagedEnumerable<TDto>> request, CancellationToken cancellationToken)
         {
             var result = GetQueryable(request.Specification).ToPagedEnumerable(request.Specification);
             return Task.FromResult(result);

@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Vayosoft.Core.SharedKernel.Models.Pagination
 {
-    public static class PagedExtensions
+    public static class PagingExtensions
     {
         public static IQueryable<T> Paginate<T, TKey>(this IQueryable<T> queryable, IPagingModel<T, TKey> pagingModel)
             where T : class

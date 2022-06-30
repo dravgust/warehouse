@@ -8,7 +8,5 @@
         int Take { get; }
 
         Sorting<TEntity, TSortKey> OrderBy { get; }
-
-        Filtering<TEntity> FilterBy { get; }
     }
 }

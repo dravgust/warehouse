@@ -2,7 +2,9 @@
 using Vayosoft.Core.SharedKernel.Models;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.SharedKernel.Queries;
+using Vayosoft.Core.SharedKernel.Queries.Query;
 using Vayosoft.Data.MongoDB.Queries;
+using Warehouse.Core.Application.Specifications;
 using Warehouse.Core.Domain.Entities;
 
 namespace IpsWeb.Controllers.API
@@ -22,10 +24,9 @@ namespace IpsWeb.Controllers.API
         [HttpGet("")]
         public async Task<dynamic> Get(int page, int size, string? searchTerm = null, CancellationToken token = default)
         {
-            var sorting = new Sorting<BeaconEventEntity>(p => p.TimeStamp, SortOrder.Desc);
-            var filtering = new Filtering<BeaconEventEntity>(p => p.MacAddress, searchTerm);
-
-            var query = new MongoPagedQuery<BeaconEventEntity, IPagedEnumerable<BeaconEventEntity>>(page, size, sorting, filtering);
+            var spec = new BeaconEventSpec(page, size, searchTerm);
+            var query = new SpecificationQuery<BeaconEventSpec, IPagedEnumerable<BeaconEventEntity>>(spec);
+            
             var result = await _queryBus.Send(query, token);
 
             return new

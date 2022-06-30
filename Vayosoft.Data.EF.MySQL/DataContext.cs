@@ -28,7 +28,7 @@ namespace Vayosoft.Data.EF.MySQL
             return Set<TEntity>().AsQueryable();
         }
 
-        public IEnumerable<TEntity> GetBySpecification<TEntity>(IEntitySpecification<TEntity> specification) where TEntity : class, IEntity
+        public IEnumerable<TEntity> GetBySpecification<TEntity>(ICriteriaSpecification<TEntity> specification) where TEntity : class, IEntity
         {
             var queryableResultWithIncludes = specification
                 .Includes

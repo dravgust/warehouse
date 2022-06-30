@@ -25,8 +25,8 @@ namespace IpsWeb.Controllers.API
         [HttpGet]
         public async Task<dynamic> Get(int page, int take, CancellationToken token)
         {
-            var spec = new GetUserEntitiesSpec(page, take);
-            var query = new PagedQuery<GetUserEntitiesSpec, IPagedEnumerable<UserEntityDto>>(spec);
+            var spec = new UserSpec(page, take);
+            var query = new SpecificationQuery<UserSpec, IPagedEnumerable<UserEntityDto>>(spec);
 
             var result = await queryBus.Send(query, token);
 
@@ -41,7 +41,7 @@ namespace IpsWeb.Controllers.API
         [HttpGet("{id}")]
         public Task<UserEntityDto> Get(ulong id, CancellationToken token)
         {
-            var query = new GetEntityByIdQuery<UserEntityDto>(id);
+            var query = new SingleQuery<UserEntityDto>(id);
             return queryBus.Send(query, token);
         }
     }

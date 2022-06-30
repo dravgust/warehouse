@@ -8,7 +8,6 @@ using MongoDB.Driver;
 using Vayosoft.Core.Helpers;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Entities;
-using Vayosoft.Core.SharedKernel.Models.Pagination;
 
 
 namespace Vayosoft.Data.MongoDB
@@ -25,11 +24,6 @@ namespace Vayosoft.Data.MongoDB
         public IEnumerable<TEntity> GetByCriteria(Expression<Func<TEntity, bool>> criteria)
         {
             return _collection.AsQueryable().Where(criteria).AsEnumerable();
-        }
-
-        public Task<IPagedEnumerable<TEntity>> GetByPageAsync(IPagingModel<TEntity, object> query, CancellationToken cancellationToken = default)
-        {
-            return _collection.AggregateByPage(query, cancellationToken);
         }
 
         public Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken) =>

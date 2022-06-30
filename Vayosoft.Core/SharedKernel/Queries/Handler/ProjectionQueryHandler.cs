@@ -10,8 +10,8 @@ using Vayosoft.Core.SharedKernel.Queries.Query;
 namespace Vayosoft.Core.SharedKernel.Queries.Handler
 {
     public class ProjectionQueryHandler<TSpecification, TSource, TDest>
-        : IQueryHandler<ProjectionQuery<TSpecification, IEnumerable<TDest>>, IEnumerable<TDest>>
-            , IQueryHandler<ProjectionQuery<TSpecification, int>, int>
+        : IQueryHandler<SpecificationQuery<TSpecification, IEnumerable<TDest>>, IEnumerable<TDest>>,
+            IQueryHandler<SpecificationQuery<TSpecification, int>, int>
         where TSource : class, IEntity
         where TDest : class
     {
@@ -31,13 +31,13 @@ namespace Vayosoft.Core.SharedKernel.Queries.Handler
                 .Project<TSource, TDest>(Projector)
                 .ApplyIfPossible(spec);
 
-        public virtual Task<IEnumerable<TDest>> Handle(ProjectionQuery<TSpecification, IEnumerable<TDest>> request, CancellationToken cancellationToken)
+        public virtual Task<IEnumerable<TDest>> Handle(SpecificationQuery<TSpecification, IEnumerable<TDest>> request, CancellationToken cancellationToken)
         {
             var result = GetQueryable(request.Specification).ToArray();
             return Task.FromResult<IEnumerable<TDest>>(result);
         }
 
-        public Task<int> Handle(ProjectionQuery<TSpecification, int> request, CancellationToken cancellationToken)
+        public Task<int> Handle(SpecificationQuery<TSpecification, int> request, CancellationToken cancellationToken)
         {
             var result = GetQueryable(request.Specification).Count();
             return Task.FromResult(result);

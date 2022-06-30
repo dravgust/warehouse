@@ -7,7 +7,9 @@ using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Models;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.SharedKernel.Queries;
+using Vayosoft.Core.SharedKernel.Queries.Query;
 using Vayosoft.Data.MongoDB.Queries;
+using Warehouse.Core.Application.Specifications;
 using Warehouse.Core.Application.ViewModels;
 using Warehouse.Core.Domain.Entities;
 
@@ -38,7 +40,7 @@ namespace IpsWeb.Controllers.API
         }
 
         [HttpGet("metadata")]
-        public async Task<dynamic> GetMetadataTemplate(CancellationToken token)
+        public async Task<IActionResult> GetMetadataTemplate(CancellationToken token)
         {
             var data = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<ProductMetadata>(), async options =>
             {
@@ -51,76 +53,53 @@ namespace IpsWeb.Controllers.API
                 return data;
             });
             
-            return new
+            return Ok(new
             {
                 data
-            };
+            });
         }
 
         [HttpGet("")]
-        public async Task<dynamic> Get(int page, int size, string? searchTerm = null, CancellationToken token = default)
+        public async Task<IActionResult> Get(int page, int size, string? searchTerm = null, CancellationToken token = default)
         {
-            var sorting = new Sorting<ProductEntity>(p => p.Name, SortOrder.Asc);
-            var filtering = new Filtering<ProductEntity>(p => p.Name, searchTerm);
+            var spec = new ProductSpec(page, size, searchTerm);
+            var query = new SpecificationQuery<ProductSpec, IPagedEnumerable<ProductEntity>>(spec);
 
-            var query = new MongoPagedQuery<ProductEntity, IPagedEnumerable<ProductEntity>>(page, size, sorting, filtering);
             var result = await _queryBus.Send(query, token);
 
-            return new
+            return Ok(new
             {
                 data = result,
                 totalItems = result.TotalCount,
                 totalPages = (long)Math.Ceiling((double)result.TotalCount / size)
-            };
+            });
         }
 
         [HttpGet("{id}")]
-        public async Task<dynamic> GetById(string id, CancellationToken token)
+        public async Task<IActionResult> GetById(string id, CancellationToken token)
         {
             Guard.NotEmpty(id, nameof(id));
             var data = await _productRepository.GetAsync(id, token);
-            return new
+            return Ok(new
             {
                 data
-            };
+            });
 
         }
 
         [HttpGet("{id}/delete")]
-        public async Task<dynamic> DeleteById(string id, CancellationToken token)
+        public async Task<IActionResult> DeleteById(string id, CancellationToken token)
         {
             Guard.NotEmpty(id, nameof(id));
             await _productRepository.DeleteAsync(new ProductEntity { Id = id }, token);
-            return new
-            {
-
-            };
+            return Ok();
         }
 
         [HttpPost("set")]
-        public async Task<dynamic> Post([FromBody] ProductViewModel item, CancellationToken token)
+        public async Task<IActionResult> Post([FromBody] ProductViewModel item, CancellationToken token)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            ProductEntity? entity = null;
-            if (!string.IsNullOrEmpty(item.Id))
-            {
-                entity = await _productRepository.FindAsync(item.Id, token);
-            }
-
-            if (entity != null)
-            {
-                await _productRepository.UpdateAsync(_mapper.Map(item, entity), token);
-            }
-            else
-            {
-                await _productRepository.AddAsync(_mapper.Map<ProductEntity>(item), token);
-            }
-
-            return new
-            {
-
-            };
+            return Ok(await _productRepository.SetAsync(item, _mapper, cancellationToken: token));
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Vayosoft.Core.SharedKernel.Queries.Query
 {
-    public record GetEntityByIdQuery<TResult>(
+    public record SingleQuery<TResult>(
         object Id
     ) : IQuery<TResult>;
 }

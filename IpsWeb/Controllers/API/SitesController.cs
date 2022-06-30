@@ -1,17 +1,16 @@
-﻿using System.Linq.Expressions;
-using IpsWeb.Lib.API.ViewModels;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Vayosoft.Core.Caching;
 using Vayosoft.Core.Helpers;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel;
-using Vayosoft.Core.SharedKernel.Models;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.SharedKernel.Queries;
-using Vayosoft.Data.MongoDB.Queries;
+using Vayosoft.Core.SharedKernel.Queries.Query;
+using Warehouse.Core.Application.Specifications;
 using Warehouse.Core.Application.ViewModels;
 using Warehouse.Core.Domain.Entities;
+using Warehouse.Core.Queries;
 
 namespace IpsWeb.Controllers.API
 {
@@ -21,7 +20,6 @@ namespace IpsWeb.Controllers.API
     public class SitesController : ControllerBase
     {
         private readonly ICriteriaRepository<WarehouseSiteEntity, string> _siteRepository;
-        private readonly ICriteriaRepository<BeaconRegisteredEntity, string> _beaconRepository;
         private readonly IQueryBus _queryBus;
         private readonly IMapper _mapper;
         private readonly IDistributedMemoryCache _cache;
@@ -29,11 +27,9 @@ namespace IpsWeb.Controllers.API
 
         public SitesController(
             ICriteriaRepository<WarehouseSiteEntity, string> siteRepository,
-            ICriteriaRepository<BeaconRegisteredEntity, string> beaconRepository,
             IQueryBus queryBus, IMapper mapper, IDistributedMemoryCache cache, ILinqProvider linqProvider)
         {
             _siteRepository = siteRepository;
-            _beaconRepository = beaconRepository;
             _queryBus = queryBus;
             _mapper = mapper;
             _cache = cache;
@@ -43,10 +39,9 @@ namespace IpsWeb.Controllers.API
         [HttpGet("")]
         public async Task<dynamic> Get(int page, int size, string? searchTerm = null, CancellationToken token = default)
         {
-            var sorting = new Sorting<WarehouseSiteEntity, object>(p => p.Name, SortOrder.Asc);
-            var filtering = new Filtering<WarehouseSiteEntity>(p => p.Name, searchTerm);
+            var spec = new WarehouseSiteSpec(page, size, searchTerm);
+            var query = new SpecificationQuery<WarehouseSiteSpec, IPagedEnumerable<WarehouseSiteEntity>>(spec);
 
-            var query = new MongoPagedQuery<WarehouseSiteEntity, IPagedEnumerable<WarehouseSiteEntity>>(page, size, sorting, filtering);
             var result = await _queryBus.Send(query, token);
 
             return new
@@ -85,13 +80,8 @@ namespace IpsWeb.Controllers.API
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            WarehouseSiteEntity? entity = null;
-            if (!string.IsNullOrEmpty(item.Id))
-            {
-                entity = await _siteRepository.FindAsync(item.Id, token);
-            }
-
-            if (entity != null)
+            WarehouseSiteEntity? entity;
+            if (!string.IsNullOrEmpty(item.Id) && (entity = await _siteRepository.FindAsync(item.Id, token)) != null)
             {
                 await _siteRepository.UpdateAsync(_mapper.Map(item, entity), token);
             }
@@ -105,7 +95,7 @@ namespace IpsWeb.Controllers.API
 
             };
         }
-        
+
         [HttpGet("gw-registered")]
         public async Task<dynamic> GetRegisteredGwList(CancellationToken token)
         {
@@ -123,19 +113,7 @@ namespace IpsWeb.Controllers.API
         }
 
         [HttpGet("beacons-registered")]
-        public dynamic GetRegisteredBeaconList()
-        {
-            var data = _cache.GetOrCreateExclusive(CacheKey.With<BeaconRegisteredEntity>("registered-list"), options =>
-            {
-                options.AbsoluteExpirationRelativeToNow = TimeSpans.FiveMinutes;
-                var data = _beaconRepository.GetByCriteria(b => true);
-                return data.Select(b => b.MacAddress);
-            });
-            
-            return new
-            {
-                data
-            };
-        }
+        public async Task<IActionResult> GetRegisteredBeaconList(CancellationToken token) =>
+            Ok(new { data = await _queryBus.Send(new GetRegisteredBeaconList(), token) });
     }
 }

@@ -501,21 +501,11 @@ namespace Vayosoft.Data.MongoDB
 
         public static Task<IPagedEnumerable<T>> AggregateByPage<T>(this IMongoCollection<T> collection, IPagingModel<T, object> model, CancellationToken cancellationToken = default) where T : class, IEntity<string>
         {
-            var sortDefinition = model.OrderBy.SortOrder == SortOrder.Asc
-                ? Builders<T>.Sort.Ascending(model.OrderBy.Expression)
+            var sortDefinition = model.OrderBy.SortOrder == SortOrder.Asc 
+                ? Builders<T>.Sort.Ascending(model.OrderBy.Expression) 
                 : Builders<T>.Sort.Descending(model.OrderBy.Expression);
 
-            FilterDefinition<T> filterDefinition;
-
-            if (IsNullOrEmpty(model.FilterBy.Filter))
-                filterDefinition = Builders<T>.Filter.Empty;
-            else
-            {
-                var pattern = "/.*" + model.FilterBy.Filter + ".*/i";
-                filterDefinition = Builders<T>.Filter.Regex(model.FilterBy.Expression, new BsonRegularExpression(pattern));
-            }
-
-            return collection.AggregateByPage(filterDefinition, sortDefinition, model.Page, model.Take, cancellationToken);
+            return collection.AggregateByPage(Builders<T>.Filter.Empty, sortDefinition, model.Page, model.Take, cancellationToken);
         }
 
         public static async Task<IPagedEnumerable<T>> AggregateByPage<T>(
@@ -523,7 +513,8 @@ namespace Vayosoft.Data.MongoDB
             FilterDefinition<T> filterDefinition,
             SortDefinition<T> sortDefinition,
             int page,
-            int pageSize, CancellationToken cancellationToken = default) where T : IEntity<string>
+            int pageSize, CancellationToken cancellationToken = default)
+            where T : IEntity
         {
             var countFacet = AggregateFacet.Create("count",
                 PipelineDefinition<T, AggregateCountResult>.Create(new[]

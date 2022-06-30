@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Vayosoft.Core.SharedKernel.Entities;
 using Warehouse.Core.Domain.Entities;
 
 namespace Warehouse.Core.Application.ViewModels
 {
-    public class ProductViewModel
+    public class ProductViewModel : IEntity<string>
     {
+        object IEntity.Id { get; }
         public string? Id { get; set; }
         [Required]
         public string Name { get; set; }

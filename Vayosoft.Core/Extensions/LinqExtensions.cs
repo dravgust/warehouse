@@ -28,12 +28,12 @@ namespace Vayosoft.Core.Extensions
         public static IQueryable<TDest> Project<TSource, TDest>(this IQueryable<TSource> source, IProjector projector)
             => projector.Project<TSource, TDest>(source);
 
-        public static TEntity ById<TEntity>(this ILinqProvider linqProvider, int id)
-            where TEntity : class, IEntity<int>
+        public static TEntity ById<TEntity>(this ILinqProvider linqProvider, long id)
+            where TEntity : class, IEntity<long>
             => linqProvider.AsQueryable<TEntity>().ById(id);
 
-        public static TEntity ById<TEntity>(this IQueryable<TEntity> queryable, int id)
-            where TEntity : class, IEntity<int>
+        public static TEntity ById<TEntity>(this IQueryable<TEntity> queryable, long id)
+            where TEntity : class, IEntity<long>
             => queryable.SingleOrDefault(x => x.Id == id);
     }
 }
