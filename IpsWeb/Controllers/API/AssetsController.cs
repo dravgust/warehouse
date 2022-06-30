@@ -20,19 +20,19 @@ namespace IpsWeb.Controllers.API
         }
 
         [HttpGet("")]
-        public async Task<dynamic> Get(int page, int size, string? searchTerm = null, CancellationToken token = default)
+        public async Task<IActionResult> Get(int page, int size, string? searchTerm = null, CancellationToken token = default)
         {
             var spec = new BeaconPositionSpec(page, size, searchTerm);
             var query = new SpecificationQuery<BeaconPositionSpec, IPagedEnumerable<BeaconIndoorPositionEntity>>(spec);
 
             var result = await _queryBus.Send(query, token);
 
-            return new
+            return Ok(new
             {
                 data = result,
                 totalItems = result.TotalCount,
                 totalPages = (long)Math.Ceiling((double)result.TotalCount / size)
-            };
+            });
         }
     }
 }

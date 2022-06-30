@@ -4,14 +4,13 @@ using Vayosoft.Core.Extensions;
 using Vayosoft.Core.Helpers;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel;
-using Vayosoft.Core.SharedKernel.Models;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.SharedKernel.Queries;
 using Vayosoft.Core.SharedKernel.Queries.Query;
-using Vayosoft.Data.MongoDB.Queries;
 using Warehouse.Core.Application.Specifications;
 using Warehouse.Core.Application.ViewModels;
 using Warehouse.Core.Domain.Entities;
+using Warehouse.Core.Persistence;
 
 namespace IpsWeb.Controllers.API
 {
@@ -99,7 +98,7 @@ namespace IpsWeb.Controllers.API
         public async Task<IActionResult> Post([FromBody] ProductViewModel item, CancellationToken token)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            return Ok(await _productRepository.SetAsync(item, _mapper, cancellationToken: token));
+            return Ok(await _productRepository.SetAsync(item, _mapper, token));
         }
     }
 }

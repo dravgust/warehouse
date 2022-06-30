@@ -38,7 +38,7 @@ const validationSchema = yup.object({
   ),
 });
 
-export default function ItemForm({ onSave = () => {}, onDelete = () => {}, item = {}, beaconsRegistered = [] }) {
+export default function ItemForm({ onSave = () => {}, onDelete = () => {}, item = {}, beacons = [] }) {
 
   const saveItem = async (item) => {
     const token = await auth.getToken();
@@ -116,7 +116,7 @@ export default function ItemForm({ onSave = () => {}, onDelete = () => {}, item 
         <Autocomplete
         disablePortal
           onBlur={handleBlur}
-          options={["", ...beaconsRegistered]}
+          options={["", ...beacons]}
           isOptionEqualToValue={(option, value) => option === value}
           sx={{ width: 300 }}
           getOptionLabel={(option) => option}

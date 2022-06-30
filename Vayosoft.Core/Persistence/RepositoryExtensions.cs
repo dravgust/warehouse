@@ -28,12 +28,12 @@ namespace Vayosoft.Core.Persistence
             return Unit.Value;
         }
 
-        public static async Task<Unit> SetAsync<TDto, TEntity, TKey>(this IRepositoryBase<TEntity, TKey> repository, TDto dto, IMapper mapper, CancellationToken cancellationToken = default)
-            where TEntity : class, IEntity<TKey>
-            where TDto : class, IEntity<TKey>
+        public static async Task<Unit> SetAsync<TDto, TEntity>(this IRepositoryBase<TEntity, string> repository, TDto dto, IMapper mapper, CancellationToken cancellationToken = default)
+            where TEntity : class, IEntity<string>
+            where TDto : class, IEntity<string>
         {
-            TEntity entity;
-            if (dto.Id != null && (entity = await repository.FindAsync(dto.Id, cancellationToken)) != null)
+            TEntity entity = null;
+            if (!string.IsNullOrEmpty(dto.Id) && (entity = await repository.FindAsync(dto.Id, cancellationToken)) != null)
             {
                 await repository.UpdateAsync(mapper.Map(dto, entity), cancellationToken);
             }

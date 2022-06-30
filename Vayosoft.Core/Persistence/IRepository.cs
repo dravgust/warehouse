@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Vayosoft.Core.SharedKernel.Aggregates;
@@ -26,9 +23,4 @@ namespace Vayosoft.Core.Persistence
 
     public interface IRepository<T, in TKey> : IRepositoryBase<T, TKey> where T : class, IAggregate
     { }
-
-    public interface ICriteriaRepository<TEntity, in TKey> : IRepositoryBase<TEntity, TKey> where TEntity : class, IEntity
-    {
-        IEnumerable<TEntity> GetByCriteria(Expression<Func<TEntity, bool>> criteria);
-    }
 }

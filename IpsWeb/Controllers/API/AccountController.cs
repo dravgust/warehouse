@@ -1,11 +1,8 @@
-﻿using System.Reflection;
-using IpsWeb.Lib.API.TagHelpers;
+﻿using IpsWeb.Lib.Queries;
 using IpsWeb.Resources;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Localization;
-using Vayosoft.Core.Caching;
+using Vayosoft.Core.SharedKernel.Queries;
 using Vayosoft.WebAPI.Models;
 using Vayosoft.WebAPI.Services;
 
@@ -17,31 +14,21 @@ namespace IpsWeb.Controllers.API
     public class AccountController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly IDistributedMemoryCache _cache;
-        private readonly IStringLocalizerFactory _stringLocalizerFactory;
+        private readonly IQueryBus _queryBus;
 
-        public AccountController(IUserService userService, IDistributedMemoryCache cache, IStringLocalizerFactory stringLocalizerFactory)
+        public AccountController(IUserService userService, IQueryBus queryBus)
         {
             _userService = userService;
-            _cache = cache;
-            _stringLocalizerFactory = stringLocalizerFactory;
+            _queryBus = queryBus;
         }
 
         [HttpGet("bootstrap")]
-        public IActionResult Get()
+        public async Task<IActionResult> Get(CancellationToken token)
         {
             var resourceNames = new List<string> { nameof(SharedResources) };
-            var groupedResources = resourceNames.Select(x =>
-            {
-                IStringLocalizer localizer = _stringLocalizerFactory.Create(x, Assembly.GetEntryAssembly()!.FullName!);
-                return new ResourceGroup { Name = x, Entries = localizer.GetAllStrings(true).ToList() };
-            });
+            var resources = await _queryBus.Send(new GetResources(resourceNames), token);
 
-            _cache.TryGetValue("test_key", out var dt);
-
-            _cache.Set("test_key", DateTime.UtcNow, DateTime.Now.AddMinutes(5));
-
-            return new JsonResult(new { groupedResources });
+            return new JsonResult(new { resources });
         }
 
         [AllowAnonymous]

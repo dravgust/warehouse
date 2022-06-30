@@ -53,7 +53,7 @@ const SiteConfiguration = () => {
   const fetchRegisteredGw = async () => {
     const token = await auth.getToken();
     const res = await client(`sites/gw-registered`, {token});
-    return res.data;
+    return res;
   };
   const { data: gwRegistered } = useQuery(["gw-registered"], fetchRegisteredGw, {
     keepPreviousData: false,

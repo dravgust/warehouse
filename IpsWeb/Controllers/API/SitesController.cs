@@ -10,6 +10,7 @@ using Vayosoft.Core.SharedKernel.Queries.Query;
 using Warehouse.Core.Application.Specifications;
 using Warehouse.Core.Application.ViewModels;
 using Warehouse.Core.Domain.Entities;
+using Warehouse.Core.Persistence;
 using Warehouse.Core.Queries;
 
 namespace IpsWeb.Controllers.API
@@ -46,74 +47,51 @@ namespace IpsWeb.Controllers.API
 
             return new
             {
-                data = result,
+                items = result,
                 totalItems = result.TotalCount,
                 totalPages = (long)Math.Ceiling((double)result.TotalCount / size)
             };
         }
 
         [HttpGet("{id}")]
-        public async Task<dynamic> GetById(string id, CancellationToken token)
+        public async Task<IActionResult> GetById(string id, CancellationToken token)
         {
             Guard.NotEmpty(id, nameof(id));
-            var data = await _siteRepository.GetAsync(id, token);
-            return new
-            {
-                data
-            };
+            return Ok(await _siteRepository.GetAsync(id, token));
 
         }
 
         [HttpGet("{id}/delete")]
-        public async Task<dynamic> DeleteById(string id, CancellationToken token)
+        public async Task<IActionResult> DeleteById(string id, CancellationToken token)
         {
             Guard.NotEmpty(id, nameof(id));
-            await _siteRepository.DeleteAsync(new WarehouseSiteEntity { Id = id }, token);
-            return new
-            {
-
-            };
+            await _siteRepository.DeleteAsync(new WarehouseSiteEntity {Id = id}, token);
+            return Ok();
+            
         }
 
         [HttpPost("set")]
-        public async Task<dynamic> Post([FromBody] WarehouseSiteViewModel item, CancellationToken token)
+        public async Task<IActionResult> Post([FromBody] WarehouseSiteViewModel item, CancellationToken token)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            WarehouseSiteEntity? entity;
-            if (!string.IsNullOrEmpty(item.Id) && (entity = await _siteRepository.FindAsync(item.Id, token)) != null)
-            {
-                await _siteRepository.UpdateAsync(_mapper.Map(item, entity), token);
-            }
-            else
-            {
-                await _siteRepository.AddAsync(_mapper.Map<WarehouseSiteEntity>(item), token);
-            }
-
-            return new
-            {
-
-            };
+            return Ok(await _siteRepository.SetAsync(item, _mapper, token));
         }
 
         [HttpGet("gw-registered")]
-        public async Task<dynamic> GetRegisteredGwList(CancellationToken token)
+        public async Task<IActionResult> GetRegisteredGwList(CancellationToken token)
         {
-            var data = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<DeviceEntity>("registered-list"), async options =>
+            var data = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<DeviceEntity>(), async options =>
             {
                 options.AbsoluteExpirationRelativeToNow = TimeSpans.FiveMinutes;
                 var data = await _linqProvider.AsQueryable<DeviceEntity>().Where(d => d.ProviderId == 2).ToListAsync(cancellationToken: token);
                 return data.Select(d => d.MacAddress).OrderBy(macAddress => macAddress);
             });
 
-            return new
-            {
-                data
-            };
+            return Ok(data);
         }
 
         [HttpGet("beacons-registered")]
         public async Task<IActionResult> GetRegisteredBeaconList(CancellationToken token) =>
-            Ok(new { data = await _queryBus.Send(new GetRegisteredBeaconList(), token) });
+            Ok(await _queryBus.Send(new GetRegisteredBeaconList(), token));
     }
 }

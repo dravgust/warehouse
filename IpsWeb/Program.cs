@@ -2,7 +2,10 @@
 using System.Diagnostics;
 using System.Globalization;
 using IpsWeb.Lib.API.Services;
+using IpsWeb.Lib.API.TagHelpers;
+using IpsWeb.Lib.Queries;
 using IpsWeb.Resources;
+using MediatR;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Options;
@@ -16,6 +19,7 @@ using Vayosoft.WebAPI.Middlewares.Jwt;
 using Vayosoft.WebAPI.Services;
 using Warehouse.Core;
 using Warehouse.Core.Domain.Entities;
+using Warehouse.Core.Queries;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Debug()
@@ -44,6 +48,7 @@ try
     var configuration = builder.Configuration;
 
     builder.Services.AddWarehouseDependencies(configuration);
+    builder.Services.AddSingleton<IRequestHandler<GetResources, IEnumerable<ResourceGroup>>, GetResources.ResourcesQueryHandler>();
 
     builder.Services.AddCors(options =>
     {

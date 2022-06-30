@@ -72,9 +72,9 @@ function Products() {
   const fetchRegisteredBeacons = async () => {
     const token = await auth.getToken();
     const res = await client(`sites/beacons-registered`, {token});
-    return res.data;
+    return res;
   };
-  const { data: beaconsRegistered } = useQuery(["beacons-registered"], fetchRegisteredBeacons, {
+  const { data: beacons } = useQuery(["beacons-registered"], fetchRegisteredBeacons, {
     keepPreviousData: false,
     refetchOnWindowFocus: false,
   });
@@ -125,7 +125,7 @@ function Products() {
                   onSave={handleSave}
                   onDelete={handleDelete}
                   onClose={resetToNull}
-                  beaconsRegistered={beaconsRegistered}
+                  beacons={beacons}
                 />
               )}
             </Grid>

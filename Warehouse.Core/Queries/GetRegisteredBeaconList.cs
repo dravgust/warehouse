@@ -17,16 +17,18 @@ namespace Warehouse.Core.Queries
 
             public RegisteredBeaconQueryHandler(IMongoContext context, IDistributedMemoryCache cache)
             {
-                _collection = Guard.NotNull(context, nameof(context)).Database.GetCollection<BeaconRegisteredEntity>(CollectionName.For<BeaconRegisteredEntity>());
+                _collection = context.Database.GetCollection<BeaconRegisteredEntity>(CollectionName.For<BeaconRegisteredEntity>());
                 _cache = cache;
             }
 
             public async Task<IEnumerable<string>> Handle(GetRegisteredBeaconList request, CancellationToken cancellationToken)
             {
-                var data = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<BeaconRegisteredEntity>("registered-list"), async options =>
+                var data = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<BeaconRegisteredEntity>(), async options =>
                 {
                     options.AbsoluteExpirationRelativeToNow = TimeSpans.FiveMinutes;
-                    var data = await _collection.FindAsync(Builders<BeaconRegisteredEntity>.Filter.Empty, cancellationToken: cancellationToken);
+
+                    var data = await _collection
+                        .FindAsync(Builders<BeaconRegisteredEntity>.Filter.Empty, cancellationToken: cancellationToken);
                     return (await data.ToListAsync(cancellationToken: cancellationToken)).Select(b => b.MacAddress);
                 });
 

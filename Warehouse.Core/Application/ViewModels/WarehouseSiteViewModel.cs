@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Vayosoft.Core.SharedKernel.Entities;
 
 namespace Warehouse.Core.Application.ViewModels
 {
-    public class WarehouseSiteViewModel
+    public class WarehouseSiteViewModel: IEntity<string>
     {
         public string? Id { get; set; }
         [Required]
@@ -11,5 +12,6 @@ namespace Warehouse.Core.Application.ViewModels
         public double LeftLength { get; set; }
         public double Error { get; set; }
         public List<GatewayViewModel>? Gateways { get; set; }
+        object IEntity.Id => Id;
     }
 }

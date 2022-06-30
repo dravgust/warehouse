@@ -16,6 +16,7 @@ using Vayosoft.Data.MongoDB.Queries;
 using Warehouse.Core.Application;
 using Warehouse.Core.Application.Specifications;
 using Warehouse.Core.Domain.Entities;
+using Warehouse.Core.Persistence;
 using Warehouse.Core.Queries;
 
 namespace Warehouse.Core

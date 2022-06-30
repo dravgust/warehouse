@@ -75,9 +75,7 @@ export default function Sites({
               { name: "", align: "center" },
             ]}
             rows={
-              data &&
-              data.data &&
-              data.data.map((item) => ({
+              data.items.map((item) => ({
                 item,
                 name: (
                   <SuiTypography variant="button" fontWeight="medium">

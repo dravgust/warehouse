@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Vayosoft.Core.SharedKernel.Models;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.SharedKernel.Queries;
 using Vayosoft.Core.SharedKernel.Queries.Query;
-using Vayosoft.Data.MongoDB.Queries;
 using Warehouse.Core.Application.Specifications;
 using Warehouse.Core.Domain.Entities;
 
@@ -22,19 +20,19 @@ namespace IpsWeb.Controllers.API
         }
 
         [HttpGet("")]
-        public async Task<dynamic> Get(int page, int size, string? searchTerm = null, CancellationToken token = default)
+        public async Task<IActionResult> Get(int page, int size, string? searchTerm = null, CancellationToken token = default)
         {
             var spec = new BeaconEventSpec(page, size, searchTerm);
             var query = new SpecificationQuery<BeaconEventSpec, IPagedEnumerable<BeaconEventEntity>>(spec);
             
             var result = await _queryBus.Send(query, token);
 
-            return new
+            return Ok(new
             {
                 data = result,
                 totalItems = result.TotalCount,
                 totalPages = (long)Math.Ceiling((double)result.TotalCount / size)
-            };
+            });
         }
     }
 }

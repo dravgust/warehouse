@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace IpsWeb.Lib.API.TagHelpers
 {
-    internal class ResourceGroup
+    public class ResourceGroup
     {
         public string Name { get; set; }
         public IEnumerable<LocalizedString> Entries { get; set; }

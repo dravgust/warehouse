@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 using MongoDB.Driver;
-using Vayosoft.Core.Helpers;
-using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Entities;
+using Vayosoft.Data.MongoDB;
 
-
-namespace Vayosoft.Data.MongoDB
+namespace Warehouse.Core.Persistence
 {
     public class MongoRepository<TEntity> : ICriteriaRepository<TEntity, string> where TEntity : class, IEntity<string>
     {
@@ -18,7 +11,7 @@ namespace Vayosoft.Data.MongoDB
 
         public MongoRepository(IMongoContext context)
         {
-            _collection = Guard.NotNull(context, nameof(context)).Database.GetCollection<TEntity>(CollectionName.For<TEntity>());
+            _collection = context.Database.GetCollection<TEntity>(CollectionName.For<TEntity>());
         }
 
         public IEnumerable<TEntity> GetByCriteria(Expression<Func<TEntity, bool>> criteria)
