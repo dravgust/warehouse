@@ -12,7 +12,7 @@ namespace Warehouse.Core.Application
 
             CreateMap<GatewayViewModel, Gateway>();
             CreateMap<BeaconViewModel, Beacon>();
-            CreateMap<WarehouseSiteViewModel, WarehouseSiteEntity>()
+            CreateMap<WarehouseSiteDto, WarehouseSiteEntity>()
                 .ForMember(m => m.Gateways, 
                     des =>
                         des.MapFrom(m => m.Gateways ?? new List<GatewayViewModel>()));

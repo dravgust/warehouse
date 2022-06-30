@@ -5,8 +5,9 @@ using Vayosoft.Core.SharedKernel.Queries.Handler;
 using Vayosoft.Core.SharedKernel.Queries.Query;
 using Vayosoft.Data.MongoDB;
 using Warehouse.Core.Domain.Entities;
+using Warehouse.Core.Domain.ValueObjects;
 
-namespace Warehouse.Core.Queries
+namespace Warehouse.Core.Application.Queries
 {
     public class GetRegisteredBeaconList : IQuery<IEnumerable<string>>
     {

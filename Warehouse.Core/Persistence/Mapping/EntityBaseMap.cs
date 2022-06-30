@@ -19,5 +19,7 @@ namespace Warehouse.Core.Persistence.Mapping
             cm.IdMemberMap.SetIdGenerator(StringObjectIdGenerator.Instance)
                 .SetSerializer(new StringSerializer(BsonType.ObjectId));
         }
+
+
     }
 }

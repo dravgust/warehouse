@@ -3,7 +3,7 @@ using Vayosoft.Core.SharedKernel.Commands;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.SharedKernel.Queries;
 using Vayosoft.Core.SharedKernel.Queries.Query;
-using Warehouse.Core.Application.Specifications;
+using Warehouse.Core.Application.Queries.Specifications;
 using Warehouse.Core.Domain.Entities;
 
 namespace IpsWeb.Controllers.API

@@ -1,4 +1,6 @@
-﻿using Vayosoft.Core.SharedKernel.Entities;
+﻿using System.Text.Json.Serialization;
+using Vayosoft.Core.SharedKernel.Entities;
+using Warehouse.Core.Domain.ValueObjects;
 
 namespace Warehouse.Core.Domain.Entities
 {
@@ -7,6 +9,7 @@ namespace Warehouse.Core.Domain.Entities
         public string Name { get; set; }
         public string Description { get; set; }
 
+        //[JsonConverter(typeof(MacAddressConverter))]
         public string MacAddress { get; set; }
 
         public ProductMetadata Metadata { get; set; }

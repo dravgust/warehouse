@@ -7,7 +7,7 @@ using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.SharedKernel.Queries;
 using Vayosoft.Core.SharedKernel.Queries.Query;
-using Warehouse.Core.Application.Specifications;
+using Warehouse.Core.Application.Queries.Specifications;
 using Warehouse.Core.Application.ViewModels;
 using Warehouse.Core.Domain.Entities;
 using Warehouse.Core.Persistence;

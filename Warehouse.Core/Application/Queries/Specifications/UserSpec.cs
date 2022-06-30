@@ -2,7 +2,7 @@
 using Vayosoft.Core.SharedKernel.Specifications;
 using Warehouse.Core.Domain.Entities;
 
-namespace Warehouse.Core.Application.Specifications
+namespace Warehouse.Core.Application.Queries.Specifications
 {
     public class UserSpec : SortByIdPaging<UserEntityDto>, ILinqSpecification<UserEntity>
     {

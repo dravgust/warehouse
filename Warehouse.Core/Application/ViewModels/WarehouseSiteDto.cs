@@ -3,7 +3,7 @@ using Vayosoft.Core.SharedKernel.Entities;
 
 namespace Warehouse.Core.Application.ViewModels
 {
-    public class WarehouseSiteViewModel: IEntity<string>
+    public class WarehouseSiteDto: IEntity<string>
     {
         public string? Id { get; set; }
         [Required]

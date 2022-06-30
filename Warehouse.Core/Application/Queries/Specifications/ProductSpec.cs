@@ -4,7 +4,7 @@ using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.SharedKernel.Specifications;
 using Warehouse.Core.Domain.Entities;
 
-namespace Warehouse.Core.Application.Specifications
+namespace Warehouse.Core.Application.Queries.Specifications
 {
     public class ProductSpec : PagingBase<ProductEntity, object>, IFilteringSpecification<ProductEntity>
     {

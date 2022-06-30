@@ -1,17 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Vayosoft.Core.Caching;
 using Vayosoft.Core.Helpers;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.SharedKernel.Queries;
 using Vayosoft.Core.SharedKernel.Queries.Query;
-using Warehouse.Core.Application.Specifications;
+using Warehouse.Core.Application.Queries;
+using Warehouse.Core.Application.Queries.Specifications;
 using Warehouse.Core.Application.ViewModels;
 using Warehouse.Core.Domain.Entities;
 using Warehouse.Core.Persistence;
-using Warehouse.Core.Queries;
 
 namespace IpsWeb.Controllers.API
 {
@@ -23,18 +21,14 @@ namespace IpsWeb.Controllers.API
         private readonly ICriteriaRepository<WarehouseSiteEntity, string> _siteRepository;
         private readonly IQueryBus _queryBus;
         private readonly IMapper _mapper;
-        private readonly IDistributedMemoryCache _cache;
-        private readonly ILinqProvider _linqProvider;
 
         public SitesController(
             ICriteriaRepository<WarehouseSiteEntity, string> siteRepository,
-            IQueryBus queryBus, IMapper mapper, IDistributedMemoryCache cache, ILinqProvider linqProvider)
+            IQueryBus queryBus, IMapper mapper)
         {
             _siteRepository = siteRepository;
             _queryBus = queryBus;
             _mapper = mapper;
-            _cache = cache;
-            _linqProvider = linqProvider;
         }
 
         [HttpGet("")]
@@ -71,24 +65,16 @@ namespace IpsWeb.Controllers.API
         }
 
         [HttpPost("set")]
-        public async Task<IActionResult> Post([FromBody] WarehouseSiteViewModel item, CancellationToken token)
+        public async Task<IActionResult> Post([FromBody] WarehouseSiteDto item, CancellationToken token)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             return Ok(await _siteRepository.SetAsync(item, _mapper, token));
         }
 
         [HttpGet("gw-registered")]
-        public async Task<IActionResult> GetRegisteredGwList(CancellationToken token)
-        {
-            var data = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<DeviceEntity>(), async options =>
-            {
-                options.AbsoluteExpirationRelativeToNow = TimeSpans.FiveMinutes;
-                var data = await _linqProvider.AsQueryable<DeviceEntity>().Where(d => d.ProviderId == 2).ToListAsync(cancellationToken: token);
-                return data.Select(d => d.MacAddress).OrderBy(macAddress => macAddress);
-            });
+        public async Task<IActionResult> GetRegisteredGwList(CancellationToken token) =>
+            Ok(await _queryBus.Send(new GetRegisteredGwList(), token));
 
-            return Ok(data);
-        }
 
         [HttpGet("beacons-registered")]
         public async Task<IActionResult> GetRegisteredBeaconList(CancellationToken token) =>

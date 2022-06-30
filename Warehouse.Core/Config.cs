@@ -3,6 +3,8 @@ using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Bson.Serialization;
+using Newtonsoft.Json;
 using Vayosoft.AutoMapper;
 using Vayosoft.Core;
 using Vayosoft.Core.Persistence;
@@ -14,10 +16,11 @@ using Vayosoft.Data.EF.MySQL;
 using Vayosoft.Data.MongoDB;
 using Vayosoft.Data.MongoDB.Queries;
 using Warehouse.Core.Application;
-using Warehouse.Core.Application.Specifications;
+using Warehouse.Core.Application.Queries;
+using Warehouse.Core.Application.Queries.Specifications;
 using Warehouse.Core.Domain.Entities;
+using Warehouse.Core.Domain.ValueObjects;
 using Warehouse.Core.Persistence;
-using Warehouse.Core.Queries;
 
 namespace Warehouse.Core
 {
@@ -58,6 +61,7 @@ namespace Warehouse.Core
             services.AddScoped<ICriteriaRepository<ProductEntity, string>, MongoRepository<ProductEntity>>();
             services.AddScoped<ICriteriaRepository<WarehouseSiteEntity, string>, MongoRepository<WarehouseSiteEntity>>();
             services.AddScoped<IRequestHandler<GetRegisteredBeaconList, IEnumerable<string>>, GetRegisteredBeaconList.RegisteredBeaconQueryHandler>();
+            services.AddScoped<IRequestHandler<GetRegisteredGwList, IEnumerable<string>>, GetRegisteredGwList.RegisteredGwQueryHandler>();
 
             services.AddScoped<IRequestHandler<SpecificationQuery<WarehouseSiteSpec, IPagedEnumerable<WarehouseSiteEntity>>, IPagedEnumerable<WarehouseSiteEntity>>,
                 MongoPagingQueryHandler<WarehouseSiteSpec, WarehouseSiteEntity>>();
@@ -89,7 +93,84 @@ namespace Warehouse.Core
         public static void ConfigureMongoDb()
         {
             AutoRegistration.RegisterClassMap(Assembly.GetExecutingAssembly());
+            BsonSerializer.RegisterSerializer(typeof(MacAddress), new MacAddressSerializer());
             //db.setProfilingLevel(2,1)
         }
+
     }
+
+    public class MacAddressSerializer : IBsonSerializer<MacAddress>
+    {
+        object IBsonSerializer.Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
+        {
+            return Deserialize(context, args);
+        }
+
+        public void Serialize(BsonSerializationContext context, BsonSerializationArgs args, MacAddress value)
+        {
+            context.Writer.WriteString(value.Value);
+        }
+
+        public void Serialize(BsonSerializationContext context, BsonSerializationArgs args, object value)
+        {
+            if (value is MacAddress email)
+            {
+                context.Writer.WriteString(email.Value);
+            }
+            else
+            {
+                throw new NotSupportedException("This is not an MacAddress");
+            }
+        }
+
+        public MacAddress Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
+        {
+            var value = context.Reader.ReadString();
+            return MacAddress.Create(value);
+        }
+
+        public Type ValueType => typeof(MacAddress);
+    }
+
+    public class MacAddressConverter : JsonConverter<MacAddress>
+    {
+        public override void WriteJson(JsonWriter writer, MacAddress value, JsonSerializer serializer)
+        {
+            writer.WriteValue(value.Value);
+        }
+
+        public override MacAddress ReadJson(JsonReader reader, Type objectType, MacAddress existingValue, bool hasExistingValue,
+            JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.String)
+            {
+                //if (reader.Value != null)
+                return MacAddress.Create((reader.Value as string)!);
+            }
+            else
+            {
+                throw new NotSupportedException("This is not an MacAddress value");
+            }
+        }
+    }
+
+    //public class MacAddressConverter : JsonConverter<MacAddress>
+    //{
+    //    public override MacAddress? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    //    {
+    //        if (reader.TokenType == JsonTokenType.String)
+    //        {
+    //            return MacAddress.Create(reader.GetString()!);
+    //        }
+    //        else
+    //        {
+    //            throw new NotSupportedException("This is not an MacAddress value");
+    //        }
+    //    }
+
+    //    public override void Write(Utf8JsonWriter writer, MacAddress value, JsonSerializerOptions options)
+    //    {
+    //        writer.WriteStringValue(value.ToString());
+    //    }
+    //}
 }

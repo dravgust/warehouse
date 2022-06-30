@@ -1,5 +1,6 @@
 ﻿
 using Warehouse.Core.Domain.Enums;
+using Warehouse.Core.Domain.ValueObjects;
 
 namespace Warehouse.Core.Domain.Entities
 {
