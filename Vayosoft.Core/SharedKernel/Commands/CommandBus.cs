@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 
@@ -12,9 +13,9 @@ namespace Vayosoft.Core.SharedKernel.Commands
             this.mediator = mediator;
         }
 
-        public Task Send<TCommand>(TCommand command) where TCommand : ICommand
+        public Task Send<TCommand>(TCommand command, CancellationToken cancellationToken = default) where TCommand : ICommand
         {
-            return mediator.Send(command);
+            return mediator.Send(command, cancellationToken);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Warehouse.Core.Application
     {
         public MappingProfile()
         {
-            CreateMap<ProductViewModel, ProductEntity>();
+            CreateMap<ProductDto, ProductEntity>();
 
             CreateMap<GatewayViewModel, Gateway>();
             CreateMap<BeaconViewModel, Beacon>();

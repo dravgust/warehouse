@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.ComponentModel;
+using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Warehouse.Core.Domain.ValueObjects
 {
@@ -34,4 +36,42 @@ namespace Warehouse.Core.Domain.ValueObjects
             return string.Compare(Value, other.Value, StringComparison.Ordinal);
         }
     }
+
+    //public class ServerDateTimeConverter : JsonConverter
+    //{
+    //    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    //    {
+    //        writer.WriteValue(value is ServerDateTime dt ? dt.ToDouble(DateTimeKind.Utc) : string.Empty);
+    //    }
+
+    //    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    //    {
+    //        if (reader.Value == null || !double.TryParse($"{reader.Value}", out var value))
+    //            return null;
+
+    //        return ServerDateTime.FromDouble(value, DateTimeKind.Utc);
+    //    }
+
+    //    public override bool CanConvert(Type objectType)
+    //    {
+    //        return objectType == typeof(ServerDateTime);
+    //    }
+    //}
+
+    //public class MacAddressTypeConverter : TypeConverter
+    //{
+    //    public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+    //    {
+    //        return sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
+    //    }
+
+    //    public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+    //    {
+    //        if (value is string)
+    //        {
+    //            return MacAddress.Create(value);
+    //        }
+    //        return base.ConvertFrom(context, culture, value);
+    //    }
+    //}
 }

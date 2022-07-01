@@ -3,7 +3,7 @@ using Vayosoft.Core.SharedKernel.Commands;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.SharedKernel.Queries;
 using Vayosoft.Core.SharedKernel.Queries.Query;
-using Warehouse.Core.Application.Queries.Specifications;
+using Warehouse.Core.Application.Features.Administration.Spcecifications;
 using Warehouse.Core.Domain.Entities;
 
 namespace IpsWeb.Controllers.API
@@ -28,13 +28,13 @@ namespace IpsWeb.Controllers.API
             var spec = new UserSpec(page, take);
             var query = new SpecificationQuery<UserSpec, IPagedEnumerable<UserEntityDto>>(spec);
 
-            var result = await queryBus.Send(query, token);
+            var data = await queryBus.Send(query, token);
 
             return new
             {
-                data = result,
-                totalItems = result.TotalCount,
-                totalPages = (long)Math.Ceiling((double)result.TotalCount / take)
+                data,
+                totalItems = data.TotalCount,
+                totalPages = (long) Math.Ceiling((double)data.TotalCount / take)
             };
         }
 

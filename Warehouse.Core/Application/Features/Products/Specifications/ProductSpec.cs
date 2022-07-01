@@ -4,14 +4,14 @@ using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.SharedKernel.Specifications;
 using Warehouse.Core.Domain.Entities;
 
-namespace Warehouse.Core.Application.Queries.Specifications
+namespace Warehouse.Core.Application.Features.Products.Specifications
 {
     public class ProductSpec : PagingBase<ProductEntity, object>, IFilteringSpecification<ProductEntity>
     {
         public ProductSpec(int page, int take, string? filterString)
             : base(page, take, new Sorting<ProductEntity>(p => p.Name, SortOrder.Asc))
         {
-            this.FilterString = filterString;
+            FilterString = filterString;
             if (!string.IsNullOrEmpty(FilterString))
             {
                 FilterBy.Add(e => e.Name);

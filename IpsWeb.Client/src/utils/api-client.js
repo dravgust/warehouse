@@ -20,6 +20,9 @@ async function client(
 
   return window.fetch(`${apiURL}/${endpoint}`, config).then(async response => {
     console.log("response", response)
+    if(response.status === 201){
+      return Promise.resolve();
+    }
     if (response.status === 401) {
       //queryCache.clear()
       await auth.logout()

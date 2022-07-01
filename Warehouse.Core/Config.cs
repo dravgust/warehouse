@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using AutoMapper;
+using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,11 +15,16 @@ using Vayosoft.Core.SharedKernel.Queries.Handler;
 using Vayosoft.Core.SharedKernel.Queries.Query;
 using Vayosoft.Data.EF.MySQL;
 using Vayosoft.Data.MongoDB;
-using Vayosoft.Data.MongoDB.Queries;
+using Vayosoft.Data.MongoDB.QueryHandlers;
 using Warehouse.Core.Application;
-using Warehouse.Core.Application.Queries;
-using Warehouse.Core.Application.Queries.Specifications;
+using Warehouse.Core.Application.Features.Administration.Spcecifications;
+using Warehouse.Core.Application.Features.Products;
+using Warehouse.Core.Application.Features.Products.Commands;
+using Warehouse.Core.Application.Features.Products.Specifications;
+using Warehouse.Core.Application.Features.Warehouse.Queries;
+using Warehouse.Core.Application.Features.Warehouse.Specifications;
 using Warehouse.Core.Domain.Entities;
+using Warehouse.Core.Domain.Repositories;
 using Warehouse.Core.Domain.ValueObjects;
 using Warehouse.Core.Persistence;
 
@@ -52,10 +58,12 @@ namespace Warehouse.Core
         }
 
 
-
         public static IServiceCollection AddMongodDependencies(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddMongoDbContext(ConfigureMongoDb);
+
+            services.AddScoped<IRequestHandler<SetProduct, Unit>, ProductCommandHandler>();
+            services.AddScoped<IRequestHandler<DeleteProduct, Unit>, ProductCommandHandler>();
 
             services.AddScoped<ICriteriaRepository<FileEntity, string>, MongoRepository<FileEntity>>();
             services.AddScoped<ICriteriaRepository<ProductEntity, string>, MongoRepository<ProductEntity>>();
@@ -72,6 +80,8 @@ namespace Warehouse.Core
             services.AddScoped<IRequestHandler<SpecificationQuery<ProductSpec, IPagedEnumerable<ProductEntity>>, IPagedEnumerable<ProductEntity>>,
                 MongoPagingQueryHandler<ProductSpec, ProductEntity>>();
 
+            services.AddScoped<IRequestHandler<SingleQuery<ProductEntity>, ProductEntity>, MongoSingleQueryHandler<string, ProductEntity>>();
+            
             return services;
         }
 
@@ -113,9 +123,9 @@ namespace Warehouse.Core
 
         public void Serialize(BsonSerializationContext context, BsonSerializationArgs args, object value)
         {
-            if (value is MacAddress email)
+            if (value is MacAddress macAddress)
             {
-                context.Writer.WriteString(email.Value);
+                context.Writer.WriteString(macAddress.Value);
             }
             else
             {

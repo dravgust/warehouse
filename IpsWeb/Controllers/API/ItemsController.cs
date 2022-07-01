@@ -1,16 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Vayosoft.Core.Caching;
-using Vayosoft.Core.Extensions;
-using Vayosoft.Core.Helpers;
-using Vayosoft.Core.Persistence;
-using Vayosoft.Core.SharedKernel;
+using Vayosoft.Core.SharedKernel.Commands;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.SharedKernel.Queries;
 using Vayosoft.Core.SharedKernel.Queries.Query;
-using Warehouse.Core.Application.Queries.Specifications;
-using Warehouse.Core.Application.ViewModels;
+using Warehouse.Core.Application.Features.Products.Commands;
+using Warehouse.Core.Application.Features.Products.Queries;
+using Warehouse.Core.Application.Features.Products.Specifications;
 using Warehouse.Core.Domain.Entities;
-using Warehouse.Core.Persistence;
 
 namespace IpsWeb.Controllers.API
 {
@@ -20,38 +16,19 @@ namespace IpsWeb.Controllers.API
     [ApiController]
     public class ItemsController : ControllerBase
     {
-        private readonly ICriteriaRepository<ProductEntity, string> _productRepository;
-        private readonly ICriteriaRepository<FileEntity, string> _fileRepository;
         private readonly IQueryBus _queryBus;
-        private readonly IMapper _mapper;
-        private readonly IDistributedMemoryCache _cache;
+        private readonly ICommandBus _commandBus;
 
-        public ItemsController(
-            ICriteriaRepository<ProductEntity, string> productRepository,
-            ICriteriaRepository<FileEntity, string> fileRepository,
-            IQueryBus queryBus, IMapper mapper, IDistributedMemoryCache cache)
+        public ItemsController(IQueryBus queryBus, ICommandBus commandBus)
         {
-            _productRepository = productRepository;
-            _fileRepository = fileRepository;
             _queryBus = queryBus;
-            _mapper = mapper;
-            _cache = cache;
+            _commandBus = commandBus;
         }
 
         [HttpGet("metadata")]
         public async Task<IActionResult> GetMetadataTemplate(CancellationToken token)
         {
-            var data = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<ProductMetadata>(), async options =>
-            {
-                options.SlidingExpiration = TimeSpans.FiveMinutes;
-                var entity = await _fileRepository.GetAsync(nameof(ProductMetadata), token);
-                ProductMetadata? data = null;
-                if (!string.IsNullOrEmpty(entity?.Content))
-                    data = entity.Content.FromJson<ProductMetadata>();
-
-                return data;
-            });
-            
+            var data = await _queryBus.Send(new GetProductMetadata(), token);
             return Ok(new
             {
                 data
@@ -64,21 +41,21 @@ namespace IpsWeb.Controllers.API
             var spec = new ProductSpec(page, size, searchTerm);
             var query = new SpecificationQuery<ProductSpec, IPagedEnumerable<ProductEntity>>(spec);
 
-            var result = await _queryBus.Send(query, token);
+            var data = await _queryBus.Send(query, token);
 
             return Ok(new
             {
-                data = result,
-                totalItems = result.TotalCount,
-                totalPages = (long)Math.Ceiling((double)result.TotalCount / size)
+                data,
+                totalItems = data.TotalCount,
+                totalPages = (long) Math.Ceiling((double)data.TotalCount / size)
             });
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id, CancellationToken token)
         {
-            Guard.NotEmpty(id, nameof(id));
-            var data = await _productRepository.GetAsync(id, token);
+            var query = new SingleQuery<ProductEntity>(id);
+            var data = await _queryBus.Send(query, token);
             return Ok(new
             {
                 data
@@ -86,19 +63,18 @@ namespace IpsWeb.Controllers.API
 
         }
 
-        [HttpGet("{id}/delete")]
-        public async Task<IActionResult> DeleteById(string id, CancellationToken token)
+        [HttpPost("delete")]
+        public async Task<IActionResult> Delete([FromBody] DeleteProduct command, CancellationToken token)
         {
-            Guard.NotEmpty(id, nameof(id));
-            await _productRepository.DeleteAsync(new ProductEntity { Id = id }, token);
+            await _commandBus.Send(command, token);
             return Ok();
         }
 
         [HttpPost("set")]
-        public async Task<IActionResult> Post([FromBody] ProductViewModel item, CancellationToken token)
+        public async Task<IActionResult> Post([FromBody] SetProduct command, CancellationToken token)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-            return Ok(await _productRepository.SetAsync(item, _mapper, token));
+            await _commandBus.Send(command, token);
+            return Created("api/items", command.Id);
         }
     }
 }

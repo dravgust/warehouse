@@ -1,8 +1,10 @@
 
 using System.Diagnostics;
 using System.Globalization;
+using FluentValidation.AspNetCore;
 using IpsWeb.Lib.API.Services;
 using IpsWeb.Lib.API.TagHelpers;
+using IpsWeb.Lib.Behaviours;
 using IpsWeb.Lib.Queries;
 using IpsWeb.Resources;
 using MediatR;
@@ -18,6 +20,7 @@ using Vayosoft.WebAPI.Middlewares.ExceptionHandling;
 using Vayosoft.WebAPI.Middlewares.Jwt;
 using Vayosoft.WebAPI.Services;
 using Warehouse.Core;
+using Warehouse.Core.Application.Features.Products.Commands;
 using Warehouse.Core.Domain.Entities;
 
 Log.Logger = new LoggerConfiguration()
@@ -46,6 +49,7 @@ try
 
     var configuration = builder.Configuration;
 
+    builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
     builder.Services.AddWarehouseDependencies(configuration);
     builder.Services.AddSingleton<IRequestHandler<GetResources, IEnumerable<ResourceGroup>>, GetResources.ResourcesQueryHandler>();
 
@@ -71,11 +75,13 @@ try
     builder.Services.AddControllersWithViews(options =>
     {
         //options.Filters.Add(new AuthorizeAttribute());
-    }).AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix,
+    }).AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<SetProduct.CertificateRequestValidator>())
+    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix,
     options =>
     {
         options.ResourcesPath = "Resources";
-    }).AddDataAnnotationsLocalization(resOptions =>
+    })
+    .AddDataAnnotationsLocalization(resOptions =>
     {
         resOptions.DataAnnotationLocalizerProvider = (type, factory) => factory.Create(typeof(SharedResources));
     });

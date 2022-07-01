@@ -4,14 +4,14 @@ using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.SharedKernel.Specifications;
 using Warehouse.Core.Domain.Entities;
 
-namespace Warehouse.Core.Application.Queries.Specifications
+namespace Warehouse.Core.Application.Features.Warehouse.Specifications
 {
     public class BeaconEventSpec : PagingBase<BeaconEventEntity, object>, IFilteringSpecification<BeaconEventEntity>
     {
         public BeaconEventSpec(int page, int take, string? filterString)
             : base(page, take, new Sorting<BeaconEventEntity>(p => p.TimeStamp, SortOrder.Desc))
         {
-            this.FilterString = filterString;
+            FilterString = filterString;
             if (!string.IsNullOrEmpty(FilterString))
             {
                 FilterBy.Add(e => e.MacAddress);

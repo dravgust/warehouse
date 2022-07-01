@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Data.MongoDB;
+using Warehouse.Core.Domain.Repositories;
 
 namespace Warehouse.Core.Persistence
 {

@@ -11,7 +11,7 @@ using Vayosoft.Core.SharedKernel.Queries.Handler;
 using Vayosoft.Core.SharedKernel.Queries.Query;
 using Vayosoft.Core.SharedKernel.Specifications;
 
-namespace Vayosoft.Data.MongoDB.Queries
+namespace Vayosoft.Data.MongoDB.QueryHandlers
 {
     using static String;
 

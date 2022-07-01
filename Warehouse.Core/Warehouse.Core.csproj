@@ -8,8 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Commands\" />
-    <Folder Include="Domain\Repositories\" />
+    <Folder Include="Application\Features\Administration\Queries\" />
     <Folder Include="Domain\Services\" />
   </ItemGroup>
 

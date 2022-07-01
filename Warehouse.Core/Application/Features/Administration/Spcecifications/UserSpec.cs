@@ -2,7 +2,7 @@
 using Vayosoft.Core.SharedKernel.Specifications;
 using Warehouse.Core.Domain.Entities;
 
-namespace Warehouse.Core.Application.Queries.Specifications
+namespace Warehouse.Core.Application.Features.Administration.Spcecifications
 {
     public class UserSpec : SortByIdPaging<UserEntityDto>, ILinqSpecification<UserEntity>
     {
@@ -10,8 +10,8 @@ namespace Warehouse.Core.Application.Queries.Specifications
 
         public UserSpec(int page, int take, string? searchTerm = null)
         {
-            this.Page = page;
-            this.Take = take;
+            Page = page;
+            Take = take;
 
             _searchTerm = searchTerm;
         }

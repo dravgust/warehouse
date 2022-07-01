@@ -4,7 +4,7 @@ using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.SharedKernel.Specifications;
 using Warehouse.Core.Domain.Entities;
 
-namespace Warehouse.Core.Application.Queries.Specifications
+namespace Warehouse.Core.Application.Features.Warehouse.Specifications
 {
     public class WarehouseSiteSpec : PagingBase<WarehouseSiteEntity, object>, IFilteringSpecification<WarehouseSiteEntity>
     {
@@ -12,7 +12,7 @@ namespace Warehouse.Core.Application.Queries.Specifications
             : base(page, take,
                 new Sorting<WarehouseSiteEntity, object>(p => p.Name, SortOrder.Asc))
         {
-            this.FilterString = filterString;
+            FilterString = filterString;
             if (!string.IsNullOrEmpty(FilterString))
             {
                 FilterBy.Add(e => e.Name);

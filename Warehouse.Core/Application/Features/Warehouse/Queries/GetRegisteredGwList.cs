@@ -7,7 +7,7 @@ using Vayosoft.Core.SharedKernel.Queries.Query;
 using Warehouse.Core.Domain.Entities;
 using Warehouse.Core.Domain.ValueObjects;
 
-namespace Warehouse.Core.Application.Queries
+namespace Warehouse.Core.Application.Features.Warehouse.Queries
 {
     public class GetRegisteredGwList : IQuery<IEnumerable<string>>
     {

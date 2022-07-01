@@ -59,7 +59,7 @@ export default function ItemForm({ onSave = () => {}, onDelete = () => {}, item 
   const handleDelete = async (item) => {
     const token = await auth.getToken();
     try {
-      await client(`items/${item.id}/delete`, { token });
+      await client(`items/delete`, { data: item,  token });
       return onDelete();
     } catch (err) {
       console.log("delete-item", err);

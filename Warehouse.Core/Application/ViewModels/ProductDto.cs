@@ -4,7 +4,7 @@ using Warehouse.Core.Domain.Entities;
 
 namespace Warehouse.Core.Application.ViewModels
 {
-    public class ProductViewModel : IEntity<string>
+    public class ProductDto : IEntity<string>
     {
         object IEntity.Id { get; }
         public string? Id { get; set; }
