@@ -20,8 +20,8 @@ using Vayosoft.WebAPI.Middlewares.ExceptionHandling;
 using Vayosoft.WebAPI.Middlewares.Jwt;
 using Vayosoft.WebAPI.Services;
 using Warehouse.Core;
-using Warehouse.Core.Application.Features.Products.Commands;
 using Warehouse.Core.Domain.Entities;
+using Warehouse.Core.UseCases.Products.Commands;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Debug()

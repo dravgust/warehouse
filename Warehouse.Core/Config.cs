@@ -16,17 +16,16 @@ using Vayosoft.Core.SharedKernel.Queries.Query;
 using Vayosoft.Data.EF.MySQL;
 using Vayosoft.Data.MongoDB;
 using Vayosoft.Data.MongoDB.QueryHandlers;
-using Warehouse.Core.Application;
-using Warehouse.Core.Application.Features.Administration.Spcecifications;
-using Warehouse.Core.Application.Features.Products;
-using Warehouse.Core.Application.Features.Products.Commands;
-using Warehouse.Core.Application.Features.Products.Specifications;
-using Warehouse.Core.Application.Features.Warehouse.Queries;
-using Warehouse.Core.Application.Features.Warehouse.Specifications;
 using Warehouse.Core.Domain.Entities;
-using Warehouse.Core.Domain.Repositories;
 using Warehouse.Core.Domain.ValueObjects;
 using Warehouse.Core.Persistence;
+using Warehouse.Core.UseCases.Administration.Spcecifications;
+using Warehouse.Core.UseCases.Persistence;
+using Warehouse.Core.UseCases.Products;
+using Warehouse.Core.UseCases.Products.Commands;
+using Warehouse.Core.UseCases.Products.Specifications;
+using Warehouse.Core.UseCases.Warehouse.Queries;
+using Warehouse.Core.UseCases.Warehouse.Specifications;
 
 namespace Warehouse.Core
 {

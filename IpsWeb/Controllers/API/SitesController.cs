@@ -5,11 +5,11 @@ using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.SharedKernel.Queries;
 using Vayosoft.Core.SharedKernel.Queries.Query;
-using Warehouse.Core.Application.Features.Warehouse.Specifications;
-using Warehouse.Core.Application.Queries;
-using Warehouse.Core.Application.ViewModels;
 using Warehouse.Core.Domain.Entities;
-using Warehouse.Core.Domain.Repositories;
+using Warehouse.Core.UseCases.Persistence;
+using Warehouse.Core.UseCases.Warehouse.Queries;
+using Warehouse.Core.UseCases.Warehouse.Specifications;
+using Warehouse.Core.UseCases.Warehouse.ViewModels;
 
 namespace IpsWeb.Controllers.API
 {
