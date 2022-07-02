@@ -4,7 +4,7 @@ using Vayosoft.Core.Helpers;
 using Vayosoft.Core.SharedKernel.Queries.Handler;
 using Vayosoft.Core.SharedKernel.Queries.Query;
 using Vayosoft.Data.MongoDB;
-using Warehouse.Core.Domain.Entities;
+using Warehouse.Core.Entities.Models;
 
 namespace Warehouse.Core.UseCases.Warehouse.Queries
 {

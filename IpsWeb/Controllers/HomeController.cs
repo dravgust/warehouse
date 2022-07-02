@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using IpsWeb.Lib.API.ViewModels;
+using IpsWeb.Models;
 using Microsoft.AspNetCore.Localization;
 
 namespace IpsWeb.Controllers

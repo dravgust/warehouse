@@ -2,11 +2,13 @@
 using System.Diagnostics;
 using System.Globalization;
 using FluentValidation.AspNetCore;
-using IpsWeb.Lib.API.Services;
-using IpsWeb.Lib.API.TagHelpers;
-using IpsWeb.Lib.Behaviours;
-using IpsWeb.Lib.Queries;
 using IpsWeb.Resources;
+using IpsWeb.Services.ExceptionHandling;
+using IpsWeb.Services.Localization;
+using IpsWeb.Services.Security;
+using IpsWeb.Services.Validation;
+using IpsWeb.TagHelpers;
+using IpsWeb.UseCases.Resources;
 using MediatR;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -15,12 +17,10 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using Vayosoft.Caching;
 using Vayosoft.Data.Redis;
-using Vayosoft.WebAPI;
-using Vayosoft.WebAPI.Middlewares.ExceptionHandling;
-using Vayosoft.WebAPI.Middlewares.Jwt;
-using Vayosoft.WebAPI.Services;
 using Warehouse.Core;
-using Warehouse.Core.Domain.Entities;
+using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Services;
+using Warehouse.Core.UseCases.Administration.Models;
 using Warehouse.Core.UseCases.Products.Commands;
 
 Log.Logger = new LoggerConfiguration()
@@ -108,7 +108,7 @@ try
     builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
     // configure DI for application services
-    builder.Services.AddScoped<IJwtUtils, JwtUtils>();
+    builder.Services.AddScoped<IJwtService, JwtService>();
     builder.Services.AddScoped<IPasswordHasher, MD5PasswordHasher>();
     builder.Services.AddScoped<IUserService, UserService<UserEntity>>();
 

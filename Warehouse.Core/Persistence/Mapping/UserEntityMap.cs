@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Vayosoft.Data.EF.MySQL;
-using Vayosoft.WebAPI.Entities;
-using Warehouse.Core.Domain.Entities;
+using Warehouse.Core.Entities.Models;
+using Warehouse.Core.UseCases.Administration.Models;
 
 namespace Warehouse.Core.Persistence.Mapping
 {

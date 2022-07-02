@@ -1,11 +1,9 @@
 ﻿using System.Reflection;
 using AutoMapper;
-using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson.Serialization;
-using Newtonsoft.Json;
 using Vayosoft.AutoMapper;
 using Vayosoft.Core;
 using Vayosoft.Core.Persistence;
@@ -16,9 +14,10 @@ using Vayosoft.Core.SharedKernel.Queries.Query;
 using Vayosoft.Data.EF.MySQL;
 using Vayosoft.Data.MongoDB;
 using Vayosoft.Data.MongoDB.QueryHandlers;
-using Warehouse.Core.Domain.Entities;
-using Warehouse.Core.Domain.ValueObjects;
+using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Entities.ValueObjects;
 using Warehouse.Core.Persistence;
+using Warehouse.Core.UseCases;
 using Warehouse.Core.UseCases.Administration.Spcecifications;
 using Warehouse.Core.UseCases.Persistence;
 using Warehouse.Core.UseCases.Products;
@@ -141,27 +140,27 @@ namespace Warehouse.Core
         public Type ValueType => typeof(MacAddress);
     }
 
-    public class MacAddressConverter : JsonConverter<MacAddress>
-    {
-        public override void WriteJson(JsonWriter writer, MacAddress value, JsonSerializer serializer)
-        {
-            writer.WriteValue(value.Value);
-        }
+    //public class MacAddressConverter : JsonConverter<MacAddress>
+    //{
+    //    public override void WriteJson(JsonWriter writer, MacAddress value, JsonSerializer serializer)
+    //    {
+    //        writer.WriteValue(value.Value);
+    //    }
 
-        public override MacAddress ReadJson(JsonReader reader, Type objectType, MacAddress existingValue, bool hasExistingValue,
-            JsonSerializer serializer)
-        {
-            if (reader.TokenType == JsonToken.String)
-            {
-                //if (reader.Value != null)
-                return MacAddress.Create((reader.Value as string)!);
-            }
-            else
-            {
-                throw new NotSupportedException("This is not an MacAddress value");
-            }
-        }
-    }
+    //    public override MacAddress ReadJson(JsonReader reader, Type objectType, MacAddress existingValue, bool hasExistingValue,
+    //        JsonSerializer serializer)
+    //    {
+    //        if (reader.TokenType == JsonToken.String)
+    //        {
+    //            //if (reader.Value != null)
+    //            return MacAddress.Create((reader.Value as string)!);
+    //        }
+    //        else
+    //        {
+    //            throw new NotSupportedException("This is not an MacAddress value");
+    //        }
+    //    }
+    //}
 
     //public class MacAddressConverter : JsonConverter<MacAddress>
     //{

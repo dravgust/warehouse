@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using IpsWeb.Services.Security.Attributes;
+using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.SharedKernel.Commands;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.SharedKernel.Queries;
 using Vayosoft.Core.SharedKernel.Queries.Query;
-using Warehouse.Core.Domain.Entities;
+using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Administration.Spcecifications;
 
 namespace IpsWeb.Controllers.API
 {
-    [Vayosoft.WebAPI.Attributes.Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase

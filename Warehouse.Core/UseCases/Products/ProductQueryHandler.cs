@@ -3,7 +3,7 @@ using Vayosoft.Core.Extensions;
 using Vayosoft.Core.Helpers;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Queries.Handler;
-using Warehouse.Core.Domain.Entities;
+using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Persistence;
 using Warehouse.Core.UseCases.Products.Queries;
 
