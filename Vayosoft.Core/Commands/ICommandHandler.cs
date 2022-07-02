@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Vayosoft.Core.SharedKernel.Commands
+namespace Vayosoft.Core.Commands
 {
     public interface ICommandHandler<in TRequest> : IRequestHandler<TRequest>
         where TRequest : ICommand

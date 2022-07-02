@@ -3,10 +3,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Vayosoft.Core.Persistence;
+using Vayosoft.Core.Queries.Query;
+using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Entities;
-using Vayosoft.Core.SharedKernel.Queries.Query;
 
-namespace Vayosoft.Core.SharedKernel.Queries.Handler
+namespace Vayosoft.Core.Queries.Handler
 {
     public class SingleQueryHandler<TKey, TEntity, TResult> : IQueryHandler<SingleQuery<TResult>, TResult>
         where TKey : struct, IComparable, IComparable<TKey>, IEquatable<TKey>

@@ -1,6 +1,6 @@
 ﻿using Vayosoft.Core.Caching;
 using Vayosoft.Core.Persistence;
-using Vayosoft.Core.SharedKernel.Queries.Handler;
+using Vayosoft.Core.Queries.Handler;
 using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Persistence;

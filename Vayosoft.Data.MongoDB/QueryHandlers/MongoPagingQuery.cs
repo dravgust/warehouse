@@ -4,12 +4,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using Vayosoft.Core.Queries.Handler;
+using Vayosoft.Core.Queries.Query;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.SharedKernel.Models;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
-using Vayosoft.Core.SharedKernel.Queries.Handler;
-using Vayosoft.Core.SharedKernel.Queries.Query;
-using Vayosoft.Core.SharedKernel.Specifications;
+using Vayosoft.Core.Specifications;
 
 namespace Vayosoft.Data.MongoDB.QueryHandlers
 {

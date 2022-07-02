@@ -1,5 +1,5 @@
 ﻿
-namespace Vayosoft.Core.SharedKernel.Queries.Query
+namespace Vayosoft.Core.Queries.Query
 {
     public record SpecificationQuery<TSpecification, TResult>(
         TSpecification Specification

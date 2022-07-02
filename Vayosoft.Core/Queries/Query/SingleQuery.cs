@@ -1,4 +1,4 @@
-﻿namespace Vayosoft.Core.SharedKernel.Queries.Query
+﻿namespace Vayosoft.Core.Queries.Query
 {
     public record SingleQuery<TResult>(
         object Id

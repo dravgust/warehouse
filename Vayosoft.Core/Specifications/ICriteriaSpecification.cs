@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace Vayosoft.Core.SharedKernel.Specifications
+namespace Vayosoft.Core.Specifications
 {
     public interface ICriteriaSpecification<T>
     {

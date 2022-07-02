@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Vayosoft.Core.SharedKernel.Commands.External
+namespace Vayosoft.Core.Commands.External
 {
     public interface IExternalCommandBus
     {

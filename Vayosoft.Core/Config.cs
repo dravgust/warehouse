@@ -1,11 +1,11 @@
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Vayosoft.Core.SharedKernel.Commands;
-using Vayosoft.Core.SharedKernel.Commands.External;
+using Vayosoft.Core.Commands;
+using Vayosoft.Core.Commands.External;
+using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Events;
 using Vayosoft.Core.SharedKernel.Events.External;
-using Vayosoft.Core.SharedKernel.Queries;
 
 namespace Vayosoft.Core
 {

@@ -2,7 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using RestSharp;
 
-namespace Vayosoft.Core.SharedKernel.Commands.External
+namespace Vayosoft.Core.Commands.External
 {
     public class ExternalCommandBus: IExternalCommandBus
     {

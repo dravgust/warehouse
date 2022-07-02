@@ -1,4 +1,4 @@
-﻿namespace Vayosoft.Core.SharedKernel.Specifications
+﻿namespace Vayosoft.Core.Specifications
 {
     public interface ISpecification<in T>
     {

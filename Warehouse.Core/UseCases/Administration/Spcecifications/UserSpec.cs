@@ -1,5 +1,5 @@
 ﻿using Vayosoft.Core.SharedKernel.Models.Pagination;
-using Vayosoft.Core.SharedKernel.Specifications;
+using Vayosoft.Core.Specifications;
 using Warehouse.Core.Entities.Models;
 
 namespace Warehouse.Core.UseCases.Administration.Spcecifications

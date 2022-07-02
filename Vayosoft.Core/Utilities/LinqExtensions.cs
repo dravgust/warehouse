@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Entities;
-using Vayosoft.Core.SharedKernel.Specifications;
+using Vayosoft.Core.Specifications;
 
 namespace Vayosoft.Core.Utilities
 {

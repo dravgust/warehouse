@@ -1,8 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Vayosoft.Core.SharedKernel.Queries.Query;
+using Vayosoft.Core.Queries.Query;
 
-namespace Vayosoft.Core.SharedKernel.Queries
+namespace Vayosoft.Core.Queries
 {
     public interface IQueryBus
     {

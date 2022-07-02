@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.SharedKernel.Exceptions;
-using Vayosoft.Core.SharedKernel.Specifications;
+using Vayosoft.Core.Specifications;
 
 namespace Vayosoft.Data.EF.MySQL
 {

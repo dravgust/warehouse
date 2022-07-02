@@ -2,7 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 
-namespace Vayosoft.Core.SharedKernel.Commands
+namespace Vayosoft.Core.Commands
 {
     public class CommandBus: ICommandBus
     {

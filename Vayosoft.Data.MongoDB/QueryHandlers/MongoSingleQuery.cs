@@ -2,9 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Driver;
+using Vayosoft.Core.Queries.Handler;
+using Vayosoft.Core.Queries.Query;
 using Vayosoft.Core.SharedKernel.Entities;
-using Vayosoft.Core.SharedKernel.Queries.Handler;
-using Vayosoft.Core.SharedKernel.Queries.Query;
 using Vayosoft.Core.Utilities;
 
 namespace Vayosoft.Data.MongoDB.QueryHandlers

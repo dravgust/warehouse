@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Vayosoft.Core.SharedKernel.Commands;
+using Vayosoft.Core.Commands;
 
 namespace Warehouse.Core.UseCases.Products.Commands
 {

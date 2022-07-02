@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Vayosoft.Core.SharedKernel.Commands
+namespace Vayosoft.Core.Commands
 {
     public interface ICommandBus
     {

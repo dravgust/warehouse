@@ -1,6 +1,6 @@
 ﻿using MediatR;
+using Vayosoft.Core.Commands;
 using Vayosoft.Core.SharedKernel;
-using Vayosoft.Core.SharedKernel.Commands;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Persistence;
 using Warehouse.Core.UseCases.Products.Commands;
