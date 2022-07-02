@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using AutoMapper.QueryableExtensions;
-using Vayosoft.Core.Helpers;
 using Vayosoft.Core.SharedKernel;
+using Vayosoft.Core.Utilities;
 using AM = AutoMapper;
 using IMapper = Vayosoft.Core.SharedKernel.IMapper;
 

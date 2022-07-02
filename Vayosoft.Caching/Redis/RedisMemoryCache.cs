@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 using Vayosoft.Core.Caching;
-using Vayosoft.Core.Extensions;
+using Vayosoft.Core.Utilities;
 using Vayosoft.Data.Redis;
 
 namespace Vayosoft.Caching.Redis

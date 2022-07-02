@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Vayosoft.Core.Extensions
+namespace Vayosoft.Core.Utilities
 {
     public static class StringExtensions
     {

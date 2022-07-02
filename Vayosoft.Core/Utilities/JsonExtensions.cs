@@ -2,7 +2,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 
-namespace Vayosoft.Core.Extensions
+namespace Vayosoft.Core.Utilities
 {
     public static class JsonExtensions
     {

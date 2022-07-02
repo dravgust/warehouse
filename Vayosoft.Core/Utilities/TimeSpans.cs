@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace Vayosoft.Core.Helpers
+namespace Vayosoft.Core.Utilities
 {
     public static class TimeSpans
     {

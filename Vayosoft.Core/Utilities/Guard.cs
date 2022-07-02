@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Vayosoft.Core.Helpers
+namespace Vayosoft.Core.Utilities
 {
     public static class Guard
     {

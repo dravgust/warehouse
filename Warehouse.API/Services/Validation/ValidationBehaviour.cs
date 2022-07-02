@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
-using Vayosoft.Core.Extensions;
+using Vayosoft.Core.Utilities;
 
 namespace Warehouse.API.Services.Validation
 {

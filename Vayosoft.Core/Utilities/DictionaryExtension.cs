@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Vayosoft.Core.Extensions
+namespace Vayosoft.Core.Utilities
 {
     public static class DictionaryExtension
     {

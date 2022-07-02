@@ -1,6 +1,6 @@
 using System;
 using Pluralize.NET.Core;
-using Vayosoft.Core.Extensions;
+using Vayosoft.Core.Utilities;
 
 namespace Vayosoft.Data.MongoDB
 {

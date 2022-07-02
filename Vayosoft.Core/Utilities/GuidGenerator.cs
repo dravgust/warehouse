@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Vayosoft.Core.Helpers
+namespace Vayosoft.Core.Utilities
 {
     /// <summary>
     ///     Comb Guid Id Generation. More info http://www.informit.com/articles/article.aspx?p=25862
@@ -41,7 +41,7 @@ namespace Vayosoft.Core.Helpers
             else
                 Array.Copy(value, 0, numArray, 2, 6);
             long int64 = BitConverter.ToInt64(numArray, 0);
-            return DateTimeOffset.FromUnixTimeMilliseconds(0L).AddMilliseconds((double)int64);
+            return DateTimeOffset.FromUnixTimeMilliseconds(0L).AddMilliseconds(int64);
         }
 
         public static Guid Create(Guid value, DateTimeOffset timestamp)

@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 
-namespace Vayosoft.Core.Helpers
+namespace Vayosoft.Core.Utilities
 {
     public static class TypeProvider
     {

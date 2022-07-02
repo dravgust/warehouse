@@ -1,5 +1,5 @@
 ﻿using System;
-using Vayosoft.Core.Extensions;
+using Vayosoft.Core.Utilities;
 
 namespace Vayosoft.Core.Caching
 {

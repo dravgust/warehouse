@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Vayosoft.Core.Caching;
-using Vayosoft.Core.Helpers;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Queries.Handler;
 using Vayosoft.Core.SharedKernel.Queries.Query;
+using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Models;
 
 namespace Warehouse.Core.UseCases.Warehouse.Queries

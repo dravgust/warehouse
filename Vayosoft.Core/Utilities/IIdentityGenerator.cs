@@ -1,6 +1,6 @@
 using System;
 
-namespace Vayosoft.Core.Helpers
+namespace Vayosoft.Core.Utilities
 {
     public interface IIdentityGenerator : IIdentityGenerator<Guid> { }
 

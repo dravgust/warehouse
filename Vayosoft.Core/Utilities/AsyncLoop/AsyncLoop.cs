@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Vayosoft.Core.Helpers.AsyncLoop
+namespace Vayosoft.Core.Utilities.AsyncLoop
 {
     public class AsyncLoop : IAsyncLoop
     {

@@ -6,7 +6,7 @@ using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.SharedKernel.Specifications;
 
-namespace Vayosoft.Core.Extensions
+namespace Vayosoft.Core.Utilities
 {
     public static class LinqExtensions
     {
