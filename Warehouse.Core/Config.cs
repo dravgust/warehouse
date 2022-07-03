@@ -7,8 +7,8 @@ using MongoDB.Bson.Serialization;
 using Vayosoft.AutoMapper;
 using Vayosoft.Core;
 using Vayosoft.Core.Persistence;
-using Vayosoft.Core.Queries.Handler;
-using Vayosoft.Core.Queries.Query;
+using Vayosoft.Core.Persistence.Queries.Handler;
+using Vayosoft.Core.Persistence.Queries.Query;
 using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Data.EF.MySQL;
@@ -22,12 +22,13 @@ using Warehouse.Core.Services.Providers;
 using Warehouse.Core.UseCases;
 using Warehouse.Core.UseCases.Administration.Spcecifications;
 using Warehouse.Core.UseCases.OperationHistory;
-using Warehouse.Core.UseCases.Persistence;
 using Warehouse.Core.UseCases.Products;
 using Warehouse.Core.UseCases.Products.Commands;
 using Warehouse.Core.UseCases.Products.Queries;
 using Warehouse.Core.UseCases.Products.Specifications;
 using Warehouse.Core.UseCases.Providers;
+using Warehouse.Core.UseCases.Warehouse;
+using Warehouse.Core.UseCases.Warehouse.Commands;
 using Warehouse.Core.UseCases.Warehouse.Queries;
 using Warehouse.Core.UseCases.Warehouse.Specifications;
 
@@ -67,7 +68,7 @@ namespace Warehouse.Core
 
         public static void AddOperationHistory(this IServiceCollection services)
         {
-            services.AddScoped<IRepository<OperationHistoryEntity>, MongoRepository<OperationHistoryEntity>>();
+            services.AddScoped<IRepository<OperationHistoryEntity, string>, WarehouseRepository<OperationHistoryEntity>>();
             services.AddScoped<INotificationHandler<OperationOccurred>, OperationEventHandler>();
         }
 
@@ -79,11 +80,14 @@ namespace Warehouse.Core
             services.AddScoped<IRequestHandler<DeleteProduct, Unit>, ProductCommandHandler>();
             services.AddScoped<IRequestHandler<GetProductMetadata, ProductMetadata>, ProductQueryHandler>();
 
-            services.AddScoped<ICriteriaRepository<FileEntity, string>, MongoCriteriaRepository<FileEntity>>();
-            services.AddScoped<ICriteriaRepository<ProductEntity, string>, MongoCriteriaRepository<ProductEntity>>();
-            services.AddScoped<ICriteriaRepository<WarehouseSiteEntity, string>, MongoCriteriaRepository<WarehouseSiteEntity>>();
+            services.AddScoped<IRepository<FileEntity, string>, WarehouseRepository<FileEntity>>();
+            services.AddScoped<IRepository<ProductEntity, string>, WarehouseRepository<ProductEntity>>();
+            services.AddScoped<IRepository<WarehouseSiteEntity, string>, WarehouseRepository<WarehouseSiteEntity>>();
             services.AddScoped<IRequestHandler<GetRegisteredBeaconList, IEnumerable<string>>, GetRegisteredBeaconList.RegisteredBeaconQueryHandler>();
             services.AddScoped<IRequestHandler<GetRegisteredGwList, IEnumerable<string>>, GetRegisteredGwList.RegisteredGwQueryHandler>();
+
+            services.AddScoped<IRequestHandler<SetWarehouseSite, Unit>, WarehouseCommandHandler>();
+            services.AddScoped<IRequestHandler<DeleteWarehouseSite, Unit>, WarehouseCommandHandler>();
 
             services.AddScoped<IRequestHandler<SpecificationQuery<WarehouseSiteSpec, IPagedEnumerable<WarehouseSiteEntity>>, IPagedEnumerable<WarehouseSiteEntity>>,
                 MongoPagingQueryHandler<WarehouseSiteSpec, WarehouseSiteEntity>>();

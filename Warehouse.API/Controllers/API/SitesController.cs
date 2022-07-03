@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Vayosoft.Core.Commands;
 using Vayosoft.Core.Persistence;
+using Vayosoft.Core.Persistence.Queries.Query;
 using Vayosoft.Core.Queries;
-using Vayosoft.Core.Queries.Query;
-using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.Utilities;
 using Warehouse.API.Services.Security.Attributes;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.UseCases.Persistence;
-using Warehouse.Core.UseCases.Warehouse.Models;
+using Warehouse.Core.UseCases.Warehouse.Commands;
 using Warehouse.Core.UseCases.Warehouse.Queries;
 using Warehouse.Core.UseCases.Warehouse.Specifications;
 
@@ -19,17 +18,17 @@ namespace Warehouse.API.Controllers.API
     [ApiController]
     public class SitesController : ControllerBase
     {
-        private readonly ICriteriaRepository<WarehouseSiteEntity, string> _siteRepository;
+        private readonly IRepository<WarehouseSiteEntity, string> _siteRepository;
         private readonly IQueryBus _queryBus;
-        private readonly IMapper _mapper;
+        private readonly ICommandBus _commandBus;
 
         public SitesController(
-            ICriteriaRepository<WarehouseSiteEntity, string> siteRepository,
-            IQueryBus queryBus, IMapper mapper)
+            IRepository<WarehouseSiteEntity, string> siteRepository,
+            IQueryBus queryBus, ICommandBus commandBus)
         {
             _siteRepository = siteRepository;
             _queryBus = queryBus;
-            _mapper = mapper;
+            _commandBus = commandBus;
         }
 
         [HttpGet("")]
@@ -59,17 +58,15 @@ namespace Warehouse.API.Controllers.API
         [HttpGet("{id}/delete")]
         public async Task<IActionResult> DeleteById(string id, CancellationToken token)
         {
-            Guard.NotEmpty(id, nameof(id));
-            await _siteRepository.DeleteAsync(new WarehouseSiteEntity {Id = id}, token);
+            await _commandBus.Send(new DeleteWarehouseSite{ Id = id }, token);
             return Ok();
-            
         }
 
         [HttpPost("set")]
-        public async Task<IActionResult> Post([FromBody] WarehouseSiteDto item, CancellationToken token)
-        {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-            return Ok(await _siteRepository.SetAsync(item, _mapper, token));
+        public async Task<IActionResult> Post([FromBody] SetWarehouseSite command, CancellationToken token)
+        { 
+            await _commandBus.Send(command, token);
+            return Created("api/sites", command.Id);
         }
 
         [HttpGet("gw-registered")]

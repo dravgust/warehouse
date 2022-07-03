@@ -1,4 +1,4 @@
-﻿using Vayosoft.Core.Queries.Query;
+﻿using Vayosoft.Core.Queries;
 using Warehouse.Core.UseCases.Administration.Models;
 
 namespace Warehouse.Core.UseCases.Administration.Queries

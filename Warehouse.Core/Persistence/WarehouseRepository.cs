@@ -1,27 +1,23 @@
 ﻿using System.Linq.Expressions;
 using MongoDB.Driver;
+using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Data.MongoDB;
-using Warehouse.Core.UseCases.Persistence;
 
 namespace Warehouse.Core.Persistence
 {
-    public class MongoCriteriaRepository<TEntity> : ICriteriaRepository<TEntity, string> where TEntity : class, IEntity<string>
+    public class WarehouseRepository<TEntity> : IRepository<TEntity, string>, IReadOnlyRepository<TEntity> where TEntity : class, IEntity<string>
     {
         private readonly IMongoCollection<TEntity> _collection;
 
-        public MongoCriteriaRepository(IMongoContext context)
+        public WarehouseRepository(IMongoContext context)
         {
             _collection = context.Database.GetCollection<TEntity>(CollectionName.For<TEntity>());
         }
 
-        public IEnumerable<TEntity> GetByCriteria(Expression<Func<TEntity, bool>> criteria)
-        {
-            return _collection.AsQueryable().Where(criteria).AsEnumerable();
-        }
-
-        public Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken) =>
-            _collection.Find(predicate).FirstOrDefaultAsync(cancellationToken: cancellationToken);
+        public Task<List<TEntity>> FindAllAsync(Expression<Func<TEntity, bool>> criteria,
+            CancellationToken cancellationToken) =>
+            _collection.Find(criteria).ToListAsync(cancellationToken);
 
         public Task<TEntity> FindAsync(string id, CancellationToken cancellationToken)
             => _collection.LoadDocument(id, cancellationToken);

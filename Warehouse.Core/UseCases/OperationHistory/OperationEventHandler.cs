@@ -27,19 +27,23 @@ namespace Warehouse.Core.UseCases.OperationHistory
         {
             _logger.LogDebug($"operation history event listener catch: {@event.ToJson()}");
 
-            var eventId = @event.EventId;
             var sourceId = @event.SourceId;
             var eventType = @event.Type;
             var eventTime = @event.Created;
 
-
             var provider = providerFactory.GetProviderService(@event.ProviderName);
             using var scope = _serviceProvider.CreateScope();
 
-            var carEvent = OperationHistoryEntity.New(eventId, sourceId, eventType, eventTime, (Provider)@event.ProviderName);
-
-            var repository = scope.ServiceProvider.GetRequiredService<IRepository<OperationHistoryEntity>>();
-            await repository.AddAsync(carEvent, cancellationToken);
+            var operationHistory = new OperationHistoryEntity()
+            {
+                SourceId = sourceId,
+                OpType = (int)eventType,
+                Start = eventTime,
+                ProviderId = ((Provider)@event.ProviderName).Id
+            };
+            
+            var repository = scope.ServiceProvider.GetRequiredService<IRepository<OperationHistoryEntity, string>>();
+            await repository.AddAsync(operationHistory, cancellationToken);
         }
     }
 }

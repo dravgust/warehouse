@@ -6,9 +6,9 @@ namespace Warehouse.Core.UseCases.Products.Commands
 {
     public class SetProduct : ProductDto, ICommand
     {
-        public class CertificateRequestValidator : AbstractValidator<SetProduct>
+        public class ProductRequestValidator : AbstractValidator<SetProduct>
         {
-            public CertificateRequestValidator()
+            public ProductRequestValidator()
             {
                 RuleFor(q => q.Name).NotEmpty();
                 //RuleFor(q => q.MacAddress).MacAddress();

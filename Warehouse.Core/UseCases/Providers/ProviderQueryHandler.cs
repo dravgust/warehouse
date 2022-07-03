@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using Vayosoft.Core.Queries.Handler;
+using Vayosoft.Core.Queries;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services.Providers;
 using Warehouse.Core.UseCases.Administration.Models;

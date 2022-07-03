@@ -1,7 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Vayosoft.Core.Queries.Query;
 
 namespace Vayosoft.Core.Queries
 {

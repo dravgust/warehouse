@@ -1,39 +1,38 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 using Vayosoft.Core.Persistence;
-using Vayosoft.Core.SharedKernel.Aggregates;
+using Vayosoft.Core.SharedKernel.Entities;
 
 namespace Vayosoft.Data.MongoDB
 {
-    public class MongoRepository<T> : IRepository<T> where T : Aggregate
+    public class MongoRepository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntity : class, IEntity<TKey>
     {
-        private readonly IMongoCollection<T> collection;
+        private readonly IMongoCollection<TEntity> collection;
 
         public MongoRepository(IMongoContext context)
         {
-            collection = context.Database.GetCollection<T>(CollectionName.For<T>());
+            collection = context.Database.GetCollection<TEntity>(CollectionName.For<TEntity>());
         }
 
-        public Task<T> FindAsync(Guid id, CancellationToken cancellationToken)
+        public Task<TEntity> FindAsync(TKey id, CancellationToken cancellationToken = default)
         {
-            return collection.Find(q => q.Id == id).FirstOrDefaultAsync(cancellationToken);
+            return collection.Find(q => q.Id.Equals(id)).FirstOrDefaultAsync(cancellationToken);
         }
 
-        public Task AddAsync(T aggregate, CancellationToken cancellationToken)
+        public Task AddAsync(TEntity entity, CancellationToken cancellationToken)
         {
-            return collection.InsertOneAsync(aggregate, cancellationToken: cancellationToken);
+            return collection.InsertOneAsync(entity, cancellationToken: cancellationToken);
         }
 
-        public Task UpdateAsync(T aggregate, CancellationToken cancellationToken)
+        public Task UpdateAsync(TEntity entity, CancellationToken cancellationToken)
         {
-            return collection.ReplaceOneAsync(Builders<T>.Filter.Eq(e => e.Id, aggregate.Id), aggregate, cancellationToken: cancellationToken);
+            return collection.ReplaceOneAsync(Builders<TEntity>.Filter.Eq(e => e.Id, entity.Id), entity, cancellationToken: cancellationToken);
         }
 
-        public Task DeleteAsync(T aggregate, CancellationToken cancellationToken)
+        public Task DeleteAsync(TEntity entity, CancellationToken cancellationToken)
         {
-            return collection.DeleteOneAsync(Builders<T>.Filter.Eq(e => e.Id, aggregate.Id), cancellationToken); ;
+            return collection.DeleteOneAsync(Builders<TEntity>.Filter.Eq(e => e.Id, entity.Id), cancellationToken);
         }
     }
 }

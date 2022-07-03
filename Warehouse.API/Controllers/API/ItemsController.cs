@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Commands;
+using Vayosoft.Core.Persistence.Queries.Query;
 using Vayosoft.Core.Queries;
-using Vayosoft.Core.Queries.Query;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Warehouse.API.Services.Security.Attributes;
 using Warehouse.Core.Entities.Models;

@@ -1,9 +1,8 @@
 ﻿using Vayosoft.Core.Caching;
 using Vayosoft.Core.Persistence;
-using Vayosoft.Core.Queries.Handler;
+using Vayosoft.Core.Queries;
 using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.UseCases.Persistence;
 using Warehouse.Core.UseCases.Products.Queries;
 
 namespace Warehouse.Core.UseCases.Products
@@ -11,9 +10,9 @@ namespace Warehouse.Core.UseCases.Products
     public class ProductQueryHandler : IQueryHandler<GetProductMetadata, ProductMetadata>
     {
         private readonly IDistributedMemoryCache _cache;
-        private readonly ICriteriaRepository<FileEntity, string> _fileRepository;
+        private readonly IRepository<FileEntity, string> _fileRepository;
 
-        public ProductQueryHandler(ICriteriaRepository<FileEntity, string> fileRepository, IDistributedMemoryCache cache)
+        public ProductQueryHandler(IRepository<FileEntity, string> fileRepository, IDistributedMemoryCache cache)
         {
             _fileRepository = fileRepository;
             _cache = cache;

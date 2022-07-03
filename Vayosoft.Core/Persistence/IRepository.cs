@@ -1,26 +1,21 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using Vayosoft.Core.SharedKernel.Aggregates;
 using Vayosoft.Core.SharedKernel.Entities;
 
 
 namespace Vayosoft.Core.Persistence
 {
-    public interface IRepositoryBase<TEntity, in TKey> where TEntity : class, IEntity
+    public interface IRepository<TEntity> : IRepository<TEntity, string> where TEntity : class, IEntity
+    { }
+
+    public interface IRepository<TEntity, in TKey> where TEntity : class, IEntity
     {
-        Task<TEntity> FindAsync(TKey id, CancellationToken cancellationToken);
+        Task<TEntity> FindAsync(TKey id, CancellationToken cancellationToken = default);
 
-        Task AddAsync(TEntity entity, CancellationToken cancellationToken);
+        Task AddAsync(TEntity entity, CancellationToken cancellationToken = default);
 
-        Task UpdateAsync(TEntity entity, CancellationToken cancellationToken);
+        Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
 
-        Task DeleteAsync(TEntity entity, CancellationToken cancellationToken);
+        Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default);
     }
-
-    public interface IRepository<T> : IRepository<T, Guid> where T : class, IAggregate
-    { }
-
-    public interface IRepository<T, in TKey> : IRepositoryBase<T, TKey> where T : class, IAggregate
-    { }
 }

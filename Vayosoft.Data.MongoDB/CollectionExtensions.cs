@@ -5,7 +5,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using MongoDB.Bson;
 using MongoDB.Driver;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.SharedKernel.Models;
@@ -16,7 +15,7 @@ namespace Vayosoft.Data.MongoDB
     using static String;
     public static class CollectionExtensions
     {
-        public static IMongoCollection<T> GetDocumentCollection<T>(this IMongoDatabase database, CollectionName? collectionName = null)
+        public static IMongoCollection<T> GetDocumentCollection<T>(this IMongoDatabase database, CollectionName collectionName = null)
             where T : IEntity<string>
             => GetDocumentCollection<T>(database, collectionName ?? CollectionName.For<T>(), null);
 
@@ -28,8 +27,8 @@ namespace Vayosoft.Data.MongoDB
 
         public static IMongoCollection<T> GetDocumentCollection<T>(
             this IMongoDatabase database,
-            CollectionName? collectionName,
-            MongoCollectionSettings? settings
+            CollectionName collectionName,
+            MongoCollectionSettings settings
         ) where T : IEntity<string>
             => database.GetCollection<T>(collectionName == null ? CollectionName.For<T>() : collectionName, settings);
 
