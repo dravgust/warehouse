@@ -6,11 +6,11 @@ using Warehouse.Core.UseCases.Persistence;
 
 namespace Warehouse.Core.Persistence
 {
-    public class MongoRepository<TEntity> : ICriteriaRepository<TEntity, string> where TEntity : class, IEntity<string>
+    public class MongoCriteriaRepository<TEntity> : ICriteriaRepository<TEntity, string> where TEntity : class, IEntity<string>
     {
         private readonly IMongoCollection<TEntity> _collection;
 
-        public MongoRepository(IMongoContext context)
+        public MongoCriteriaRepository(IMongoContext context)
         {
             _collection = context.Database.GetCollection<TEntity>(CollectionName.For<TEntity>());
         }

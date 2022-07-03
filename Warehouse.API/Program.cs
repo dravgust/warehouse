@@ -1,6 +1,8 @@
 
 using System.Diagnostics;
 using System.Globalization;
+using System.Reflection;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Localization;
@@ -14,14 +16,13 @@ using Warehouse.API.Resources;
 using Warehouse.API.Services.ExceptionHandling;
 using Warehouse.API.Services.Localization;
 using Warehouse.API.Services.Security;
-using Warehouse.API.Services.Validation;
 using Warehouse.API.TagHelpers;
 using Warehouse.API.UseCases.Resources;
 using Warehouse.Core;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services;
+using Warehouse.Core.Services.Validation;
 using Warehouse.Core.UseCases.Administration.Models;
-using Warehouse.Core.UseCases.Products.Commands;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Debug()
@@ -49,7 +50,12 @@ try
 
     var configuration = builder.Configuration;
 
-    builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+    builder.Services
+        //.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<SetProduct.CertificateRequestValidator>())
+        .AddValidatorsFromAssembly(Assembly.GetAssembly(typeof(Warehouse.Core.Services.Validation.Config)), ServiceLifetime.Transient)
+        .AddValidation();
+    builder.Services.AddUnhandledException();
+
     builder.Services.AddWarehouseDependencies(configuration);
     builder.Services.AddSingleton<IRequestHandler<GetResources, IEnumerable<ResourceGroup>>, GetResources.ResourcesQueryHandler>();
 
@@ -75,8 +81,8 @@ try
     builder.Services.AddControllersWithViews(options =>
     {
         //options.Filters.Add(new AuthorizeAttribute());
-    }).AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<SetProduct.CertificateRequestValidator>())
-    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix,
+    })
+        .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix,
     options =>
     {
         options.ResourcesPath = "Resources";

@@ -1,9 +1,10 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Vayosoft.Core.Utilities;
 
-namespace Warehouse.API.Services.Validation
+namespace Warehouse.Core.Services.Validation
 {
     public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
