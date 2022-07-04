@@ -5,7 +5,8 @@ namespace Warehouse.Core.UseCases.Products.Commands
 {
     public class DeleteProduct : ICommand
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = null!;
+
         public class CertificateRequestValidator : AbstractValidator<DeleteProduct>
         {
             public CertificateRequestValidator()

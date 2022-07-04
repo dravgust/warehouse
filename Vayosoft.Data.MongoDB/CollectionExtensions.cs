@@ -173,15 +173,15 @@ namespace Vayosoft.Data.MongoDB
         ) where T : IEntity<string>
             => collection.ReplaceDocument(document, null, cancellationToken);
 
-        public static async Task<bool> DeleteDocument<T>(
+        public static async Task<bool> DeleteDocument<T, TKey>(
             this IMongoCollection<T> collection,
-            string id,
+            TKey id,
             CancellationToken cancellationToken = default
-        ) where T : IEntity<string>
+        ) where T : IEntity<TKey>
         {
-            if (IsNullOrWhiteSpace(id)) throw new ArgumentException("Document Id cannot be null or whitespace.", nameof(id));
+            if (id != null && !default(TKey)!.Equals(id)) throw new ArgumentException("Document Id cannot be null or whitespace.", nameof(id));
 
-            var result = await collection.DeleteOneAsync(x => x.Id == id, cancellationToken);
+            var result = await collection.DeleteOneAsync(x => x.Id.Equals(id), cancellationToken);
 
             return result.DeletedCount == 1;
         }
@@ -311,13 +311,13 @@ namespace Vayosoft.Data.MongoDB
         /// <summary>
         /// Updates a document and by default inserts a new one if no matching document is found.
         /// </summary>
-        public static async Task UpdateDocument<T>(
+        public static async Task UpdateDocument<T, TKey>(
             this IMongoCollection<T> collection,
             FilterDefinition<T> filter,
             UpdateDefinition<T> update,
-            Action<UpdateOptions>? configure,
+            Action<UpdateOptions> configure,
             CancellationToken cancellationToken = default
-        ) where T : IEntity<string>
+        ) where T : IEntity<TKey>
         {
             var options = new UpdateOptions { IsUpsert = true };
 
@@ -334,14 +334,14 @@ namespace Vayosoft.Data.MongoDB
         /// <summary>
         /// Updates a document and by default inserts a new one if no matching document is found.
         /// </summary>
-        public static Task UpdateDocument<T>(
+        public static Task UpdateDocument<T, TKey>(
             this IMongoCollection<T> collection,
             Func<FilterDefinitionBuilder<T>, FilterDefinition<T>> filter,
             Func<UpdateDefinitionBuilder<T>, UpdateDefinition<T>> update,
             Action<UpdateOptions> configure,
             CancellationToken cancellationToken = default
-        ) where T : IEntity<string>
-            => collection.UpdateDocument(
+        ) where T : IEntity<TKey>
+            => collection.UpdateDocument<T, TKey>(
                 filter(Builders<T>.Filter),
                 update(Builders<T>.Update),
                 configure,
@@ -351,24 +351,24 @@ namespace Vayosoft.Data.MongoDB
         /// <summary>
         /// Updates a document and by default inserts a new one if no matching document is found.
         /// </summary>
-        public static Task UpdateDocument<T>(
+        public static Task UpdateDocument<T, TKey>(
             this IMongoCollection<T> collection,
             FilterDefinition<T> filter,
             UpdateDefinition<T> update,
             CancellationToken cancellationToken = default
-        ) where T : IEntity<string>
-            => collection.UpdateDocument(filter, update, null, cancellationToken);
+        ) where T : IEntity<TKey>
+            => collection.UpdateDocument<T, TKey>(filter, update, null, cancellationToken);
 
         /// <summary>
         /// Updates a document and by default inserts a new one if no matching document is found.
         /// </summary>
-        public static Task UpdateDocument<T>(
+        public static Task UpdateDocument<T, TKey>(
             this IMongoCollection<T> collection,
             Func<FilterDefinitionBuilder<T>, FilterDefinition<T>> filter,
             Func<UpdateDefinitionBuilder<T>, UpdateDefinition<T>> update,
             CancellationToken cancellationToken = default
-        ) where T : IEntity<string>
-            => collection.UpdateDocument(
+        ) where T : IEntity<TKey>
+            => collection.UpdateDocument<T, TKey>(
                 filter(Builders<T>.Filter),
                 update(Builders<T>.Update),
                 null,
@@ -378,17 +378,17 @@ namespace Vayosoft.Data.MongoDB
         /// <summary>
         /// Updates a document and by default inserts a new one if no matching document by id is found.
         /// </summary>
-        public static Task UpdateDocument<T>(
+        public static Task UpdateDocument<T, TKey>(
             this IMongoCollection<T> collection,
-            string id,
+            TKey id,
             UpdateDefinition<T> update,
-            Action<UpdateOptions>? configure,
+            Action<UpdateOptions> configure,
             CancellationToken cancellationToken = default
-        ) where T : IEntity<string>
+        ) where T : IEntity<TKey>
         {
-            if (IsNullOrWhiteSpace(id)) throw new ArgumentException("Document Id cannot be null or whitespace.", nameof(id));
+            if (id != null && !default(TKey)!.Equals(id)) throw new ArgumentException("Document Id cannot be null or whitespace.", nameof(id));
 
-            return collection.UpdateDocument(
+            return collection.UpdateDocument<T, TKey>(
                 Builders<T>.Filter.Eq(x => x.Id, id),
                 update,
                 configure,
@@ -399,13 +399,13 @@ namespace Vayosoft.Data.MongoDB
         /// <summary>
         /// Updates a document and by default inserts a new one if no matching document by id is found.
         /// </summary>
-        public static Task UpdateDocument<T>(
+        public static Task UpdateDocument<T, TKey>(
             this IMongoCollection<T> collection,
-            string id,
+            TKey id,
             Func<UpdateDefinitionBuilder<T>, UpdateDefinition<T>> update,
-            Action<UpdateOptions>? configure,
+            Action<UpdateOptions> configure,
             CancellationToken cancellationToken = default
-        ) where T : IEntity<string>
+        ) where T : IEntity<TKey>
             => collection.UpdateDocument(
                 id,
                 update(Builders<T>.Update),
@@ -416,23 +416,23 @@ namespace Vayosoft.Data.MongoDB
         /// <summary>
         /// Updates a document and by default inserts a new one if no matching document by id is found.
         /// </summary>
-        public static Task UpdateDocument<T>(
+        public static Task UpdateDocument<T, TKey>(
             this IMongoCollection<T> collection,
-            string id,
+            TKey id,
             UpdateDefinition<T> update,
             CancellationToken cancellationToken = default
-        ) where T : IEntity<string>
+        ) where T : IEntity<TKey>
             => collection.UpdateDocument(id, update, null, cancellationToken);
 
         /// <summary>
         /// Updates a document and by default inserts a new one if no matching document by id is found.
         /// </summary>
-        public static Task UpdateDocument<T>(
+        public static Task UpdateDocument<T, TKey>(
             this IMongoCollection<T> collection,
-            string id,
+            TKey id,
             Func<UpdateDefinitionBuilder<T>, UpdateDefinition<T>> update,
             CancellationToken cancellationToken = default
-        ) where T : IEntity<string>
+        ) where T : IEntity<TKey>
             => collection.UpdateDocument(id, update, null, cancellationToken);
 
         #endregion

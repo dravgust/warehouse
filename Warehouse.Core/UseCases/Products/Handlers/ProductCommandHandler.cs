@@ -9,15 +9,20 @@ using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Products.Commands;
 using Warehouse.Core.UseCases.Providers.Models;
 
-namespace Warehouse.Core.UseCases.Products
+namespace Warehouse.Core.UseCases.Products.Handlers
 {
-    public class ProductCommandHandler : ICommandHandler<SetProduct>, ICommandHandler<DeleteProduct>
+    public class ProductCommandHandler :
+        ICommandHandler<SetProduct>,
+        ICommandHandler<DeleteProduct>
     {
         private readonly IRepository<ProductEntity, string> _repository;
         private readonly IEventBus _eventBus;
         private readonly IMapper _mapper;
 
-        public ProductCommandHandler(IRepository<ProductEntity, string> repository, IEventBus eventBus, IMapper mapper)
+        public ProductCommandHandler(
+            IRepository<ProductEntity, string> repository,
+            IEventBus eventBus,
+            IMapper mapper)
         {
             _repository = repository;
             _eventBus = eventBus;
@@ -28,9 +33,7 @@ namespace Warehouse.Core.UseCases.Products
         {
             ProductEntity? entity;
             if (!string.IsNullOrEmpty(request.Id) && (entity = await _repository.FindAsync(request.Id, cancellationToken)) != null)
-            {
                 await _repository.UpdateAsync(_mapper.Map(request, entity), cancellationToken);
-            }
             else
             {
                 await _repository.AddAsync(_mapper.Map<ProductEntity>(request), cancellationToken);

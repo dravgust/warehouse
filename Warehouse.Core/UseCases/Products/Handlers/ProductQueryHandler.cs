@@ -5,7 +5,7 @@ using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Products.Queries;
 
-namespace Warehouse.Core.UseCases.Products
+namespace Warehouse.Core.UseCases.Products.Handlers
 {
     public class ProductQueryHandler : IQueryHandler<GetProductMetadata, ProductMetadata>
     {
