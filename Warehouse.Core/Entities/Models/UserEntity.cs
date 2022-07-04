@@ -21,7 +21,7 @@ namespace Warehouse.Core.Entities.Models
         public virtual List<RefreshToken> RefreshTokens { get; set; } = new();
     }
 
-    [ConventionalMap(typeof(UserEntity))]
+    [ConventionalMap(typeof(UserEntity), direction: MapDirection.EntityToDto)]
     public class UserEntityDto : IEntity<long>
     {
         object IEntity.Id => Id;

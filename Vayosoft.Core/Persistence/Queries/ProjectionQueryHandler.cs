@@ -2,13 +2,12 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Vayosoft.Core.Persistence.Queries.Query;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.Utilities;
 
-namespace Vayosoft.Core.Persistence.Queries.Handler
+namespace Vayosoft.Core.Persistence.Queries
 {
     public class ProjectionQueryHandler<TSpecification, TSource, TDest>
         : IQueryHandler<SpecificationQuery<TSpecification, IEnumerable<TDest>>, IEnumerable<TDest>>,

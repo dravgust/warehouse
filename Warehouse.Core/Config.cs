@@ -7,8 +7,8 @@ using MongoDB.Bson.Serialization;
 using Vayosoft.AutoMapper;
 using Vayosoft.Core;
 using Vayosoft.Core.Persistence;
-using Vayosoft.Core.Persistence.Queries.Handler;
-using Vayosoft.Core.Persistence.Queries.Query;
+using Vayosoft.Core.Persistence.Commands;
+using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Data.EF.MySQL;
@@ -41,6 +41,8 @@ namespace Warehouse.Core
             services.AddCoreServices();
 
             var domainAssembly = AppDomain.CurrentDomain.GetAssemblies();
+            ConventionalProfile.Scan(domainAssembly);
+
             services.AddSingleton(provider =>
             {
                 var mapperConfiguration = new MapperConfiguration(cfg =>
@@ -114,6 +116,8 @@ namespace Warehouse.Core
             services
                 .AddScoped<IRequestHandler<SingleQuery<UserEntityDto>, UserEntityDto>,
                     SingleQueryHandler<long, UserEntity, UserEntityDto>>();
+
+            services.AddScoped<IRequestHandler<CreateOrUpdateCommand<UserEntityDto>, Unit>, CreateOrUpdateHandler<long, UserEntity, UserEntityDto>>();
 
             return services;
         }

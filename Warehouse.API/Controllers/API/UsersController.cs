@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Commands;
-using Vayosoft.Core.Persistence.Queries.Query;
+using Vayosoft.Core.Persistence.Commands;
+using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
-using Warehouse.API.Services.Security.Attributes;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Administration.Spcecifications;
 
 namespace Warehouse.API.Controllers.API
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -24,26 +24,34 @@ namespace Warehouse.API.Controllers.API
         }
 
         [HttpGet]
-        public async Task<dynamic> Get(int page, int take, CancellationToken token)
+        public async Task<IActionResult> Get(int page, int take, CancellationToken token)
         {
             var spec = new UserSpec(page, take);
             var query = new SpecificationQuery<UserSpec, IPagedEnumerable<UserEntityDto>>(spec);
 
             var data = await queryBus.Send(query, token);
 
-            return new
+            return Ok(new
             {
                 data,
                 totalItems = data.TotalCount,
                 totalPages = (long) Math.Ceiling((double)data.TotalCount / take)
-            };
+            });
         }
 
         [HttpGet("{id}")]
-        public Task<UserEntityDto> Get(ulong id, CancellationToken token)
+        public async Task<IActionResult> Get(ulong id, CancellationToken token)
         {
             var query = new SingleQuery<UserEntityDto>(id);
-            return queryBus.Send(query, token);
+            return Ok(await queryBus.Send(query, token));
+        } 
+        
+        [HttpPost("set")]
+        public async Task<IActionResult> Post(UserEntityDto dto, CancellationToken token)
+        {
+            var command = new CreateOrUpdateCommand<UserEntityDto>(dto);
+            await commandBus.Send(command, token);
+            return Ok();
         }
     }
 }

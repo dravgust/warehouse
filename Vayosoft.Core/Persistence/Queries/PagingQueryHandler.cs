@@ -2,13 +2,12 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Vayosoft.Core.Persistence.Queries.Query;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 
-namespace Vayosoft.Core.Persistence.Queries.Handler
+namespace Vayosoft.Core.Persistence.Queries
 {
     public class PagingQueryHandler<TSortKey, TSpec, TEntity, TDto> : ProjectionQueryHandler<TSpec, TEntity, TDto>,
         IQueryHandler<SpecificationQuery<TSpec, IPagedEnumerable<TDto>>, IPagedEnumerable<TDto>>

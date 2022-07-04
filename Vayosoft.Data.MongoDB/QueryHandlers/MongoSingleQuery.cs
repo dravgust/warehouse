@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Driver;
-using Vayosoft.Core.Persistence.Queries.Query;
+using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.Utilities;
