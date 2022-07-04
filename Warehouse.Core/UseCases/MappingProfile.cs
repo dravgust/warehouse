@@ -11,12 +11,12 @@ namespace Warehouse.Core.UseCases
         {
             CreateMap<ProductDto, ProductEntity>();
 
-            CreateMap<GatewayViewModel, Gateway>();
-            CreateMap<BeaconViewModel, Beacon>();
+            CreateMap<GatewayDto, Gateway>();
+            CreateMap<BeaconDto, Beacon>();
             CreateMap<WarehouseSiteDto, WarehouseSiteEntity>()
                 .ForMember(m => m.Gateways,
                     des =>
-                        des.MapFrom(m => m.Gateways ?? new List<GatewayViewModel>()));
+                        des.MapFrom(m => m.Gateways ?? new List<GatewayDto>()));
         }
     }
 }

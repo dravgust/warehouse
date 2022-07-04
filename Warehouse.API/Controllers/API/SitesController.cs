@@ -59,14 +59,21 @@ namespace Warehouse.API.Controllers.API
         public async Task<IActionResult> DeleteById(string id, CancellationToken token)
         {
             await _commandBus.Send(new DeleteWarehouseSite{ Id = id }, token);
-            return Ok();
+            return Ok(new { id });
         }
 
         [HttpPost("set")]
         public async Task<IActionResult> Post([FromBody] SetWarehouseSite command, CancellationToken token)
         { 
             await _commandBus.Send(command, token);
-            return Created("api/sites", command.Id);
+            return Ok(new { });
+        }
+
+        [HttpPost("set-gateway")]
+        public async Task<IActionResult> Post([FromBody] SetGatewayToSite command, CancellationToken token)
+        { 
+            await _commandBus.Send(command, token);
+            return Ok(new { });
         }
 
         [HttpGet("gw-registered")]

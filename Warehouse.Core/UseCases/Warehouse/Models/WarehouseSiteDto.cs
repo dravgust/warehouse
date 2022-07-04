@@ -11,7 +11,7 @@ namespace Warehouse.Core.UseCases.Warehouse.Models
         public double TopLength { get; set; }
         public double LeftLength { get; set; }
         public double Error { get; set; }
-        public List<GatewayViewModel>? Gateways { get; set; }
+        public List<GatewayDto>? Gateways { get; set; }
         object IEntity.Id => Id;
     }
 }

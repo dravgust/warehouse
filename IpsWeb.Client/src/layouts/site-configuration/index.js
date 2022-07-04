@@ -8,7 +8,7 @@ import Gateways from "./components/gateways";
 import Sites from "./components/sites";
 import SetSite from "./components/set-site";
 import SetGateway from "./components/set-gateway";
-import * as auth from 'auth-provider';
+import * as auth from "auth-provider";
 import { client } from "utils/api-client";
 import { useQuery } from "react-query";
 
@@ -23,10 +23,10 @@ const SiteConfiguration = () => {
   const [selectedSite, setSelectedSite] = useState(null);
   const onSelectItem = (item) => {
     resetGwToNull();
-    if(siteForEdit){
-      setSiteForEdit(item);
+    if (siteForEdit) {
+      setSiteForEdit({...item, siteId: item.id});
     }
-    setSelectedSite(item)
+    setSelectedSite(item);
   };
   const resetToNull = () => setSiteForEdit(null);
   const resetToDefault = () =>
@@ -42,6 +42,7 @@ const SiteConfiguration = () => {
   const resetGwToNull = () => setGwForEdit(null);
   const resetGwToDefault = () =>
     setGwForEdit({
+      siteId: selectedSite.id,
       macAddress: "",
       name: "",
       circumscribedRadius: 0,
@@ -49,17 +50,26 @@ const SiteConfiguration = () => {
       envFactor: 0,
     });
 
-    
-  const fetchRegisteredGw = async () => {
+  const fetchRegisteredBeacons = async () => {
     const token = await auth.getToken();
-    const res = await client(`sites/gw-registered`, {token});
+    const res = await client(`sites/beacons-registered`, { token });
     return res;
   };
-  const { data: gwRegistered } = useQuery(["gw-registered"], fetchRegisteredGw, {
+  const { data: beacons } = useQuery(["beacons-registered"], fetchRegisteredBeacons, {
     keepPreviousData: false,
     refetchOnWindowFocus: false,
   });
- 
+
+  const fetchRegisteredGw = async () => {
+    const token = await auth.getToken();
+    const res = await client(`sites/gw-registered`, { token });
+    return res;
+  };
+  const { data: gateways } = useQuery(["gw-registered"], fetchRegisteredGw, {
+    keepPreviousData: false,
+    refetchOnWindowFocus: false,
+  });
+
   return (
     <DashboardLayout>
       <DashboardNavbar onSearch={onSearch} />
@@ -84,9 +94,14 @@ const SiteConfiguration = () => {
               <Grid item xs={12}>
                 <Sites
                   onSelect={onSelectItem}
-                  onEdit={() => {setSiteForEdit(selectedSite)}}
+                  onEdit={() => {
+                    setSiteForEdit(selectedSite);
+                  }}
                   onAdd={resetToDefault}
-                  onDelete={forceUpdate}
+                  onDelete={() => {
+                    forceUpdate();
+                    console.log("update");
+                  }}
                   refresh={refresh}
                 />
               </Grid>
@@ -104,16 +119,14 @@ const SiteConfiguration = () => {
                         resetGwToNull();
                         forceUpdate();
                       }}
-                      gwRegistered={gwRegistered}
+                      gateways={gateways}
+                      beacons={beacons}
                     />
                   )}
                 </Grid>
               </Zoom>
               <Grid item xs={12}>
-                <Gateways
-                 data={selectedSite}
-                 onAdd={resetGwToDefault}
-                 />
+                <Gateways data={selectedSite} onAdd={resetGwToDefault} />
               </Grid>
             </Grid>
           </Grid>

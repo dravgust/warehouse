@@ -18,7 +18,7 @@ export default function DeletePromt({renderButton = ({handleClickOpen}) => {(<Bu
   }
 
   return (
-    <div>
+    <>
       {renderButton(handleClickOpen)}
       <Dialog
         open={open}
@@ -39,6 +39,6 @@ export default function DeletePromt({renderButton = ({handleClickOpen}) => {(<Bu
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </>
   );
 }

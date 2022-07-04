@@ -30,5 +30,13 @@ namespace Vayosoft.Core.Utilities
 
             return options;
         }
+
+        public static IRuleBuilder<T, string> MacAddress<T>(this IRuleBuilder<T, string> ruleBuilder)
+        {
+            var options = ruleBuilder
+                .Matches(@"^([0-9A-Fa-f]{2}[:-]?){5}([0-9A-Fa-f]{2})$").WithMessage("Invalid MAC Address format");
+
+            return options;
+        }
     }
 }

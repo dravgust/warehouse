@@ -7,6 +7,11 @@ import {
   TextField,
   Stack,
   Autocomplete,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormHelperText,
 } from "@mui/material";
 import SuiBox from "components/SuiBox";
 import SuiTypography from "components/SuiTypography";
@@ -19,16 +24,44 @@ import * as auth from "auth-provider";
 import { client } from "utils/api-client";
 
 // prop-types is a library for typechecking of props
-import PropTypes from "prop-types";
+import PropTypes, { string } from "prop-types";
+
+const locations = [
+  "Unknown",
+  "Center",
+  "TopCenter",
+  "TopLeft",
+  "TopRight",
+  "BottomCenter",
+  "BottomLeft",
+  "BottomRight",
+  "CenterLeft",
+  "CenterRight",
+];
 
 export default function SetGateway({
   item,
   onClose,
   onSave = () => {},
-  gwRegistered = [],
+  gateways = [],
+  beacons = [],
 }) {
-  const saveItem = async (item) => {
+  const saveItem = async (values) => {
     const token = await auth.getToken();
+    const item = {
+      "siteId": values.siteId,
+      "macAddress": values.macAddress,
+      "name": values.name,
+      "circumscribedRadius": values.circumscribedRadius,
+      "location": values.location,
+      "envFactor": values.envFactor,
+      "gauge": {
+        "mac": values.macG,
+        "txPower": values.txPowerG,
+        "radius": values.radiusG,
+      }
+    }
+
     const res = await client(`sites/set-gateway`, {
       data: item,
       token,
@@ -36,7 +69,7 @@ export default function SetGateway({
     return res;
   };
 
-  const mutation = useMutation((item) => saveItem(item), {
+  const mutation = useMutation((values) => saveItem(values), {
     onSuccess: () => {
       formik.resetForm();
       return onSave();
@@ -58,10 +91,13 @@ export default function SetGateway({
       circumscribedRadius: item ? item.circumscribedRadius : 0,
       location: item ? item.location : 0,
       envFactor: item ? item.envFactor : 0,
+      macG: item && item.gauge ? item.gauge.mac : "",
+      radiusG: item && item.gauge ? item.gauge.radius : 0,
+      txPowerG: item && item.gauge ? item.gauge.txPower : 0,
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      mutation.mutate(values);
+      mutation.mutate({...values, siteId: item.siteId});
     },
   });
 
@@ -107,30 +143,29 @@ export default function SetGateway({
                 {mutation.error.title || mutation.error.error}
               </SuiAlert>
             )}
-
             <Autocomplete
-              disablePortal
-              options={["", ...gwRegistered]}
-              isOptionEqualToValue={(option, value) => option === value}
-              sx={{ width: 300 }}
-              getOptionLabel={(option) => option}
-              onChange={(e, value) => {
-                formik.setFieldValue("macAddress", value);
-              }}
-              value={formik.values.macAddress}
-              renderInput={(params) => (
-                <TextField
-                  id="macAddress"
-                  name="macAddress"
-                  label="MacAddress"
-                  {...params}
-                  error={formik.touched.macAddress && Boolean(formik.errors.macAddress)}
-                  helperText={formik.touched.macAddress && formik.errors.macAddress}
-                />
-              )}
-            />
-            <Stack direction="row" spacing={2} alignItems="center">
-              <TextField
+              
+                disablePortal
+                options={["", ...gateways]}
+                isOptionEqualToValue={(option, value) => option === value}
+                getOptionLabel={(option) => option}
+                onChange={(e, value) => {
+                  formik.setFieldValue("macAddress", value);
+                }}
+                value={formik.values.macAddress}
+                renderInput={(params) => (
+                  <TextField
+                    id="macAddress"
+                    name="macAddress"
+                    label="MacAddress"
+                    {...params}
+                    error={formik.touched.macAddress && Boolean(formik.errors.macAddress)}
+                    helperText={formik.touched.macAddress && formik.errors.macAddress}
+                  />
+                )}
+              />
+            
+            <TextField
                 fullWidth
                 id="name"
                 name="name"
@@ -140,17 +175,83 @@ export default function SetGateway({
                 error={formik.touched.name && Boolean(formik.errors.name)}
                 helperText={formik.touched.name && formik.errors.name}
               />
-            </Stack>
             <Stack direction="row" spacing={2} alignItems="center">
               <TextField
                 fullWidth
                 id="envFactor"
                 name="envFactor"
-                label="envFactor"
+                label="EnvFactor"
+                type={"number"}
                 value={formik.values.envFactor}
                 onChange={formik.handleChange}
                 error={formik.touched.envFactor && Boolean(formik.errors.envFactor)}
                 helperText={formik.touched.envFactor && formik.errors.envFactor}
+              />
+
+              <FormControl fullWidth >
+                <InputLabel id="location-label">Location</InputLabel>
+                <Select
+                  labelId="location-label"
+                  id="location"
+                  name="location"
+                  value={formik.values.location}
+                  label="Location"
+                  onChange={(e) => {
+                    formik.setFieldValue("location", e.target.value);
+                  }}
+                >
+                  {locations.map((l, i) => (
+                    <MenuItem key={`loc-${i}`} value={i} sx={{ minWidth: 120 }}>
+                      {l}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Stack>
+            <SuiBox>
+              <SuiTypography fontSize="small">Gauge</SuiTypography>
+            </SuiBox>
+            <Autocomplete
+              
+                options={["", ...beacons]}
+                isOptionEqualToValue={(option, value) => option === value}
+                getOptionLabel={(option) => option}
+                onChange={(e, value) => {
+                  formik.setFieldValue("macG", value);
+                }}
+                value={formik.values.macG}
+                renderInput={(params) => (
+                  <TextField
+                    id="macG"
+                    name="macG"
+                    label="MacAddress"
+                    {...params}
+                    error={formik.touched.macG && Boolean(formik.errors.macG)}
+                    helperText={formik.touched.macG && formik.errors.macG}
+                  />
+                )}
+              />
+            <Stack direction="row" spacing={2} alignItems="center">
+              <TextField
+                fullWidth
+                id="radiusG"
+                name="radiusG"
+                label="Radius"
+                value={formik.values.radiusG}
+                onChange={formik.handleChange}
+                error={formik.touched.radiusG && Boolean(formik.errors.radiusG)}
+                helperText={formik.touched.radiusG && formik.errors.radiusG}
+              />
+              <TextField
+                fullWidth
+                type={"number"}
+                id="txPowerG"
+                name="txPowerG"
+                label="TxPower"
+                value={formik.values.txPowerG}
+                onChange={formik.handleChange}
+                error={formik.touched.txPowerG && Boolean(formik.errors.txPowerG)}
+                helperText={formik.touched.txPowerG && formik.errors.txPowerG}
               />
             </Stack>
 

@@ -11,7 +11,7 @@ using Warehouse.Core.UseCases.Warehouse.Commands;
 
 namespace Warehouse.Core.UseCases.Warehouse
 {
-    public class WarehouseCommandHandler : ICommandHandler<SetWarehouseSite>, ICommandHandler<DeleteWarehouseSite>
+    public class WarehouseCommandHandler : ICommandHandler<SetWarehouseSite>, ICommandHandler<DeleteWarehouseSite>, ICommandHandler<SetGatewayToSite>
     {
         private readonly IRepository<WarehouseSiteEntity, string> _repository;
         private readonly IEventBus _eventBus;
@@ -49,6 +49,11 @@ namespace Warehouse.Core.UseCases.Warehouse
             };
             await _eventBus.Publish(events);
             return Unit.Value;
+        }
+
+        public Task<Unit> Handle(SetGatewayToSite request, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
     }
 }

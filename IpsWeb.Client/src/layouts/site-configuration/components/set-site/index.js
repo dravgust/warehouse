@@ -113,6 +113,7 @@ export default function SetSite({ item, onClose, onSave = ()=>{} }) {
                 id="topLength"
                 name="topLength"
                 label="topLength"
+                type={"number"}
                 value={formik.values.topLength}
                 onChange={formik.handleChange}
                 error={formik.touched.topLength && Boolean(formik.errors.topLength)}
@@ -123,6 +124,7 @@ export default function SetSite({ item, onClose, onSave = ()=>{} }) {
                 id="leftLength"
                 name="leftLength"
                 label="leftLength"
+                type={"number"}
                 value={formik.values.leftLength}
                 onChange={formik.handleChange}
                 error={formik.touched.leftLength && Boolean(formik.errors.leftLength)}
@@ -137,6 +139,7 @@ export default function SetSite({ item, onClose, onSave = ()=>{} }) {
                 id="error"
                 name="error"
                 label="error"
+                type={"number"}
                 value={formik.values.error}
                 onChange={formik.handleChange}
                 error={formik.touched.error && Boolean(formik.errors.error)}
