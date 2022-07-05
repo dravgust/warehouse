@@ -76,6 +76,13 @@ namespace Warehouse.API.Controllers.API
             return Ok(new { });
         }
 
+        [HttpGet("{id}/delete-gw/{mac}")]
+        public async Task<IActionResult> DeleteGw(string id, string mac,  CancellationToken token)
+        {
+            await _commandBus.Send(new RemoveGatewayFromSite { SiteId = id, MacAddress = mac }, token);
+            return Ok(new { id });
+        }
+
         [HttpGet("gw-registered")]
         public async Task<IActionResult> GetRegisteredGwList(CancellationToken token) =>
             Ok(await _queryBus.Send(new GetRegisteredGwList(), token));

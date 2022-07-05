@@ -11,7 +11,11 @@ using Warehouse.Core.UseCases.Warehouse.Commands;
 
 namespace Warehouse.Core.UseCases.Warehouse
 {
-    public class WarehouseCommandHandler : ICommandHandler<SetWarehouseSite>, ICommandHandler<DeleteWarehouseSite>, ICommandHandler<SetGatewayToSite>
+    public class WarehouseCommandHandler :
+        ICommandHandler<SetWarehouseSite>,
+        ICommandHandler<DeleteWarehouseSite>,
+        ICommandHandler<SetGatewayToSite>,
+        ICommandHandler<RemoveGatewayFromSite>
     {
         private readonly IRepository<WarehouseSiteEntity, string> _repository;
         private readonly IEventBus _eventBus;
@@ -51,9 +55,28 @@ namespace Warehouse.Core.UseCases.Warehouse
             return Unit.Value;
         }
 
-        public Task<Unit> Handle(SetGatewayToSite request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(SetGatewayToSite request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var site = await _repository.GetAsync(request.SiteId, cancellationToken);
+            var gw = site.Gateways.FirstOrDefault(gw =>
+                gw.MacAddress.Equals(request.MacAddress, StringComparison.InvariantCultureIgnoreCase));
+            if (gw != null) site.Gateways.Remove(gw);
+            site.Gateways.Add(_mapper.Map<Gateway>(request));
+            await _repository.UpdateAsync(site, cancellationToken);
+
+            return Unit.Value;
+        }
+
+        public async Task<Unit> Handle(RemoveGatewayFromSite request, CancellationToken cancellationToken)
+        {
+            var site = await _repository.GetAsync(request.SiteId, cancellationToken);
+            var gw = site.Gateways.FirstOrDefault(gw =>
+                gw.MacAddress.Equals(request.MacAddress, StringComparison.InvariantCultureIgnoreCase));
+            if (gw != null) site.Gateways.Remove(gw);
+            await _repository.UpdateAsync(site, cancellationToken);
+
+            return Unit.Value;
         }
     }
+
 }

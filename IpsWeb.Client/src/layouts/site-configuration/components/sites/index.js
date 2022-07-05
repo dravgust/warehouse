@@ -18,6 +18,7 @@ export default function Sites({
   refresh,
 }) {
   const [page, setPage] = useState(1);
+
   async function fetchSites(page) {
     const token = await auth.getToken();
     const res = await client(`sites?page=${page}&size=10&searchTerm=`, { token });

@@ -18,7 +18,7 @@ import Table from "examples/Tables/Table";
 import { useQuery } from "react-query";
 import { client } from "utils/api-client";
 import * as auth from "auth-provider";
-import { format } from "date-fns";
+import { format, formatDistance } from "date-fns";
 
 // Images
 import beaconIcon from "assets/images/hotspot-tower.png";
@@ -66,7 +66,7 @@ function Assets({ searchTerm, onRowSelect = () => {} }) {
     </Menu>
   );
 
-  function Beacon({ image, name, email }) {
+  function Beacon({ image, name, product }) {
     return (
       <SuiBox display="flex" alignItems="center" px={1} py={0.5}>
         <SuiBox mr={2}>
@@ -77,7 +77,7 @@ function Assets({ searchTerm, onRowSelect = () => {} }) {
             {name}
           </SuiTypography>
           <SuiTypography variant="caption" color="secondary">
-            {email}
+            {product ? product.name : 'n/a'}
           </SuiTypography>
         </SuiBox>
       </SuiBox>
@@ -126,17 +126,18 @@ function Assets({ searchTerm, onRowSelect = () => {} }) {
         {isSuccess && (
           <Table
             columns={[
-              { name: "mac", align: "left" },
-              { name: "timeStamp", align: "left" },
+              { name: "asset", align: "left" },
+              { name: "last update", align: "left" },
             ]}
             rows={
               isSuccess &&
               response.data.map((item) => ({
                 item: item,
-                mac: <Beacon image={beaconIcon} name={item.macAddress} email={'...'} />,
-                timeStamp: (
+                asset: <Beacon image={beaconIcon} name={item.macAddress} product={item.product} />,
+                "last update": (
                   <SuiTypography variant="caption" color="secondary" fontWeight="medium">
-                    {format(new Date(item.timeStamp), "dd/mm/yyy HH:mm:ss")}
+                    {/*format(new Date(item.timeStamp), "dd/MM/yyy HH:mm:ss")*/}
+                    {formatDistance(new Date(item.timeStamp), new Date(), { addSuffix: true })}
                   </SuiTypography>
                 ),
               }))

@@ -3,10 +3,14 @@ import SuiTypography from "components/SuiTypography";
 import SuiButton from "components/SuiButton";
 import { Button, ButtonGroup, Card, Icon } from "@mui/material";
 import Table from "examples/Tables/Table";
+import DeletePromt from "../delete-promt";
 
 // Images
 import routerIcon from "assets/images/internet-router.png";
 import SuiAvatar from "components/SuiAvatar";
+
+import * as auth from "auth-provider";
+import { client } from "utils/api-client";
 
 const Locations = [
   "Unknown",
@@ -45,6 +49,16 @@ function Gauge({ data }) {
 }
 
 export default function Gateways({ data,  onAdd = () => {}, onEdit = () => {}, onDelete = () => {} }) {
+
+  const handleDelete = async (item) => {
+    const token = await auth.getToken();
+    try {
+      await client(`sites/${item.siteId}/delete-gw/${item.macAddress}`, { token });
+      return onDelete();
+    } catch (err) {
+      console.log("delete-gw", err);
+    }
+  };
 
   return (
     <Card>
@@ -110,12 +124,25 @@ export default function Gateways({ data,  onAdd = () => {}, onEdit = () => {}, o
               gauge: <Gauge data={item.gauge} />,
               "": (
                 <ButtonGroup variant="text" aria-label="text button group" color="text">
-                  <SuiButton variant="text" color="dark">
+                  <SuiButton variant="text" color="dark" onClick={() => onEdit({...item, siteId: data.id})}>
                     <Icon>edit</Icon>
                   </SuiButton>
-                  <SuiButton variant="text" color="error">
-                    <Icon>delete</Icon>
-                  </SuiButton>
+                  <DeletePromt
+                      renderButton={(handleClickOpen) => (
+                        <SuiButton
+                          variant="text"
+                          color="error"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleClickOpen();
+                            e.preventDefault();
+                          }}
+                        >
+                          <Icon>delete</Icon>
+                        </SuiButton>
+                      )}
+                      onDelete={() => handleDelete({...item, siteId: data.id})}
+                    />
                 </ButtonGroup>
               ),
             }))}

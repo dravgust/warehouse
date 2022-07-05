@@ -24,7 +24,7 @@ const SiteConfiguration = () => {
   const onSelectItem = (item) => {
     resetGwToNull();
     if (siteForEdit) {
-      setSiteForEdit({...item, siteId: item.id});
+      setSiteForEdit({ ...item, siteId: item.id });
     }
     setSelectedSite(item);
   };
@@ -98,10 +98,7 @@ const SiteConfiguration = () => {
                     setSiteForEdit(selectedSite);
                   }}
                   onAdd={resetToDefault}
-                  onDelete={() => {
-                    forceUpdate();
-                    console.log("update");
-                  }}
+                  onDelete={forceUpdate}
                   refresh={refresh}
                 />
               </Grid>
@@ -117,6 +114,8 @@ const SiteConfiguration = () => {
                       onClose={resetGwToNull}
                       onSave={() => {
                         resetGwToNull();
+                        resetToNull();
+                        setSelectedSite(null);
                         forceUpdate();
                       }}
                       gateways={gateways}
@@ -126,7 +125,17 @@ const SiteConfiguration = () => {
                 </Grid>
               </Zoom>
               <Grid item xs={12}>
-                <Gateways data={selectedSite} onAdd={resetGwToDefault} />
+                <Gateways
+                  data={selectedSite}
+                  onEdit={setGwForEdit}
+                  onAdd={resetGwToDefault}
+                  onDelete={() => {
+                    resetGwToNull();
+                    resetToNull();
+                    setSelectedSite(null)
+                    forceUpdate();
+                  }}
+                />
               </Grid>
             </Grid>
           </Grid>

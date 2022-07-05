@@ -21,6 +21,9 @@ using Warehouse.Core.Persistence;
 using Warehouse.Core.Services.Providers;
 using Warehouse.Core.UseCases;
 using Warehouse.Core.UseCases.Administration.Spcecifications;
+using Warehouse.Core.UseCases.IPS;
+using Warehouse.Core.UseCases.IPS.Models;
+using Warehouse.Core.UseCases.IPS.Queries;
 using Warehouse.Core.UseCases.OperationHistory;
 using Warehouse.Core.UseCases.Products.Commands;
 using Warehouse.Core.UseCases.Products.Handlers;
@@ -81,15 +84,19 @@ namespace Warehouse.Core
             services.AddScoped<IRequestHandler<SetProduct, Unit>, ProductCommandHandler>();
             services.AddScoped<IRequestHandler<DeleteProduct, Unit>, ProductCommandHandler>();
             services.AddScoped<IRequestHandler<GetProductMetadata, ProductMetadata>, ProductQueryHandler>();
+            services.AddScoped<IRequestHandler<GetAssets, IPagedEnumerable<AssetDto>>, AssetsQueryHandler>();
 
             services.AddScoped<IRepository<FileEntity, string>, WarehouseRepository<FileEntity>>();
             services.AddScoped<IRepository<ProductEntity, string>, WarehouseRepository<ProductEntity>>();
+            services.AddScoped<IReadOnlyRepository<ProductEntity>, WarehouseRepository<ProductEntity>>();
             services.AddScoped<IRepository<WarehouseSiteEntity, string>, WarehouseRepository<WarehouseSiteEntity>>();
             services.AddScoped<IRequestHandler<GetRegisteredBeaconList, IEnumerable<string>>, GetRegisteredBeaconList.RegisteredBeaconQueryHandler>();
             services.AddScoped<IRequestHandler<GetRegisteredGwList, IEnumerable<string>>, GetRegisteredGwList.RegisteredGwQueryHandler>();
 
             services.AddScoped<IRequestHandler<SetWarehouseSite, Unit>, WarehouseCommandHandler>();
             services.AddScoped<IRequestHandler<DeleteWarehouseSite, Unit>, WarehouseCommandHandler>();
+            services.AddScoped<IRequestHandler<SetGatewayToSite, Unit>, WarehouseCommandHandler>();
+            services.AddScoped<IRequestHandler<RemoveGatewayFromSite, Unit>, WarehouseCommandHandler>();
 
             services.AddScoped<IRequestHandler<SpecificationQuery<WarehouseSiteSpec, IPagedEnumerable<WarehouseSiteEntity>>, IPagedEnumerable<WarehouseSiteEntity>>,
                 MongoPagingQueryHandler<WarehouseSiteSpec, WarehouseSiteEntity>>();

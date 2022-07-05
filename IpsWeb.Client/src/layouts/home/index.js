@@ -40,12 +40,8 @@ function Dashboard() {
 
   const [selectedSite, setSelectedSite] = useState();
   const onAssetSelect = async (row) => {
-    if (row && row.siteId) {
-      const token = await auth.getToken();
-      const res = await client(`sites/${row.siteId}`, { token });
-      if (res.data) {
-        setSelectedSite(res.data);
-      }
+    if (row && row.site) {
+      setSelectedSite(row.site);
     }
   };
 
@@ -65,12 +61,14 @@ function Dashboard() {
                 </SuiBox>
               </Grid>
               <Grid item xs={6}>
-                <Zoom in={Boolean(selectedSite)}>
+                <Zoom in={Boolean(selectedSite)}>       
                   <SuiBox mb={3}>
                     {selectedSite && <WarehouseSite siteItem={selectedSite} />}
                   </SuiBox>
                 </Zoom>
+               
               </Grid>
+
             </Grid>
 
             {/*<SuiBox mb={3}>
