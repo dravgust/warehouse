@@ -55,12 +55,12 @@ function Dashboard() {
           </Grid>
           <Grid item xs={12} md={6} lg={8}>
             <Grid container spacing={3}>
-              <Grid item xs={6}>
+              <Grid item xs={5}>
                 <SuiBox mb={3}>
                   <Assets searchTerm={searchTerm} onRowSelect={onAssetSelect} />
                 </SuiBox>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={7}>
                 <Zoom in={Boolean(selectedSite)}>       
                   <SuiBox mb={3}>
                     {selectedSite && <WarehouseSite siteItem={selectedSite} />}

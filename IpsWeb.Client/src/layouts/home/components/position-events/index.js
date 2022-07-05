@@ -60,13 +60,15 @@ function PositionEvents({ searchTerm }) {
               color={item.event === "IN" ? "success" : "error"}
               icon={item.event == "IN" ? "add_business" : "store"}
               title={
-                <span style={{ color: "#8392ab" }}>
-                  The device <span style={{ color: "#344767" }}>{item.macAddress}</span> is{" "}
-                  {item.event === "OUT" ? "out of the" : "entered"} the{" "}
-                  <span style={{ color: "#344767" }}>{item.siteName}</span>
-                </span>
+                <SuiTypography variant="caption" fontWeight="medium">
+                  The device  {item.macAddress} is {item.event === "OUT" ? "out of the" : "entered"} the <span style={{ color: "#344767" }}>{item.siteName}</span>
+                </SuiTypography>
               }
-              dateTime={formatDistance(new Date(item.timeStamp), new Date(), { addSuffix: true })}
+              dateTime={
+                <SuiTypography variant="caption" fontWeight="secondary">
+                  {formatDistance(new Date(item.timeStamp), new Date(), { addSuffix: true })}
+                </SuiTypography>
+              }
             />
           ))}
         {isLoading && (

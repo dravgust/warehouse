@@ -77,7 +77,27 @@ function Assets({ searchTerm, onRowSelect = () => {} }) {
             {name}
           </SuiTypography>
           <SuiTypography variant="caption" color="secondary">
-            {product ? product.name : 'n/a'}
+            {product ? product.name : "n/a"}
+          </SuiTypography>
+        </SuiBox>
+      </SuiBox>
+    );
+  }
+
+  function Site({ timeStamp, site }) {
+    return (
+      <SuiBox display="flex" alignItems="center" px={1}>
+        <SuiBox mr={2}>
+          
+        </SuiBox>
+        <SuiBox display="flex" flexDirection="column">
+          
+          <SuiTypography variant="button" color="medium" mt={-2}>
+            {site ? site.name : "n/a"}
+          </SuiTypography>
+          <SuiTypography variant="caption" fontWeight="secondary">
+            {/*format(new Date(item.timeStamp), "dd/MM/yyy HH:mm:ss")*/}
+            {formatDistance(new Date(timeStamp), new Date(), { addSuffix: true })}
           </SuiTypography>
         </SuiBox>
       </SuiBox>
@@ -127,19 +147,14 @@ function Assets({ searchTerm, onRowSelect = () => {} }) {
           <Table
             columns={[
               { name: "asset", align: "left" },
-              { name: "last update", align: "left" },
+              { name: "last location", align: "center" },
             ]}
             rows={
               isSuccess &&
               response.data.map((item) => ({
                 item: item,
                 asset: <Beacon image={beaconIcon} name={item.macAddress} product={item.product} />,
-                "last update": (
-                  <SuiTypography variant="caption" color="secondary" fontWeight="medium">
-                    {/*format(new Date(item.timeStamp), "dd/MM/yyy HH:mm:ss")*/}
-                    {formatDistance(new Date(item.timeStamp), new Date(), { addSuffix: true })}
-                  </SuiTypography>
-                ),
+                "last location": <Site timeStamp={item.timeStamp} site={item.site}></Site>,
               }))
             }
             page={page}
