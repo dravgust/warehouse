@@ -13,7 +13,7 @@ using Warehouse.Core.UseCases.Warehouse.Specifications;
 
 namespace Warehouse.API.Controllers.API
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class SitesController : ControllerBase
@@ -91,5 +91,17 @@ namespace Warehouse.API.Controllers.API
         [HttpGet("beacons-registered")]
         public async Task<IActionResult> GetRegisteredBeaconList(CancellationToken token) =>
             Ok(await _queryBus.Send(new GetRegisteredBeaconList(), token));
+
+        [HttpGet("beacons")]
+        public async Task<IActionResult> GetBeacons([FromQuery] GetProductItems query, CancellationToken token)
+        {
+            var result = await _queryBus.Send(query, token);
+            return Ok(new
+            {
+                items = result,
+                totalItems = result.TotalCount,
+                totalPages = (long)Math.Ceiling((double)result.TotalCount / query.Size)
+            });
+        }
     }
 }

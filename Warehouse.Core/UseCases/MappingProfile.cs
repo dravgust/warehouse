@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Warehouse.Core.Entities.Models;
+using Warehouse.Core.UseCases.IPS.Models;
 using Warehouse.Core.UseCases.Products.Models;
 using Warehouse.Core.UseCases.Warehouse.Models;
 
@@ -24,6 +25,10 @@ namespace Warehouse.Core.UseCases
             CreateMap<Gateway, GatewayDto>();
             CreateMap<Beacon, BeaconDto>();
             CreateMap<WarehouseSiteEntity, WarehouseSiteDto>();
+
+            CreateMap<IndoorPositionStatusEntity, IndoorPositionStatusDto>()
+                .ForMember(m => m.SiteId, des => des.MapFrom(m => m.Id))
+                ;
         }
     }
 }

@@ -24,6 +24,7 @@ using Warehouse.Core.UseCases.Administration.Spcecifications;
 using Warehouse.Core.UseCases.IPS;
 using Warehouse.Core.UseCases.IPS.Models;
 using Warehouse.Core.UseCases.IPS.Queries;
+using Warehouse.Core.UseCases.IPS.Specifications;
 using Warehouse.Core.UseCases.OperationHistory;
 using Warehouse.Core.UseCases.Products.Commands;
 using Warehouse.Core.UseCases.Products.Handlers;
@@ -32,6 +33,7 @@ using Warehouse.Core.UseCases.Products.Specifications;
 using Warehouse.Core.UseCases.Providers;
 using Warehouse.Core.UseCases.Warehouse;
 using Warehouse.Core.UseCases.Warehouse.Commands;
+using Warehouse.Core.UseCases.Warehouse.Models;
 using Warehouse.Core.UseCases.Warehouse.Queries;
 using Warehouse.Core.UseCases.Warehouse.Specifications;
 
@@ -85,12 +87,15 @@ namespace Warehouse.Core
             services.AddScoped<IRequestHandler<DeleteProduct, Unit>, ProductCommandHandler>();
             services.AddScoped<IRequestHandler<GetProductMetadata, ProductMetadata>, ProductQueryHandler>();
             services.AddScoped<IRequestHandler<GetAssets, IPagedEnumerable<AssetDto>>, AssetsQueryHandler>();
+            services.AddScoped<IRequestHandler<GetIpsStatus, IndoorPositionStatusDto>, AssetsQueryHandler>();
 
             services.AddScoped<IRepository<FileEntity, string>, WarehouseRepository<FileEntity>>();
             services.AddScoped<IRepository<ProductEntity, string>, WarehouseRepository<ProductEntity>>();
             services.AddScoped<IReadOnlyRepository<ProductEntity>, WarehouseRepository<ProductEntity>>();
+            services.AddScoped<IRepository<IndoorPositionStatusEntity, string>, WarehouseRepository<IndoorPositionStatusEntity>>();
             services.AddScoped<IRepository<WarehouseSiteEntity, string>, WarehouseRepository<WarehouseSiteEntity>>();
-            services.AddScoped<IRequestHandler<GetRegisteredBeaconList, IEnumerable<string>>, GetRegisteredBeaconList.RegisteredBeaconQueryHandler>();
+            services.AddScoped<IRequestHandler<GetRegisteredBeaconList, IEnumerable<string>>, WarehouseQueryHandler>();
+            services.AddScoped<IRequestHandler<GetProductItems, IPagedEnumerable<ProductItem>>, WarehouseQueryHandler>();
             services.AddScoped<IRequestHandler<GetRegisteredGwList, IEnumerable<string>>, GetRegisteredGwList.RegisteredGwQueryHandler>();
 
             services.AddScoped<IRequestHandler<SetWarehouseSite, Unit>, WarehouseCommandHandler>();
@@ -100,6 +105,8 @@ namespace Warehouse.Core
 
             services.AddScoped<IRequestHandler<SpecificationQuery<WarehouseSiteSpec, IPagedEnumerable<WarehouseSiteEntity>>, IPagedEnumerable<WarehouseSiteEntity>>,
                 MongoPagingQueryHandler<WarehouseSiteSpec, WarehouseSiteEntity>>();
+            services.AddScoped<IRequestHandler<SpecificationQuery<WarehouseProductSpec, IPagedEnumerable<BeaconRegisteredEntity>>, IPagedEnumerable<BeaconRegisteredEntity>>,
+                MongoPagingQueryHandler<WarehouseProductSpec, BeaconRegisteredEntity>>();
             services.AddScoped<IRequestHandler<SpecificationQuery<BeaconEventSpec, IPagedEnumerable<BeaconEventEntity>>, IPagedEnumerable<BeaconEventEntity>>,
                 MongoPagingQueryHandler<BeaconEventSpec, BeaconEventEntity>>();
             services.AddScoped<IRequestHandler<SpecificationQuery<BeaconPositionSpec, IPagedEnumerable<BeaconIndoorPositionEntity>>, IPagedEnumerable<BeaconIndoorPositionEntity>>,

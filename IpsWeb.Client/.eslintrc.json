@@ -1,6 +1,5 @@
 {
-  
- /* "env": {
+/*"env": {
     "browser": true,
     "es2021": true
   },
@@ -12,7 +11,7 @@
     "ecmaVersion": 12,
     "sourceType": "module"
   },
-  "plugins": ["react", "prettier"],
+  "plugins": [ "prettier"],
   "rules": {
     "prettier/prettier": [
       "error",

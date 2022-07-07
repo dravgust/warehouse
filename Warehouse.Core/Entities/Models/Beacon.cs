@@ -38,6 +38,7 @@ namespace Warehouse.Core.Entities.Models
         object IEntity.Id => Id;
 
         public string Id => MacAddress;
+        public string ProductId { get; set; }
     }
 
     public enum BeaconType

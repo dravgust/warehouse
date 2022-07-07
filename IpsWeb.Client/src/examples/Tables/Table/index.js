@@ -40,11 +40,10 @@ import colors from "assets/theme/base/colors";
 import typography from "assets/theme/base/typography";
 import borders from "assets/theme/base/borders";
 
-function Table({ columns, rows, page, totalPages, onPageChange = (event, value) => {}, onSelect }) {
+function Table({ columns, rows, page, totalPages, onPageChange = (event, value) => {}, onSelect, selectedKey }) {
   const { light } = colors;
   const { size, fontWeightBold } = typography;
   const { borderWidth } = borders;
-  const [selectedKey, setSelectedKey] = useState();
 
   const renderColumns = columns.map(({ name, align, width }, key) => {
     let pl;
@@ -135,8 +134,7 @@ function Table({ columns, rows, page, totalPages, onPageChange = (event, value) 
         key={rowKey}
         onClick={() => {
           if (onSelect) {
-            setSelectedKey(rowKey);
-            onSelect(row.item);
+            onSelect(row.item, rowKey);
           }
         }}
         selected={rowKey === selectedKey}

@@ -60,6 +60,7 @@ import Users from "layouts/users";
 import Warehouse from "layouts/warehouse";
 import Home from "layouts/home";
 import SiteConfiguration from "layouts/site-configuration";
+import Beacons from "layouts/beacons";
 
 const routes = [
   {
@@ -99,6 +100,16 @@ const routes = [
     route: "/products",
     icon: <FormatListNumberedOutlinedIcon size="12px" />,
     component: <Products />,
+    noCollapse: true,
+    protected: true,
+  },
+  {
+    type: "collapse",
+    name: "Beacons",
+    key: "beacons",
+    route: "/beacons",
+    icon: <FormatListNumberedOutlinedIcon size="12px" />,
+    component: <Beacons />,
     noCollapse: true,
     protected: true,
   },

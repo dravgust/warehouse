@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Queries;
-using Warehouse.API.Services.Security.Attributes;
+using Warehouse.Core.UseCases.IPS.Models;
 using Warehouse.Core.UseCases.IPS.Queries;
 
 namespace Warehouse.API.Controllers.API
 {
-    [Authorize]
+    // [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AssetsController : ControllerBase
@@ -27,6 +27,12 @@ namespace Warehouse.API.Controllers.API
                 totalItems = result.TotalCount,
                 totalPages = (long)Math.Ceiling((double)result.TotalCount / query.Size)
             });
+        }
+
+        [HttpGet("status")]
+        public async Task<IActionResult> GetStatus([FromQuery] GetIpsStatus query, CancellationToken token = default)
+        {
+            return Ok(await _queryBus.Send(query, token));
         }
     }
 }

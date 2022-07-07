@@ -65,9 +65,7 @@ function PositionEvents({ searchTerm }) {
                 </SuiTypography>
               }
               dateTime={
-                <SuiTypography variant="caption" fontWeight="secondary">
-                  {formatDistance(new Date(item.timeStamp), new Date(), { addSuffix: true })}
-                </SuiTypography>
+                formatDistance(new Date(item.timeStamp), new Date(), { addSuffix: true })
               }
             />
           ))}

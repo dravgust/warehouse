@@ -6,26 +6,29 @@ using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.IPS.Models;
 using Warehouse.Core.UseCases.IPS.Queries;
+using Warehouse.Core.UseCases.IPS.Specifications;
 using Warehouse.Core.UseCases.Products.Models;
 using Warehouse.Core.UseCases.Warehouse.Models;
-using Warehouse.Core.UseCases.Warehouse.Specifications;
 
 namespace Warehouse.Core.UseCases.IPS
 {
-    public class AssetsQueryHandler : IQueryHandler<GetAssets, IPagedEnumerable<AssetDto>>
+    public class AssetsQueryHandler : IQueryHandler<GetAssets, IPagedEnumerable<AssetDto>>, IQueryHandler<GetIpsStatus, IndoorPositionStatusDto>
     {
         private readonly IQueryBus _queryBus;
         private readonly IRepository<WarehouseSiteEntity, string> _siteRepository;
+        private readonly IRepository<IndoorPositionStatusEntity, string> _statusRepository;
         private readonly IReadOnlyRepository<ProductEntity> _productRepository;
         private readonly IMapper _mapper;
 
         public AssetsQueryHandler(IQueryBus queryBus,
             IRepository<WarehouseSiteEntity, string> siteRepository,
+            IRepository<IndoorPositionStatusEntity, string> statusRepository,
             IReadOnlyRepository<ProductEntity> productRepository,
             IMapper mapper)
         {
             _queryBus = queryBus;
             _siteRepository = siteRepository;
+            _statusRepository = statusRepository;
             _productRepository = productRepository;
             _mapper = mapper;
         }
@@ -64,6 +67,12 @@ namespace Warehouse.Core.UseCases.IPS
             }
 
             return new PagedEnumerable<AssetDto>(data, result.TotalCount);
+        }
+
+        public async Task<IndoorPositionStatusDto> Handle(GetIpsStatus request, CancellationToken cancellationToken)
+        {
+            var result = await _statusRepository.GetAsync(request.SiteId, cancellationToken);
+            return _mapper.Map<IndoorPositionStatusDto>(result);
         }
     }
 }

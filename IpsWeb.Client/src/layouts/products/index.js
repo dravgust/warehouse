@@ -29,7 +29,7 @@ function Products() {
 
   const [selectedItem, selectItem] = useState();
 
-  const [refresh, updateRefreshState] = useState();
+  const [refresh, updateRefreshState] = useState(0);
   const forceUpdate = () => updateRefreshState(Date.now());
 
   function handleDelete() {

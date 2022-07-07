@@ -11,7 +11,7 @@ import { client } from "utils/api-client";
 import { useQuery } from "react-query";
 
 export default function Sites({
-  onSelect = () => {},
+  onSelect = () => {}, selectedItem,
   onAdd = () => {},
   onEdit = () => {},
   onDelete = () => {},
@@ -127,6 +127,7 @@ export default function Sites({
             totalPages={data.totalPages}
             onPageChange={(event, value) => setPage(value)}
             onSelect={onSelect}
+            selectedKey={selectedItem ? selectedItem.key : ""}
           />
         )}
         {isLoading && (

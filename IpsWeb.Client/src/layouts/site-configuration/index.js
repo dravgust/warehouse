@@ -21,12 +21,12 @@ const SiteConfiguration = () => {
 
   const [siteForEdit, setSiteForEdit] = useState(null);
   const [selectedSite, setSelectedSite] = useState(null);
-  const onSelectItem = (item) => {
+  const onSelectItem = (item, key) => {
     resetGwToNull();
     if (siteForEdit) {
-      setSiteForEdit({ ...item, siteId: item.id });
+      setSiteForEdit({ ...item, siteId: item.id});
     }
-    setSelectedSite(item);
+    setSelectedSite({ ...item, key: key });
   };
   const resetToNull = () => setSiteForEdit(null);
   const resetToDefault = () =>
@@ -94,6 +94,7 @@ const SiteConfiguration = () => {
               <Grid item xs={12}>
                 <Sites
                   onSelect={onSelectItem}
+                  selectedItem={selectedSite}
                   onEdit={() => {
                     setSiteForEdit(selectedSite);
                   }}

@@ -4,7 +4,7 @@ using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.Specifications;
 using Warehouse.Core.Entities.Models;
 
-namespace Warehouse.Core.UseCases.Warehouse.Specifications
+namespace Warehouse.Core.UseCases.IPS.Specifications
 {
     public class BeaconEventSpec : PagingBase<BeaconEventEntity, object>, IFilteringSpecification<BeaconEventEntity>
     {

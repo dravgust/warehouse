@@ -28,7 +28,7 @@ import typography from "assets/theme/base/typography";
 import { useQuery } from "react-query";
 import { client } from "utils/api-client";
 import * as auth from "auth-provider";
-import WarehouseSite from "./components/WarehouseSite";
+import PositionStatus from "./components/position-status";
 import { Zoom } from "@mui/material";
 
 function Dashboard() {
@@ -39,9 +39,11 @@ function Dashboard() {
   const { chart, items } = reportsBarChartData;
 
   const [selectedSite, setSelectedSite] = useState();
-  const onAssetSelect = async (row) => {
+  const onAssetSelect = async (row, key) => {
     if (row && row.site) {
-      setSelectedSite(row.site);
+      const token = await auth.getToken();
+      const status = await client(`assets/status?siteId=` + row.site.id, {token});
+      setSelectedSite({...row.site, ...status, key: key});
     }
   };
 
@@ -57,13 +59,13 @@ function Dashboard() {
             <Grid container spacing={3}>
               <Grid item xs={5}>
                 <SuiBox mb={3}>
-                  <Assets searchTerm={searchTerm} onRowSelect={onAssetSelect} />
+                  <Assets searchTerm={searchTerm} selectedItem={selectedSite} onRowSelect={onAssetSelect} />
                 </SuiBox>
               </Grid>
               <Grid item xs={7}>
                 <Zoom in={Boolean(selectedSite)}>       
                   <SuiBox mb={3}>
-                    {selectedSite && <WarehouseSite siteItem={selectedSite} />}
+                    {selectedSite && <PositionStatus item={selectedSite} />}
                   </SuiBox>
                 </Zoom>
                

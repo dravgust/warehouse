@@ -23,7 +23,7 @@ import { format, formatDistance } from "date-fns";
 // Images
 import beaconIcon from "assets/images/hotspot-tower.png";
 
-function Assets({ searchTerm, onRowSelect = () => {} }) {
+function Assets({ searchTerm, selectedItem, onRowSelect = () => {} }) {
   const [page, setPage] = useState(1);
   const fetchItems = async (page, searchTerm) => {
     const token = await auth.getToken();
@@ -92,10 +92,10 @@ function Assets({ searchTerm, onRowSelect = () => {} }) {
         </SuiBox>
         <SuiBox display="flex" flexDirection="column">
           
-          <SuiTypography variant="button" color="medium" mt={-2}>
+          <SuiTypography variant="button" color="info" mt={-2}>
             {site ? site.name : "n/a"}
           </SuiTypography>
-          <SuiTypography variant="caption" fontWeight="secondary">
+          <SuiTypography variant="caption" fontWeight="regular">
             {/*format(new Date(item.timeStamp), "dd/MM/yyy HH:mm:ss")*/}
             {formatDistance(new Date(timeStamp), new Date(), { addSuffix: true })}
           </SuiTypography>
@@ -161,6 +161,7 @@ function Assets({ searchTerm, onRowSelect = () => {} }) {
             totalPages={response.totalPages}
             onPageChange={(event, value) => setPage(value)}
             onSelect={onRowSelect}
+            selectedKey={selectedItem ? selectedItem.key : ""}
           />
         )}
         {isLoading && (
