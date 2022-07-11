@@ -24,6 +24,22 @@ async function client(
       return Promise.resolve();
     }
     if (response.status === 401) {
+
+      /*try{
+        window.fetch(`${apiURL}/account/refresh-token`, {
+          body: JSON.stringify({ token:'TowdI7jWDX4kegta5qN0HFs85yuDwYdhAbuABIFekKxQesuWBA88gbDH45qsuvmRtV4+E3bamrLy4MSQQvKzVw==' }),
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...customHeaders,
+          },
+        }).then(async res => {
+          console.log("res", res);
+        })
+      }catch (err){
+
+      }*/
+
       //queryCache.clear()
       await auth.logout()
       // refresh the page for them

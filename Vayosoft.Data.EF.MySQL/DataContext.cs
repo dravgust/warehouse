@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Entities;
@@ -18,7 +17,7 @@ namespace Vayosoft.Data.EF.MySQL
             this._loggerFactory = loggerFactory;
             this._logger = loggerFactory.CreateLogger<DataContext>();
 
-            //this.ChangeTracker.LazyLoadingEnabled = false;
+            this.ChangeTracker.LazyLoadingEnabled = false;
 
             Database.EnsureCreated();
         }

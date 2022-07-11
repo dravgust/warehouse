@@ -29,6 +29,11 @@ namespace Warehouse.Core.UseCases
             CreateMap<IndoorPositionStatusEntity, IndoorPositionStatusDto>()
                 .ForMember(m => m.SiteId, des => des.MapFrom(m => m.Id))
                 ;
+
+            CreateMap<BeaconEntity, ProductItemDto>();
+            CreateMap<ProductItemDto, BeaconEntity>()
+                .ForMember(p => p.Id, des => des.MapFrom(m => m.MacAddress))
+                .ForMember(p => p.ProductId, des => des.MapFrom(m => m.Product));
         }
     }
 }

@@ -7,7 +7,8 @@ using Warehouse.Core.UseCases.Products.Queries;
 
 namespace Warehouse.Core.UseCases.Products.Handlers
 {
-    public class ProductQueryHandler : IQueryHandler<GetProductMetadata, ProductMetadata>
+    public class ProductQueryHandler : IQueryHandler<GetProductMetadata, ProductMetadata>,
+        IQueryHandler<GetProductItemMetadata, ProductMetadata>
     {
         private readonly IDistributedMemoryCache _cache;
         private readonly IRepository<FileEntity, string> _fileRepository;
@@ -23,7 +24,23 @@ namespace Warehouse.Core.UseCases.Products.Handlers
             var data = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<ProductMetadata>(), async options =>
             {
                 options.SlidingExpiration = TimeSpans.FiveMinutes;
-                var entity = await _fileRepository.GetAsync(nameof(ProductMetadata), cancellationToken);
+                var entity = await _fileRepository.GetAsync("product_metadata", cancellationToken);
+                ProductMetadata? data = null;
+                if (!string.IsNullOrEmpty(entity?.Content))
+                    data = entity.Content.FromJson<ProductMetadata>();
+
+                return data;
+            });
+
+            return data;
+        }
+
+        public async Task<ProductMetadata> Handle(GetProductItemMetadata request, CancellationToken cancellationToken)
+        {
+            var data = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<ProductMetadata>("beacon"), async options =>
+            {
+                options.SlidingExpiration = TimeSpans.FiveMinutes;
+                var entity = await _fileRepository.GetAsync("beacon_metadata", cancellationToken);
                 ProductMetadata? data = null;
                 if (!string.IsNullOrEmpty(entity?.Content))
                     data = entity.Content.FromJson<ProductMetadata>();

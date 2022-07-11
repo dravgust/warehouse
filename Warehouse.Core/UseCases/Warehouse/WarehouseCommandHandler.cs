@@ -15,17 +15,20 @@ namespace Warehouse.Core.UseCases.Warehouse
         ICommandHandler<SetWarehouseSite>,
         ICommandHandler<DeleteWarehouseSite>,
         ICommandHandler<SetGatewayToSite>,
-        ICommandHandler<RemoveGatewayFromSite>
+        ICommandHandler<RemoveGatewayFromSite>,
+        ICommandHandler<SetBeacon>
     {
         private readonly IRepository<WarehouseSiteEntity, string> _repository;
         private readonly IEventBus _eventBus;
         private readonly IMapper _mapper;
+        private readonly IRepository<BeaconEntity, string> _beaconRepository;
 
-        public WarehouseCommandHandler(IRepository<WarehouseSiteEntity, string> repository, IEventBus eventBus, IMapper mapper)
+        public WarehouseCommandHandler(IRepository<WarehouseSiteEntity, string> repository, IEventBus eventBus, IMapper mapper, IRepository<BeaconEntity, string> beaconRepository)
         {
             _repository = repository;
             _eventBus = eventBus;
             _mapper = mapper;
+            _beaconRepository = beaconRepository;
         }
 
         public async Task<Unit> Handle(SetWarehouseSite request, CancellationToken cancellationToken)
@@ -74,6 +77,50 @@ namespace Warehouse.Core.UseCases.Warehouse
                 gw.MacAddress.Equals(request.MacAddress, StringComparison.InvariantCultureIgnoreCase));
             if (gw != null) site.Gateways.Remove(gw);
             await _repository.UpdateAsync(site, cancellationToken);
+
+            return Unit.Value;
+        }
+
+        public async Task<Unit> Handle(SetBeacon request, CancellationToken cancellationToken)
+        {
+            BeaconEntity? entity;
+            if (!string.IsNullOrEmpty(request.MacAddress) && (entity = await _beaconRepository.FindAsync(request.MacAddress, cancellationToken)) != null)
+            {
+                if (request.Product != null && !string.IsNullOrEmpty(request.Product.Id))
+                {
+                    entity.ProductId = request.Product.Id;
+                }
+
+                if (!string.IsNullOrEmpty(request.Name))
+                    entity.Name = request.Name;
+
+                if (request.Metadata != null)
+                {
+                    entity.Metadata = request.Metadata;
+                }
+
+                await _beaconRepository.UpdateAsync(entity, cancellationToken);
+            }
+            else
+            {
+                var newEntity = new BeaconEntity
+                {
+                    Id = request.MacAddress
+                };
+                if (request.Product != null && !string.IsNullOrEmpty(request.Product.Id))
+                {
+                    newEntity.ProductId = request.Product.Id;
+                }
+
+                if (!string.IsNullOrEmpty(request.Name))
+                    newEntity.Name = request.Name;
+
+                if (request.Metadata != null)
+                {
+                    newEntity.Metadata = request.Metadata;
+                }
+                await _beaconRepository.AddAsync(newEntity, cancellationToken);
+            }
 
             return Unit.Value;
         }

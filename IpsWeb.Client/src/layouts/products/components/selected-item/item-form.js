@@ -24,9 +24,6 @@ const validationSchema = yup.object({
   description: yup
     .string("Enter product description")
     .min(3, "Description should be of minimum 3 characters length"),
-  macAddress: yup
-    .string("Enter MAC address")
-    .min(5, "MAC address should be of minimum 6 characters length"),
   metadata: yup.array().of(
     yup.object({
       value: yup.string().when(["isRequired"], {
@@ -72,7 +69,6 @@ export default function ItemForm({ onSave = () => {}, onDelete = () => {}, item 
       id: item ? item.id : "",
       name: item ? item.name : "",
       description: item ? item.description : "",
-      macAddress: item ? item.macAddress : "",
       metadata: item && item.metadata ? item.metadata : [],
     },
     validationSchema: validationSchema,
@@ -112,32 +108,6 @@ export default function ItemForm({ onSave = () => {}, onDelete = () => {}, item 
         helperText={formik.touched.name && formik.errors.name}
       />
 
-      <Stack direction="row" spacing={2} alignItems="center">
-        <Autocomplete
-        disablePortal
-          onBlur={handleBlur}
-          options={["", ...beacons]}
-          isOptionEqualToValue={(option, value) => option === value}
-          sx={{ width: 300 }}
-          getOptionLabel={(option) => option}
-          onChange={(e, value) => {
-            formik.setFieldValue("macAddress", value);
-          }}
-          value={formik.values.macAddress}
-          renderInput={(params) => (
-            <TextField
-              id="macAddress"
-              name="macAddress"
-              label="MacAddress"
-              {...params}
-              error={formik.touched.macAddress && Boolean(formik.errors.macAddress)}
-              helperText={formik.touched.macAddress && formik.errors.macAddress}
-            />
-          )}
-        />
-        {item.macAddress ? <Icon>link</Icon> : <Icon>link_off</Icon>}
-        
-      </Stack>
       <TextField
         fullWidth
         id="description"

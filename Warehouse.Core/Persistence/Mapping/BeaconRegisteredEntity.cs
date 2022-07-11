@@ -24,4 +24,14 @@ namespace Warehouse.Core.Persistence.Mapping
                 .SetIdGenerator(StringObjectIdGenerator.Instance);
         }
     }
+
+    public class BeaconEntityClassMap : MongoClassMap<BeaconEntity>
+    {
+        public override void Map(BsonClassMap<BeaconEntity> cm)
+        {
+            cm.AutoMap();
+            cm.MapIdProperty(c => c.MacAddress)
+                .SetIdGenerator(StringObjectIdGenerator.Instance);
+        }
+    }
 }

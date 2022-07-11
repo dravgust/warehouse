@@ -36,6 +36,16 @@ namespace Warehouse.API.Controllers.API
             });
         }
 
+        [HttpGet("item-metadata")]
+        public async Task<IActionResult> GetItemMetadataTemplate(CancellationToken token)
+        {
+            var data = await _queryBus.Send(new GetProductItemMetadata(), token);
+            return Ok(new
+            {
+                data
+            });
+        }
+
         [HttpGet("")]
         public async Task<IActionResult> Get(int page, int size, string? searchTerm = null, CancellationToken token = default)
         {

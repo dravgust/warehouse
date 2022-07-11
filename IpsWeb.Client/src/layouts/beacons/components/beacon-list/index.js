@@ -65,6 +65,7 @@ const BeaconList = ({searchTerm,
                     <Table
                         columns={[
                             {name: "mac", align: "left"},
+                            {name: "name", align: "left"},
                             {name: "product name", align: "center"},
                         ]}
                         rows={data.items.map((item) => ({
@@ -73,6 +74,11 @@ const BeaconList = ({searchTerm,
                             mac: (
                                 <SuiTypography variant="caption" color="text" fontWeight="medium" px={2}>
                                     {item.macAddress}
+                                </SuiTypography>
+                            ),
+                            name: (
+                                <SuiTypography variant="caption" color="text" fontWeight="medium" px={2}>
+                                    {item.name ? item.name : ''}
                                 </SuiTypography>
                             ),
                             "product name": (

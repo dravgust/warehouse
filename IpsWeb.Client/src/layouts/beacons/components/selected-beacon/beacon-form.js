@@ -19,15 +19,15 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 const validationSchema = yup.object({
   macAddress: yup
-    .string("Enter MAC address")
-    .min(5, "MAC address should be of minimum 6 characters length"),
+      .string("Enter MAC address")
+      .min(12, "MAC address should be of minimum 12 characters length"),
 });
 
-export default function BeaconForm({ onSave = () => {}, onDelete = () => {}, item = {}, products = [] }) {
+export default function BeaconForm({ onSave = () => {}, onDelete = () => {}, item = {} }) {
 
   const saveItem = async (item) => {
     const token = await auth.getToken();
-    const res = await client(`sites/beacon/set`, {
+    const res = await client(`sites/beacons/set`, {
       data: item,
       token,
     });
@@ -43,7 +43,7 @@ export default function BeaconForm({ onSave = () => {}, onDelete = () => {}, ite
   const handleDelete = async (item) => {
     const token = await auth.getToken();
     try {
-      await client(`sites/beacon/delete`, { data: item,  token });
+      await client(`sites/beacons/delete`, { data: item,  token });
       return onDelete();
     } catch (err) {
       console.log("delete-item", err);
@@ -54,7 +54,9 @@ export default function BeaconForm({ onSave = () => {}, onDelete = () => {}, ite
     enableReinitialize: true,
     initialValues: {
       macAddress: item ? item.macAddress : "",
+      name: item.name ? item.name : "",
       product: item.product ? item.product : {name: 'n/a', id: ""},
+      metadata: item && item.metadata ? item.metadata : [],
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
@@ -105,7 +107,7 @@ export default function BeaconForm({ onSave = () => {}, onDelete = () => {}, ite
     >
       {mutation.isError && (
         <SuiAlert style={{fontSize:"12px"}} color={"error"} dismissible>
-          {mutation.error.title || mutation.error.error}
+          {mutation.error.title || mutation.error.error || 'Some error occurred!'}
         </SuiAlert>
       )}
 
@@ -118,6 +120,20 @@ export default function BeaconForm({ onSave = () => {}, onDelete = () => {}, ite
         onChange={formik.handleChange}
         error={formik.touched.macAddress && Boolean(formik.errors.macAddress)}
         helperText={formik.touched.macAddress && formik.errors.macAddress}
+        InputProps={{
+          readOnly: Boolean(item.macAddress),
+        }}
+      />
+
+      <TextField
+          fullWidth
+          id="name"
+          name="name"
+          label="Name"
+          value={formik.values.name}
+          onChange={formik.handleChange}
+          error={formik.touched.name && Boolean(formik.errors.name)}
+          helperText={formik.touched.name && formik.errors.name}
       />
 
       <Stack direction="row" spacing={2} alignItems="center">
@@ -162,6 +178,35 @@ export default function BeaconForm({ onSave = () => {}, onDelete = () => {}, ite
         {item.product ? <Icon>link</Icon> : <Icon>link_off</Icon>}
         
       </Stack>
+
+      {formik.values.metadata &&
+          formik.values.metadata.map(({ key, value, type }, index) => (
+              <TextField
+                  key={index}
+                  fullWidth
+                  label={key}
+                  id={`metadata[${index}].value`}
+                  name={`metadata[${index}].value`}
+                  value={value}
+                  type={type || "text"}
+                  InputLabelProps={{ shrink: true }}
+                  onChange={formik.handleChange}
+                  error={
+                      formik.touched.metadata &&
+                      formik.touched.metadata[index].value &&
+                      formik.errors.metadata &&
+                      formik.errors.metadata[index] &&
+                      Boolean(formik.errors.metadata[index].value)
+                  }
+                  helperText={
+                      formik.touched.metadata &&
+                      formik.touched.metadata[index].value &&
+                      formik.errors.metadata &&
+                      formik.errors.metadata[index] &&
+                      formik.errors.metadata[index].value
+                  }
+              />
+          ))}
 
       <Stack my={2} py={2} direction="row" spacing={1} justifyContent="end">
         <DeletePromt

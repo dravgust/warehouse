@@ -14,13 +14,16 @@ using Warehouse.Core.UseCases.Warehouse.Specifications;
 
 namespace Warehouse.Core.UseCases.Warehouse
 {
-    public class WarehouseQueryHandler : IQueryHandler<GetRegisteredBeaconList, IEnumerable<string>>, IQueryHandler<GetProductItems, IPagedEnumerable<ProductItem>>
+    public class WarehouseQueryHandler : 
+        IQueryHandler<GetRegisteredBeaconList, IEnumerable<string>>,
+        IQueryHandler<GetProductItems, IPagedEnumerable<ProductItemDto>>
     {
         private readonly IDistributedMemoryCache _cache;
         private readonly IMapper _mapper;
         private readonly IQueryBus _queryBus;
         private readonly IMongoCollection<BeaconRegisteredEntity> _collection;
         private readonly IMongoCollection<ProductEntity> _products;
+        private readonly IMongoCollection<BeaconEntity> _productItems;
 
         public WarehouseQueryHandler(IMongoContext context, IDistributedMemoryCache cache, IMapper mapper, IQueryBus queryBus)
         {
@@ -29,6 +32,7 @@ namespace Warehouse.Core.UseCases.Warehouse
             _cache = cache;
             _mapper = mapper;
             _queryBus = queryBus;
+            _productItems = context.Database.GetCollection<BeaconEntity>(CollectionName.For<BeaconEntity>());
         }
 
         public async Task<IEnumerable<string>> Handle(GetRegisteredBeaconList request, CancellationToken cancellationToken)
@@ -45,31 +49,34 @@ namespace Warehouse.Core.UseCases.Warehouse
             return data;
         }
 
-        public async Task<IPagedEnumerable<ProductItem>> Handle(GetProductItems request, CancellationToken cancellationToken)
+        public async Task<IPagedEnumerable<ProductItemDto>> Handle(GetProductItems request, CancellationToken cancellationToken)
         {
             var spec = new WarehouseProductSpec(request.Page, request.Size, request.SearchTerm);
             var query = new SpecificationQuery<WarehouseProductSpec, IPagedEnumerable<BeaconRegisteredEntity>>(spec);
 
             var result = await _queryBus.Send(query, cancellationToken);
-            var data = new List<ProductItem>();
+            var data = new List<ProductItemDto>();
             foreach (var item in result)
             {
-                var productItem = new ProductItem
+                var dto = new ProductItemDto
                 {
                     MacAddress = item.MacAddress,
-
                 };
 
-                if (!string.IsNullOrEmpty(item.ProductId))
+                var productItem =  await _productItems.Find(q => q.Id.Equals(item.MacAddress)).FirstOrDefaultAsync(cancellationToken: cancellationToken);
+                if (productItem != null && !string.IsNullOrEmpty(productItem.ProductId))
                 {
-                    var product = await _products.Find(q => q.Id.Equals(item.ProductId)).FirstOrDefaultAsync(cancellationToken: cancellationToken);
-                    productItem.Product = _mapper.Map<ProductDto>(product);
+                    var product = await _products.Find(q => q.Id.Equals(productItem.ProductId)).FirstOrDefaultAsync(cancellationToken: cancellationToken);
+                    dto.Product = _mapper.Map<ProductDto>(product);
+
+                    dto.Name = productItem.Name;
+                    dto.Metadata = productItem.Metadata;
                 }
 
-                data.Add(productItem);
+                data.Add(dto);
             }
 
-            return new PagedEnumerable<ProductItem>(data, result.TotalCount);
+            return new PagedEnumerable<ProductItemDto>(data, result.TotalCount);
         }
     }
 }

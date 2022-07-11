@@ -103,5 +103,19 @@ namespace Warehouse.API.Controllers.API
                 totalPages = (long)Math.Ceiling((double)result.TotalCount / query.Size)
             });
         }
+
+        [HttpGet("beacons/delete")]
+        public async Task<IActionResult> DeleteBeaconByMac(string mac, CancellationToken token)
+        {
+            await _commandBus.Send(new DeleteBeacon { MacAddress = mac }, token);
+            return Ok(new { mac });
+        }
+
+        [HttpPost("beacons/set")]
+        public async Task<IActionResult> PostBeacon([FromBody] SetBeacon command, CancellationToken token)
+        {
+            await _commandBus.Send(command, token);
+            return Ok(new { });
+        }
     }
 }

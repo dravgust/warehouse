@@ -7,6 +7,9 @@ import {Zoom} from "@mui/material";
 import {useState} from "react";
 import BeaconList from "./components/beacon-list";
 import SelectedBeacon from "./components/selected-beacon";
+import * as auth from "../../auth-provider";
+import {client} from "../../utils/api-client";
+import {useQuery} from "react-query";
 
 const Beacons = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -22,15 +25,31 @@ const Beacons = () => {
         macAddress:'',
         name:''
     });
-    const onSelectItem =(item, key) => {
-        selectItem({...item, key: key});
+    const onSelectItem = (item, key) => {
+        if(!item) return;
+        let result = metadata ? metadata.map(e => {
+            let rm = item.metadata && item.metadata.find(m => m.key === e.key)
+            return rm && rm.value ? Object.assign({}, e, {value: rm.value}) : Object.assign({}, e);
+        }) : [];
+        return selectItem({...item, metadata: result, key: key})
     };
+
     function handleDelete() {
         resetToNull();
         forceUpdate();
     }
 
     const handleSave = () => forceUpdate();
+
+    const fetchMetadata = async () => {
+        const token = await auth.getToken();
+        const res = await client(`items/item-metadata`, {token});
+        return res.data;
+    };
+    const { data: metadata } = useQuery(["item-metadata"], fetchMetadata, {
+        keepPreviousData: false,
+        refetchOnWindowFocus: false,
+    });
 
     return(
         <DashboardLayout>
@@ -54,7 +73,7 @@ const Beacons = () => {
                                         onSave={handleSave}
                                         onDelete={handleDelete}
                                         onClose={resetToNull}
-                                        products={[]}/>
+                                        />
                                 )}
                             </Grid>
                         </Zoom>
