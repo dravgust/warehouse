@@ -25,21 +25,16 @@ import SuiInput from "../../../../components/SuiInput";
 const Accordion = styled((props) => (
     <MuiAccordion disableGutters elevation={0} square {...props} />
 ))(({theme}) => ({
-    borderTop: `1px solid ${theme.palette.divider}`,
+    borderTop: `1px solid ${theme.borders.borderColor}`,
     '&:not(:last-child)': {
         borderBottom: 0,
+    },
+    '&:first-of-type': {
+        borderTop: 0,
     },
     '&:before': {
         display: 'none',
     },
-    '&:first-of-type': {
-        borderTopLeftRadius: '1rem',
-        borderTopRightRadius: '1rem',
-    },
-    '&:last-child': {
-        borderBottomLeftRadius: '1rem',
-        borderBottomRightRadius: '1rem',
-    }
 }));
 
 const AccordionSummary = styled((props) => (
@@ -172,7 +167,7 @@ export default function ProductsTreeView({ searchTerm = '', selectedProduct = {b
                     </SuiTypography>
                 </SuiBox>
             </SuiBox>
-            <SuiBox px={3} pb={3}>
+            <SuiBox pb={3}>
                 {isSuccess &&
                     response.map((item, index) => (
                         <Accordion
@@ -181,7 +176,8 @@ export default function ProductsTreeView({ searchTerm = '', selectedProduct = {b
                             key={`product_${index}`}
                             TransitionProps={{unmountOnExit: true}}>
 
-                            <AccordionSummary aria-controls={`panel_${index}_content`} id={`panel_${index}_header`}>
+                            <AccordionSummary aria-controls={`panel_${index}_content`} id={`panel_${index}_header`}
+                            sx={{'& .MuiAccordionSummary-content' : {margin: '7px 0'}}}>
                                 <SuiBox display="flex" justifyContent="space-between" alignItems="center"
                                         style={{width: '100%'}}>
                                     <Product product={item.product} count={item.beacons.length}/>
