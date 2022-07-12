@@ -30,10 +30,10 @@ namespace Warehouse.Core.UseCases
                 .ForMember(m => m.SiteId, des => des.MapFrom(m => m.Id))
                 ;
 
-            CreateMap<BeaconEntity, ProductItemDto>();
+            CreateMap<BeaconEntity, ProductItemDto>()
+                .ForMember(p => p.Product, des => des.Ignore());
             CreateMap<ProductItemDto, BeaconEntity>()
-                .ForMember(p => p.Id, des => des.MapFrom(m => m.MacAddress))
-                .ForMember(p => p.ProductId, des => des.MapFrom(m => m.Product));
+                .ForMember(p => p.Id, des => des.MapFrom(m => m.MacAddress));
         }
     }
 }

@@ -64,10 +64,15 @@ namespace Warehouse.Core.UseCases.Warehouse
                 };
 
                 var productItem =  await _productItems.Find(q => q.Id.Equals(item.MacAddress)).FirstOrDefaultAsync(cancellationToken: cancellationToken);
-                if (productItem != null && !string.IsNullOrEmpty(productItem.ProductId))
+                if (productItem != null)
                 {
-                    var product = await _products.Find(q => q.Id.Equals(productItem.ProductId)).FirstOrDefaultAsync(cancellationToken: cancellationToken);
-                    dto.Product = _mapper.Map<ProductDto>(product);
+                    if (!string.IsNullOrEmpty(productItem.ProductId))
+                    {
+                        var product = await _products.Find(q => q.Id.Equals(productItem.ProductId))
+                            .FirstOrDefaultAsync(cancellationToken: cancellationToken);
+                        if (product != null)
+                            dto.Product = _mapper.Map<ProductDto>(product);
+                    }
 
                     dto.Name = productItem.Name;
                     dto.Metadata = productItem.Metadata;

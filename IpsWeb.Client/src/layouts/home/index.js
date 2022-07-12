@@ -6,46 +6,23 @@ import Icon from "@mui/material/Icon";
 
 // Soft UI Dashboard React components
 import SuiBox from "components/SuiBox";
-import SuiTypography from "components/SuiTypography";
 
 // Soft UI Dashboard React examples
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 
-// Dashboard layout components
-import Assets from "layouts/home/components/Assets";
-import PositionEvents from "layouts/home/components/position-events";
-import GradientLineChart from "examples/Charts/LineCharts/GradientLineChart";
-import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
 
-import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
-import gradientLineChartData from "layouts/dashboard/data/gradientLineChartData";
-
-// Soft UI Dashboard React base styles
-import typography from "assets/theme/base/typography";
-
-import { useQuery } from "react-query";
-import { client } from "utils/api-client";
-import * as auth from "auth-provider";
-import PositionStatus from "./components/position-status";
-import { Zoom } from "@mui/material";
+import ProductsTreeView from "./components/products";
+import PositionEvents from "./components/position-events";
+import Assets from "./components/beacons";
 
 function Dashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const onSearch = (value) => setSearchTerm(value);
 
-  const { size } = typography;
-  const { chart, items } = reportsBarChartData;
-
-  const [selectedSite, setSelectedSite] = useState();
-  const onAssetSelect = async (row, key) => {
-    if (row && row.site) {
-      const token = await auth.getToken();
-      const status = await client(`assets/status?siteId=` + row.site.id, {token});
-      setSelectedSite({...row.site, ...status, key: key});
-    }
-  };
+  const [selectedProduct, setSelectProduct] = useState(null);
+  const [selectedBeacon, setSelectBeacon] = useState('');
 
   return (
     <DashboardLayout>
@@ -53,62 +30,20 @@ function Dashboard() {
       <SuiBox mb={3} py={3}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={6} lg={4}>
-            <PositionEvents searchTerm={searchTerm} />
+            <SuiBox mb={3}>
+              <ProductsTreeView
+                  selectedProduct={selectedProduct}
+                  onProductSelect={setSelectProduct}
+                  selectedBeacon={selectedBeacon}
+                  onBeaconSelect={setSelectBeacon}
+              />
+            </SuiBox>
           </Grid>
-          <Grid item xs={12} md={6} lg={8}>
-            <Grid container spacing={3}>
-              <Grid item xs={5}>
-                <SuiBox mb={3}>
-                  <Assets searchTerm={searchTerm} selectedItem={selectedSite} onRowSelect={onAssetSelect} />
-                </SuiBox>
-              </Grid>
-              <Grid item xs={7}>
-                <Zoom in={Boolean(selectedSite)}>       
-                  <SuiBox mb={3}>
-                    {selectedSite && <PositionStatus item={selectedSite} />}
-                  </SuiBox>
-                </Zoom>
-               
-              </Grid>
-
-            </Grid>
-
-            {/*<SuiBox mb={3}>
-              <Grid container spacing={3}>
-                <Grid item xs={12} lg={5}>
-                  <ReportsBarChart
-                    title="active users"
-                    description={
-                      <>
-                        (<strong>+23%</strong>) than last week
-                      </>
-                    }
-                    chart={chart}
-                    items={items}
-                  />
-                </Grid>
-                <Grid item xs={12} lg={7}>
-                  <GradientLineChart
-                    title="Sales Overview"
-                    description={
-                      <SuiBox display="flex" alignItems="center">
-                        <SuiBox fontSize={size.lg} color="success" mb={0.3} mr={0.5} lineHeight={0}>
-                          <Icon className="font-bold">arrow_upward</Icon>
-                        </SuiBox>
-                        <SuiTypography variant="button" color="text" fontWeight="medium">
-                          4% more{" "}
-                          <SuiTypography variant="button" color="text" fontWeight="regular">
-                            in 2021
-                          </SuiTypography>
-                        </SuiTypography>
-                      </SuiBox>
-                    }
-                    height="20.25rem"
-                    chart={gradientLineChartData}
-                  />
-                </Grid>
-              </Grid>
-                  </SuiBox>*/}
+          <Grid item xs={12} md={6} lg={4}>
+            <Assets />
+          </Grid>
+          <Grid item xs={12} md={6} lg={4}>
+            <PositionEvents searchTerm={selectedBeacon}/>
           </Grid>
         </Grid>
       </SuiBox>

@@ -1,8 +1,11 @@
-﻿using Vayosoft.Core.Persistence;
+﻿using System.Collections.ObjectModel;
+using MongoDB.Driver;
+using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
+using Vayosoft.Data.MongoDB;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.IPS.Models;
 using Warehouse.Core.UseCases.IPS.Queries;
@@ -12,25 +15,35 @@ using Warehouse.Core.UseCases.Warehouse.Models;
 
 namespace Warehouse.Core.UseCases.IPS
 {
-    public class AssetsQueryHandler : IQueryHandler<GetAssets, IPagedEnumerable<AssetDto>>, IQueryHandler<GetIpsStatus, IndoorPositionStatusDto>
+    public class AssetsQueryHandler :
+        IQueryHandler<GetAssets, IPagedEnumerable<AssetDto>>,
+        IQueryHandler<GetAssetInfo, IEnumerable<AssetInfo>>,
+        IQueryHandler<GetIpsStatus, IndoorPositionStatusDto>,
+        IQueryHandler<GetSitesWithProduct, IEnumerable<WarehouseSiteDto>>
     {
         private readonly IQueryBus _queryBus;
         private readonly IRepository<WarehouseSiteEntity, string> _siteRepository;
         private readonly IRepository<IndoorPositionStatusEntity, string> _statusRepository;
         private readonly IReadOnlyRepository<ProductEntity> _productRepository;
+        private readonly IMongoCollection<BeaconEntity> _productItems;
+        private readonly IMongoCollection<IndoorPositionStatusEntity> _statusCollection;
+        private readonly IMongoCollection<BeaconIndoorPositionEntity> _beaconStatusCollection;
         private readonly IMapper _mapper;
 
         public AssetsQueryHandler(IQueryBus queryBus,
             IRepository<WarehouseSiteEntity, string> siteRepository,
             IRepository<IndoorPositionStatusEntity, string> statusRepository,
             IReadOnlyRepository<ProductEntity> productRepository,
-            IMapper mapper)
+            IMapper mapper, IMongoContext context)
         {
             _queryBus = queryBus;
             _siteRepository = siteRepository;
             _statusRepository = statusRepository;
             _productRepository = productRepository;
             _mapper = mapper;
+            _productItems = context.Database.GetCollection<BeaconEntity>(CollectionName.For<BeaconEntity>());
+            _statusCollection = context.Database.GetCollection<IndoorPositionStatusEntity>(CollectionName.For<IndoorPositionStatusEntity>());
+            _beaconStatusCollection = context.Database.GetCollection<BeaconIndoorPositionEntity>(CollectionName.For<BeaconIndoorPositionEntity>());
         }
 
         public async Task<IPagedEnumerable<AssetDto>> Handle(GetAssets request, CancellationToken cancellationToken)
@@ -56,11 +69,18 @@ namespace Warehouse.Core.UseCases.IPS
                     asset.Site = _mapper.Map<WarehouseSiteDto>(site);
                 }
 
-                var product = (await _productRepository.FindAllAsync(p => p.MacAddress == b.MacAddress, cancellationToken))
-                    .FirstOrDefault();
-                if (product != null)
+                var productItem = await _productItems.Find(q => q.Id.Equals(b.MacAddress)).FirstOrDefaultAsync(cancellationToken: cancellationToken);
+                if (productItem != null)
                 {
-                    asset.Product = _mapper.Map<ProductDto>(product);
+                    if (!string.IsNullOrEmpty(productItem.ProductId))
+                    {
+                        var product = (await _productRepository.FindAllAsync(p => p.Id == productItem.ProductId, cancellationToken))
+                            .FirstOrDefault();
+                        if (product != null)
+                        {
+                            asset.Product = _mapper.Map<ProductDto>(product);
+                        }
+                    }
                 }
 
                 data.Add(asset);
@@ -69,10 +89,104 @@ namespace Warehouse.Core.UseCases.IPS
             return new PagedEnumerable<AssetDto>(data, result.TotalCount);
         }
 
+        public async Task<IEnumerable<AssetInfo>> Handle(GetAssetInfo request, CancellationToken cancellationToken)
+        {
+            var result = await _beaconStatusCollection.Find(b => true).ToListAsync(cancellationToken);
+
+            var store = new SortedDictionary<(string, string), AssetInfo>(Comparer<(string, string)>.Create((x, y) => y.CompareTo(x)));
+
+            foreach (var b in result)
+            {
+                var productInfo = new ProductInfo
+                {
+                    Id = string.Empty
+                };
+                var siteInfo = new SiteInfo
+                {
+                    Id = b.SiteId
+                };
+
+                var productItem = await _productItems.Find(q => q.Id.Equals(b.MacAddress)).FirstOrDefaultAsync(cancellationToken: cancellationToken);
+                if (productItem != null)
+                {
+                    if (!string.IsNullOrEmpty(productItem.ProductId))
+                    {
+                        var product = (await _productRepository.FindAllAsync(p => p.Id == productItem.ProductId, cancellationToken))
+                            .FirstOrDefault();
+                        if (product != null)
+                        {
+                            productInfo.Id = product.Id;
+                            productInfo.Name = product.Name;
+                        }
+                    }
+                }
+                
+                if (!store.ContainsKey((productInfo.Id, siteInfo.Id)))
+                {
+                    var site = await _siteRepository.FindAsync(b.SiteId, cancellationToken);
+                    siteInfo.Name = site.Name;
+
+                    var asset = new AssetInfo
+                    {
+                       Product = productInfo,
+                       Site = siteInfo,
+                       Beacons = new Collection<BeaconInfo>
+                       {
+                           new()
+                           {
+                               MacAddress = b.MacAddress,
+                               Name = productItem?.Name
+                           }
+                       },
+                    };
+                    store[(productInfo.Id, siteInfo.Id)] = asset;
+                }
+                else
+                {
+                    store[(productInfo.Id, siteInfo.Id)].Beacons.Add(new BeaconInfo
+                    {
+                        MacAddress = b.MacAddress,
+                        Name = productItem?.Name
+                    });
+                }
+    
+            }
+
+
+            return store.Values;
+        }
+
         public async Task<IndoorPositionStatusDto> Handle(GetIpsStatus request, CancellationToken cancellationToken)
         {
             var result = await _statusRepository.GetAsync(request.SiteId, cancellationToken);
             return _mapper.Map<IndoorPositionStatusDto>(result);
+        }
+
+        public async Task<IEnumerable<WarehouseSiteDto>> Handle(GetSitesWithProduct request, CancellationToken cancellationToken)
+        {
+            var result = new Dictionary<string, WarehouseSiteDto>();
+            var beacons = await _productItems.Find(entity => entity.ProductId == request.ProductId).ToListAsync(cancellationToken);
+            foreach (var beacon in beacons)
+            {
+                //var filter = Builders<IndoorPositionStatusEntity>.Filter.ElemMatch(x => x.In, x => x == beacon.MacAddress);
+                //var statusEntities = _statusCollection.Find(filter).ToList();
+                var statusEntities = await _statusCollection.Find(x => x.In.Contains(beacon.MacAddress))
+                    .ToListAsync(cancellationToken: cancellationToken);
+
+                foreach (var b in statusEntities)
+                {
+                    if (!result.ContainsKey(b.Id))
+                    {
+                        var site = await _siteRepository.FindAsync(b.Id, cancellationToken);
+                        if (site != null)
+                        {
+                            result.Add(b.Id, _mapper.Map<WarehouseSiteDto>(site));
+                        }
+                    }
+                }
+            }
+
+            return result.Values;
         }
     }
 }

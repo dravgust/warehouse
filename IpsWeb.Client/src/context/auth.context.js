@@ -3,16 +3,18 @@ import {useQueryClient} from 'react-query'
 import * as auth from 'auth-provider'
 import {client} from 'utils/api-client'
 import {useAsync} from 'utils/hooks'
+import {useStoreController, setResources} from "./store.context";
 //import {FullPageSpinner, FullPageErrorFallback} from 'components/lib'
 
 //const queryClient = useQueryClient();
-async function bootstrapAppData() {
+async function bootstrapAppData(dispatch) {
   let user = null
 
   const token = await auth.getToken()
   if (token) {
     const data = await client('account/bootstrap', {token})
     console.log("bootstrap", data);
+    setResources(dispatch, data.resources);
     /*queryCache.setQueryData('list-items', data.listItems, {
       staleTime: 5000,
     })
@@ -39,9 +41,10 @@ function AuthProvider(props) {
     setData,
   } = useAsync()
 
+  const [, dispatch] = useStoreController();
+
   React.useEffect(() => {
-    const appDataPromise = bootstrapAppData()
-    console.log("bootstrap", appDataPromise);
+    const appDataPromise = bootstrapAppData(dispatch)
     run(appDataPromise)
   }, [run])
 

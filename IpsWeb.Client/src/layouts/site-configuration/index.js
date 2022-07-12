@@ -50,7 +50,7 @@ const SiteConfiguration = () => {
       envFactor: 0,
     });
 
-  const fetchRegisteredBeacons = async () => {
+    const fetchRegisteredBeacons = async () => {
     const token = await auth.getToken();
     const res = await client(`sites/beacons-registered`, { token });
     return res;

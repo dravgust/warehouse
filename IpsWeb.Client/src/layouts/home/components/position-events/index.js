@@ -17,7 +17,8 @@ import { client } from "utils/api-client";
 import * as auth from "auth-provider";
 import { format, formatDistance } from "date-fns";
 
-function PositionEvents({ searchTerm }) {
+function PositionEvents({ searchTerm = ''}) {
+
   const [reload, updateReloadState] = useState();
   const forceUpdate = () => updateReloadState(Date.now());
 

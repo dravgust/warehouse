@@ -1,8 +1,10 @@
 ﻿using MediatR;
+using MongoDB.Driver;
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Events;
+using Vayosoft.Data.MongoDB;
 using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Events;
 using Warehouse.Core.Entities.Models;
@@ -16,19 +18,23 @@ namespace Warehouse.Core.UseCases.Warehouse
         ICommandHandler<DeleteWarehouseSite>,
         ICommandHandler<SetGatewayToSite>,
         ICommandHandler<RemoveGatewayFromSite>,
-        ICommandHandler<SetBeacon>
+        ICommandHandler<SetBeacon>,
+        ICommandHandler<DeleteBeacon>
     {
         private readonly IRepository<WarehouseSiteEntity, string> _repository;
         private readonly IEventBus _eventBus;
         private readonly IMapper _mapper;
         private readonly IRepository<BeaconEntity, string> _beaconRepository;
+        private readonly IMongoCollection<BeaconRegisteredEntity> _collection;
 
-        public WarehouseCommandHandler(IRepository<WarehouseSiteEntity, string> repository, IEventBus eventBus, IMapper mapper, IRepository<BeaconEntity, string> beaconRepository)
+        public WarehouseCommandHandler(IRepository<WarehouseSiteEntity, string> repository, IEventBus eventBus, IMapper mapper, IRepository<BeaconEntity, string> beaconRepository,
+            IMongoContext context)
         {
             _repository = repository;
             _eventBus = eventBus;
             _mapper = mapper;
             _beaconRepository = beaconRepository;
+            _collection = context.Database.GetCollection<BeaconRegisteredEntity>(CollectionName.For<BeaconRegisteredEntity>());
         }
 
         public async Task<Unit> Handle(SetWarehouseSite request, CancellationToken cancellationToken)
@@ -83,44 +89,33 @@ namespace Warehouse.Core.UseCases.Warehouse
 
         public async Task<Unit> Handle(SetBeacon request, CancellationToken cancellationToken)
         {
+            var b = await _collection.Find(r => r.MacAddress == request.MacAddress).FirstOrDefaultAsync(cancellationToken: cancellationToken); ;
+            if (b == null)
+            {
+                var rb = new BeaconRegisteredEntity
+                {
+                    MacAddress = request.MacAddress,
+                    ReceivedAt = DateTime.UtcNow,
+                    BeaconType = BeaconType.Registered
+                };
+                await _collection.InsertOneAsync(rb, cancellationToken: cancellationToken);
+            }
             BeaconEntity? entity;
             if (!string.IsNullOrEmpty(request.MacAddress) && (entity = await _beaconRepository.FindAsync(request.MacAddress, cancellationToken)) != null)
             {
-                if (request.Product != null && !string.IsNullOrEmpty(request.Product.Id))
-                {
-                    entity.ProductId = request.Product.Id;
-                }
-
-                if (!string.IsNullOrEmpty(request.Name))
-                    entity.Name = request.Name;
-
-                if (request.Metadata != null)
-                {
-                    entity.Metadata = request.Metadata;
-                }
-
-                await _beaconRepository.UpdateAsync(entity, cancellationToken);
+                await _beaconRepository.UpdateAsync(_mapper.Map(request, entity), cancellationToken);
             }
             else
             {
-                var newEntity = new BeaconEntity
-                {
-                    Id = request.MacAddress
-                };
-                if (request.Product != null && !string.IsNullOrEmpty(request.Product.Id))
-                {
-                    newEntity.ProductId = request.Product.Id;
-                }
-
-                if (!string.IsNullOrEmpty(request.Name))
-                    newEntity.Name = request.Name;
-
-                if (request.Metadata != null)
-                {
-                    newEntity.Metadata = request.Metadata;
-                }
-                await _beaconRepository.AddAsync(newEntity, cancellationToken);
+                await _beaconRepository.AddAsync(_mapper.Map<BeaconEntity>(request), cancellationToken);
             }
+
+            return Unit.Value;
+        }
+
+        public async Task<Unit> Handle(DeleteBeacon request, CancellationToken cancellationToken)
+        {
+            await _beaconRepository.DeleteAsync(new BeaconEntity{ Id = request.MacAddress }, cancellationToken);
 
             return Unit.Value;
         }

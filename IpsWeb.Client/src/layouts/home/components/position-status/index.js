@@ -32,7 +32,7 @@ function PositionStatus({item}) {
       <Card sx={{ height: "100%" }}>
           <SuiBox display="flex" justifyContent="space-between" alignItems="center" pt={3} px={2}>
               <SuiTypography variant="h6" fontWeight="medium" textTransform="capitalize">
-                  Position Status
+                  Site
               </SuiTypography>
               <SuiBox display="flex" alignItems="flex-start">
                   <SuiTypography variant="button" color="text" fontWeight="regular">

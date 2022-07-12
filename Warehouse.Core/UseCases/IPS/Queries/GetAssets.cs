@@ -10,4 +10,7 @@ namespace Warehouse.Core.UseCases.IPS.Queries
         public int Size { set; get; }
         public string? SearchTerm { set; get; }
     }
+
+    public class GetAssetInfo : IQuery<IEnumerable<AssetInfo>>
+    { }
 }

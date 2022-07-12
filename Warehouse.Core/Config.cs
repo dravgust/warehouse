@@ -98,7 +98,9 @@ namespace Warehouse.Core
             services.AddScoped<IRequestHandler<GetProductMetadata, ProductMetadata>, ProductQueryHandler>();
             services.AddScoped<IRequestHandler<GetProductItemMetadata, ProductMetadata>, ProductQueryHandler>();
             services.AddScoped<IRequestHandler<GetAssets, IPagedEnumerable<AssetDto>>, AssetsQueryHandler>();
+            services.AddScoped<IRequestHandler<GetAssetInfo, IEnumerable<AssetInfo>>, AssetsQueryHandler>();
             services.AddScoped<IRequestHandler<GetIpsStatus, IndoorPositionStatusDto>, AssetsQueryHandler>();
+            services.AddScoped<IRequestHandler<GetSitesWithProduct, IEnumerable<WarehouseSiteDto>>, AssetsQueryHandler>();
             services.AddScoped<IRequestHandler<GetRegisteredBeaconList, IEnumerable<string>>, WarehouseQueryHandler>();
             services.AddScoped<IRequestHandler<GetProductItems, IPagedEnumerable<ProductItemDto>>, WarehouseQueryHandler>();
             services.AddScoped<IRequestHandler<GetRegisteredGwList, IEnumerable<string>>, GetRegisteredGwList.RegisteredGwQueryHandler>();

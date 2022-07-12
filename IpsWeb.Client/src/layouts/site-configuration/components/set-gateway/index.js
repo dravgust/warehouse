@@ -25,6 +25,7 @@ import { client } from "utils/api-client";
 
 // prop-types is a library for typechecking of props
 import PropTypes, { string } from "prop-types";
+import {useStoreController} from "../../../../context/store.context";
 
 const locations = [
   "Unknown",
@@ -46,6 +47,7 @@ export default function SetGateway({
   gateways = [],
   beacons = [],
 }) {
+
   const saveItem = async (values) => {
     const token = await auth.getToken();
     const item = {
