@@ -1,5 +1,5 @@
 {
-  "name": "soft-ui-dashboard-react",
+  "name": "ips-dashboard",
   "version": "3.1.0",
   "author": "Creative Tim",
   "license": "SEE LICENSE IN <https://www.creative-tim.com/license>",
@@ -35,7 +35,6 @@
     "konva": "^8.3.10",
     "prop-types": "15.8.1",
     "react": "^18.2.0",
-    "react-bootstrap-sweetalert": "^5.2.0",
     "react-chartjs-2": "3.0.4",
     "react-countup": "6.1.1",
     "react-dom": "^18.2.0",
@@ -46,6 +45,7 @@
     "react-router-dom": "6.2.1",
     "react-scripts": "5.0.0",
     "react-spring": "^9.4.5",
+    "react-transition-group": "^4.4.2",
     "react-window": "^1.8.7",
     "stylis": "4.0.13",
     "stylis-plugin-rtl": "2.1.1",
@@ -60,12 +60,6 @@
     "eject": "react-scripts eject",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
     "install:peer-deps": "npm install --legacy-peer-deps"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "browserslist": {
     "production": [

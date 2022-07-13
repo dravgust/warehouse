@@ -68,16 +68,16 @@ function SignIn() {
       await signIn({ email, password });
       return navigate("/home");
     } catch (err) {
-      if(err.error){
+      if (err.error) {
         return setError(err.error);
       } else if (err.errors) {
         let result = "";
-        for (var key of Object.keys(err.errors)) {
+        for (let key of Object.keys(err.errors)) {
           result += key + ": " + err.errors[key] + "\r\n";
         }
         return setError(result);
       }
-      return setError(`Error occured: ${err.title}`);
+      return setError(`Error occurred: ${err.title}`);
     }
   };
 

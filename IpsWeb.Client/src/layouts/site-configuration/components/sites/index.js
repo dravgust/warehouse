@@ -9,9 +9,12 @@ import DeletePromt from "../delete-promt";
 import * as auth from "auth-provider";
 import { client } from "utils/api-client";
 import { useQuery } from "react-query";
+import SuiAvatar from "../../../../components/SuiAvatar";
+import siteIcon from "../../../../assets/images/area-floor-size.png";
 
 export default function Sites({
-  onSelect = () => {}, selectedItem,
+  onSelect = () => {},
+  selectedItem,
   onAdd = () => {},
   onEdit = () => {},
   onDelete = () => {},
@@ -75,54 +78,57 @@ export default function Sites({
               { name: "error", align: "center" },
               { name: "", align: "center" },
             ]}
-            rows={
-              data.items.map((item) => ({
-                item,
-                name: (
+            rows={data.items.map((item) => ({
+              item,
+              name: (
+                <SuiBox display="flex" alignItems="center">
+                  <SuiBox mx={2}>
+                    <SuiAvatar src={siteIcon} alt={item.name} size="sm" variant="rounded" />
+                  </SuiBox>
                   <SuiTypography variant="button" fontWeight="medium">
                     {item.name}
                   </SuiTypography>
-                ),
-                "top length": (
-                  <SuiTypography variant="caption" color="secondary">
-                    {item.topLength}
-                  </SuiTypography>
-                ),
-                "left length": (
-                  <SuiTypography variant="caption" color="secondary">
-                    {item.leftLength}
-                  </SuiTypography>
-                ),
-                error: (
-                  <SuiTypography variant="caption" color="secondary">
-                    {item.error}
-                  </SuiTypography>
-                ),
-                "": (
-                  <ButtonGroup variant="text" aria-label="text button group" color="text">
-                    <SuiButton variant="text" color="dark" onClick={onEdit}>
-                      <Icon>edit</Icon>
-                    </SuiButton>
-                    <DeletePromt
-                      renderButton={(handleClickOpen) => (
-                        <SuiButton
-                          variant="text"
-                          color="error"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleClickOpen();
-                            e.preventDefault();
-                          }}
-                        >
-                          <Icon>delete</Icon>
-                        </SuiButton>
-                      )}
-                      onDelete={() => handleDelete(item)}
-                    />
-                  </ButtonGroup>
-                ),
-              }))
-            }
+                </SuiBox>
+              ),
+              "top length": (
+                <SuiTypography variant="caption" color="secondary">
+                  {item.topLength}
+                </SuiTypography>
+              ),
+              "left length": (
+                <SuiTypography variant="caption" color="secondary">
+                  {item.leftLength}
+                </SuiTypography>
+              ),
+              error: (
+                <SuiTypography variant="caption" color="secondary">
+                  {item.error}
+                </SuiTypography>
+              ),
+              "": (
+                <ButtonGroup variant="text" aria-label="text button group" color="text">
+                  <SuiButton variant="text" color="dark" onClick={onEdit}>
+                    <Icon>edit</Icon>
+                  </SuiButton>
+                  <DeletePromt
+                    renderButton={(handleClickOpen) => (
+                      <SuiButton
+                        variant="text"
+                        color="error"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleClickOpen();
+                          e.preventDefault();
+                        }}
+                      >
+                        <Icon>delete</Icon>
+                      </SuiButton>
+                    )}
+                    onDelete={() => handleDelete(item)}
+                  />
+                </ButtonGroup>
+              ),
+            }))}
             page={page}
             totalPages={data.totalPages}
             onPageChange={(event, value) => setPage(value)}

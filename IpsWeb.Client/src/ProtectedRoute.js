@@ -1,10 +1,10 @@
 import React from "react";
-import {  Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "./context/auth.context";
-import { useNavigate  } from "react-router-dom";
-import SweetAlert from "react-bootstrap-sweetalert";
+import { useNavigate } from "react-router-dom";
 
-export const ProtectedRoute = () => {
+{
+  /*export const ProtectedRoute = () => {
     const navigate = useNavigate();
     let { user } = useAuth();
 
@@ -22,12 +22,13 @@ export const ProtectedRoute = () => {
   
     return <Outlet />;
   };
-
-  export const PrivateRoute = () => {
-    let { user } = useAuth();
-
-    if (!user || !user.token || user.token === "") {
-        return <Navigate to="/authentication/sign-in" />;
-    }
-    return <Outlet />;
+*/
 }
+export const PrivateRoute = () => {
+  let { user } = useAuth();
+
+  if (!user || !user.token || user.token === "") {
+    return <Navigate to="/authentication/sign-in" />;
+  }
+  return <Outlet />;
+};

@@ -20,8 +20,7 @@ import Stack from "@mui/material/Stack";
 import Pagination from "@mui/material/Pagination";
 import React from "react";
 
-function PositionEvents({ searchTerm = ''}) {
-
+function PositionEvents({ searchTerm = "" }) {
   const [reload, updateReloadState] = useState(null);
   const forceUpdate = () => updateReloadState(Date.now());
   const [page, setPage] = useState(1);
@@ -66,24 +65,24 @@ function PositionEvents({ searchTerm = ''}) {
               icon={item.event == "IN" ? "location_on" : "location_off"}
               title={
                 <SuiTypography variant="caption" fontWeight="medium">
-                  The device  {item.macAddress} is {item.event === "OUT" ? "out of the" : "entered"} the <span style={{ color: "#17c1e8" }}>{item.siteName}</span>
+                  The device {item.macAddress} is {item.event === "OUT" ? "out of the" : "entered"}{" "}
+                  the <span style={{ color: "#17c1e8" }}>{item.siteName}</span>
                 </SuiTypography>
               }
-              dateTime={
-                formatDistance(new Date(item.timeStamp), new Date(), { addSuffix: true })
-              }
+              dateTime={formatDistance(new Date(item.timeStamp), new Date(), { addSuffix: true })}
             />
           ))}
+
         {isSuccess && page && (
-            <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-              <Stack direction="row" spacing={2}>
-                <Pagination
-                    count={response.totalPages}
-                    page={page}
-                    onChange={(event, value) => setPage(value)}
-                />
-              </Stack>
-            </SuiBox>
+          <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
+            <Stack direction="row" spacing={2}>
+              <Pagination
+                count={response.totalPages}
+                page={page}
+                onChange={(event, value) => setPage(value)}
+              />
+            </Stack>
+          </SuiBox>
         )}
         {isLoading && (
           <SuiTypography px={2} color="secondary">

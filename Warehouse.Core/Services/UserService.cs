@@ -1,6 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Entities;
+using Vayosoft.Core.Specifications;
+using Vayosoft.Data.EF.MySQL;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Administration.Models;
 
@@ -13,6 +16,7 @@ namespace Warehouse.Core.Services
 
         private readonly IPasswordHasher _passwordHasher;
         private readonly IJwtService _jwtUtils;
+        private readonly DataContext _dataContext;
         private readonly AppSettings _appSettings;
 
         public UserService(
@@ -20,11 +24,13 @@ namespace Warehouse.Core.Services
             ILinqProvider linqProvider,
             IPasswordHasher passwordHasher,
             IJwtService jwtUtils,
-            IOptions<AppSettings> appSettings)
+            IOptions<AppSettings> appSettings,
+            DataContext dataContext)
         {
             _unitOfWork = unitOfWork;
             _passwordHasher = passwordHasher;
             _jwtUtils = jwtUtils;
+            _dataContext = dataContext;
             _linqProvider = linqProvider;
             _appSettings = appSettings.Value;
         }
@@ -100,7 +106,11 @@ namespace Warehouse.Core.Services
 
         public IIdentityUser GetById(object id)
         {
-            var user = _unitOfWork.Find<TEntity>(id);
+            //todo: design Data Access Object
+            //var user = _unitOfWork.Find<TEntity>(id);
+            var spec = new CriteriaSpecification<TEntity>(u => u.Id == id);
+            spec.AddInclude(u => u.RefreshTokens);
+            var user = _dataContext.GetBySpecification(spec).SingleOrDefault();
             if (user == null) throw new KeyNotFoundException("User not found");
             return user;
         }
@@ -109,7 +119,11 @@ namespace Warehouse.Core.Services
 
         private IIdentityUser GetUserByRefreshToken(string token)
         {
-            var user = _linqProvider.AsQueryable<TEntity>().SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
+            //todo: design Data Access Object
+            //var user = _linqProvider.AsQueryable<TEntity>().SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
+            var spec = new CriteriaSpecification<TEntity>(u => u.RefreshTokens.Any(t => t.Token == token));
+            spec.AddInclude(u => u.RefreshTokens);
+            var user = _dataContext.GetBySpecification(spec).SingleOrDefault();
 
             if (user == null)
                 throw new ApplicationException("Invalid token");

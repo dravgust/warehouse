@@ -51,7 +51,7 @@ function ProductList({
   useEffect(() => {
     if (isSuccess && response.data.length > 0) {
       if (selectedItem) {
-        var e = response.data.find((item) => selectedItem.id === item.id);
+        let e = response.data.find((item) => selectedItem.id === item.id);
         if (e) {
           selectItem(e);
         } else if (selectedItem.id) {
@@ -208,8 +208,16 @@ function ProductList({
             onPageChange={(event, value) => setPage(value)}
           />
         )}
-        {isLoading && <SuiTypography px={2} color="secondary">Loading..</SuiTypography>}
-        {error && <SuiTypography px={2} color="err">Error occurred!</SuiTypography>}
+        {isLoading && (
+          <SuiTypography px={2} color="secondary">
+            Loading..
+          </SuiTypography>
+        )}
+        {error && (
+          <SuiTypography px={2} color="err">
+            Error occurred!
+          </SuiTypography>
+        )}
       </SuiBox>
     </Card>
   );

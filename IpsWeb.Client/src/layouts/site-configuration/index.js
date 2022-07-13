@@ -24,7 +24,7 @@ const SiteConfiguration = () => {
   const onSelectItem = (item, key) => {
     resetGwToNull();
     if (siteForEdit) {
-      setSiteForEdit({ ...item, siteId: item.id});
+      setSiteForEdit({ ...item, siteId: item.id });
     }
     setSelectedSite({ ...item, key: key });
   };
@@ -50,7 +50,7 @@ const SiteConfiguration = () => {
       envFactor: 0,
     });
 
-    const fetchRegisteredBeacons = async () => {
+  const fetchRegisteredBeacons = async () => {
     const token = await auth.getToken();
     const res = await client(`sites/beacons-registered`, { token });
     return res;
@@ -75,7 +75,7 @@ const SiteConfiguration = () => {
       <DashboardNavbar onSearch={onSearch} />
       <SuiBox mb={3} py={3}>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={5}>
             <Grid container spacing={siteForEdit ? 3 : 0}>
               <Zoom in={Boolean(siteForEdit)}>
                 <Grid item xs={12}>
@@ -105,7 +105,7 @@ const SiteConfiguration = () => {
               </Grid>
             </Grid>
           </Grid>
-          <Grid item xs={12} md={8}>
+          <Grid item xs={12} md={7}>
             <Grid container spacing={gwForEdit ? 3 : 0}>
               <Zoom in={Boolean(gwForEdit)}>
                 <Grid item xs={12}>
@@ -125,19 +125,21 @@ const SiteConfiguration = () => {
                   )}
                 </Grid>
               </Zoom>
-              <Grid item xs={12}>
-                <Gateways
-                  data={selectedSite}
-                  onEdit={setGwForEdit}
-                  onAdd={resetGwToDefault}
-                  onDelete={() => {
-                    resetGwToNull();
-                    resetToNull();
-                    setSelectedSite(null)
-                    forceUpdate();
-                  }}
-                />
-              </Grid>
+              <Zoom in={true}>
+                <Grid item xs={12}>
+                  <Gateways
+                    data={selectedSite}
+                    onEdit={setGwForEdit}
+                    onAdd={resetGwToDefault}
+                    onDelete={() => {
+                      resetGwToNull();
+                      resetToNull();
+                      setSelectedSite(null);
+                      forceUpdate();
+                    }}
+                  />
+                </Grid>
+              </Zoom>
             </Grid>
           </Grid>
         </Grid>

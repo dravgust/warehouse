@@ -15,7 +15,7 @@ import Footer from "examples/Footer";
 
 import ProductList from "./components/product-list";
 import SelectedItem from "./components/selected-item";
-import {  Zoom } from "@mui/material";
+import { Zoom } from "@mui/material";
 
 // Soft UI Dashboard React context
 import { useSoftUIController } from "context";
@@ -42,26 +42,29 @@ function Products() {
   }
 
   const resetToNull = () => selectItem(null);
-  const resetToDefault = () => selectItem({
-    id: "",
-    name: "",
-    description: "",
-    macAddress: "",
-    metadata,
-  });
+  const resetToDefault = () =>
+    selectItem({
+      id: "",
+      name: "",
+      description: "",
+      macAddress: "",
+      metadata,
+    });
 
   const onSelectItem = (item) => {
-    if(!item) return;
-    var result = metadata ? metadata.map(e => {
-      var rm = item.metadata && item.metadata.find(m => m.key === e.key)
-      return rm && rm.value ? Object.assign({}, e, {value: rm.value}) : Object.assign({}, e);
-    }) : [];
-    return selectItem({...item, metadata: result})
+    if (!item) return;
+    let result = metadata
+      ? metadata.map((e) => {
+          var rm = item.metadata && item.metadata.find((m) => m.key === e.key);
+          return rm && rm.value ? Object.assign({}, e, { value: rm.value }) : Object.assign({}, e);
+        })
+      : [];
+    return selectItem({ ...item, metadata: result });
   };
 
   const fetchMetadata = async () => {
     const token = await auth.getToken();
-    const res = await client(`items/metadata`, {token});
+    const res = await client(`items/metadata`, { token });
     return res.data;
   };
   const { data: metadata } = useQuery(["metadata"], fetchMetadata, {
@@ -71,7 +74,7 @@ function Products() {
 
   const fetchRegisteredBeacons = async () => {
     const token = await auth.getToken();
-    const res = await client(`sites/beacons-registered`, {token});
+    const res = await client(`sites/beacons-registered`, { token });
     return res;
   };
   const { data: beacons } = useQuery(["beacons-registered"], fetchRegisteredBeacons, {

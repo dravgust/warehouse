@@ -1,46 +1,52 @@
-
-const localStorageKey = '__auth_provider_token__'
+const localStorageKey = "__auth_provider_token__";
 
 async function getToken() {
-  return window.localStorage.getItem(localStorageKey)
+  return window.localStorage.getItem(localStorageKey);
 }
 
-function handleUserResponse({user, token}) {
+function handleUserResponse({ user, token }) {
   user = { ...user, token };
-  window.localStorage.setItem(localStorageKey, token)
-  return user
+  window.localStorage.setItem(localStorageKey, token);
+  return user;
 }
 
-async function login({email, password}) {
-  return client('login', {email, password}).then(handleUserResponse)
+async function login({ email, password }) {
+  return client("login", { email, password }).then(handleUserResponse);
 }
 
-async function register({email, password}) {
-  return client('register', {email, password}).then(handleUserResponse)
+async function register({ email, password }) {
+  return client("register", { email, password }).then(handleUserResponse);
 }
 
 function logout() {
-  window.localStorage.removeItem(localStorageKey)
+  window.localStorage.removeItem(localStorageKey);
 }
 
-const authURL = process.env.REACT_APP_AUTH_URL
+async function refreshToken() {
+  return client("refresh-token", {
+    token:
+      "244yqJodQ4W9waOBNzE/iCp5XU2VMj/KB6gjmnGpWB+CLVW4TWaXOhWCj8U0J7bNV0yo7MCpcvZgEUldo9MD9w==",
+  }).then(handleUserResponse);
+}
+
+const authURL = process.env.REACT_APP_AUTH_URL;
 let base = "account";
 
 async function client(endpoint, data) {
   const config = {
-    method: 'POST',
+    method: "POST",
     body: JSON.stringify(data),
-    headers: {'Content-Type': 'application/json'},
-  }
+    headers: { "Content-Type": "application/json" },
+  };
 
-  return window.fetch(`${authURL}/${base}/${endpoint}`, config).then(async response => {
-    const data = await response.json()
+  return window.fetch(`${authURL}/${base}/${endpoint}`, config).then(async (response) => {
+    const data = await response.json();
     if (response.ok) {
-      return data
+      return data;
     } else {
-      return Promise.reject(data)
+      return Promise.reject(data);
     }
-  })
+  });
 }
 
-export {getToken, login, register, logout, localStorageKey}
+export { getToken, login, register, logout, refreshToken, localStorageKey };

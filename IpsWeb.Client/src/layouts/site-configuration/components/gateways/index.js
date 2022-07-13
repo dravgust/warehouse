@@ -48,8 +48,12 @@ function Gauge({ data }) {
   );
 }
 
-export default function Gateways({ data,  onAdd = () => {}, onEdit = () => {}, onDelete = () => {} }) {
-
+export default function Gateways({
+  data,
+  onAdd = () => {},
+  onEdit = () => {},
+  onDelete = () => {},
+}) {
   const handleDelete = async (item) => {
     const token = await auth.getToken();
     try {
@@ -68,12 +72,12 @@ export default function Gateways({ data,  onAdd = () => {}, onEdit = () => {}, o
         </SuiBox>
         {data && (
           <SuiBox display="flex" alignItems="center" mt={{ xs: 2, sm: 0 }} ml={{ xs: -1.5, sm: 0 }}>
-          <SuiButton variant="gradient" color="primary" onClick={onAdd}>
-            <Icon sx={{ fontWeight: "bold" }}>add</Icon>
-            &nbsp;new
-          </SuiButton>
-        </SuiBox>
-        )}    
+            <SuiButton variant="gradient" color="primary" onClick={onAdd}>
+              <Icon sx={{ fontWeight: "bold" }}>add</Icon>
+              &nbsp;new
+            </SuiButton>
+          </SuiBox>
+        )}
       </SuiBox>
       <SuiBox
         sx={{
@@ -85,7 +89,7 @@ export default function Gateways({ data,  onAdd = () => {}, onEdit = () => {}, o
           },
         }}
       >
-        {data && data.gateways  && (
+        {data && data.gateways && (
           <Table
             columns={[
               { name: "mac", align: "left" },
@@ -98,7 +102,7 @@ export default function Gateways({ data,  onAdd = () => {}, onEdit = () => {}, o
             rows={data.gateways.map((item) => ({
               mac: (
                 <SuiBox display="flex" alignItems="center">
-                  <SuiBox mr={2}>
+                  <SuiBox mx={2}>
                     <SuiAvatar src={routerIcon} alt={item.name} size="sm" variant="rounded" />
                   </SuiBox>
                   <SuiTypography variant="button" fontWeight="medium">
@@ -124,25 +128,29 @@ export default function Gateways({ data,  onAdd = () => {}, onEdit = () => {}, o
               gauge: <Gauge data={item.gauge} />,
               "": (
                 <ButtonGroup variant="text" aria-label="text button group" color="text">
-                  <SuiButton variant="text" color="dark" onClick={() => onEdit({...item, siteId: data.id})}>
+                  <SuiButton
+                    variant="text"
+                    color="dark"
+                    onClick={() => onEdit({ ...item, siteId: data.id })}
+                  >
                     <Icon>edit</Icon>
                   </SuiButton>
                   <DeletePromt
-                      renderButton={(handleClickOpen) => (
-                        <SuiButton
-                          variant="text"
-                          color="error"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleClickOpen();
-                            e.preventDefault();
-                          }}
-                        >
-                          <Icon>delete</Icon>
-                        </SuiButton>
-                      )}
-                      onDelete={() => handleDelete({...item, siteId: data.id})}
-                    />
+                    renderButton={(handleClickOpen) => (
+                      <SuiButton
+                        variant="text"
+                        color="error"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleClickOpen();
+                          e.preventDefault();
+                        }}
+                      >
+                        <Icon>delete</Icon>
+                      </SuiButton>
+                    )}
+                    onDelete={() => handleDelete({ ...item, siteId: data.id })}
+                  />
                 </ButtonGroup>
               ),
             }))}

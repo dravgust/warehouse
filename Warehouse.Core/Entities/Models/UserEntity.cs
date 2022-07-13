@@ -17,7 +17,7 @@ namespace Warehouse.Core.Entities.Models
         public DateTime? UnregistrationDate { get; set; }
         public string CultureId { get; set; }
         public ulong ProviderId { get; set; }
-        public virtual LogEventType? LogLevel { get; set; }
+        public LogEventType? LogLevel { get; set; }
         public virtual List<RefreshToken> RefreshTokens { get; set; } = new();
     }
 
@@ -35,7 +35,7 @@ namespace Warehouse.Core.Entities.Models
         public DateTime? UnregistrationDate { get; set; }
         public string CultureId { get; set; }
         public ulong ProviderId { get; set; }
-        public virtual LogEventType? LogLevel { get; set; }
+        public LogEventType? LogLevel { get; set; }
 
     }
 }

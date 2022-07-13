@@ -1,17 +1,17 @@
 /**
-=========================================================
-* Soft UI Dashboard React - v3.1.0
-=========================================================
+ =========================================================
+ * Soft UI Dashboard React - v3.1.0
+ =========================================================
 
-* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
+ * Product Page: https://www.creative-tim.com/product/soft-ui-dashboard-react
+ * Copyright 2022 Creative Tim (https://www.creative-tim.com)
 
-Coded by www.creative-tim.com
+ Coded by www.creative-tim.com
 
  =========================================================
 
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ */
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -23,13 +23,13 @@ import SuiTypography from "components/SuiTypography";
 
 // Images
 import bg from "assets/images/637499715290000000.jpg";
-import SensorsOutlinedIcon from '@mui/icons-material/SensorsOutlined';
+import SensorsOutlinedIcon from "@mui/icons-material/SensorsOutlined";
 import PropTypes from "prop-types";
 
-function Beacon({macAddress = 'n/a', name='n/a'}) {
+function Beacon({ macAddress = "n/a", name = "n/a" }) {
   return (
     <Card sx={{ height: "100%" }}>
-      <SuiBox position="relative" height="100%" p={2}  minHeight="285px">
+      <SuiBox position="relative" height="100%" p={2} minHeight="285px">
         <SuiBox
           display="flex"
           flexDirection="column"
@@ -46,15 +46,15 @@ function Beacon({macAddress = 'n/a', name='n/a'}) {
             backgroundSize: "cover",
           }}
         >
-          <SuiBox mb={3} pt={1} color="white" lineHeight={0} display="flex"  alignItems="center">
-              <SensorsOutlinedIcon />
-              <SuiTypography variant="h5" color="white" fontWeight="bold" px={1}>
-                  {macAddress}
-              </SuiTypography>
+          <SuiBox mb={3} pt={1} color="white" lineHeight={0} display="flex" alignItems="center">
+            <SensorsOutlinedIcon />
+            <SuiTypography variant="h5" color="white" fontWeight="bold" px={1}>
+              {macAddress}
+            </SuiTypography>
           </SuiBox>
           <SuiBox mb={2}>
             <SuiTypography variant="body2" color="white">
-                {name}
+              {name}
             </SuiTypography>
           </SuiBox>
           <SuiTypography
@@ -93,5 +93,5 @@ function Beacon({macAddress = 'n/a', name='n/a'}) {
 export default Beacon;
 
 Beacon.defaultProps = {
-    macAddress: PropTypes.string.isNotNull
-}
+  macAddress: PropTypes.string.isNotNull,
+};
