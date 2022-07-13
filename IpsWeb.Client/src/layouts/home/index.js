@@ -87,7 +87,22 @@ function Dashboard() {
                                         value="45%"
                                     />
                                 </Grid>
-
+                                <Grid item xs={12} md={6}>
+                                    <DefaultInfoCard
+                                        icon="battery_full"
+                                        title="Battery"
+                                        description="Battery level"
+                                        value="73%"
+                                    />
+                                </Grid>
+                                <Grid item xs={12} md={6}>
+                                    <DefaultInfoCard
+                                        icon="location_off"
+                                        title="Location"
+                                        description="Beacon location"
+                                        value="--"
+                                    />
+                                </Grid>
                             </Grid>
                         </Grid>
                     )}

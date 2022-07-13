@@ -1,5 +1,5 @@
 {
-/*"env": {
+"env": {
     "browser": true,
     "es2021": true
   },
@@ -31,5 +31,5 @@
     "react/jsx-curly-spacing": [2, "never"]
   },
   "settings": { "import/resolver": { "node": { "paths": ["src"] } } }
-  */
+
 }

@@ -29,7 +29,7 @@ import PropTypes from "prop-types";
 function Beacon({macAddress = 'n/a', name='n/a'}) {
   return (
     <Card sx={{ height: "100%" }}>
-      <SuiBox position="relative" height="100%" p={2}>
+      <SuiBox position="relative" height="100%" p={2}  minHeight="285px">
         <SuiBox
           display="flex"
           flexDirection="column"

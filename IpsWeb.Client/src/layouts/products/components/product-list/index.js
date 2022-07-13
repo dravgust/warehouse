@@ -25,7 +25,7 @@ function ProductList({
   resetToDefault = () => {},
   refresh,
 }) {
-  const [reload, updateReloadState] = useState();
+  const [reload, updateReloadState] = useState(null);
   const forceUpdate = () => updateReloadState(Date.now());
 
   const [page, setPage] = useState(1);

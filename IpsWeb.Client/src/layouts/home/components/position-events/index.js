@@ -16,15 +16,19 @@ import { useQuery } from "react-query";
 import { client } from "utils/api-client";
 import * as auth from "auth-provider";
 import { format, formatDistance } from "date-fns";
+import Stack from "@mui/material/Stack";
+import Pagination from "@mui/material/Pagination";
+import React from "react";
 
 function PositionEvents({ searchTerm = ''}) {
 
-  const [reload, updateReloadState] = useState();
+  const [reload, updateReloadState] = useState(null);
   const forceUpdate = () => updateReloadState(Date.now());
+  const [page, setPage] = useState(1);
 
-  const fetchItems = async (searchTerm) => {
+  const fetchItems = async (searchTerm, page) => {
     const token = await auth.getToken();
-    const res = await client(`events?page=${1}&size=12&searchTerm=${searchTerm}`, { token });
+    const res = await client(`events?page=${page}&size=10&searchTerm=${searchTerm}`, { token });
     return res;
   };
   const {
@@ -32,7 +36,7 @@ function PositionEvents({ searchTerm = ''}) {
     error,
     data: response,
     isSuccess,
-  } = useQuery(["list-events", reload, searchTerm], () => fetchItems(searchTerm), {
+  } = useQuery(["list-events", reload, searchTerm, page], () => fetchItems(searchTerm, page), {
     keepPreviousData: false,
     refetchOnWindowFocus: false,
   });
@@ -70,6 +74,17 @@ function PositionEvents({ searchTerm = ''}) {
               }
             />
           ))}
+        {isSuccess && page && (
+            <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
+              <Stack direction="row" spacing={2}>
+                <Pagination
+                    count={response.totalPages}
+                    page={page}
+                    onChange={(event, value) => setPage(value)}
+                />
+              </Stack>
+            </SuiBox>
+        )}
         {isLoading && (
           <SuiTypography px={2} color="secondary">
             Loading..
