@@ -30,21 +30,19 @@ namespace Warehouse.API.Controllers.API
         }
 
         [HttpGet("sites")]
-        public async Task<IActionResult> GetSites([FromQuery] GetSitesWithProduct query, CancellationToken token = default)
-        {
-            return Ok(await _queryBus.Send(query, token));
-        }
+        public async Task<IActionResult> GetSites([FromQuery] GetSitesWithProduct query, CancellationToken token = default) =>
+            Ok(await _queryBus.Send(query, token));
 
         [HttpGet("info")]
-        public async Task<IActionResult> GetInfo(CancellationToken token = default)
-        {
-            return Ok(await _queryBus.Send(new GetAssetInfo(), token));
-        }
+        public async Task<IActionResult> GetInfo(CancellationToken token = default) =>
+            Ok(await _queryBus.Send(new GetAssetInfo(), token));
 
         [HttpGet("status")]
-        public async Task<IActionResult> GetStatus([FromQuery] GetIpsStatus query, CancellationToken token = default)
-        {
-            return Ok(await _queryBus.Send(query, token));
-        }
+        public async Task<IActionResult> GetStatus([FromQuery] GetIpsStatus query, CancellationToken token = default) =>
+            Ok(await _queryBus.Send(query, token));
+
+        [HttpGet("beacon")]
+        public async Task<IActionResult> GetBeacon([FromQuery] GetBeaconPayload query, CancellationToken token = default) => 
+            Ok(await _queryBus.Send(query, token));
     }
 }

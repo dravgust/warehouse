@@ -59,10 +59,10 @@ function PositionEvents({ searchTerm = ''}) {
             <TimelineItem
               key={item.id}
               color={item.event === "IN" ? "success" : "error"}
-              icon={item.event == "IN" ? "add_business" : "store"}
+              icon={item.event == "IN" ? "location_on" : "location_off"}
               title={
                 <SuiTypography variant="caption" fontWeight="medium">
-                  The device  {item.macAddress} is {item.event === "OUT" ? "out of the" : "entered"} the <span style={{ color: "#344767" }}>{item.siteName}</span>
+                  The device  {item.macAddress} is {item.event === "OUT" ? "out of the" : "entered"} the <span style={{ color: "#17c1e8" }}>{item.siteName}</span>
                 </SuiTypography>
               }
               dateTime={

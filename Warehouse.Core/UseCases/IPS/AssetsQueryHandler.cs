@@ -7,6 +7,7 @@ using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Data.MongoDB;
 using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Entities.Models.Payloads;
 using Warehouse.Core.UseCases.IPS.Models;
 using Warehouse.Core.UseCases.IPS.Queries;
 using Warehouse.Core.UseCases.IPS.Specifications;
@@ -18,6 +19,7 @@ namespace Warehouse.Core.UseCases.IPS
     public class AssetsQueryHandler :
         IQueryHandler<GetAssets, IPagedEnumerable<AssetDto>>,
         IQueryHandler<GetAssetInfo, IEnumerable<AssetInfo>>,
+        IQueryHandler<GetBeaconPayload, BeaconPayload>,
         IQueryHandler<GetIpsStatus, IndoorPositionStatusDto>,
         IQueryHandler<GetSitesWithProduct, IEnumerable<WarehouseSiteDto>>
     {
@@ -28,6 +30,7 @@ namespace Warehouse.Core.UseCases.IPS
         private readonly IMongoCollection<BeaconEntity> _productItems;
         private readonly IMongoCollection<IndoorPositionStatusEntity> _statusCollection;
         private readonly IMongoCollection<BeaconIndoorPositionEntity> _beaconStatusCollection;
+        private readonly IMongoCollection<GatewayPayload> _payloadCollection;
         private readonly IMapper _mapper;
 
         public AssetsQueryHandler(IQueryBus queryBus,
@@ -44,6 +47,7 @@ namespace Warehouse.Core.UseCases.IPS
             _productItems = context.Database.GetCollection<BeaconEntity>(CollectionName.For<BeaconEntity>());
             _statusCollection = context.Database.GetCollection<IndoorPositionStatusEntity>(CollectionName.For<IndoorPositionStatusEntity>());
             _beaconStatusCollection = context.Database.GetCollection<BeaconIndoorPositionEntity>(CollectionName.For<BeaconIndoorPositionEntity>());
+            _payloadCollection = context.Database.GetCollection<GatewayPayload>(CollectionName.For<GatewayPayload>());
         }
 
         public async Task<IPagedEnumerable<AssetDto>> Handle(GetAssets request, CancellationToken cancellationToken)
@@ -187,6 +191,14 @@ namespace Warehouse.Core.UseCases.IPS
             }
 
             return result.Values;
+        }
+
+        public async Task<BeaconPayload> Handle(GetBeaconPayload request, CancellationToken cancellationToken)
+        {
+            var payloads = await _payloadCollection.Find(entity => true).ToListAsync(cancellationToken);
+
+
+            return payloads.First().Beacons.First();
         }
     }
 }

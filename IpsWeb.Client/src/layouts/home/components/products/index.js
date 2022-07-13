@@ -20,7 +20,11 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import {FixedSizeList} from 'react-window';
 import ListItemButton from '@mui/material/ListItemButton';
 import QrCode2SharpIcon from '@mui/icons-material/QrCode2Sharp';
-import SuiInput from "../../../../components/SuiInput";
+import SensorsOutlinedIcon from '@mui/icons-material/SensorsOutlined';
+import SuiInput from "components/SuiInput";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Icon from "@mui/material/Icon";
 
 const Accordion = styled((props) => (
     <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -56,6 +60,8 @@ const AccordionSummary = styled((props) => (
 const AccordionDetails = styled(MuiAccordionDetails)(({theme}) => ({
     padding: theme.spacing(2),
     borderTop: '1px solid rgba(0, 0, 0, .125)',
+    backgroundColor: 'aliceblue'
+    // backgroundColor: '#f8f9fa'
 }));
 
 function Product({product, count}) {
@@ -88,7 +94,13 @@ function Site({site}) {
 }
 
 
-export default function ProductsTreeView({ searchTerm = '', selectedProduct = {beacons:[]}, onProductSelect = () => {}, selectedBeacon = '', onBeaconSelect =() => {} }) {
+export default function ProductsTreeView({ searchTerm = '',
+                                             selectedProduct = {beacons:[]},
+                                             onProductSelect = () => {},
+                                             selectedBeacon = '',
+                                             onBeaconSelect =() => {},
+                                             onListSelect = () => {}
+                                         }) {
 
     const [pattern, setPattern] = useState('');
     const onSearchProduct = (productItem) => setPattern(productItem);
@@ -97,18 +109,49 @@ export default function ProductsTreeView({ searchTerm = '', selectedProduct = {b
         return Boolean(!pattern || b.macAddress.toLocaleUpperCase().indexOf(pattern.toLocaleUpperCase()) > -1)
     }) || [];
 
+    const [menu, setMenu] = useState(null);
+
+    const openMenu = ({currentTarget}) => setMenu(currentTarget);
+    const closeMenu = () => setMenu(null);
+
+    const renderMenu = (
+        <Menu
+            id="simple-menu"
+            anchorEl={menu}
+            anchorOrigin={{
+                vertical: "top",
+                horizontal: "left",
+            }}
+            transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+            }}
+            open={Boolean(menu)}
+            onClose={closeMenu}
+        >
+            <MenuItem onClick={() => {
+                closeMenu();
+                onListSelect('beacon')
+            }}>Beacon List</MenuItem>
+            <MenuItem onClick={() => {
+                closeMenu();
+                onListSelect('site')
+            }}>Site List</MenuItem>
+        </Menu>
+    );
+
     const Row = ({index, style}) => (
         <ListItem key={`b_${index}`}
                   style={style}
                   component="div"
                   disablePadding
-                  onClick={() => onBeaconSelect(beacons[index].macAddress)}
-            //sx={{ borderBottom: ({borders: {borderWidth, borderColor}}) => `${borderWidth[1]} solid ${borderColor}`}}
-            selected={beacons[index].macAddress === selectedBeacon}
+                  onClick={() => onBeaconSelect(beacons[index])}
+            sx={{ borderBottom: ({borders: {borderWidth, borderColor}}) => `${borderWidth[1]} solid ${borderColor}`}}
+            selected={beacons[index].macAddress === selectedBeacon.macAddress}
         >
             <ListItemButton>
                 <ListItemIcon>
-                    <CellTowerIcon />
+                    <SensorsOutlinedIcon />
                 </ListItemIcon>
                 <ListItemText
                     primaryTypographyProps={{ color:"dark" }}
@@ -166,6 +209,12 @@ export default function ProductsTreeView({ searchTerm = '', selectedProduct = {b
                         Products
                     </SuiTypography>
                 </SuiBox>
+                <SuiBox color="text" px={2}>
+                    <Icon sx={{cursor: "pointer", fontWeight: "bold"}} fontSize="small" onClick={openMenu}>
+                        more_vert
+                    </Icon>
+                </SuiBox>
+                {renderMenu}
             </SuiBox>
             <SuiBox pb={3}>
                 {isSuccess &&

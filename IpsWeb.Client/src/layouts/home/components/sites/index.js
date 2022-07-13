@@ -33,7 +33,7 @@ function SiteWithProduct({onSelect = () => {}, selectedItem}) {
             </SuiBox>
             <SuiBox display="flex" justifyContent="space-between" alignItems="center" pt={3} px={2}>
                 <SuiTypography variant="h5" fontWeight="bold" gutterBottom color="primary">
-                    {selectedItem.product && selectedItem.product.name}
+                    {selectedItem && selectedItem.product && selectedItem.product.name}
                 </SuiTypography>
             </SuiBox>
             <SuiBox pt={3} pb={2} px={2}>

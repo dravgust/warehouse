@@ -25,8 +25,10 @@ import beaconIcon from "assets/images/hotspot-tower.png";
 import SensorsSharpIcon from '@mui/icons-material/SensorsSharp';
 
 function Assets({
-                    searchTerm = '', selectedItem, onRowSelect = () => {
-    }
+                    searchTerm = '',
+                    selectedItem,
+                    onRowSelect = () => { },
+                    onListSelect =() => { }
                 }) {
     const [page, setPage] = useState(1);
     const fetchItems = async (page, searchTerm) => {
@@ -64,9 +66,14 @@ function Assets({
             open={Boolean(menu)}
             onClose={closeMenu}
         >
-            <MenuItem onClick={closeMenu}>Action</MenuItem>
-            <MenuItem onClick={closeMenu}>Another action</MenuItem>
-            <MenuItem onClick={closeMenu}>Something else</MenuItem>
+            <MenuItem onClick={() => {
+                closeMenu();
+                onListSelect('product')
+            }}>Product List</MenuItem>
+            <MenuItem onClick={() => {
+                closeMenu();
+                onListSelect('site')
+            }}>Site List</MenuItem>
         </Menu>
     );
 
@@ -156,6 +163,7 @@ function Assets({
                         rows={
                             isSuccess &&
                             response.data.map((item) => ({
+                                key: item.macAddress,
                                 item: item,
                                 beacon: <Beacon image={beaconIcon} name={item.macAddress} product={item.product}/>,
                                 "last location": <Site timeStamp={item.timeStamp} site={item.site}></Site>,
@@ -165,7 +173,7 @@ function Assets({
                         totalPages={response.totalPages}
                         onPageChange={(event, value) => setPage(value)}
                         onSelect={onRowSelect}
-                        selectedKey={selectedItem ? selectedItem.key : ""}
+                        selectedKey={selectedItem ? selectedItem.macAddress : ""}
                     />
                 )}
                 {isLoading && (

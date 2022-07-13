@@ -16,6 +16,7 @@ using Vayosoft.Data.MongoDB;
 using Vayosoft.Data.MongoDB.QueryHandlers;
 using Warehouse.Core.Entities.Events;
 using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Entities.Models.Payloads;
 using Warehouse.Core.Entities.ValueObjects;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.Services.Providers;
@@ -99,6 +100,7 @@ namespace Warehouse.Core
             services.AddScoped<IRequestHandler<GetProductItemMetadata, ProductMetadata>, ProductQueryHandler>();
             services.AddScoped<IRequestHandler<GetAssets, IPagedEnumerable<AssetDto>>, AssetsQueryHandler>();
             services.AddScoped<IRequestHandler<GetAssetInfo, IEnumerable<AssetInfo>>, AssetsQueryHandler>();
+            services.AddScoped<IRequestHandler<GetBeaconPayload, BeaconPayload>, AssetsQueryHandler>();
             services.AddScoped<IRequestHandler<GetIpsStatus, IndoorPositionStatusDto>, AssetsQueryHandler>();
             services.AddScoped<IRequestHandler<GetSitesWithProduct, IEnumerable<WarehouseSiteDto>>, AssetsQueryHandler>();
             services.AddScoped<IRequestHandler<GetRegisteredBeaconList, IEnumerable<string>>, WarehouseQueryHandler>();

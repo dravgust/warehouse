@@ -61,6 +61,7 @@ import Warehouse from "layouts/warehouse";
 import Home from "layouts/home";
 import SiteConfiguration from "layouts/site-configuration";
 import Beacons from "layouts/beacons";
+import Icon from "@mui/material/Icon";
 
 const routes = [
   {
@@ -78,7 +79,7 @@ const routes = [
     name: "Dashboard",
     key: "home",
     route: "/home",
-    icon: <Shop size="12px" />,
+    icon: <Icon fontSize="12px">dashboard</Icon>,
     component: <Home />,
     noCollapse: true,
     protected: true,
@@ -88,7 +89,7 @@ const routes = [
     name: "Warehouse",
     key: "warehouse",
     route: "/warehouse",
-    icon: <Cube size="12px" />,
+    icon: <Icon fontSize="12px">store</Icon>,
     component: <Warehouse />,
     noCollapse: true,
     protected: true,
@@ -99,7 +100,7 @@ const routes = [
     name: "Products",
     key: "products",
     route: "/products",
-    icon: <FormatListNumberedOutlinedIcon size="12px" />,
+    icon: <Icon fontSize="12px">qr_code</Icon>,
     component: <Products />,
     noCollapse: true,
     protected: true,
@@ -109,7 +110,7 @@ const routes = [
     name: "Sites",
     key: "configuration",
     route: "/configuration",
-    icon: <Settings size="12px" />,
+    icon: <Icon fontSize="12px">tab</Icon>,
     component: <SiteConfiguration />,
     noCollapse: true,
     protected: true,
@@ -119,7 +120,7 @@ const routes = [
     name: "Beacons",
     key: "beacons",
     route: "/beacons",
-    icon: <FormatListNumberedOutlinedIcon size="12px" />,
+    icon: <Icon fontSize="12px">sensors</Icon>,
     component: <Beacons />,
     noCollapse: true,
     protected: true,
@@ -170,7 +171,7 @@ const routes = [
     name: "Users",
     key: "users",
     route: "/users",
-    icon: <FormatListNumberedOutlinedIcon size="12px" />,
+    icon: <Icon fontSize="12px">people</Icon>,
     component: <Users />,
     noCollapse: true,
     protected: true,
