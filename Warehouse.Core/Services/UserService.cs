@@ -37,7 +37,10 @@ namespace Warehouse.Core.Services
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model, string ipAddress)
         {
-            var user = _linqProvider.AsQueryable<TEntity>().SingleOrDefault(x => x.Username == model.Email);
+            //var user = _linqProvider.AsQueryable<TEntity>().SingleOrDefault(x => x.Username == model.Email);
+            var spec = new CriteriaSpecification<TEntity>(u => u.Username == model.Email);
+            spec.AddInclude(u => u.RefreshTokens);
+            var user = _dataContext.GetBySpecification(spec).SingleOrDefault();
             // validate
             if (user == null || !_passwordHasher.VerifyHashedPassword(user.PasswordHash, model.Password))
                 throw new ApplicationException("Username or password is incorrect");

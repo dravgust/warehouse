@@ -87,5 +87,26 @@ namespace Warehouse.API.Controllers.API
             await _commandBus.Send(command, token);
             return Created("api/items", command.Id);
         }
+
+        [HttpPost]
+        [Route("file/upload")]
+        public async Task<IActionResult> ImportSnippets([FromForm] FileImport request)
+        {
+            //var ie = new ImportExport();
+
+            byte[] data;
+            await using (var ms = new MemoryStream())
+            {
+                await request.File.CopyToAsync(ms);
+                data = ms.ToArray();
+            }
+
+            return Ok();
+        }
+
+        public class FileImport
+        {
+            public IFormFile File { get; set; }
+        }
     }
 }

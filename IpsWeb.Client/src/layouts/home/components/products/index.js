@@ -2,8 +2,6 @@ import * as React from "react";
 import { Card } from "@mui/material";
 import SuiBox from "components/SuiBox";
 import { useState } from "react";
-import * as auth from "auth-provider";
-import { client } from "utils/api-client";
 import { useQuery } from "react-query";
 import SuiTypography from "components/SuiTypography";
 import { styled } from "@mui/material/styles";
@@ -11,11 +9,8 @@ import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
 import MuiAccordion from "@mui/material/Accordion";
 import MuiAccordionSummary from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
-
-import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import CellTowerIcon from "@mui/icons-material/CellTower";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import { FixedSizeList } from "react-window";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -25,6 +20,7 @@ import SuiInput from "components/SuiInput";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Icon from "@mui/material/Icon";
+import { useClient } from "context/auth.context";
 
 const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -192,17 +188,13 @@ export default function ProductsTreeView({
     </ListItem>
   );
 
-  const fetchItems = async (searchTerm) => {
-    const token = await auth.getToken();
-    const res = await client(`assets/info`, { token });
-    return res;
-  };
+  const client = useClient();
   const {
     isLoading,
     error,
     data: response,
     isSuccess,
-  } = useQuery(["list-items", searchTerm], () => fetchItems(searchTerm), {
+  } = useQuery(["list-items"], () => client(`assets/info`, {}), {
     keepPreviousData: false,
     refetchOnWindowFocus: false,
   });

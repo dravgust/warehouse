@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useQuery } from "react-query";
-import { client } from "utils/api-client";
 import * as auth from "auth-provider";
-
+import axios from "axios";
 // @mui material components
 import SuiBox from "components/SuiBox";
 import { Card, Icon, IconButton, Tooltip } from "@mui/material";
@@ -14,9 +13,13 @@ import SuiButton from "components/SuiButton";
 import Table from "examples/Tables/Table";
 import SetProduct from "./set-product";
 import ProductItem from "../product-item";
-
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
+import { AddBoxOutlined as AddIcon, AttachFileOutlined } from "@mui/icons-material";
+import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
+import Button from "@mui/material/Button";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import { useClient } from "context/auth.context";
 
 function ProductList({
   searchTerm,
@@ -29,11 +32,9 @@ function ProductList({
   const forceUpdate = () => updateReloadState(Date.now());
 
   const [page, setPage] = useState(1);
-  const fetchItems = async (searchTerm, page) => {
-    const token = await auth.getToken();
-    const res = await client(`items?searchTerm=${searchTerm}&page=${page}&size=6`, { token });
-    return res;
-  };
+  const client = useClient();
+  const fetchItems = (searchTerm, page) =>
+    client(`items?searchTerm=${searchTerm}&page=${page}&size=6`, {});
   const {
     isLoading,
     error,
@@ -77,6 +78,26 @@ function ProductList({
     setCurrentItem(null);
     setOpen(false);
   };
+  const apiURL = process.env.REACT_APP_API_URL;
+  const [file, setFile] = useState("");
+  const fileInput = useRef();
+  const handleFileChange = async (e) => {
+    console.log(e);
+    const file = e.target.files[0];
+    //const file = fileInput.files[0];
+    //setFile(file);
+    await uploadFile(file);
+  };
+
+  const uploadFile = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file, file.name);
+    try {
+      await client(`items/file/upload`, { formData });
+    } catch (err) {
+      console.log("upload-file", err);
+    }
+  };
 
   return (
     <Card id="product-list">
@@ -103,13 +124,24 @@ function ProductList({
 
         <SuiBox display="flex" alignItems="center" mt={{ xs: 2, sm: 0 }} ml={{ xs: -1.5, sm: 0 }}>
           <SuiButton variant="gradient" color="primary" onClick={resetToDefault}>
-            <Icon sx={{ fontWeight: "bold" }}>add</Icon>
+            <Icon>add</Icon>
             &nbsp;new
           </SuiButton>
-
-          <IconButton size="xl" color="inherit" onClick={forceUpdate}>
+          {/* <IconButton
+            size="medium"
+            color="primary"
+            aria-label="add new product"
+            onClick={resetToDefault}
+          >
+            <AddIcon fontSize="medium" />
+          </IconButton>*/}
+          <IconButton color="inherit" component="label">
+            <input hidden accept="*/*" type="file" ref={fileInput} onChange={handleFileChange} />
+            <FileUploadOutlinedIcon fontSize="medium" />
+          </IconButton>
+          <IconButton color="inherit" onClick={forceUpdate}>
             <Tooltip title="Reload">
-              <Icon>sync</Icon>
+              <Icon fontSize="medium">sync</Icon>
             </Tooltip>
           </IconButton>
         </SuiBox>

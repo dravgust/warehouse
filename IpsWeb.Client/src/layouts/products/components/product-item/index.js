@@ -1,9 +1,10 @@
-// prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
 
 // Soft UI Dashboard React components
 import SuiBox from "components/SuiBox";
 import SuiTypography from "components/SuiTypography";
+import SuiAvatar from "components/SuiAvatar";
+import productIcon from "assets/images/qr-code.png";
 
 function ProductItem({ isSelected, item, onClick = () => {} }) {
   return (
@@ -22,7 +23,8 @@ function ProductItem({ isSelected, item, onClick = () => {} }) {
       sx={{
         backgroundColor: isSelected ? "rgba(203, 12, 159, 0.08)" : "inherit",
         "&:hover": {
-          backgroundColor: "rgba(203, 12, 159, 0.08)",
+          //backgroundColor: "rgba(203, 12, 159, 0.08)",
+          backgroundColor: isSelected ? "rgba(203, 12, 159, 0.08)" : "rgba(0, 0, 0, 0.04)",
         },
       }}
     >
@@ -34,9 +36,14 @@ function ProductItem({ isSelected, item, onClick = () => {} }) {
           flexDirection={{ xs: "column", sm: "row" }}
           mb={1}
         >
-          <SuiTypography variant="button" fontWeight="medium" textTransform="capitalize">
-            {item.name}
-          </SuiTypography>
+          <SuiBox display="flex" alignItems="center">
+            <SuiBox mx={2}>
+              <SuiAvatar src={productIcon} alt={item.name} size="sm" variant="square" />
+            </SuiBox>
+            <SuiTypography variant="button" fontWeight="medium">
+              {item.name}
+            </SuiTypography>
+          </SuiBox>
         </SuiBox>
 
         <SuiBox mb={1} px={2} lineHeight={0} style={{ height: "40px" }}>

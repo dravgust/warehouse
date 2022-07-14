@@ -24,8 +24,7 @@ function logout() {
 
 async function refreshToken() {
   return client("refresh-token", {
-    token:
-      "244yqJodQ4W9waOBNzE/iCp5XU2VMj/KB6gjmnGpWB+CLVW4TWaXOhWCj8U0J7bNV0yo7MCpcvZgEUldo9MD9w==",
+    token: null,
   }).then(handleUserResponse);
 }
 
@@ -37,6 +36,7 @@ async function client(endpoint, data) {
     method: "POST",
     body: JSON.stringify(data),
     headers: { "Content-Type": "application/json" },
+    credentials: "include",
   };
 
   return window.fetch(`${authURL}/${base}/${endpoint}`, config).then(async (response) => {
