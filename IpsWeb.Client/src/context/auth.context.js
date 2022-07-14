@@ -1,18 +1,18 @@
 import React from "react";
-import {useQueryClient} from 'react-query'
-import * as auth from 'auth-provider'
-import {client} from 'utils/api-client'
-import {useAsync} from 'utils/hooks'
-import {useStoreController, setResources} from "./store.context";
+import { useQueryClient } from "react-query";
+import * as auth from "auth-provider";
+import { client } from "utils/api-client";
+import { useAsync } from "utils/hooks";
+import { useStoreController, setResources } from "./store.context";
 //import {FullPageSpinner, FullPageErrorFallback} from 'components/lib'
 
 //const queryClient = useQueryClient();
 async function bootstrapAppData(dispatch) {
-  let user = null
+  let user = null;
 
-  const token = await auth.getToken()
+  const token = await auth.getToken();
   if (token) {
-    const data = await client('account/bootstrap', {token})
+    const data = await client("account/bootstrap", { token });
     console.log("bootstrap", data);
     setResources(dispatch, data.resources);
     /*queryCache.setQueryData('list-items', data.listItems, {
@@ -23,7 +23,7 @@ async function bootstrapAppData(dispatch) {
     }*/
     user = { ...data.user, token };
   }
-  return user
+  return user;
 }
 
 const AuthContext = React.createContext(null);
@@ -39,67 +39,64 @@ function AuthProvider(props) {
     isSuccess,
     run,
     setData,
-  } = useAsync()
+  } = useAsync();
 
   const [, dispatch] = useStoreController();
 
   React.useEffect(() => {
-    const appDataPromise = bootstrapAppData(dispatch)
-    run(appDataPromise)
-  }, [run])
+    const appDataPromise = bootstrapAppData(dispatch);
+    run(appDataPromise);
+  }, [run]);
 
   const login = React.useCallback(
-    form => auth.login(form).then(user => setData(user)),
-    [setData],
-  )
+    (form) => auth.login(form).then((user) => setData(user)),
+    [setData]
+  );
   const register = React.useCallback(
-    form => auth.register(form).then(user => setData(user)),
-    [setData],
-  )
+    (form) => auth.register(form).then((user) => setData(user)),
+    [setData]
+  );
 
   const logout = React.useCallback(() => {
-    auth.logout()
+    auth.logout();
     //queryClient.clear()
-    setData(null)
-  }, [setData])
-  
+    setData(null);
+  }, [setData]);
+
   const value = React.useMemo(
-    () => ({user, login, logout, register}),
-    [login, logout, register, user],
-  )
+    () => ({ user, login, logout, register }),
+    [login, logout, register, user]
+  );
 
   if (isLoading || isIdle) {
     //return <FullPageSpinner />
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
   if (isError) {
     //return <FullPageErrorFallback error={error} />
-    return <div>Error: {error}</div>
+    return <div>Error: {error}</div>;
   }
 
   if (isSuccess) {
-    return <AuthContext.Provider value={value} {...props} />
+    return <AuthContext.Provider value={value} {...props} />;
   }
 
-  throw new Error(`Unhandled status: ${status}`)
-};
+  throw new Error(`Unhandled status: ${status}`);
+}
 
 function useAuth() {
-  const context = React.useContext(AuthContext)
+  const context = React.useContext(AuthContext);
   if (context === undefined) {
-    throw new Error(`useAuth must be used within a AuthProvider`)
+    throw new Error(`useAuth must be used within a AuthProvider`);
   }
-  return context
+  return context;
 }
 
 function useClient() {
-  const {user} = useAuth()
-  const token = user?.token
-  return React.useCallback(
-    (endpoint, config) => client(endpoint, {...config, token}),
-    [token],
-  )
+  const { user } = useAuth();
+  const token = user?.token;
+  return React.useCallback((endpoint, config) => client(endpoint, { ...config, token }), [token]);
 }
 
-export {AuthProvider, useAuth, useClient}
+export { AuthProvider, useAuth, useClient };

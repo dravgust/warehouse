@@ -8,8 +8,13 @@ import SuiTypography from "components/SuiTypography";
 import ItemForm from "./item-form";
 import { Card, Icon, IconButton, Tooltip } from "@mui/material";
 
-function SelectedItem({ onSave = () => {}, onDelete = () => {}, onClose = () => {}, item = {}, beacons = [] }) {
-
+function SelectedItem({
+  onSave = () => {},
+  onDelete = () => {},
+  onClose = () => {},
+  item = {},
+  beacons = [],
+}) {
   return (
     <Card>
       <SuiBox display="flex" justifyContent="space-between" alignItems="center" pt={3} px={3}>
@@ -38,7 +43,7 @@ function SelectedItem({ onSave = () => {}, onDelete = () => {}, onClose = () => 
         mb={2}
         mt={3}
         mx={2}
-        style={{"border": "1px solid rgba(0, 0, 0, 0.125)"}}
+        style={{ border: "1px solid rgba(0, 0, 0, 0.125)" }}
       >
         <SuiBox width="100%" display="flex" flexDirection="column">
           <SuiBox

@@ -20,7 +20,7 @@ class CanvasDemo extends Component {
   state = {
     stageScale: 1,
     stageX: 0,
-    stageY: 0
+    stageY: 0,
   };
 
   hexagons() {
@@ -32,14 +32,14 @@ class CanvasDemo extends Component {
     }
     return hexagons;
   }
-  handleWheel = e => {
+  handleWheel = (e) => {
     e.evt.preventDefault();
 
     const stage = e.target.getStage();
     const oldScale = stage.scaleX();
     const mousePointTo = {
       x: stage.getPointerPosition().x / oldScale - stage.x() / oldScale,
-      y: stage.getPointerPosition().y / oldScale - stage.y() / oldScale
+      y: stage.getPointerPosition().y / oldScale - stage.y() / oldScale,
     };
 
     const deltaYBounded = !(e.evt.deltaY % 1)
@@ -53,7 +53,7 @@ class CanvasDemo extends Component {
 
     stage.position({
       x: -(mousePointTo.x - stage.getPointerPosition().x / newScale) * newScale,
-      y: -(mousePointTo.y - stage.getPointerPosition().y / newScale) * newScale
+      y: -(mousePointTo.y - stage.getPointerPosition().y / newScale) * newScale,
     });
     stage.batchDraw();
   };
@@ -75,6 +75,4 @@ class CanvasDemo extends Component {
     );
   }
 }
-
-
 export default CanvasDemo;

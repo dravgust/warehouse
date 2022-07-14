@@ -14,30 +14,30 @@
  */
 
 import React from "react";
-import {createRoot} from 'react-dom/client';
-import {BrowserRouter} from "react-router-dom";
+import { createRoot } from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
 import App from "App";
 
 // Soft UI Dashboard React Context Provider
-import {SoftUIControllerProvider} from "context";
+import { SoftUIControllerProvider } from "context";
 
-import {AuthProvider} from "context/auth.context";
-import {AppProviders} from "context/app.context";
-import {StoreControllerProvider} from "./context/store.context";
+import { AuthProvider } from "context/auth.context";
+import { AppProviders } from "context/app.context";
+import { StoreControllerProvider } from "./context/store.context";
 
 const container = document.getElementById("root");
 const root = createRoot(container);
 
 root.render(
-    <BrowserRouter>
-        <SoftUIControllerProvider>
-            <StoreControllerProvider>
-                <AppProviders>
-                    <AuthProvider>
-                        <App/>
-                    </AuthProvider>
-                </AppProviders>
-            </StoreControllerProvider>
-        </SoftUIControllerProvider>
-    </BrowserRouter>
+  <BrowserRouter>
+    <SoftUIControllerProvider>
+      <StoreControllerProvider>
+        <AppProviders>
+          <AuthProvider>
+            <App />
+          </AuthProvider>
+        </AppProviders>
+      </StoreControllerProvider>
+    </SoftUIControllerProvider>
+  </BrowserRouter>
 );

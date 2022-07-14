@@ -55,7 +55,7 @@ function Products() {
     if (!item) return;
     let result = metadata
       ? metadata.map((e) => {
-          var rm = item.metadata && item.metadata.find((m) => m.key === e.key);
+          let rm = item.metadata && item.metadata.find((m) => m.key === e.key);
           return rm && rm.value ? Object.assign({}, e, { value: rm.value }) : Object.assign({}, e);
         })
       : [];

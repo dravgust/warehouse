@@ -1,4 +1,4 @@
-import { queryCache } from "react-query";
+import { queryClient } from "context/app.context";
 import * as auth from "auth-provider";
 const apiURL = process.env.REACT_APP_API_URL;
 
@@ -16,7 +16,6 @@ async function client(endpoint, { data, token, headers: customHeaders, ...custom
   };
 
   return window.fetch(`${apiURL}/${endpoint}`, config).then(async (response) => {
-    console.log("api-client:response", response);
     if (response.status === 201) {
       return Promise.resolve();
     }
@@ -28,7 +27,7 @@ async function client(endpoint, { data, token, headers: customHeaders, ...custom
       } catch (err) {
         console.log("api-client:err", err);
       }*/
-      //queryCache.clear()
+      queryClient.clear();
       await auth.logout();
       // refresh the page for them
       window.location.assign(window.location);

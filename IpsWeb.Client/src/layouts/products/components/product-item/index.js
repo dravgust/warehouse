@@ -20,10 +20,10 @@ function ProductItem({ isSelected, item, onClick = () => {} }) {
       style={{ cursor: "pointer", border: "1px solid rgba(0, 0, 0, 0.125)" }}
       onClick={onClick}
       sx={{
-          backgroundColor: isSelected ? 'rgba(203, 12, 159, 0.08)' : 'inherit',
-        '&:hover': {
-          backgroundColor: 'rgba(203, 12, 159, 0.08)',
-        }
+        backgroundColor: isSelected ? "rgba(203, 12, 159, 0.08)" : "inherit",
+        "&:hover": {
+          backgroundColor: "rgba(203, 12, 159, 0.08)",
+        },
       }}
     >
       <SuiBox width="100%" display="flex" flexDirection="column">
@@ -34,23 +34,13 @@ function ProductItem({ isSelected, item, onClick = () => {} }) {
           flexDirection={{ xs: "column", sm: "row" }}
           mb={1}
         >
-          <SuiTypography
-            variant="button"
-            fontWeight="medium"
-            textTransform="capitalize"
-
-          >
+          <SuiTypography variant="button" fontWeight="medium" textTransform="capitalize">
             {item.name}
           </SuiTypography>
         </SuiBox>
 
         <SuiBox mb={1} px={2} lineHeight={0} style={{ height: "40px" }}>
-          <SuiTypography
-            variant="caption"
-            fontWeight="medium"
-            textTransform="capitalize"
-
-          >
+          <SuiTypography variant="caption" fontWeight="medium" textTransform="capitalize">
             {item.description}
           </SuiTypography>
         </SuiBox>

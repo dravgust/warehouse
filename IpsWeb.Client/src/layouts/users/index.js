@@ -19,25 +19,25 @@ import Table from "examples/Tables/Table";
 import { useQuery } from "react-query";
 import { client } from "utils/api-client";
 import * as auth from "auth-provider";
-import { format } from 'date-fns'
+import { format } from "date-fns";
 
 // Images
 import userIcon from "assets/images/user.png";
 
-function ProviderName(providerId){
-  switch(providerId){
+function ProviderName(providerId) {
+  switch (providerId) {
     case 1:
-      return 'Electra';
+      return "Electra";
     case 2:
-      return 'Dolav';
-    case 3: 
-      return 'Meitav';
+      return "Dolav";
+    case 3:
+      return "Meitav";
     case 4:
-      return 'Tel-Aviv University';
+      return "Tel-Aviv University";
     case 1000:
-      return 'Vayosoft';
-      default:
-        return 'Unknown';
+      return "Vayosoft";
+    default:
+      return "Unknown";
   }
 }
 
@@ -73,7 +73,6 @@ function Function({ job, org }) {
 }
 
 function Users() {
-
   const [page, setPage] = useState(1);
   const fetchItems = async (page) => {
     const token = await auth.getToken();
@@ -121,13 +120,7 @@ function Users() {
                   rows={
                     isSuccess &&
                     response.data.map((item) => ({
-                      user: (
-                        <User
-                          image={userIcon}
-                          name={item.username}
-                          email={item.email}
-                        />
-                      ),
+                      user: <User image={userIcon} name={item.username} email={item.email} />,
                       function: <Function job={item.kind} org={ProviderName(item.providerId)} />,
                       status: (
                         <SuiBadge
@@ -140,7 +133,7 @@ function Users() {
                       ),
                       registed: (
                         <SuiTypography variant="caption" color="secondary" fontWeight="medium">
-                          {format(new Date(item.registrationDate), 'dd/MM/yyy HH:mm:ss')}
+                          {format(new Date(item.registrationDate), "dd/MM/yyy HH:mm:ss")}
                         </SuiTypography>
                       ),
                       action: (
@@ -161,8 +154,16 @@ function Users() {
                   onPageChange={(event, value) => setPage(value)}
                 />
               )}
-              {isLoading && <SuiTypography px={2} color="secondary">Loading..</SuiTypography>}
-              {error && <SuiTypography px={2} color="error">Error occurred!</SuiTypography>}
+              {isLoading && (
+                <SuiTypography px={2} color="secondary">
+                  Loading..
+                </SuiTypography>
+              )}
+              {error && (
+                <SuiTypography px={2} color="error">
+                  Error occurred!
+                </SuiTypography>
+              )}
             </SuiBox>
           </Card>
         </SuiBox>

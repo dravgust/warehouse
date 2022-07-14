@@ -4,11 +4,7 @@ import { useMutation } from "react-query";
 import * as yup from "yup";
 // Soft UI Dashboard React components
 import Stack from "@mui/material/Stack";
-import {
-  Icon,
-  TextField,
-  Box,
-} from "@mui/material";
+import { Icon, TextField, Box } from "@mui/material";
 import * as auth from "auth-provider";
 import { client } from "utils/api-client";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -35,8 +31,12 @@ const validationSchema = yup.object({
   ),
 });
 
-export default function ItemForm({ onSave = () => {}, onDelete = () => {}, item = {}, beacons = [] }) {
-
+export default function ItemForm({
+  onSave = () => {},
+  onDelete = () => {},
+  item = {},
+  beacons = [],
+}) {
   const saveItem = async (item) => {
     const token = await auth.getToken();
     const res = await client(`items/set`, {
@@ -56,7 +56,7 @@ export default function ItemForm({ onSave = () => {}, onDelete = () => {}, item 
   const handleDelete = async (item) => {
     const token = await auth.getToken();
     try {
-      await client(`items/delete`, { data: item,  token });
+      await client(`items/delete`, { data: item, token });
       return onDelete();
     } catch (err) {
       console.log("delete-item", err);
@@ -92,7 +92,7 @@ export default function ItemForm({ onSave = () => {}, onDelete = () => {}, item 
       autoComplete="off"
     >
       {mutation.isError && (
-        <SuiAlert style={{fontSize:"12px"}} color={"error"} dismissible>
+        <SuiAlert style={{ fontSize: "12px" }} color={"error"} dismissible>
           {mutation.error.title || mutation.error.error}
         </SuiAlert>
       )}
@@ -125,7 +125,7 @@ export default function ItemForm({ onSave = () => {}, onDelete = () => {}, item 
       {formik.values.metadata &&
         formik.values.metadata.map(({ key, value, type }, index) => (
           <TextField
-          key={index}
+            key={index}
             fullWidth
             label={key}
             id={`metadata[${index}].value`}

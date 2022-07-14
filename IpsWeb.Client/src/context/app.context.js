@@ -23,4 +23,4 @@ function AppProviders({ children }) {
   );
 }
 
-export { AppProviders };
+export { AppProviders, queryClient };

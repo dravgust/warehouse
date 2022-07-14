@@ -43,8 +43,7 @@ const Warehouse = () => {
                 },
               }}
             >
-                
-                <CanvasDemo/>
+              <CanvasDemo />
             </SuiBox>
           </Card>
         </SuiBox>

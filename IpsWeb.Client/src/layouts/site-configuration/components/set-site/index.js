@@ -6,23 +6,21 @@ import SuiAlert from "components/SuiAlert";
 import SuiButton from "components/SuiButton";
 import { useMutation } from "react-query";
 import * as yup from "yup";
-import * as auth from "auth-provider"
+import * as auth from "auth-provider";
 import { client } from "utils/api-client";
 
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
 
-export default function SetSite({ item, onClose, onSave = ()=>{} }) {
-
-
-    const saveItem = async (item) => {
-        const token = await auth.getToken();
-        const res = await client(`sites/set`, {
-          data: item,
-          token,
-        });
-        return res;
-      };
+export default function SetSite({ item, onClose, onSave = () => {} }) {
+  const saveItem = async (item) => {
+    const token = await auth.getToken();
+    const res = await client(`sites/set`, {
+      data: item,
+      token,
+    });
+    return res;
+  };
 
   const mutation = useMutation((item) => saveItem(item), {
     onSuccess: () => {
@@ -48,7 +46,9 @@ export default function SetSite({ item, onClose, onSave = ()=>{} }) {
       error: item ? item.error : 0,
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => { mutation.mutate(values);},
+    onSubmit: (values) => {
+      mutation.mutate(values);
+    },
   });
 
   return (
@@ -130,11 +130,9 @@ export default function SetSite({ item, onClose, onSave = ()=>{} }) {
                 error={formik.touched.leftLength && Boolean(formik.errors.leftLength)}
                 helperText={formik.touched.leftLength && formik.errors.leftLength}
               />
-
             </Stack>
             <Stack direction="row" spacing={2} alignItems="center">
-
-               <TextField
+              <TextField
                 fullWidth
                 id="error"
                 name="error"
@@ -165,10 +163,10 @@ export default function SetSite({ item, onClose, onSave = ()=>{} }) {
 }
 
 // Setting default values
-SetSite.defaultProps = { };
-  
-  // Typechecking props
-  SetSite.propTypes = {
-    item: PropTypes.object.isRequired,
-    onClose: PropTypes.func.isRequired
-  };
+SetSite.defaultProps = {};
+
+// Typechecking props
+SetSite.propTypes = {
+  item: PropTypes.object.isRequired,
+  onClose: PropTypes.func.isRequired,
+};

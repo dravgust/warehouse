@@ -104,11 +104,12 @@ export default function App() {
       }
 
       if (route.route) {
-        if(route.protected){
+        if (route.protected) {
           return (
-          <Route exact path={route.route} element={<PrivateRoute/>} key={route.key}>
-            <Route exact path={route.route} element={route.component} key={route.key} />
-          </Route>)
+            <Route exact path={route.route} element={<PrivateRoute />} key={route.key}>
+              <Route exact path={route.route} element={route.component} key={route.key} />
+            </Route>
+          );
         }
         return <Route exact path={route.route} element={route.component} key={route.key} />;
       }
@@ -183,10 +184,10 @@ export default function App() {
         </>
       )}
       {layout === "vr" && <Configurator />}
-        <Routes>
-          {getRoutes(routes)}
-          <Route path="*" element={<Navigate to="/authentication/sign-in" />} />
-        </Routes>
+      <Routes>
+        {getRoutes(routes)}
+        <Route path="*" element={<Navigate to="/authentication/sign-in" />} />
+      </Routes>
     </ThemeProvider>
   );
 }

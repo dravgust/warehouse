@@ -57,7 +57,7 @@ export default function LanguageBar() {
           sx={{
             boxShadow:
               "0rem 0.25rem 0.375rem -0.0625rem rgb(20 20 20 / 12%), 0rem 0.125rem 0.25rem -0.0625rem rgb(20 20 20 / 7%)",
-              cursor: "pointer"
+            cursor: "pointer",
           }}
           onClick={handleOpenMenu}
         />
