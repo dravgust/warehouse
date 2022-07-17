@@ -78,7 +78,7 @@ function ProductList({
     setCurrentItem(null);
     setOpen(false);
   };
-  const apiURL = process.env.REACT_APP_API_URL;
+
   const [file, setFile] = useState("");
   const fileInput = useRef();
   const handleFileChange = async (e) => {

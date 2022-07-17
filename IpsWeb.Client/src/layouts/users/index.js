@@ -1,28 +1,18 @@
 import { useState } from "react";
-// @mui material components
 import Card from "@mui/material/Card";
-
-// Soft UI Dashboard React components
 import SuiBox from "components/SuiBox";
 import SuiTypography from "components/SuiTypography";
-
-/* eslint-disable react/prop-types */
 import SuiAvatar from "components/SuiAvatar";
 import SuiBadge from "components/SuiBadge";
-
-// Soft UI Dashboard React examples
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import Table from "examples/Tables/Table";
-
 import { useQuery } from "react-query";
-import { client } from "utils/api-client";
-import * as auth from "auth-provider";
 import { format } from "date-fns";
-
-// Images
 import userIcon from "assets/images/user.png";
+import { getUsers } from "../../services/administration-service";
+import { fetchUsers } from "../../utils/query-keys";
 
 function ProviderName(providerId) {
   switch (providerId) {
@@ -74,20 +64,7 @@ function Function({ job, org }) {
 
 function Users() {
   const [page, setPage] = useState(1);
-  const fetchItems = async (page) => {
-    const token = await auth.getToken();
-    const res = await client(`users?page=${page}&take=9`, { token });
-    return res;
-  };
-  const {
-    isLoading,
-    error,
-    data: response,
-    isSuccess,
-  } = useQuery(["list-users", page], () => fetchItems(page), {
-    keepPreviousData: false,
-    refetchOnWindowFocus: false,
-  });
+  const { isLoading, error, data: response, isSuccess } = useQuery([fetchUsers, page], getUsers);
 
   return (
     <DashboardLayout>
