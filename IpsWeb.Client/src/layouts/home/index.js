@@ -1,24 +1,17 @@
 import { useState } from "react";
-
-// @mui material components
 import Grid from "@mui/material/Grid";
-import Icon from "@mui/material/Icon";
-
-// Soft UI Dashboard React components
 import SuiBox from "components/SuiBox";
-
-// Soft UI Dashboard React examples
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-
 import ProductsTreeView from "./components/products";
 import PositionEvents from "./components/position-events";
 import Assets from "./components/beacons";
 import DefaultInfoCard from "examples/Cards/InfoCards/DefaultInfoCard";
-import { Grow, Stack, Zoom } from "@mui/material";
+import { Stack, Zoom } from "@mui/material";
 import Beacon from "./components/beacon";
 import Sites from "./components/sites";
+import BeaconTelemetry from "./components/beacon-telemetry";
 
 function Dashboard() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -67,45 +60,7 @@ function Dashboard() {
           {Boolean(selectedBeacon) && (
             <Zoom in={true}>
               <Grid item xs={12} md={6} lg={4} mb={3}>
-                <Grid container spacing={3}>
-                  <Grid item xs={12}>
-                    <Beacon macAddress={selectedBeacon.macAddress} name={selectedBeacon.name} />
-                  </Grid>
-
-                  <Grid item xs={12} md={6}>
-                    <DefaultInfoCard
-                      icon="thermostat"
-                      title="Temperature"
-                      description="Ambient Temperature"
-                      value="32C&deg;"
-                    />
-                  </Grid>
-
-                  <Grid item xs={12} md={6}>
-                    <DefaultInfoCard
-                      icon="waves"
-                      title="Humidity"
-                      description="Absolute humidity"
-                      value="45%"
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <DefaultInfoCard
-                      icon="battery_full"
-                      title="Battery"
-                      description="Battery level"
-                      value="73%"
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <DefaultInfoCard
-                      icon="location_off"
-                      title="Location"
-                      description="Beacon location"
-                      value="--"
-                    />
-                  </Grid>
-                </Grid>
+                <BeaconTelemetry item={selectedBeacon} />
               </Grid>
             </Zoom>
           )}

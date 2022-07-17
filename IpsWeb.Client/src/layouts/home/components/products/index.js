@@ -20,7 +20,8 @@ import SuiInput from "components/SuiInput";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Icon from "@mui/material/Icon";
-import { useClient } from "context/auth.context";
+import { fetchAssetsInfo } from "utils/query-keys";
+import { getAssetsInfo } from "services/warehouse-service";
 
 const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -188,16 +189,12 @@ export default function ProductsTreeView({
     </ListItem>
   );
 
-  const client = useClient();
   const {
     isLoading,
     error,
     data: response,
     isSuccess,
-  } = useQuery(["list-items"], () => client(`assets/info`, {}), {
-    keepPreviousData: false,
-    refetchOnWindowFocus: false,
-  });
+  } = useQuery([fetchAssetsInfo], getAssetsInfo);
 
   const [expanded, setExpanded] = React.useState("");
 

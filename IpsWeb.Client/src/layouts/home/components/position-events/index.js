@@ -4,41 +4,28 @@ import { useState } from "react";
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
 import { IconButton, Tooltip } from "@mui/material";
-
-// Soft UI Dashboard React components
 import SuiBox from "components/SuiBox";
 import SuiTypography from "components/SuiTypography";
-
-// Soft UI Dashboard React examples
 import TimelineItem from "examples/Timeline/TimelineItem";
-
 import { useQuery } from "react-query";
-import { client } from "utils/api-client";
-import * as auth from "auth-provider";
-import { format, formatDistance } from "date-fns";
+import { formatDistance } from "date-fns";
 import Stack from "@mui/material/Stack";
 import Pagination from "@mui/material/Pagination";
 import React from "react";
+import { fetchEvents } from "utils/query-keys";
+import { getEvents } from "services/warehouse-service";
 
 function PositionEvents({ searchTerm = "" }) {
   const [reload, updateReloadState] = useState(null);
   const forceUpdate = () => updateReloadState(Date.now());
   const [page, setPage] = useState(1);
 
-  const fetchItems = async (searchTerm, page) => {
-    const token = await auth.getToken();
-    const res = await client(`events?page=${page}&size=10&searchTerm=${searchTerm}`, { token });
-    return res;
-  };
   const {
     isLoading,
     error,
     data: response,
     isSuccess,
-  } = useQuery(["list-events", reload, searchTerm, page], () => fetchItems(searchTerm, page), {
-    keepPreviousData: false,
-    refetchOnWindowFocus: false,
-  });
+  } = useQuery([fetchEvents, page, searchTerm, reload], getEvents);
 
   return (
     <Card className="h-100">

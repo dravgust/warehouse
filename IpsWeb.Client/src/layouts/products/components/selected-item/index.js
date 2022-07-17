@@ -1,20 +1,11 @@
 import React from "react";
-// prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
-
-// Soft UI Dashboard React components
 import SuiBox from "components/SuiBox";
 import SuiTypography from "components/SuiTypography";
 import ItemForm from "./item-form";
 import { Card, Icon, IconButton, Tooltip } from "@mui/material";
 
-function SelectedItem({
-  onSave = () => {},
-  onDelete = () => {},
-  onClose = () => {},
-  item = {},
-  beacons = [],
-}) {
+function SelectedItem({ onSave = () => {}, onDelete = () => {}, onClose = () => {}, item = {} }) {
   return (
     <Card>
       <SuiBox display="flex" justifyContent="space-between" alignItems="center" pt={3} px={3}>
@@ -53,7 +44,7 @@ function SelectedItem({
             flexDirection={{ xs: "column", sm: "row" }}
             mb={2}
           ></SuiBox>
-          <ItemForm item={item} onSave={onSave} onDelete={onDelete} beacons={beacons} />
+          <ItemForm item={item} onSave={onSave} onDelete={onDelete} />
         </SuiBox>
       </SuiBox>
     </Card>

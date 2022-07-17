@@ -30,12 +30,7 @@ const validationSchema = yup.object({
   ),
 });
 
-export default function ItemForm({
-  onSave = () => {},
-  onDelete = () => {},
-  item = {},
-  beacons = [],
-}) {
+export default function ItemForm({ onSave = () => {}, onDelete = () => {}, item = {} }) {
   const saveItem = async (item) => {
     const token = await auth.getToken();
     const res = await client(`items/set`, {

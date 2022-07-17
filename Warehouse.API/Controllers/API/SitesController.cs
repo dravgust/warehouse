@@ -13,7 +13,7 @@ using Warehouse.Core.UseCases.Warehouse.Specifications;
 
 namespace Warehouse.API.Controllers.API
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class SitesController : ControllerBase

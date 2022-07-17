@@ -11,6 +11,8 @@ import ProductList from "./components/product-list";
 import SelectedItem from "./components/selected-item";
 import { Zoom } from "@mui/material";
 import { useSoftUIController } from "context";
+import { fetchProductMetadata } from "../../utils/query-keys";
+import { getProductMetadata } from "../../services/warehouse-service";
 
 function Products() {
   const [controller] = useSoftUIController();
@@ -54,19 +56,7 @@ function Products() {
     return selectItem({ ...item, metadata: result });
   };
 
-  const fetchMetadata = async () => {
-    const token = await auth.getToken();
-    const res = await client(`items/metadata`, { token });
-    return res.data;
-  };
-  const { data: metadata } = useQuery(["metadata"], fetchMetadata);
-
-  const fetchRegisteredBeacons = async () => {
-    const token = await auth.getToken();
-    const res = await client(`sites/beacons-registered`, { token });
-    return res;
-  };
-  const { data: beacons } = useQuery(["beacons-registered"], fetchRegisteredBeacons);
+  const { data: metadata } = useQuery([fetchProductMetadata], getProductMetadata);
 
   return (
     <DashboardLayout>
@@ -114,7 +104,6 @@ function Products() {
                   onSave={handleSave}
                   onDelete={handleDelete}
                   onClose={resetToNull}
-                  beacons={beacons}
                 />
               )}
             </Grid>

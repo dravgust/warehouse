@@ -28,14 +28,8 @@ namespace Warehouse.API.Controllers.API
         }
 
         [HttpGet("metadata")]
-        public async Task<IActionResult> GetMetadataTemplate(CancellationToken token)
-        {
-            var data = await _queryBus.Send(new GetProductMetadata(), token);
-            return Ok(new
-            {
-                data
-            });
-        }
+        public async Task<IActionResult> GetMetadataTemplate(CancellationToken token) =>
+            Ok(await _queryBus.Send(new GetProductMetadata(), token));
 
         [HttpGet("item-metadata")]
         public async Task<IActionResult> GetItemMetadataTemplate(CancellationToken token)

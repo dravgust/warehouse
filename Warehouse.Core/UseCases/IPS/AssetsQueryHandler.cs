@@ -19,7 +19,7 @@ namespace Warehouse.Core.UseCases.IPS
     public class AssetsQueryHandler :
         IQueryHandler<GetAssets, IPagedEnumerable<AssetDto>>,
         IQueryHandler<GetAssetInfo, IEnumerable<AssetInfo>>,
-        IQueryHandler<GetBeaconPayload, BeaconPayload>,
+        IQueryHandler<GetBeaconPayload, BeaconTelemetryDto>,
         IQueryHandler<GetIpsStatus, IndoorPositionStatusDto>,
         IQueryHandler<GetSitesWithProduct, IEnumerable<WarehouseSiteDto>>
     {
@@ -193,12 +193,22 @@ namespace Warehouse.Core.UseCases.IPS
             return result.Values;
         }
 
-        public async Task<BeaconPayload> Handle(GetBeaconPayload request, CancellationToken cancellationToken)
+        public async Task<BeaconTelemetryDto> Handle(GetBeaconPayload request, CancellationToken cancellationToken)
         {
             var payloads = await _payloadCollection.Find(entity => true).ToListAsync(cancellationToken);
+            var data = payloads.First().Beacons.First();
 
-
-            return payloads.First().Beacons.First();
+            return new BeaconTelemetryDto
+            {
+                Battery = data.Battery,
+                Humidity = data.Humidity1,
+                RSSI = data.RSSI,
+                Temperature = data.Temperature,
+                TxPower = data.TxPower,
+                X0 = data.X0,
+                Y0 = data.Y0,
+                Z0 = data.Z0
+            };
         }
     }
 }
