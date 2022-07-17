@@ -3,6 +3,7 @@ using Vayosoft.Core.Commands;
 using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
+using Warehouse.API.Services;
 using Warehouse.API.Services.Security.Attributes;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Products.Commands;
@@ -90,15 +91,30 @@ namespace Warehouse.API.Controllers.API
 
         [HttpPost]
         [Route("file/upload")]
-        public async Task<IActionResult> ImportSnippets([FromForm] FileImport request)
+        public async Task<IActionResult> ImportSnippets([FromForm] FileImport request, CancellationToken token)
         {
-            //var ie = new ImportExport();
+            if (request.File == null || request.File.Length == 0)
+                return Content("File Not Selected");
+
+            string fileExtension = Path.GetExtension(request.File.FileName);
+            if (fileExtension != ".xls" && fileExtension != ".xlsx")
+                return Content("File Not Selected");
+
+            var ie = new ImportExportService();
 
             byte[] data;
             await using (var ms = new MemoryStream())
             {
-                await request.File.CopyToAsync(ms);
+                await request.File.CopyToAsync(ms, token);
                 data = ms.ToArray();
+            }
+
+            if (data.Length <= 0)
+                return BadRequest("File Not Found");
+
+            foreach (var setProduct in ie.ImportProducts(data))
+            {
+                await _commandBus.Send(setProduct, token);
             }
 
             return Ok();
@@ -106,7 +122,7 @@ namespace Warehouse.API.Controllers.API
 
         public class FileImport
         {
-            public IFormFile File { get; set; }
+            public IFormFile? File { get; set; }
         }
     }
 }

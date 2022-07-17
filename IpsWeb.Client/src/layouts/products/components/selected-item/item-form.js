@@ -2,9 +2,8 @@ import * as React from "react";
 import { useFormik } from "formik";
 import { useMutation } from "react-query";
 import * as yup from "yup";
-// Soft UI Dashboard React components
 import Stack from "@mui/material/Stack";
-import { Icon, TextField, Box } from "@mui/material";
+import { Icon, TextField, Box, TextareaAutosize } from "@mui/material";
 import * as auth from "auth-provider";
 import { client } from "utils/api-client";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -110,12 +109,15 @@ export default function ItemForm({
 
       <TextField
         fullWidth
+        sx={{
+          "& .MuiOutlinedInput-input": { width: "100%!important" },
+        }}
         id="description"
         name="description"
         label="Description"
         type="text"
         multiline
-        rows={4}
+        maxRows={10}
         value={formik.values.description}
         onChange={formik.handleChange}
         error={formik.touched.description && Boolean(formik.errors.description)}

@@ -46,7 +46,7 @@ function ProductItem({ isSelected, item, onClick = () => {} }) {
           </SuiBox>
         </SuiBox>
 
-        <SuiBox mb={1} px={2} lineHeight={0} style={{ height: "40px" }}>
+        <SuiBox mb={1} px={2} lineHeight={0} style={{ minHeight: "15px" }}>
           <SuiTypography variant="caption" fontWeight="medium" textTransform="capitalize">
             {item.description}
           </SuiTypography>

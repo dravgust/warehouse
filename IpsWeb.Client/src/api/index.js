@@ -32,12 +32,13 @@ axios.interceptors.response.use(
         } catch (err) {
           console.log("refresh-token-error", err);
         }
+        console.log("logout");
+        //await auth.logout();
+        // refresh the page for them
+        //window.location.assign(window.location);
+        return Promise.reject({ message: "Please re-authenticate." });
       }
-      console.log("logout");
-      await auth.logout();
-      // refresh the page for them
-      window.location.assign(window.location);
-      return Promise.reject({ message: "Please re-authenticate." });
+      return Promise.reject(error);
     });
   }
 );

@@ -2,22 +2,14 @@ import React, { useState } from "react";
 import { useQuery } from "react-query";
 import { client } from "utils/api-client";
 import * as auth from "auth-provider";
-
 import Grid from "@mui/material/Grid";
-
-// Soft UI Dashboard React components
 import SuiBox from "components/SuiBox";
-
-// Soft UI Dashboard React examples
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-
 import ProductList from "./components/product-list";
 import SelectedItem from "./components/selected-item";
 import { Zoom } from "@mui/material";
-
-// Soft UI Dashboard React context
 import { useSoftUIController } from "context";
 
 function Products() {
@@ -67,20 +59,14 @@ function Products() {
     const res = await client(`items/metadata`, { token });
     return res.data;
   };
-  const { data: metadata } = useQuery(["metadata"], fetchMetadata, {
-    keepPreviousData: false,
-    refetchOnWindowFocus: false,
-  });
+  const { data: metadata } = useQuery(["metadata"], fetchMetadata);
 
   const fetchRegisteredBeacons = async () => {
     const token = await auth.getToken();
     const res = await client(`sites/beacons-registered`, { token });
     return res;
   };
-  const { data: beacons } = useQuery(["beacons-registered"], fetchRegisteredBeacons, {
-    keepPreviousData: false,
-    refetchOnWindowFocus: false,
-  });
+  const { data: beacons } = useQuery(["beacons-registered"], fetchRegisteredBeacons);
 
   return (
     <DashboardLayout>
