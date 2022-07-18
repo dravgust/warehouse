@@ -4,6 +4,7 @@
 # Custom
 .svn/
 Logs/
+Warehouse.API/appsettings.json
 
 # User-specific files
 *.suo
