@@ -8,9 +8,9 @@ import Gateways from "./components/gateways";
 import Sites from "./components/sites";
 import SetSite from "./components/set-site";
 import SetGateway from "./components/set-gateway";
-import * as auth from "auth-provider";
-import { client } from "utils/api-client";
 import { useQuery } from "react-query";
+import { fetchRegisteredBeacons, fetchRegisteredGw } from "../../utils/query-keys";
+import { getRegisteredBeacons, getRegisteredGw } from "../../services/warehouse-service";
 
 const SiteConfiguration = () => {
   const [refresh, updateRefreshState] = useState();
@@ -50,25 +50,8 @@ const SiteConfiguration = () => {
       envFactor: 0,
     });
 
-  const fetchRegisteredBeacons = async () => {
-    const token = await auth.getToken();
-    const res = await client(`sites/beacons-registered`, { token });
-    return res;
-  };
-  const { data: beacons } = useQuery(["beacons-registered"], fetchRegisteredBeacons, {
-    keepPreviousData: false,
-    refetchOnWindowFocus: false,
-  });
-
-  const fetchRegisteredGw = async () => {
-    const token = await auth.getToken();
-    const res = await client(`sites/gw-registered`, { token });
-    return res;
-  };
-  const { data: gateways } = useQuery(["gw-registered"], fetchRegisteredGw, {
-    keepPreviousData: false,
-    refetchOnWindowFocus: false,
-  });
+  const { data: beacons } = useQuery([fetchRegisteredBeacons], getRegisteredBeacons);
+  const { data: gateways } = useQuery([fetchRegisteredGw], getRegisteredGw);
 
   return (
     <DashboardLayout>
@@ -79,7 +62,7 @@ const SiteConfiguration = () => {
             <Grid container spacing={siteForEdit ? 3 : 0}>
               <Zoom in={Boolean(siteForEdit)}>
                 <Grid item xs={12}>
-                  {siteForEdit && (
+                  {Boolean(siteForEdit) && (
                     <SetSite
                       item={siteForEdit}
                       onClose={resetToNull}

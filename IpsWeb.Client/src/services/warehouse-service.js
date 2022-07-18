@@ -1,5 +1,11 @@
 import axios from "../api";
 
+export const getBeacons = async ({ queryKey }) => {
+  const [_key, page, searchTerm] = queryKey;
+  const res = await axios.get(`sites/beacons?searchTerm=${searchTerm}&page=${page}&size=6`);
+  return res?.data;
+};
+
 export const getProducts = async ({ queryKey }) => {
   const [_key, page, searchTerm] = queryKey;
   const res = await axios.get(`items?searchTerm=${searchTerm}&page=${page}&size=3`);
@@ -9,6 +15,12 @@ export const getProducts = async ({ queryKey }) => {
 export const getEvents = async ({ queryKey }) => {
   const [_key, page, searchTerm] = queryKey;
   const res = await axios.get(`events?page=${page}&size=10&searchTerm=${searchTerm}`);
+  return res?.data;
+};
+
+export const getSites = async ({ queryKey }) => {
+  const [_key, page, searchTerm] = queryKey;
+  const res = await axios.get(`sites?page=${page}&size=10&searchTerm=${searchTerm}`);
   return res?.data;
 };
 
@@ -27,8 +39,17 @@ export const getRegisteredBeacons = async () => {
   const res = await axios.get(`sites/beacons-registered`);
   return res?.data;
 };
+export const getRegisteredGw = async () => {
+  const res = await axios.get(`sites/gw-registered`);
+  return res?.data;
+};
 
 export const getProductMetadata = async () => {
   const res = await axios.get(`items/metadata`);
+  return res?.data;
+};
+
+export const getBeaconMetadata = async () => {
+  const res = await axios.get(`items/item-metadata`);
   return res?.data;
 };

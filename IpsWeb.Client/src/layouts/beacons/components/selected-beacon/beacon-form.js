@@ -5,7 +5,7 @@ import * as yup from "yup";
 // Soft UI Dashboard React components
 import Stack from "@mui/material/Stack";
 import { Icon, TextField, Box } from "@mui/material";
-import * as auth from "auth-provider";
+import * as auth from "services/auth-provider";
 import { client } from "utils/api-client";
 import Autocomplete from "@mui/material/Autocomplete";
 import SuiAlert from "components/SuiAlert";

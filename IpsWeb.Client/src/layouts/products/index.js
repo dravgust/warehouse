@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useQuery } from "react-query";
 import { client } from "utils/api-client";
-import * as auth from "auth-provider";
+import * as auth from "services/auth-provider";
 import Grid from "@mui/material/Grid";
 import SuiBox from "components/SuiBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";

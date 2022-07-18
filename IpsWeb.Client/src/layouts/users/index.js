@@ -91,7 +91,7 @@ function Users() {
                     { name: "user", align: "left" },
                     { name: "function", align: "left" },
                     { name: "status", align: "center" },
-                    { name: "registed", align: "center" },
+                    { name: "registered", align: "center" },
                     { name: "action", align: "center" },
                   ]}
                   rows={
@@ -108,7 +108,7 @@ function Users() {
                           container
                         />
                       ),
-                      registed: (
+                      registered: (
                         <SuiTypography variant="caption" color="secondary" fontWeight="medium">
                           {format(new Date(item.registrationDate), "dd/MM/yyy HH:mm:ss")}
                         </SuiTypography>

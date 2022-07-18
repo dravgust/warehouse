@@ -1,6 +1,6 @@
 import Axios from "axios";
 import { API_SERVER } from "../config/constant";
-import * as auth from "../auth-provider";
+import * as auth from "services/auth-provider";
 import { queryClient } from "../context/app.context";
 
 const axios = Axios.create({

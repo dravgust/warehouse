@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery } from "react-query";
 import { useFormik } from "formik";
 import {client} from 'utils/api-client'
-import * as auth from 'auth-provider'
+import * as auth from 'services/auth-provider'
 
 function ItemById() {
   const [id, setID] = useState("");

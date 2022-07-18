@@ -1,14 +1,14 @@
 import { Card, Icon, IconButton, Tooltip } from "@mui/material";
-import SuiBox from "../../../../components/SuiBox";
-import SuiTypography from "../../../../components/SuiTypography";
-import SuiButton from "../../../../components/SuiButton";
-import Table from "../../../../examples/Tables/Table";
+import SuiBox from "components/SuiBox";
+import SuiTypography from "components/SuiTypography";
+import SuiButton from "components/SuiButton";
+import Table from "examples/Tables/Table";
 import { useState } from "react";
-import * as auth from "../../../../auth-provider";
-import { client } from "../../../../utils/api-client";
 import { useQuery } from "react-query";
-import SuiAvatar from "../../../../components/SuiAvatar";
-import beaconIcon from "../../../../assets/images/hotspot-tower.png";
+import SuiAvatar from "components/SuiAvatar";
+import beaconIcon from "assets/images/hotspot-tower.png";
+import { fetchBeacons } from "utils/query-keys";
+import { getBeacons } from "services/warehouse-service";
 
 const BeaconList = ({
   searchTerm,
@@ -18,20 +18,9 @@ const BeaconList = ({
   refresh,
 }) => {
   const [page, setPage] = useState(1);
-  const fetchItems = async (searchTerm, page) => {
-    const token = await auth.getToken();
-    const res = await client(`sites/beacons?searchTerm=${searchTerm}&page=${page}&size=6`, {
-      token,
-    });
-    return res;
-  };
   const { isLoading, error, data, isSuccess } = useQuery(
-    ["list-beacons", page, searchTerm, refresh],
-    () => fetchItems(searchTerm, page),
-    {
-      keepPreviousData: false,
-      refetchOnWindowFocus: false,
-    }
+    [fetchBeacons, page, searchTerm, refresh],
+    getBeacons
   );
 
   return (

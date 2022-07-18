@@ -1,5 +1,5 @@
 import { queryClient } from "context/app.context";
-import * as auth from "auth-provider";
+import * as auth from "services/auth-provider";
 import { API_SERVER } from "../config/constant";
 
 async function client(

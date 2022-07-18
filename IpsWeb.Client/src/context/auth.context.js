@@ -1,6 +1,6 @@
 import React from "react";
 import { queryClient } from "context/app.context";
-import * as auth from "auth-provider";
+import * as auth from "services/auth-provider";
 import { client } from "utils/api-client";
 import { useAsync } from "utils/hooks";
 import { useStoreController, setResources } from "./store.context";

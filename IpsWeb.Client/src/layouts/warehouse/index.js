@@ -18,7 +18,7 @@ import Table from "examples/Tables/Table";
 
 import { useQuery } from "react-query";
 import { client } from "utils/api-client";
-import * as auth from "auth-provider";
+import * as auth from "services/auth-provider";
 
 import WarehouseCanvas from "./conponents/warehouse-canvas";
 import CanvasDemo from "./conponents/canvas-demo";

@@ -20,7 +20,7 @@ import SuiAlert from "components/SuiAlert";
 import SuiButton from "components/SuiButton";
 import { useMutation } from "react-query";
 import * as yup from "yup";
-import * as auth from "auth-provider";
+import * as auth from "services/auth-provider";
 import { client } from "utils/api-client";
 
 // prop-types is a library for typechecking of props

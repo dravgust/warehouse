@@ -5,14 +5,16 @@ import SuiButton from "components/SuiButton";
 import SuiTypography from "components/SuiTypography";
 import Table from "examples/Tables/Table";
 import DeletePromt from "../delete-promt";
-
-import * as auth from "auth-provider";
+import * as auth from "services/auth-provider";
 import { client } from "utils/api-client";
 import { useQuery } from "react-query";
 import SuiAvatar from "../../../../components/SuiAvatar";
 import siteIcon from "../../../../assets/images/area-floor-size.png";
+import { getSites } from "../../../../services/warehouse-service";
+import { fetchSites } from "../../../../utils/query-keys";
 
 export default function Sites({
+  searchTerm = "",
   onSelect = () => {},
   selectedItem,
   onAdd = () => {},
@@ -21,19 +23,9 @@ export default function Sites({
   refresh,
 }) {
   const [page, setPage] = useState(1);
-
-  async function fetchSites(page) {
-    const token = await auth.getToken();
-    const res = await client(`sites?page=${page}&size=10&searchTerm=`, { token });
-    return res;
-  }
   const { isLoading, isSuccess, data, error } = useQuery(
-    ["site-list", page, refresh],
-    () => fetchSites(page),
-    {
-      keepPreviousData: false,
-      refetchOnWindowFocus: false,
-    }
+    [fetchSites, page, searchTerm, refresh],
+    getSites
   );
 
   const handleDelete = async (item) => {

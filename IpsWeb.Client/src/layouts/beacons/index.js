@@ -1,15 +1,14 @@
-import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
-import Footer from "../../examples/Footer";
-import SuiBox from "../../components/SuiBox";
-import Grid from "@mui/material/Grid";
-import { Zoom } from "@mui/material";
+import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
+import DashboardNavbar from "examples/Navbars/DashboardNavbar";
+import Footer from "examples/Footer";
+import SuiBox from "components/SuiBox";
+import { Zoom, Grid } from "@mui/material";
 import { useState } from "react";
 import BeaconList from "./components/beacon-list";
 import SelectedBeacon from "./components/selected-beacon";
-import * as auth from "../../auth-provider";
-import { client } from "../../utils/api-client";
 import { useQuery } from "react-query";
+import { fetchBeaconMetadata } from "utils/query-keys";
+import { getBeaconMetadata } from "services/warehouse-service";
 
 const Beacons = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -27,14 +26,17 @@ const Beacons = () => {
       name: "",
     });
   const onSelectItem = (item, key) => {
-    if (!item) return;
-    let result = metadata
-      ? metadata.map((e) => {
-          let rm = item.metadata && item.metadata.find((m) => m.key === e.key);
-          return rm && rm.value ? Object.assign({}, e, { value: rm.value }) : Object.assign({}, e);
-        })
-      : [];
-    return selectItem({ ...item, metadata: result, key: key });
+    if (item) {
+      let result = metadata
+        ? metadata.map((e) => {
+            let rm = item.metadata && item.metadata.find((m) => m.key === e.key);
+            return rm && rm.value
+              ? Object.assign({}, e, { value: rm.value })
+              : Object.assign({}, e);
+          })
+        : [];
+      selectItem({ ...item, metadata: result, key: key });
+    }
   };
 
   function handleDelete() {
@@ -43,16 +45,7 @@ const Beacons = () => {
   }
 
   const handleSave = () => forceUpdate();
-
-  const fetchMetadata = async () => {
-    const token = await auth.getToken();
-    const res = await client(`items/item-metadata`, { token });
-    return res.data;
-  };
-  const { data: metadata } = useQuery(["item-metadata"], fetchMetadata, {
-    keepPreviousData: false,
-    refetchOnWindowFocus: false,
-  });
+  const { data: metadata } = useQuery([fetchBeaconMetadata], getBeaconMetadata);
 
   return (
     <DashboardLayout>

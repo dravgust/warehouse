@@ -2,7 +2,7 @@ import { Card, Icon } from "@mui/material";
 import SuiBox from "components/SuiBox";
 import SuiTypography from "components/SuiTypography";
 import Table from "examples/Tables/Table";
-import * as auth from "auth-provider";
+import * as auth from "services/auth-provider";
 import { client } from "utils/api-client";
 import { useQuery } from "react-query";
 

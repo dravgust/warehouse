@@ -4,7 +4,7 @@ import { useMutation } from "react-query";
 import * as yup from "yup";
 import Stack from "@mui/material/Stack";
 import { Icon, TextField, Box, TextareaAutosize } from "@mui/material";
-import * as auth from "auth-provider";
+import * as auth from "services/auth-provider";
 import { client } from "utils/api-client";
 import Autocomplete from "@mui/material/Autocomplete";
 import SuiAlert from "components/SuiAlert";
