@@ -56,7 +56,6 @@ import {
 
 // Images
 import team2 from "assets/images/team-2.jpg";
-import logoSpotify from "assets/images/small-logos/logo-spotify.svg";
 
 import { useAuth } from "../../../context/auth.context";
 import { useNavigate } from "react-router-dom";
@@ -139,19 +138,13 @@ function DashboardNavbar({ absolute, light, isMini, onSearch = (value) => {} }) 
         onClick={handleCloseMenu}
       />
       <NotificationItem
-        image={<img src={logoSpotify} alt="person" />}
-        title={["New album", "by Travis Scott"]}
-        date="1 day"
-        onClick={handleCloseMenu}
-      />
-      <NotificationItem
         color="secondary"
         image={
           <Icon fontSize="small" sx={{ color: ({ palette: { white } }) => white.main }}>
             payment
           </Icon>
         }
-        title={["", "Payment successfully completed"]}
+        title={["", "Registration successfully completed"]}
         date="2 days"
         onClick={handleCloseMenu}
       />
