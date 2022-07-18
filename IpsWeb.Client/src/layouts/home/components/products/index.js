@@ -261,7 +261,7 @@ export default function ProductsTreeView({
                   display="flex"
                   flexDirection="column"
                   sx={{
-                    height: "300px",
+                    height: "350px",
                   }}
                 >
                   <FixedSizeList

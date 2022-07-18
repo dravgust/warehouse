@@ -1,16 +1,10 @@
 import { useState } from "react";
-
-// @mui material components
-import Card from "@mui/material/Card";
-import Icon from "@mui/material/Icon";
-import { IconButton, Tooltip } from "@mui/material";
+import { IconButton, Tooltip, Card, Icon, Pagination, Stack } from "@mui/material";
 import SuiBox from "components/SuiBox";
 import SuiTypography from "components/SuiTypography";
 import TimelineItem from "examples/Timeline/TimelineItem";
 import { useQuery } from "react-query";
 import { formatDistance } from "date-fns";
-import Stack from "@mui/material/Stack";
-import Pagination from "@mui/material/Pagination";
 import React from "react";
 import { fetchEvents } from "utils/query-keys";
 import { getEvents } from "services/warehouse-service";
@@ -52,11 +46,13 @@ function PositionEvents({ searchTerm = "" }) {
               icon={item.event == "IN" ? "location_on" : "location_off"}
               title={
                 <SuiTypography variant="caption" fontWeight="medium">
-                  The device {item.macAddress} is {item.event === "OUT" ? "out of the" : "entered"}{" "}
-                  the <span style={{ color: "#17c1e8" }}>{item.siteName}</span>
+                  The {item.macAddress} is {item.event === "OUT" ? "out of the" : "entered"} the the{" "}
+                  <span style={{ color: "#17c1e8" }}>{item.siteName}</span>
                 </SuiTypography>
               }
-              dateTime={formatDistance(new Date(item.timeStamp), new Date(), { addSuffix: true })}
+              dateTime={formatDistance(new Date(item.timeStamp), new Date(), {
+                addSuffix: true,
+              }).toUpperCase()}
             />
           ))}
 

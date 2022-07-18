@@ -10,8 +10,14 @@ import Assets from "./components/beacons";
 import { Stack, Zoom } from "@mui/material";
 import Sites from "./components/sites";
 import BeaconTelemetry from "./components/beacon-telemetry";
+import GradientLineChart from "../../examples/Charts/LineCharts/GradientLineChart";
+import Icon from "@mui/material/Icon";
+import SuiTypography from "../../components/SuiTypography";
+import gradientLineChartData from "../dashboard/data/gradientLineChartData";
+import typography from "../../assets/theme/base/typography";
 
 function Dashboard() {
+  const { size } = typography;
   const [searchTerm, setSearchTerm] = useState("");
   const onSearch = (value) => setSearchTerm(value);
 
@@ -30,7 +36,7 @@ function Dashboard() {
       <DashboardNavbar onSearch={onSearch} />
       <SuiBox mb={3} py={3}>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={6} lg={4} mb={3}>
+          <Grid item xs={12} md={12} lg={4} xl={4}>
             <Stack spacing={3}>
               {selectedList === "product" && (
                 <ProductsTreeView
@@ -54,16 +60,39 @@ function Dashboard() {
               {selectedList === "site" && <Sites />}
             </Stack>
           </Grid>
-
-          {Boolean(selectedBeacon) && (
-            <Zoom in={true}>
-              <Grid item xs={12} md={6} lg={4} mb={3}>
-                <BeaconTelemetry item={selectedBeacon} />
+          <Grid item xs={12} md={12} lg={8} xl={8}>
+            <Grid container spacing={3}>
+              {Boolean(selectedBeacon) && (
+                <Zoom in={true}>
+                  <Grid item xs={12} md={6}>
+                    <BeaconTelemetry item={selectedBeacon} />
+                  </Grid>
+                </Zoom>
+              )}
+              <Grid item xs={12} md={6}>
+                <PositionEvents searchTerm={selectedBeacon ? selectedBeacon.macAddress : ""} />
               </Grid>
-            </Zoom>
-          )}
-          <Grid item xs={12} md={6} lg={4}>
-            <PositionEvents searchTerm={selectedBeacon ? selectedBeacon.macAddress : ""} />
+              <Grid item xs={12} md={6}>
+                <GradientLineChart
+                  title="Temperature Overview"
+                  description={
+                    <SuiBox display="flex" alignItems="center">
+                      <SuiBox fontSize={size.lg} color="success" mb={0.3} mr={0.5} lineHeight={0}>
+                        <Icon className="font-bold">arrow_upward</Icon>
+                      </SuiBox>
+                      <SuiTypography variant="button" color="text" fontWeight="medium">
+                        -% more{" "}
+                        <SuiTypography variant="button" color="text" fontWeight="regular">
+                          in ----
+                        </SuiTypography>
+                      </SuiTypography>
+                    </SuiBox>
+                  }
+                  height="20.25rem"
+                  chart={gradientLineChartData}
+                />
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       </SuiBox>
