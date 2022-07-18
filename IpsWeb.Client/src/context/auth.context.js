@@ -1,12 +1,13 @@
 import React from "react";
-import { useQueryClient } from "react-query";
+import { queryClient } from "context/app.context";
 import * as auth from "auth-provider";
 import { client } from "utils/api-client";
 import { useAsync } from "utils/hooks";
 import { useStoreController, setResources } from "./store.context";
 //import {FullPageSpinner, FullPageErrorFallback} from 'components/lib'
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
-//const queryClient = useQueryClient();
 async function bootstrapAppData(dispatch) {
   let user = null;
 
@@ -58,8 +59,8 @@ function AuthProvider(props) {
   );
 
   const logout = React.useCallback(() => {
+    queryClient.clear();
     auth.logout();
-    //queryClient.clear()
     setData(null);
   }, [setData]);
 
@@ -69,8 +70,11 @@ function AuthProvider(props) {
   );
 
   if (isLoading || isIdle) {
-    //return <FullPageSpinner />
-    return <div>Loading...</div>;
+    return (
+      <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={true}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    );
   }
 
   if (isError) {

@@ -7,9 +7,7 @@ import Footer from "examples/Footer";
 import ProductsTreeView from "./components/products";
 import PositionEvents from "./components/position-events";
 import Assets from "./components/beacons";
-import DefaultInfoCard from "examples/Cards/InfoCards/DefaultInfoCard";
 import { Stack, Zoom } from "@mui/material";
-import Beacon from "./components/beacon";
 import Sites from "./components/sites";
 import BeaconTelemetry from "./components/beacon-telemetry";
 

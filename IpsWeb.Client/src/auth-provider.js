@@ -1,4 +1,5 @@
 const localStorageKey = "__auth_provider_token__";
+import { API_SERVER } from "config/constant";
 
 async function getToken() {
   return window.localStorage.getItem(localStorageKey);
@@ -28,9 +29,7 @@ async function refreshToken() {
   }).then(handleUserResponse);
 }
 
-const authURL = process.env.REACT_APP_AUTH_URL;
 let base = "account";
-
 async function client(endpoint, data) {
   const config = {
     method: "POST",
@@ -39,7 +38,7 @@ async function client(endpoint, data) {
     credentials: "include",
   };
 
-  return window.fetch(`${authURL}/${base}/${endpoint}`, config).then(async (response) => {
+  return window.fetch(`${API_SERVER}/${base}/${endpoint}`, config).then(async (response) => {
     const data = await response.json();
     if (response.ok) {
       return data;

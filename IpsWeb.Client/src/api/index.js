@@ -1,6 +1,7 @@
 import Axios from "axios";
 import { API_SERVER } from "../config/constant";
 import * as auth from "../auth-provider";
+import { queryClient } from "../context/app.context";
 
 const axios = Axios.create({
   baseURL: `${API_SERVER}`,
@@ -27,15 +28,11 @@ axios.interceptors.response.use(
         originalRequest._retry = true;
         try {
           await auth.refreshToken();
-          const response = axios(originalRequest);
-          return resolve(response);
-        } catch (err) {
-          console.log("refresh-token-error", err);
-        }
-        console.log("logout");
-        //await auth.logout();
-        // refresh the page for them
-        //window.location.assign(window.location);
+          return resolve(axios(originalRequest));
+        } catch {}
+        queryClient.clear();
+        await auth.logout();
+        window.location.assign(window.location);
         return Promise.reject({ message: "Please re-authenticate." });
       }
       return Promise.reject(error);
