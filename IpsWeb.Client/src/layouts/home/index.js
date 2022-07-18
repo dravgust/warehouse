@@ -13,7 +13,7 @@ import BeaconTelemetry from "./components/beacon-telemetry";
 import GradientLineChart from "../../examples/Charts/LineCharts/GradientLineChart";
 import Icon from "@mui/material/Icon";
 import SuiTypography from "../../components/SuiTypography";
-import gradientLineChartData from "../dashboard/data/gradientLineChartData";
+import gradientLineChartData from "./data/gradientLineChartData";
 import typography from "../../assets/theme/base/typography";
 
 function Dashboard() {
@@ -72,7 +72,7 @@ function Dashboard() {
               <Grid item xs={12} md={6}>
                 <PositionEvents searchTerm={selectedBeacon ? selectedBeacon.macAddress : ""} />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={Boolean(selectedBeacon) ? 12 : 6}>
                 <GradientLineChart
                   title="Temperature Overview"
                   description={
