@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import * as yup from "yup";
 // Soft UI Dashboard React components
 import Stack from "@mui/material/Stack";

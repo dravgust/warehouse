@@ -39,7 +39,7 @@ import rtlPlugin from "stylis-plugin-rtl";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 
-import { ProtectedRoute, PrivateRoute } from "./protected-route";
+import { PrivateRoute } from "./protected-route";
 
 // Soft UI Dashboard React routes
 import routes from "routes";

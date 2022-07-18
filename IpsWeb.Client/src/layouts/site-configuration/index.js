@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Grid, Stack, Zoom } from "@mui/material";
+import { Grid, Zoom } from "@mui/material";
 import SuiBox from "components/SuiBox";
 import Footer from "examples/Footer";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";

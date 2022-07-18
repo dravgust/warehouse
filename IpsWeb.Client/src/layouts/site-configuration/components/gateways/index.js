@@ -1,7 +1,7 @@
 import SuiBox from "components/SuiBox";
 import SuiTypography from "components/SuiTypography";
 import SuiButton from "components/SuiButton";
-import { Button, ButtonGroup, Card, Icon, IconButton } from "@mui/material";
+import { ButtonGroup, Card, Icon } from "@mui/material";
 import Table from "examples/Tables/Table";
 import DeletePromt from "../delete-promt";
 

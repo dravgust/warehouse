@@ -34,7 +34,7 @@ import CoverLayout from "layouts/authentication/components/CoverLayout";
 import curved9 from "assets/images/curved-images/curved-6.jpg";
 
 import { useAuth } from "../../../context/auth.context";
-import { useNavigate, Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function SignIn() {
   const navigate = useNavigate();

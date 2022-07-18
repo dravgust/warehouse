@@ -1,26 +1,9 @@
-import { useState } from "react";
-// @mui material components
 import Card from "@mui/material/Card";
-
-// Soft UI Dashboard React components
 import SuiBox from "components/SuiBox";
 import SuiTypography from "components/SuiTypography";
-
-/* eslint-disable react/prop-types */
-import SuiAvatar from "components/SuiAvatar";
-import SuiBadge from "components/SuiBadge";
-
-// Soft UI Dashboard React examples
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import Table from "examples/Tables/Table";
-
-import { useQuery } from "react-query";
-import { client } from "utils/api-client";
-import * as auth from "services/auth-provider";
-
-import WarehouseCanvas from "./conponents/warehouse-canvas";
 import CanvasDemo from "./conponents/canvas-demo";
 
 const Warehouse = () => {

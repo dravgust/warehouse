@@ -1,5 +1,5 @@
 import React from "react";
-import { Stage, Layer, Star, Text } from "react-konva";
+import { Stage, Layer, Star } from "react-konva";
 
 function generateShapes() {
   return [...Array(10)].map((_, i) => ({

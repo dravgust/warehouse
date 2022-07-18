@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import Konva from "konva";
-import { render } from "react-dom";
-import { Stage, Layer, Circle, RegularPolygon } from "react-konva";
+import { Stage, Layer, RegularPolygon } from "react-konva";
 
 const Hexagon = ({ x, y }) => {
   return (

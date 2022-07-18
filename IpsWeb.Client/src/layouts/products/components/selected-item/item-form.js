@@ -3,10 +3,9 @@ import { useFormik } from "formik";
 import { useMutation } from "react-query";
 import * as yup from "yup";
 import Stack from "@mui/material/Stack";
-import { Icon, TextField, Box, TextareaAutosize } from "@mui/material";
+import { Icon, TextField, Box } from "@mui/material";
 import * as auth from "services/auth-provider";
 import { client } from "utils/api-client";
-import Autocomplete from "@mui/material/Autocomplete";
 import SuiAlert from "components/SuiAlert";
 import SuiButton from "components/SuiButton";
 import DeletePromt from "./delete-promt";
@@ -70,10 +69,6 @@ export default function ItemForm({ onSave = () => {}, onDelete = () => {}, item 
       mutation.mutate(values);
     },
   });
-
-  const handleBlur = (e) => {
-    console.log("Blur:", e.target.value);
-  };
 
   return (
     <Box

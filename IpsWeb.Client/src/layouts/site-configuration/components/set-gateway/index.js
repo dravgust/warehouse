@@ -11,7 +11,6 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  FormHelperText,
 } from "@mui/material";
 import SuiBox from "components/SuiBox";
 import SuiTypography from "components/SuiTypography";
@@ -24,8 +23,7 @@ import * as auth from "services/auth-provider";
 import { client } from "utils/api-client";
 
 // prop-types is a library for typechecking of props
-import PropTypes, { string } from "prop-types";
-import { useStoreController } from "../../../../context/store.context";
+import PropTypes from "prop-types";
 
 const locations = [
   "Unknown",
