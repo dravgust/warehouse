@@ -6,7 +6,7 @@ using Warehouse.Core.UseCases.IPS.Queries;
 
 namespace Warehouse.API.Controllers.API
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AssetsController : ControllerBase
@@ -43,7 +43,11 @@ namespace Warehouse.API.Controllers.API
             Ok(await _queryBus.Send(query, token));
 
         [HttpGet("beacon")]
-        public async Task<IActionResult> GetBeacon([FromQuery] GetBeaconPayload query, CancellationToken token = default) => 
+        public async Task<IActionResult> GetBeacon([FromQuery] GetBeaconTelemetry query, CancellationToken token = default) => 
+            Ok(await _queryBus.Send(query, token));
+
+        [HttpGet("beacon-telemetry")]
+        public async Task<IActionResult> GetBeaconTelemetry([FromQuery] GetBeaconTelemetry2 query, CancellationToken token = default) =>
             Ok(await _queryBus.Send(query, token));
     }
 }

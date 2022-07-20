@@ -160,7 +160,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
       <Divider />
       <List>{renderRoutes}</List>
       <Divider />
-      <SuiBox mx={4}>
+      <SuiBox mx={0}>
         <LanguageBar />
       </SuiBox>
       {/*<SuiBox pt={2} my={2} mx={2} mt="auto">

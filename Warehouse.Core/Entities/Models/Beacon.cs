@@ -16,18 +16,21 @@ namespace Warehouse.Core.Entities.Models
         public LocationAnchor Location { set; get; } = LocationAnchor.Unknown;
     }
 
-    [CollectionName("dolav_beacons_received")]
-    public class BeaconReceivedEntity : IEntity<string>
+    [CollectionName("dolav_beacons_telemetry")]
+    public class BeaconReceivedEntity : EntityBase<string>
     {
         public string MacAddress { get; set; }
-        public BeaconType BeaconType { get; set; }
-
         public DateTime ReceivedAt { get; set; }
-        object IEntity.Id => Id;
-
-        public string Id => MacAddress;
+        public double RSSI { get; set; }
+        public double TxPower { get; set; }
+        public int Battery { get; set; }
+        public double? Temperature { get; set; }
+        public double? Humidity { get; set; }
+        public double? X0 { get; set; }
+        public double? Y0 { get; set; }
+        public double? Z0 { get; set; }
     }
-
+    
     [CollectionName("dolav_beacons_registered")]
     public class BeaconRegisteredEntity : IEntity<string>
     {

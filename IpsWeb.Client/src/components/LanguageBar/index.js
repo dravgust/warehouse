@@ -1,16 +1,12 @@
 import { useState } from "react";
-import SuiAvatar from "components/SuiAvatar";
 import SuiBox from "components/SuiBox";
 import Menu from "@mui/material/Menu";
-
 import LanguageItem from "examples/Items/LanguageItem";
-
 import englishIcon from "assets/images/flags/united-kingdom.svg";
 import hebrewIcon from "assets/images/flags/israel.svg";
-
-// Soft UI Dashboard React context
 import { setDirection, useSoftUIController } from "context";
-import Tooltip from "@mui/material/Tooltip";
+import Icon from "@mui/material/Icon";
+import SidenavCollapse from "../../examples/Sidenav/SidenavCollapse";
 
 export default function LanguageBar() {
   const [controller, dispatch] = useSoftUIController();
@@ -48,20 +44,11 @@ export default function LanguageBar() {
 
   return (
     <SuiBox>
-      <Tooltip title="Language">
-        <SuiAvatar
-          src={direction === "ltr" ? englishIcon : hebrewIcon}
-          alt={direction === "ltr" ? "English" : "Hebrew"}
-          size="sm"
-          variant="rounded"
-          sx={{
-            boxShadow:
-              "0rem 0.25rem 0.375rem -0.0625rem rgb(20 20 20 / 12%), 0rem 0.125rem 0.25rem -0.0625rem rgb(20 20 20 / 7%)",
-            cursor: "pointer",
-          }}
-          onClick={handleOpenMenu}
-        />
-      </Tooltip>
+      <SidenavCollapse
+        name={direction === "ltr" ? "English" : "Hebrew"}
+        onClick={handleOpenMenu}
+        icon={<Icon fontSize="12px">language</Icon>}
+      />
       {renderLangMenu({ horizontal: direction === "ltr" ? "left" : "right" })}
     </SuiBox>
   );

@@ -17,27 +17,17 @@ import { useState, useEffect } from "react";
 
 // react-router components
 import { useLocation, Link } from "react-router-dom";
-
-// prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
-
-// @material-ui core components
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import Icon from "@mui/material/Icon";
-
-// Soft UI Dashboard React components
 import SuiBox from "components/SuiBox";
 import SuiTypography from "components/SuiTypography";
 import SuiInput from "components/SuiInput";
-
-// Soft UI Dashboard React examples
 import Breadcrumbs from "examples/Breadcrumbs";
-import NotificationItem from "examples/Items/NotificationItem";
-
-// Custom styles for DashboardNavbar
+//import NotificationItem from "examples/Items/NotificationItem";
 import {
   navbar,
   navbarContainer,
@@ -45,17 +35,13 @@ import {
   navbarIconButton,
   navbarMobileMenu,
 } from "examples/Navbars/DashboardNavbar/styles";
-
-// Soft UI Dashboard React context
 import {
   useSoftUIController,
   setTransparentNavbar,
   setMiniSidenav,
   setOpenConfigurator,
 } from "context";
-
-// Images
-import team2 from "assets/images/team-2.jpg";
+//import team2 from "assets/images/team-2.jpg";
 
 import { useAuth } from "../../../context/auth.context";
 import { useNavigate } from "react-router-dom";
@@ -131,7 +117,7 @@ function DashboardNavbar({ absolute, light, isMini, onSearch = (value) => {} }) 
       onClose={handleCloseMenu}
       sx={{ mt: 2 }}
     >
-      <NotificationItem
+      {/* <NotificationItem
         image={<img src={team2} alt="person" />}
         title={["New message", "from Laur"]}
         date="13 minutes ago"
@@ -147,7 +133,7 @@ function DashboardNavbar({ absolute, light, isMini, onSearch = (value) => {} }) 
         title={["", "Registration successfully completed"]}
         date="2 days"
         onClick={handleCloseMenu}
-      />
+      />*/}
     </Menu>
   );
 

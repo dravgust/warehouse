@@ -1,12 +1,12 @@
 import Card from "@mui/material/Card";
-import Icon from "@mui/material/Icon";
+//import Icon from "@mui/material/Icon";
 import SuiBox from "components/SuiBox";
 import SuiTypography from "components/SuiTypography";
 import bg from "assets/images/637499715290000000.jpg";
 import SensorsOutlinedIcon from "@mui/icons-material/SensorsOutlined";
 import PropTypes from "prop-types";
 
-function Beacon({ macAddress = "n/a", name = "n/a" }) {
+function Beacon({ macAddress = "n/a", name = "n/a", lastUpdate = "" }) {
   return (
     <Card sx={{ height: "100%" }}>
       <SuiBox position="relative" height="100%" p={2} minHeight="285px">
@@ -37,7 +37,16 @@ function Beacon({ macAddress = "n/a", name = "n/a" }) {
               {name}
             </SuiTypography>
           </SuiBox>
-          <SuiTypography
+          <SuiBox sx={{ textAlign: "center" }}>
+            <SuiTypography
+              color="white"
+              fontWeight="bold"
+              sx={{ fontSize: "2em", transform: "scale(1.8, 2)", opacity: ".5" }}
+            >
+              {lastUpdate}
+            </SuiTypography>
+          </SuiBox>
+          {/*<SuiTypography
             component="a"
             href="#"
             variant="button"
@@ -63,7 +72,7 @@ function Beacon({ macAddress = "n/a", name = "n/a" }) {
           >
             View More
             <Icon sx={{ fontWeight: "bold" }}>arrow_forward</Icon>
-          </SuiTypography>
+          </SuiTypography>*/}
         </SuiBox>
       </SuiBox>
     </Card>

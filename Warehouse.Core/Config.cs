@@ -100,7 +100,8 @@ namespace Warehouse.Core
             services.AddScoped<IRequestHandler<GetProductItemMetadata, ProductMetadata>, ProductQueryHandler>();
             services.AddScoped<IRequestHandler<GetAssets, IPagedEnumerable<AssetDto>>, AssetsQueryHandler>();
             services.AddScoped<IRequestHandler<GetAssetInfo, IEnumerable<AssetInfo>>, AssetsQueryHandler>();
-            services.AddScoped<IRequestHandler<GetBeaconPayload, BeaconTelemetryDto>, AssetsQueryHandler>();
+            services.AddScoped<IRequestHandler<GetBeaconTelemetry, BeaconTelemetryDto>, AssetsQueryHandler>();
+            services.AddScoped<IRequestHandler<GetBeaconTelemetry2, BeaconTelemetry2Dto>, AssetsQueryHandler>();
             services.AddScoped<IRequestHandler<GetIpsStatus, IndoorPositionStatusDto>, AssetsQueryHandler>();
             services.AddScoped<IRequestHandler<GetSitesWithProduct, IEnumerable<WarehouseSiteDto>>, AssetsQueryHandler>();
             services.AddScoped<IRequestHandler<GetRegisteredBeaconList, IEnumerable<string>>, WarehouseQueryHandler>();

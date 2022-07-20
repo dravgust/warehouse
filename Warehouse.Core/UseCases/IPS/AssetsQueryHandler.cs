@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Persistence.Queries;
@@ -19,7 +20,8 @@ namespace Warehouse.Core.UseCases.IPS
     public class AssetsQueryHandler :
         IQueryHandler<GetAssets, IPagedEnumerable<AssetDto>>,
         IQueryHandler<GetAssetInfo, IEnumerable<AssetInfo>>,
-        IQueryHandler<GetBeaconPayload, BeaconTelemetryDto>,
+        IQueryHandler<GetBeaconTelemetry, BeaconTelemetryDto>,
+        IQueryHandler<GetBeaconTelemetry2, BeaconTelemetry2Dto>,
         IQueryHandler<GetIpsStatus, IndoorPositionStatusDto>,
         IQueryHandler<GetSitesWithProduct, IEnumerable<WarehouseSiteDto>>
     {
@@ -31,6 +33,7 @@ namespace Warehouse.Core.UseCases.IPS
         private readonly IMongoCollection<IndoorPositionStatusEntity> _statusCollection;
         private readonly IMongoCollection<BeaconIndoorPositionEntity> _beaconStatusCollection;
         private readonly IMongoCollection<GatewayPayload> _payloadCollection;
+        private readonly IMongoCollection<BeaconReceivedEntity> _telemetryCollection;
         private readonly IMapper _mapper;
 
         public AssetsQueryHandler(IQueryBus queryBus,
@@ -48,6 +51,7 @@ namespace Warehouse.Core.UseCases.IPS
             _statusCollection = context.Database.GetCollection<IndoorPositionStatusEntity>(CollectionName.For<IndoorPositionStatusEntity>());
             _beaconStatusCollection = context.Database.GetCollection<BeaconIndoorPositionEntity>(CollectionName.For<BeaconIndoorPositionEntity>());
             _payloadCollection = context.Database.GetCollection<GatewayPayload>(CollectionName.For<GatewayPayload>());
+            _telemetryCollection = context.Database.GetCollection<BeaconReceivedEntity>(CollectionName.For<BeaconReceivedEntity>());
         }
 
         public async Task<IPagedEnumerable<AssetDto>> Handle(GetAssets request, CancellationToken cancellationToken)
@@ -193,22 +197,65 @@ namespace Warehouse.Core.UseCases.IPS
             return result.Values;
         }
 
-        public async Task<BeaconTelemetryDto> Handle(GetBeaconPayload request, CancellationToken cancellationToken)
+        public async Task<BeaconTelemetryDto> Handle(GetBeaconTelemetry request, CancellationToken cancellationToken)
         {
-            var payloads = await _payloadCollection.Find(entity => true).ToListAsync(cancellationToken);
-            var data = payloads.First().Beacons.First();
-
-            return new BeaconTelemetryDto
+            var data = _telemetryCollection
+                .AsQueryable()
+                .Where(t => t.MacAddress == request.MacAddress)
+                .OrderByDescending(m => m.ReceivedAt)
+                .FirstOrDefault();
+            if (data == null) return null;
+            return await Task.FromResult(new BeaconTelemetryDto
             {
+                MacAddress = data.MacAddress,
+                ReceivedAt = data.ReceivedAt,
                 Battery = data.Battery,
-                Humidity = data.Humidity1,
+                Humidity = data.Humidity,
                 RSSI = data.RSSI,
                 Temperature = data.Temperature,
                 TxPower = data.TxPower,
                 X0 = data.X0,
                 Y0 = data.Y0,
                 Z0 = data.Z0
+            });
+        }
+
+        public async Task<BeaconTelemetry2Dto> Handle(GetBeaconTelemetry2 request, CancellationToken cancellationToken)
+        {
+            var data = _telemetryCollection.Aggregate()
+                .Match(t => t.MacAddress == request.MacAddress && t.ReceivedAt > DateTime.UtcNow.AddHours(-12))
+                .Group(k =>
+                        new DateTime(k.ReceivedAt.Year, k.ReceivedAt.Month, k.ReceivedAt.Day,
+                            k.ReceivedAt.Hour - (k.ReceivedAt.Hour % 1), 0, 0),
+                    g => new
+                    {
+                        _id = g.Key,
+                        humidity = g.Where(entity => entity.Humidity > 0).Average(entity => entity.Humidity),
+                        temperatrue = g.Where(entity => entity.Temperature > 0).Average(entity => entity.Temperature)
+                    }
+                )
+                .SortBy(d => d._id)
+                .ToList();
+
+            var result = new BeaconTelemetry2Dto
+            {
+                MacAddress = request.MacAddress,
+                Humidity = new Dictionary<DateTime, double>(),
+                Temperature = new Dictionary<DateTime, double>(),
             };
+            foreach (var r in data)
+            {
+                if (r.humidity != null)
+                {
+                    result.Humidity.Add(r._id, Math.Round(r.humidity.Value, 2));
+                }
+                if (r.temperatrue != null)
+                {
+                    result.Temperature.Add(r._id, Math.Round(r.temperatrue.Value, 2));
+                }
+            }
+
+            return await Task.FromResult(result);
         }
     }
 }

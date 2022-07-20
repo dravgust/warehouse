@@ -10,14 +10,9 @@ import Assets from "./components/beacons";
 import { Stack, Zoom } from "@mui/material";
 import Sites from "./components/sites";
 import BeaconTelemetry from "./components/beacon-telemetry";
-import GradientLineChart from "../../examples/Charts/LineCharts/GradientLineChart";
-import Icon from "@mui/material/Icon";
-import SuiTypography from "../../components/SuiTypography";
-import gradientLineChartData from "./data/gradientLineChartData";
-import typography from "../../assets/theme/base/typography";
+import BeaconTelemetryCharts from "./components/beacon-charts/indiex";
 
 function Dashboard() {
-  const { size } = typography;
   const [searchTerm, setSearchTerm] = useState("");
   const onSearch = (value) => setSearchTerm(value);
 
@@ -72,26 +67,11 @@ function Dashboard() {
               <Grid item xs={12} md={6}>
                 <PositionEvents searchTerm={selectedBeacon ? selectedBeacon.macAddress : ""} />
               </Grid>
-              <Grid item xs={12} md={Boolean(selectedBeacon) ? 12 : 6}>
-                <GradientLineChart
-                  title="Temperature Overview"
-                  description={
-                    <SuiBox display="flex" alignItems="center">
-                      <SuiBox fontSize={size.lg} color="success" mb={0.3} mr={0.5} lineHeight={0}>
-                        <Icon className="font-bold">arrow_upward</Icon>
-                      </SuiBox>
-                      <SuiTypography variant="button" color="text" fontWeight="medium">
-                        -% more{" "}
-                        <SuiTypography variant="button" color="text" fontWeight="regular">
-                          in ----
-                        </SuiTypography>
-                      </SuiTypography>
-                    </SuiBox>
-                  }
-                  height="20.25rem"
-                  chart={gradientLineChartData}
-                />
-              </Grid>
+              {Boolean(selectedBeacon) && (
+                <Grid item xs={12} md={Boolean(selectedBeacon) ? 12 : 6}>
+                  <BeaconTelemetryCharts item={selectedBeacon} />
+                </Grid>
+              )}
             </Grid>
           </Grid>
         </Grid>

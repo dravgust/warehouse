@@ -5,24 +5,15 @@ import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-
-// Soft UI Dashboard React components
 import SuiBox from "components/SuiBox";
 import SuiTypography from "components/SuiTypography";
-/* eslint-disable react/prop-types */
-import SuiAvatar from "components/SuiAvatar";
-
-// Soft UI Dashboard Materail-UI example components
 import Table from "examples/Tables/Table";
-
 import { useQuery } from "react-query";
-import { client } from "utils/api-client";
-import * as auth from "services/auth-provider";
-import { format, formatDistance } from "date-fns";
-
-// Images
+import { formatDistance } from "date-fns";
 import beaconIcon from "assets/images/hotspot-tower.png";
 import SensorsSharpIcon from "@mui/icons-material/SensorsSharp";
+import { fetchAssets } from "../../../../utils/query-keys";
+import { getAssets } from "../../../../services/warehouse-service";
 
 function Assets({
   searchTerm = "",
@@ -31,20 +22,12 @@ function Assets({
   onListSelect = () => {},
 }) {
   const [page, setPage] = useState(1);
-  const fetchItems = async (page, searchTerm) => {
-    const token = await auth.getToken();
-    const res = await client(`assets?page=${page}&size=3&searchTerm=${searchTerm}`, { token });
-    return res;
-  };
   const {
     isLoading,
     error,
     data: response,
     isSuccess,
-  } = useQuery(["list-assets", page, searchTerm], () => fetchItems(page, searchTerm), {
-    keepPreviousData: false,
-    refetchOnWindowFocus: false,
-  });
+  } = useQuery([fetchAssets, page, searchTerm], getAssets);
 
   const [menu, setMenu] = useState(null);
 
@@ -74,14 +57,14 @@ function Assets({
       >
         Product List
       </MenuItem>
-      <MenuItem
+      {/*<MenuItem
         onClick={() => {
           closeMenu();
           onListSelect("site");
         }}
       >
         Site List
-      </MenuItem>
+      </MenuItem>*/}
     </Menu>
   );
 
