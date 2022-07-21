@@ -8,7 +8,7 @@ import ProductsTreeView from "./components/products";
 import PositionEvents from "./components/position-events";
 import Assets from "./components/beacons";
 import { Stack, Zoom } from "@mui/material";
-import Sites from "./components/sites";
+import SiteInfo from "./components/sites";
 import BeaconTelemetry from "./components/beacon-telemetry";
 import BeaconTelemetryCharts from "./components/beacon-charts/indiex";
 
@@ -17,6 +17,7 @@ function Dashboard() {
   const onSearch = (value) => setSearchTerm(value);
 
   const [selectedProduct, setSelectProduct] = useState(null);
+  const [selectedSite, setSelectSite] = useState(null);
   const [selectedBeacon, setSelectBeacon] = useState(null);
   const [selectedList, setSelectList] = useState("product");
 
@@ -52,7 +53,15 @@ function Dashboard() {
                   selectedItem={selectedBeacon}
                 />
               )}
-              {selectedList === "site" && <Sites />}
+              {selectedList === "site" && (
+                <SiteInfo
+                  selectedSite={selectedSite}
+                  onSiteSelect={setSelectSite}
+                  selectedBeacon={selectedBeacon}
+                  onBeaconSelect={setSelectBeacon}
+                  onListSelect={onListSelect}
+                />
+              )}
             </Stack>
           </Grid>
           <Grid item xs={12} md={12} lg={8} xl={8}>

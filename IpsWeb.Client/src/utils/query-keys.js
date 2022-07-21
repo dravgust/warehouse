@@ -7,6 +7,7 @@ export const fetchBeaconTelemetry = "FETCH_BEACON_TELEMETRY";
 export const fetchBeaconTelemetryCharts = "FETCH_BEACON_TELEMETRY_CHARTS";
 export const fetchAssetsInfo = "FETCH_ASSETS_INFO";
 export const fetchAssets = "FETCH_ASSETS";
+export const fetchSitesInfo = "FETCH_SITES_INFO";
 export const fetchRegisteredBeacons = "FETCH_REG_BEACONS";
 export const fetchRegisteredGw = "FETCH_REG_GW";
 export const fetchProductMetadata = "PRODUCT_METADATA";

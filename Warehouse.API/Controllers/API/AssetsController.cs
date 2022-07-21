@@ -31,7 +31,7 @@ namespace Warehouse.API.Controllers.API
         }
 
         [HttpGet("sites")]
-        public async Task<IActionResult> GetSites([FromQuery] GetSitesWithProduct query, CancellationToken token = default) =>
+        public async Task<IActionResult> GetSites([FromQuery] GetSiteInfo query, CancellationToken token = default) =>
             Ok(await _queryBus.Send(query, token));
 
         [HttpGet("info")]

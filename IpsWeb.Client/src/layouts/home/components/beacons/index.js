@@ -57,14 +57,14 @@ function Assets({
       >
         Product List
       </MenuItem>
-      {/*<MenuItem
+      <MenuItem
         onClick={() => {
           closeMenu();
           onListSelect("site");
         }}
       >
         Site List
-      </MenuItem>*/}
+      </MenuItem>
     </Menu>
   );
 

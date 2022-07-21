@@ -47,6 +47,11 @@ export const getAssetsInfo = async () => {
   return res?.data;
 };
 
+export const getSitesInfo = async () => {
+  const res = await axios.get(`assets/sites`);
+  return res?.data;
+};
+
 export const getRegisteredBeacons = async () => {
   const res = await axios.get(`sites/beacons-registered`);
   return res?.data;

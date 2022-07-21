@@ -141,14 +141,14 @@ export default function ProductsTreeView({
       >
         Beacon List
       </MenuItem>
-      {/* <MenuItem
+      <MenuItem
         onClick={() => {
           closeMenu();
           onListSelect("site");
         }}
       >
         Site List
-      </MenuItem>*/}
+      </MenuItem>
     </Menu>
   );
 

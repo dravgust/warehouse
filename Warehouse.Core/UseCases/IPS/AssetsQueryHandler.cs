@@ -23,7 +23,7 @@ namespace Warehouse.Core.UseCases.IPS
         IQueryHandler<GetBeaconTelemetry, BeaconTelemetryDto>,
         IQueryHandler<GetBeaconTelemetry2, BeaconTelemetry2Dto>,
         IQueryHandler<GetIpsStatus, IndoorPositionStatusDto>,
-        IQueryHandler<GetSitesWithProduct, IEnumerable<WarehouseSiteDto>>
+        IQueryHandler<GetSiteInfo, IEnumerable<IndoorPositionStatusDto>>
     {
         private readonly IQueryBus _queryBus;
         private readonly IRepository<WarehouseSiteEntity, string> _siteRepository;
@@ -170,31 +170,56 @@ namespace Warehouse.Core.UseCases.IPS
             return _mapper.Map<IndoorPositionStatusDto>(result);
         }
 
-        public async Task<IEnumerable<WarehouseSiteDto>> Handle(GetSitesWithProduct request, CancellationToken cancellationToken)
-        {
-            var result = new Dictionary<string, WarehouseSiteDto>();
-            var beacons = await _productItems.Find(entity => entity.ProductId == request.ProductId).ToListAsync(cancellationToken);
-            foreach (var beacon in beacons)
-            {
-                //var filter = Builders<IndoorPositionStatusEntity>.Filter.ElemMatch(x => x.In, x => x == beacon.MacAddress);
-                //var statusEntities = _statusCollection.Find(filter).ToList();
-                var statusEntities = await _statusCollection.Find(x => x.In.Contains(beacon.MacAddress))
-                    .ToListAsync(cancellationToken: cancellationToken);
+        //public async Task<IEnumerable<WarehouseSiteDto>> Handle(GetSiteInfo request, CancellationToken cancellationToken)
+        //{
+        //    var result = new Dictionary<string, WarehouseSiteDto>();
+        //    var beacons = await _productItems.Find(entity => entity.ProductId == request.ProductId).ToListAsync(cancellationToken);
+        //    foreach (var beacon in beacons)
+        //    {
+        //        var statusEntities = await _statusCollection.Find(x => x.In.Contains(beacon.MacAddress))
+        //            .ToListAsync(cancellationToken: cancellationToken);
 
-                foreach (var b in statusEntities)
+        //        foreach (var b in statusEntities)
+        //        {
+        //            if (!result.ContainsKey(b.Id))
+        //            {
+        //                var site = await _siteRepository.FindAsync(b.Id, cancellationToken);
+        //                if (site != null)
+        //                {
+        //                    result.Add(b.Id, _mapper.Map<WarehouseSiteDto>(site));
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    return result.Values;
+        //}
+
+        public async Task<IEnumerable<IndoorPositionStatusDto>> Handle(GetSiteInfo request, CancellationToken cancellationToken)
+        {
+            var filter = Builders<IndoorPositionStatusEntity>.Filter.Empty;
+            var statusEntities = await _statusCollection.Find(filter).ToListAsync(cancellationToken);
+
+            var result  = new List<IndoorPositionStatusDto>();
+            foreach (var s in statusEntities)
+            {
+                var site = await _siteRepository.FindAsync(s.Id, cancellationToken);
+                if (site != null)
                 {
-                    if (!result.ContainsKey(b.Id))
+                    result.Add(new IndoorPositionStatusDto
                     {
-                        var site = await _siteRepository.FindAsync(b.Id, cancellationToken);
-                        if (site != null)
+                        Site = new SiteInfo
                         {
-                            result.Add(b.Id, _mapper.Map<WarehouseSiteDto>(site));
-                        }
-                    }
+                            Id = site.Id,
+                            Name = site.Name
+                        },
+                        In = s.In,
+                        Out = s.Out
+                    });
                 }
             }
 
-            return result.Values;
+            return result;
         }
 
         public async Task<BeaconTelemetryDto> Handle(GetBeaconTelemetry request, CancellationToken cancellationToken)

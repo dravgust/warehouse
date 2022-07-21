@@ -45,7 +45,7 @@ import { PrivateRoute } from "./protected-route";
 import routes from "routes";
 
 // Soft UI Dashboard React contexts
-import { useSoftUIController, setMiniSidenav, setOpenConfigurator } from "context";
+import { useSoftUIController, setMiniSidenav } from "context";
 
 // Images
 import brand from "assets/images/logo-ct.png";
@@ -83,8 +83,29 @@ export default function App() {
     }
   };
 
-  // Change the openConfigurator state
-  const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
+  const [visibleScroll, setVisibleScroll] = useState(false);
+
+  const toggleVisible = () => {
+    const scrolled = document.documentElement.scrollTop;
+    if (scrolled > 300) {
+      setVisibleScroll(true);
+    } else if (scrolled <= 300) {
+      setVisibleScroll(false);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", toggleVisible);
+    return () => {
+      window.removeEventListener("scroll", toggleVisible);
+    };
+  }, []);
+
+  const handleScrollTop = () =>
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
 
   // Setting the dir attribute for the body element
   useEffect(() => {
@@ -117,9 +138,8 @@ export default function App() {
       return null;
     });
 
-  const configsButton = (
+  const scrollUpButton = (
     <SuiBox
-      display="flex"
       justifyContent="center"
       alignItems="center"
       width="3.5rem"
@@ -133,10 +153,11 @@ export default function App() {
       zIndex={99}
       color="dark"
       sx={{ cursor: "pointer" }}
-      onClick={handleConfiguratorOpen}
+      onClick={handleScrollTop}
+      style={{ display: visibleScroll ? "flex" : "none" }}
     >
       <Icon fontSize="default" color="inherit">
-        settings
+        arrow_upward
       </Icon>
     </SuiBox>
   );
@@ -180,7 +201,7 @@ export default function App() {
             onMouseLeave={handleOnMouseLeave}
           />
           <Configurator />
-          {configsButton}
+          {scrollUpButton}
         </>
       )}
       {layout === "vr" && <Configurator />}
