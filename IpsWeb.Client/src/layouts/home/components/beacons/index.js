@@ -1,10 +1,6 @@
 import { useState } from "react";
-
-// @mui material components
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import SuiBox from "components/SuiBox";
 import SuiTypography from "components/SuiTypography";
 import Table from "examples/Tables/Table";
@@ -15,12 +11,7 @@ import SensorsSharpIcon from "@mui/icons-material/SensorsSharp";
 import { fetchAssets } from "../../../../utils/query-keys";
 import { getAssets } from "../../../../services/warehouse-service";
 
-function Assets({
-  searchTerm = "",
-  selectedItem,
-  onRowSelect = () => {},
-  onListSelect = () => {},
-}) {
+function Assets({ searchTerm = "", selectedItem, onRowSelect = () => {} }) {
   const [page, setPage] = useState(1);
   const {
     isLoading,
@@ -28,45 +19,6 @@ function Assets({
     data: response,
     isSuccess,
   } = useQuery([fetchAssets, page, searchTerm], getAssets);
-
-  const [menu, setMenu] = useState(null);
-
-  const openMenu = ({ currentTarget }) => setMenu(currentTarget);
-  const closeMenu = () => setMenu(null);
-
-  const renderMenu = (
-    <Menu
-      id="simple-menu"
-      anchorEl={menu}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "left",
-      }}
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={Boolean(menu)}
-      onClose={closeMenu}
-    >
-      <MenuItem
-        onClick={() => {
-          closeMenu();
-          onListSelect("product");
-        }}
-      >
-        Product List
-      </MenuItem>
-      <MenuItem
-        onClick={() => {
-          closeMenu();
-          onListSelect("site");
-        }}
-      >
-        Site List
-      </MenuItem>
-    </Menu>
-  );
 
   function Beacon({ image, name, product }) {
     return (
@@ -125,12 +77,6 @@ function Assets({
             </SuiTypography>
           </SuiBox>
         </SuiBox>
-        <SuiBox color="text" px={2}>
-          <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
-            more_vert
-          </Icon>
-        </SuiBox>
-        {renderMenu}
       </SuiBox>
       <SuiBox
         sx={{

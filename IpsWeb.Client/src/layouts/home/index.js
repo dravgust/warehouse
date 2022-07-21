@@ -11,6 +11,13 @@ import { Stack, Zoom } from "@mui/material";
 import SiteInfo from "./components/sites";
 import BeaconTelemetry from "./components/beacon-telemetry";
 import BeaconTelemetryCharts from "./components/beacon-charts/indiex";
+import React from "react";
+import { Card } from "@mui/material";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import QrCode2SharpIcon from "@mui/icons-material/QrCode2Sharp";
+import SensorsOutlinedIcon from "@mui/icons-material/SensorsOutlined";
+import TabOutlinedIcon from "@mui/icons-material/TabOutlined";
 
 function Dashboard() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -19,12 +26,12 @@ function Dashboard() {
   const [selectedProduct, setSelectProduct] = useState(null);
   const [selectedSite, setSelectSite] = useState(null);
   const [selectedBeacon, setSelectBeacon] = useState(null);
-  const [selectedList, setSelectList] = useState("product");
+  const [selectedView, setSelectView] = useState(0);
 
-  const onListSelect = (listName) => {
-    setSelectList(listName);
+  const handleChange = (event, newValue) => {
     setSelectProduct(null);
     setSelectBeacon(null);
+    setSelectView(newValue);
   };
 
   return (
@@ -34,18 +41,25 @@ function Dashboard() {
         <Grid container spacing={3}>
           <Grid item xs={12} md={12} lg={4} xl={4}>
             <Stack spacing={3}>
-              {selectedList === "product" && (
+              <Card>
+                <SuiBox p={3}>
+                  <Tabs value={selectedView} onChange={handleChange} aria-label="navigation">
+                    <Tab icon={<TabOutlinedIcon />} iconPosition="start" label="Sites" />
+                    <Tab icon={<QrCode2SharpIcon />} iconPosition="start" label="Products" />
+                    <Tab icon={<SensorsOutlinedIcon />} iconPosition="start" label="Beacons" />
+                  </Tabs>
+                </SuiBox>
+              </Card>
+              {selectedView === 1 && (
                 <ProductsTreeView
                   selectedProduct={selectedProduct}
                   onProductSelect={setSelectProduct}
                   selectedBeacon={selectedBeacon}
                   onBeaconSelect={setSelectBeacon}
-                  onListSelect={onListSelect}
                 />
               )}
-              {selectedList === "beacon" && (
+              {selectedView === 2 && (
                 <Assets
-                  onListSelect={onListSelect}
                   onRowSelect={(row) =>
                     setSelectBeacon({ macAddress: row.macAddress, name: row.site.name })
                   }
@@ -53,13 +67,12 @@ function Dashboard() {
                   selectedItem={selectedBeacon}
                 />
               )}
-              {selectedList === "site" && (
+              {selectedView === 0 && (
                 <SiteInfo
                   selectedSite={selectedSite}
                   onSiteSelect={setSelectSite}
                   selectedBeacon={selectedBeacon}
                   onBeaconSelect={setSelectBeacon}
-                  onListSelect={onListSelect}
                 />
               )}
             </Stack>
@@ -77,7 +90,7 @@ function Dashboard() {
                 <PositionEvents searchTerm={selectedBeacon ? selectedBeacon.macAddress : ""} />
               </Grid>
               {Boolean(selectedBeacon) && (
-                <Grid item xs={12} md={Boolean(selectedBeacon) ? 12 : 6}>
+                <Grid item xs={12}>
                   <BeaconTelemetryCharts item={selectedBeacon} />
                 </Grid>
               )}

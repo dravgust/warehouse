@@ -8,14 +8,10 @@ import Footer from "examples/Footer";
 import ProductList from "./components/product-list";
 import SelectedItem from "./components/selected-item";
 import { Zoom } from "@mui/material";
-import { useSoftUIController } from "context";
 import { fetchProductMetadata } from "../../utils/query-keys";
 import { getProductMetadata } from "../../services/warehouse-service";
 
 function Products() {
-  const [controller] = useSoftUIController();
-  const { miniSidenav, sidenavColor } = controller;
-
   const [searchTerm, setSearchTerm] = useState("");
   const onSearch = (value) => setSearchTerm(value);
 

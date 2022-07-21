@@ -22,7 +22,7 @@ async function client(
   }
 
   return window.fetch(`${API_SERVER}/${endpoint}`, config).then(async (response) => {
-    if (response.status === 201) {
+    if (response.status === 201 || response.status === 204) {
       return Promise.resolve();
     }
     if (response.status === 401) {

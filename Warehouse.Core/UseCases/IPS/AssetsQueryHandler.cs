@@ -206,16 +206,84 @@ namespace Warehouse.Core.UseCases.IPS
                 var site = await _siteRepository.FindAsync(s.Id, cancellationToken);
                 if (site != null)
                 {
-                    result.Add(new IndoorPositionStatusDto
+                    var info = new IndoorPositionStatusDto
                     {
                         Site = new SiteInfo
                         {
                             Id = site.Id,
                             Name = site.Name
                         },
-                        In = s.In,
-                        Out = s.Out
-                    });
+                        In = new List<BeaconIndoorPositionInfo>(),
+                        Out = new List<BeaconIndoorPositionInfo>()
+                    };
+
+                    foreach (var macAddress in s.In)
+                    {
+                        var beaconPositionInfo = new BeaconIndoorPositionInfo
+                        {
+                            Product = new ProductInfo
+                            {
+                                Id = string.Empty
+                            },
+                            Beacon = new BeaconInfo
+                            {
+                                MacAddress = macAddress
+                            }
+                        };
+
+                        var productItem = await _productItems.Find(q => q.Id.Equals(macAddress)).FirstOrDefaultAsync(cancellationToken: cancellationToken);
+                        if (productItem != null)
+                        {
+                            beaconPositionInfo.Beacon.Name = productItem.Name;
+
+                            if (!string.IsNullOrEmpty(productItem.ProductId))
+                            {
+                                var product = (await _productRepository.FindAllAsync(p => p.Id == productItem.ProductId, cancellationToken))
+                                    .FirstOrDefault();
+                                if (product != null)
+                                {
+                                    beaconPositionInfo.Product.Id = product.Id;
+                                    beaconPositionInfo.Product.Name = product.Name;
+                                }
+                            }
+                        }
+
+                        info.In.Add(beaconPositionInfo);
+                    }
+
+                    foreach (var macAddress in s.Out)
+                    {
+                        var beaconPositionInfo = new BeaconIndoorPositionInfo
+                        {
+                            Product = new ProductInfo
+                            {
+                                Id = string.Empty
+                            },
+                            Beacon = new BeaconInfo
+                            {
+                                MacAddress = macAddress
+                            }
+                        };
+
+                        var productItem = await _productItems.Find(q => q.Id.Equals(macAddress)).FirstOrDefaultAsync(cancellationToken: cancellationToken);
+                        if (productItem != null)
+                        {
+                            if (!string.IsNullOrEmpty(productItem.ProductId))
+                            {
+                                var product = (await _productRepository.FindAllAsync(p => p.Id == productItem.ProductId, cancellationToken))
+                                    .FirstOrDefault();
+                                if (product != null)
+                                {
+                                    beaconPositionInfo.Product.Id = product.Id;
+                                    beaconPositionInfo.Product.Name = product.Name;
+                                }
+                            }
+                        }
+
+                        info.In.Add(beaconPositionInfo);
+                    }
+
+                    result.Add(info);
                 }
             }
 

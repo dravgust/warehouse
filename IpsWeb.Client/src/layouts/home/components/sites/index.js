@@ -14,12 +14,9 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import { FixedSizeList } from "react-window";
 import ListItemButton from "@mui/material/ListItemButton";
-import QrCode2SharpIcon from "@mui/icons-material/QrCode2Sharp";
 import SensorsOutlinedIcon from "@mui/icons-material/SensorsOutlined";
+import TabOutlinedIcon from "@mui/icons-material/TabOutlined";
 import SuiInput from "components/SuiInput";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import Icon from "@mui/material/Icon";
 import { fetchSitesInfo } from "utils/query-keys";
 import { getSitesInfo } from "services/warehouse-service";
 
@@ -65,14 +62,10 @@ function Site({ site, count }) {
   return (
     <SuiBox display="flex" alignItems="center" px={1} py={0.5}>
       <SuiBox mr={2}>
-        <QrCode2SharpIcon fontSize="large" />
+        <TabOutlinedIcon fontSize="large" />
       </SuiBox>
       <SuiBox display="flex" flexDirection="column">
-        <SuiTypography
-          variant="button"
-          fontWeight="medium"
-          color={site.name ? "primary" : "secondary"}
-        >
+        <SuiTypography variant="button" fontWeight="medium" color={"info"}>
           {site.name || "Undefined"}
         </SuiTypography>
         <SuiTypography variant="caption" color="secondary">
@@ -89,58 +82,19 @@ export default function SiteInfo({
   onSiteSelect = () => {},
   selectedBeacon = "",
   onBeaconSelect = () => {},
-  onListSelect = () => {},
 }) {
   const [pattern, setPattern] = useState("");
   const onSearchProduct = (productItem) => setPattern(productItem);
 
-  let beacons =
+  let assets =
     (selectedSite &&
       selectedSite.in.filter((b) => {
         return Boolean(
-          !pattern || b.macAddress.toLocaleUpperCase().indexOf(pattern.toLocaleUpperCase()) > -1
+          !pattern ||
+            b.beacon.macAddress.toLocaleUpperCase().indexOf(pattern.toLocaleUpperCase()) > -1
         );
       })) ||
     [];
-
-  const [menu, setMenu] = useState(null);
-
-  const openMenu = ({ currentTarget }) => setMenu(currentTarget);
-  const closeMenu = () => setMenu(null);
-
-  const renderMenu = (
-    <Menu
-      id="simple-menu"
-      anchorEl={menu}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "left",
-      }}
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={Boolean(menu)}
-      onClose={closeMenu}
-    >
-      <MenuItem
-        onClick={() => {
-          closeMenu();
-          onListSelect("beacon");
-        }}
-      >
-        Beacon List
-      </MenuItem>
-      <MenuItem
-        onClick={() => {
-          closeMenu();
-          onListSelect("site");
-        }}
-      >
-        Site List
-      </MenuItem>
-    </Menu>
-  );
 
   const Row = ({ index, style }) => (
     <ListItem
@@ -148,20 +102,30 @@ export default function SiteInfo({
       style={style}
       component="div"
       disablePadding
-      onClick={() => onBeaconSelect(beacons[index])}
+      onClick={() => onBeaconSelect(assets[index].beacon)}
       sx={{
         borderBottom: ({ borders: { borderWidth, borderColor } }) =>
           `${borderWidth[1]} solid ${borderColor}`,
       }}
-      selected={beacons[index].macAddress === selectedBeacon.macAddress}
+      selected={assets[index].beacon.macAddress === selectedBeacon.macAddress}
+      secondaryAction={
+        <SuiTypography
+          variant="h6"
+          fontWeight="medium"
+          color={assets[index].product.name ? "primary" : "secondary"}
+          mx={2}
+        >
+          {assets[index].product.name || "n/a"}
+        </SuiTypography>
+      }
     >
       <ListItemButton>
         <ListItemIcon>
           <SensorsOutlinedIcon />
         </ListItemIcon>
         <ListItemText
-          primaryTypographyProps={{ color: "dark" }}
-          primary={beacons[index].name || "n/a"}
+          primaryTypographyProps={{ color: assets[index].beacon.name ? "dark" : "secondary" }}
+          primary={assets[index].beacon.name || "n/a"}
           secondary={
             <React.Fragment>
               <SuiTypography
@@ -170,7 +134,7 @@ export default function SiteInfo({
                 variant="caption"
                 color="secondary"
               >
-                {beacons[index].macAddress}
+                {assets[index].beacon.macAddress}
               </SuiTypography>
             </React.Fragment>
           }
@@ -198,12 +162,6 @@ export default function SiteInfo({
             Sites
           </SuiTypography>
         </SuiBox>
-        <SuiBox color="text" px={2}>
-          <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
-            more_vert
-          </Icon>
-        </SuiBox>
-        {renderMenu}
       </SuiBox>
       <SuiBox pb={3}>
         {isSuccess &&
@@ -251,7 +209,7 @@ export default function SiteInfo({
                   <FixedSizeList
                     className="List"
                     height={350}
-                    itemCount={beacons.length}
+                    itemCount={assets.length}
                     itemSize={65}
                   >
                     {Row}

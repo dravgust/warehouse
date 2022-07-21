@@ -17,9 +17,6 @@ import ListItemButton from "@mui/material/ListItemButton";
 import QrCode2SharpIcon from "@mui/icons-material/QrCode2Sharp";
 import SensorsOutlinedIcon from "@mui/icons-material/SensorsOutlined";
 import SuiInput from "components/SuiInput";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import Icon from "@mui/material/Icon";
 import { fetchAssetsInfo } from "utils/query-keys";
 import { getAssetsInfo } from "services/warehouse-service";
 
@@ -99,7 +96,6 @@ export default function ProductsTreeView({
   onProductSelect = () => {},
   selectedBeacon = "",
   onBeaconSelect = () => {},
-  onListSelect = () => {},
 }) {
   const [pattern, setPattern] = useState("");
   const onSearchProduct = (productItem) => setPattern(productItem);
@@ -112,45 +108,6 @@ export default function ProductsTreeView({
         );
       })) ||
     [];
-
-  const [menu, setMenu] = useState(null);
-
-  const openMenu = ({ currentTarget }) => setMenu(currentTarget);
-  const closeMenu = () => setMenu(null);
-
-  const renderMenu = (
-    <Menu
-      id="simple-menu"
-      anchorEl={menu}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "left",
-      }}
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={Boolean(menu)}
-      onClose={closeMenu}
-    >
-      <MenuItem
-        onClick={() => {
-          closeMenu();
-          onListSelect("beacon");
-        }}
-      >
-        Beacon List
-      </MenuItem>
-      <MenuItem
-        onClick={() => {
-          closeMenu();
-          onListSelect("site");
-        }}
-      >
-        Site List
-      </MenuItem>
-    </Menu>
-  );
 
   const Row = ({ index, style }) => (
     <ListItem
@@ -170,7 +127,7 @@ export default function ProductsTreeView({
           <SensorsOutlinedIcon />
         </ListItemIcon>
         <ListItemText
-          primaryTypographyProps={{ color: "dark" }}
+          primaryTypographyProps={{ color: beacons[index].name ? "dark" : "secondary" }}
           primary={beacons[index].name || "n/a"}
           secondary={
             <React.Fragment>
@@ -213,12 +170,6 @@ export default function ProductsTreeView({
             Products
           </SuiTypography>
         </SuiBox>
-        <SuiBox color="text" px={2}>
-          <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
-            more_vert
-          </Icon>
-        </SuiBox>
-        {renderMenu}
       </SuiBox>
       <SuiBox pb={3}>
         {isSuccess &&
