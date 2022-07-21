@@ -19,6 +19,7 @@ import SensorsOutlinedIcon from "@mui/icons-material/SensorsOutlined";
 import SuiInput from "components/SuiInput";
 import { fetchAssetsInfo } from "utils/query-keys";
 import { getAssetsInfo } from "services/warehouse-service";
+import { useSoftUIController } from "../../../../context";
 
 const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -99,6 +100,8 @@ export default function ProductsTreeView({
 }) {
   const [pattern, setPattern] = useState("");
   const onSearchProduct = (productItem) => setPattern(productItem);
+  const [controller, dispatch] = useSoftUIController();
+  const { direction } = controller;
 
   let beacons =
     (selectedProduct &&
@@ -122,7 +125,7 @@ export default function ProductsTreeView({
       }}
       selected={beacons[index].macAddress === selectedBeacon.macAddress}
     >
-      <ListItemButton>
+      <ListItemButton dir={direction}>
         <ListItemIcon>
           <SensorsOutlinedIcon />
         </ListItemIcon>

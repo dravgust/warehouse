@@ -19,6 +19,7 @@ import TabOutlinedIcon from "@mui/icons-material/TabOutlined";
 import SuiInput from "components/SuiInput";
 import { fetchSitesInfo } from "utils/query-keys";
 import { getSitesInfo } from "services/warehouse-service";
+import { useSoftUIController } from "../../../../context";
 
 const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -85,6 +86,8 @@ export default function SiteInfo({
 }) {
   const [pattern, setPattern] = useState("");
   const onSearchProduct = (productItem) => setPattern(productItem);
+  const [controller, dispatch] = useSoftUIController();
+  const { direction } = controller;
 
   let assets =
     (selectedSite &&
@@ -119,7 +122,7 @@ export default function SiteInfo({
         </SuiTypography>
       }
     >
-      <ListItemButton>
+      <ListItemButton dir={direction}>
         <ListItemIcon>
           <SensorsOutlinedIcon />
         </ListItemIcon>
