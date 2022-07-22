@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.UseCases.Products.Models;
-using Warehouse.Core.UseCases.Warehouse.Models;
+using Warehouse.Core.UseCases.Management.Models;
 
 namespace Warehouse.Core.UseCases
 {

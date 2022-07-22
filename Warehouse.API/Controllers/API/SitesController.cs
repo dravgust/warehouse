@@ -7,9 +7,9 @@ using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.Utilities;
 using Warehouse.API.Services.Security.Attributes;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.UseCases.Warehouse.Commands;
-using Warehouse.Core.UseCases.Warehouse.Queries;
-using Warehouse.Core.UseCases.Warehouse.Specifications;
+using Warehouse.Core.UseCases.Management.Commands;
+using Warehouse.Core.UseCases.Management.Queries;
+using Warehouse.Core.UseCases.Management.Specifications;
 
 namespace Warehouse.API.Controllers.API
 {
@@ -18,12 +18,12 @@ namespace Warehouse.API.Controllers.API
     [ApiController]
     public class SitesController : ControllerBase
     {
-        private readonly IRepository<WarehouseSiteEntity, string> _siteRepository;
+        private readonly IRepository<WarehouseSiteEntity> _siteRepository;
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
 
         public SitesController(
-            IRepository<WarehouseSiteEntity, string> siteRepository,
+            IRepository<WarehouseSiteEntity> siteRepository,
             IQueryBus queryBus, ICommandBus commandBus)
         {
             _siteRepository = siteRepository;

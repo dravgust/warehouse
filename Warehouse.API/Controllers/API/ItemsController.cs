@@ -6,9 +6,9 @@ using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Warehouse.API.Services;
 using Warehouse.API.Services.Security.Attributes;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.UseCases.Products.Commands;
-using Warehouse.Core.UseCases.Products.Queries;
-using Warehouse.Core.UseCases.Products.Specifications;
+using Warehouse.Core.UseCases.Management.Commands;
+using Warehouse.Core.UseCases.Management.Queries;
+using Warehouse.Core.UseCases.Management.Specifications;
 
 namespace Warehouse.API.Controllers.API
 {

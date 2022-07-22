@@ -6,13 +6,13 @@ namespace Warehouse.Core.Entities.Models
 {
     public interface IIdentityUser : IEntity
     {
-        public string Username { get; set; }
-        public string Email { get; set; }
+        public string Username { get; }
+        public string? Email { get; }
 
         [JsonIgnore]
-        public string PasswordHash { get; set; }
+        public string PasswordHash { get; }
 
         [JsonIgnore]
-        public List<RefreshToken> RefreshTokens { get; set; }
+        public List<RefreshToken> RefreshTokens { get; }
     }
 }

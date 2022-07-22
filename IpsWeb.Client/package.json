@@ -1,16 +1,16 @@
 {
   "name": "ips-dashboard",
   "version": "3.1.0",
-  "author": "Creative Tim",
-  "license": "SEE LICENSE IN <https://www.creative-tim.com/license>",
-  "description": "ReactJS version of Soft UI Dashboard by Creative Tim",
-  "homepage": "https://demos.creative-tim.com/soft-ui-dashboard-react/#/",
+  "author": "",
+  "license": "",
+  "description": "",
+  "homepage": "",
   "bugs": {
-    "url": "https://github.com/creativetimofficial/soft-ui-dashboard-react/issues"
+    "url": ""
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/creativetimofficial/soft-ui-dashboard-react.git"
+    "url": ""
   },
   "engines": {
     "node": "14 || 15 || 16",

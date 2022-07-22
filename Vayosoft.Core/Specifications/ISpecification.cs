@@ -1,7 +1,13 @@
-﻿namespace Vayosoft.Core.Specifications
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+
+namespace Vayosoft.Core.Specifications
 {
-    public interface ISpecification<in T>
+    public interface ISpecification<T>
     {
-        bool IsSatisfiedBy(T o);
+        Expression<Func<T, bool>> Criteria { get; }
+        ICollection<Expression<Func<T, object>>> Includes { get; }
+        ICollection<string> IncludeStrings { get; }
     }
 }

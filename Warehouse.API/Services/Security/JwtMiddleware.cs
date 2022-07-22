@@ -15,14 +15,17 @@ namespace Warehouse.API.Services.Security
             _appSettings = appSettings.Value;
         }
 
-        public async Task Invoke(HttpContext context, IUserService userService, IJwtService jwtUtils)
+        public async Task Invoke(HttpContext context, IIdentityUserService userService, IJwtService jwtUtils)
         {
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-            var userId = jwtUtils.ValidateJwtToken(token);
-            if (userId != null)
+            if (token != null)
             {
-                // attach user to context on successful jwt validation
-                context.Items["User"] = userService.GetById(userId.Value);
+                var userId = jwtUtils.ValidateJwtToken(token);
+                if (userId != null)
+                {
+                    // attach user to context on successful jwt validation
+                    context.Items["User"] = userService.GetById(userId.Value);
+                }
             }
 
             await _next(context);

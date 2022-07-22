@@ -27,7 +27,7 @@ namespace Vayosoft.Data.EF.MySQL
             return Set<TEntity>().AsQueryable();
         }
 
-        public IEnumerable<TEntity> GetBySpecification<TEntity>(ICriteriaSpecification<TEntity> specification) where TEntity : class, IEntity
+        public IQueryable<TEntity> AsQueryable<TEntity>(ISpecification<TEntity> specification) where TEntity : class, IEntity
         {
             var queryableResultWithIncludes = specification
                 .Includes
@@ -37,7 +37,7 @@ namespace Vayosoft.Data.EF.MySQL
                 .IncludeStrings
                 .Aggregate(queryableResultWithIncludes, (current, include) => current.Include(include));
 
-            return secondaryResult.Where(specification.Criteria).AsEnumerable();
+            return secondaryResult.Where(specification.Criteria);
         }
 
         public new void Add<TEntity>(TEntity entity) where TEntity : class, IEntity
@@ -52,9 +52,28 @@ namespace Vayosoft.Data.EF.MySQL
             Set<TEntity>().Remove(entity);
         }
 
-        public TEntity Find<TEntity>(object id) where TEntity : class, IEntity
+        public TEntity? Find<TEntity>(object id) where TEntity : class, IEntity
         {
-            var entity = Set<TEntity>().SingleOrDefault(x => x.Id == id);
+            return Set<TEntity>().SingleOrDefault(x => x.Id == id);
+        }
+
+        public TEntity Get<TEntity>(object id) where TEntity : class, IEntity
+        {
+            var entity = Find<TEntity>(id);
+            if (entity == null)
+                throw EntityNotFoundException.For<TEntity>(id);
+
+            return entity;
+        }
+
+        public Task<TEntity?> FindAsync<TEntity>(object id, CancellationToken cancellationToken) where TEntity : class, IEntity
+        {
+            return Set<TEntity>().SingleOrDefaultAsync(x => x.Id == id, cancellationToken: cancellationToken);
+        }
+
+        public async Task<TEntity> GetAsync<TEntity>(object id, CancellationToken cancellationToken) where TEntity : class, IEntity
+        {
+            var entity = await FindAsync<TEntity>(id, cancellationToken);
             if (entity == null)
                 throw EntityNotFoundException.For<TEntity>(id);
 

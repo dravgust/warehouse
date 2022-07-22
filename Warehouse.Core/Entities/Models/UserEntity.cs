@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using Vayosoft.AutoMapper;
 using Vayosoft.Core.SharedKernel.Entities;
+using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.UseCases.Administration.Models;
 
@@ -8,17 +9,23 @@ namespace Warehouse.Core.Entities.Models
 {
     public class UserEntity : EntityBase<long>, IIdentityUser
     {
-        public string Username { get; set; }
-        public string PasswordHash { get; set; }
-        public string Phone { get; set; }
+        private UserEntity() { }
+        public UserEntity(string username)
+        {
+            Username = Guard.NotEmpty(username, nameof(username));
+        }
+
+        public string Username { get; } = null!;
+        public string PasswordHash { get; set; } = null!;
+        public string? Phone { get; set; }
         public string? Email { get; set; }
         public UserType Kind { get; set; }
-        public DateTime? RegistrationDate { get; set; }
-        public DateTime? UnregistrationDate { get; set; }
-        public string CultureId { get; set; }
+        public DateTime? Registered { get; set; }
+        public DateTime? Deregistered { get; set; }
+        public string? CultureId { get; set; }
         public ulong ProviderId { get; set; }
         public LogEventType? LogLevel { get; set; }
-        public virtual List<RefreshToken> RefreshTokens { get; set; } = new();
+        public virtual List<RefreshToken> RefreshTokens { get; } = new();
     }
 
     [ConventionalMap(typeof(UserEntity), direction: MapDirection.EntityToDto)]
@@ -27,13 +34,13 @@ namespace Warehouse.Core.Entities.Models
         object IEntity.Id => Id;
         public long Id { get; set; }
         public string? Username { get; set; }
-        public string Phone { get; set; }
+        public string? Phone { get; set; }
         public string? Email { get; set; }
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public UserType Kind { get; set; }
-        public DateTime? RegistrationDate { get; set; }
-        public DateTime? UnregistrationDate { get; set; }
-        public string CultureId { get; set; }
+        public DateTime? Registered { get; set; }
+        public DateTime? Deregistered { get; set; }
+        public string? CultureId { get; set; }
         public ulong ProviderId { get; set; }
         public LogEventType? LogLevel { get; set; }
 

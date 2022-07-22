@@ -8,7 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="UseCases\Providers\Queries\" />
+    <Compile Remove="UseCases\Providers\Queries\**" />
+    <EmbeddedResource Remove="UseCases\Providers\Queries\**" />
+    <None Remove="UseCases\Providers\Queries\**" />
   </ItemGroup>
 
   <ItemGroup>

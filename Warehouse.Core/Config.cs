@@ -22,21 +22,16 @@ using Warehouse.Core.Persistence;
 using Warehouse.Core.Services.Providers;
 using Warehouse.Core.UseCases;
 using Warehouse.Core.UseCases.Administration.Spcecifications;
-using Warehouse.Core.UseCases.IPS;
-using Warehouse.Core.UseCases.IPS.Models;
-using Warehouse.Core.UseCases.IPS.Queries;
-using Warehouse.Core.UseCases.IPS.Specifications;
-using Warehouse.Core.UseCases.OperationHistory;
-using Warehouse.Core.UseCases.Products.Commands;
-using Warehouse.Core.UseCases.Products.Handlers;
-using Warehouse.Core.UseCases.Products.Queries;
-using Warehouse.Core.UseCases.Products.Specifications;
+using Warehouse.Core.UseCases.Management.Commands;
+using Warehouse.Core.UseCases.Management.Handlers;
+using Warehouse.Core.UseCases.Management.Models;
+using Warehouse.Core.UseCases.Management.Queries;
+using Warehouse.Core.UseCases.Management.Specifications;
+using Warehouse.Core.UseCases.Positioning;
+using Warehouse.Core.UseCases.Positioning.Models;
+using Warehouse.Core.UseCases.Positioning.Queries;
+using Warehouse.Core.UseCases.Positioning.Specifications;
 using Warehouse.Core.UseCases.Providers;
-using Warehouse.Core.UseCases.Warehouse;
-using Warehouse.Core.UseCases.Warehouse.Commands;
-using Warehouse.Core.UseCases.Warehouse.Models;
-using Warehouse.Core.UseCases.Warehouse.Queries;
-using Warehouse.Core.UseCases.Warehouse.Specifications;
 
 namespace Warehouse.Core
 {
@@ -76,7 +71,7 @@ namespace Warehouse.Core
 
         public static void AddOperationHistory(this IServiceCollection services)
         {
-            services.AddScoped<IRepository<OperationHistoryEntity, string>, WarehouseRepository<OperationHistoryEntity>>();
+            //services.AddScoped<IRepository<OperationHistoryEntity>, WarehouseRepository<OperationHistoryEntity>>();
             services.AddScoped<INotificationHandler<OperationOccurred>, OperationEventHandler>();
         }
 
@@ -85,13 +80,12 @@ namespace Warehouse.Core
             services.AddMongoDbContext(ConfigureMongoDb);
 
             //repositories
-            services.AddScoped<IRepository<FileEntity, string>, WarehouseRepository<FileEntity>>();
-            services.AddScoped<IRepository<ProductEntity, string>, WarehouseRepository<ProductEntity>>();
-            services.AddScoped<IRepository<WarehouseSiteEntity, string>, WarehouseRepository<WarehouseSiteEntity>>();
-            services.AddScoped<IReadOnlyRepository<ProductEntity>, WarehouseRepository<ProductEntity>>();
-            services.AddScoped<IRepository<BeaconEntity, string>, WarehouseRepository<BeaconEntity>>();
-            services.AddScoped<IReadOnlyRepository<BeaconRegisteredEntity>, WarehouseRepository<BeaconRegisteredEntity>>();
-            services.AddScoped<IRepository<IndoorPositionStatusEntity, string>, WarehouseRepository<IndoorPositionStatusEntity>>();
+            services.AddScoped(typeof(IRepository<>), typeof(WarehouseRepository<>));
+            //services.AddScoped<IRepository<FileEntity>, WarehouseRepository<FileEntity>>();
+            //services.AddScoped<IRepository<ProductEntity>, WarehouseRepository<ProductEntity>>();
+            //services.AddScoped<IRepository<WarehouseSiteEntity>, WarehouseRepository<WarehouseSiteEntity>>();
+            //services.AddScoped<IRepository<BeaconEntity>, WarehouseRepository<BeaconEntity>>();
+            //services.AddScoped<IRepository<IndoorPositionStatusEntity>, WarehouseRepository<IndoorPositionStatusEntity>>();
 
             //queries
             services.AddScoped<IRequestHandler<SetProduct, Unit>, ProductCommandHandler>();

@@ -12,6 +12,7 @@ namespace Warehouse.Core.Persistence.Mapping
         {
             builder.ToTable("users").HasKey(t => t.Id);
             builder.Property(t => t.Id).HasColumnName("userid").ValueGeneratedOnAdd();
+            builder.Property(t => t.Id).HasColumnName("userid").ValueGeneratedOnAdd();
             builder.Property(t => t.Username).HasColumnName("username");
             builder.Property(t => t.Email).HasColumnName("email");
             builder.Property(t => t.PasswordHash).HasColumnName("pwdhash");
@@ -20,8 +21,8 @@ namespace Warehouse.Core.Persistence.Mapping
             builder.Property(t => t.ProviderId).HasColumnName("providerid");
             builder.Property(t => t.LogLevel).HasColumnName("log_level");
             builder.Property(t => t.CultureId).HasColumnName("culture_id");
-            builder.Property(t => t.RegistrationDate).HasColumnName("regdate");
-            builder.Property(t => t.UnregistrationDate).HasColumnName("enddate");
+            builder.Property(t => t.Registered).HasColumnName("regdate");
+            builder.Property(t => t.Deregistered).HasColumnName("enddate");
             builder
                 .HasMany(t => t.RefreshTokens)
                 .WithOne(t => t.User as UserEntity)
