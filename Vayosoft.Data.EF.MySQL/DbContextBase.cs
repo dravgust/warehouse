@@ -7,19 +7,13 @@ using Vayosoft.Core.Specifications;
 
 namespace Vayosoft.Data.EF.MySQL
 {
-    public sealed class DataContext : DbContext, ILinqProvider, IUnitOfWork
+    public class DbContextBase : DbContext, ILinqProvider, IUnitOfWork
     {
         private readonly ILoggerFactory _loggerFactory;
-        private readonly ILogger<DataContext> _logger;
 
-        public DataContext(DbContextOptions options, ILoggerFactory loggerFactory) : base(options)
+        public DbContextBase(DbContextOptions options, ILoggerFactory loggerFactory) : base(options)
         {
             this._loggerFactory = loggerFactory;
-            this._logger = loggerFactory.CreateLogger<DataContext>();
-
-            this.ChangeTracker.LazyLoadingEnabled = false;
-
-            Database.EnsureCreated();
         }
 
         public IQueryable<TEntity> AsQueryable<TEntity>() where TEntity : class, IEntity

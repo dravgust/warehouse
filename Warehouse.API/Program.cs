@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 using FluentValidation;
-using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -11,6 +10,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Vayosoft.Caching;
+using Vayosoft.Data.Dapper.MySQL;
 using Vayosoft.Data.Redis;
 using Warehouse.API.Resources;
 using Warehouse.API.Services.ExceptionHandling;
@@ -19,7 +19,6 @@ using Warehouse.API.Services.Security;
 using Warehouse.API.TagHelpers;
 using Warehouse.API.UseCases.Resources;
 using Warehouse.Core;
-using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Validation;
@@ -58,6 +57,9 @@ try
     builder.Services.AddUnhandledException();
 
     builder.Services.AddWarehouseDependencies(configuration);
+    //add dapper
+    builder.Services.AddScoped<DbConnection>();
+
     builder.Services.AddSingleton<IRequestHandler<GetResources, IEnumerable<ResourceGroup>>, GetResources.ResourcesQueryHandler>();
 
     builder.Services.AddCors(options =>

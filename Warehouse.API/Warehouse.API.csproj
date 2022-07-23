@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Vayosoft.Caching\Vayosoft.Caching.csproj" />
+    <ProjectReference Include="..\Vayosoft.Data.Dapper.MySQL\Vayosoft.Data.Dapper.MySQL.csproj" />
     <ProjectReference Include="..\Warehouse.Core\Warehouse.Core.csproj" />
   </ItemGroup>
 
