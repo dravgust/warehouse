@@ -10,4 +10,7 @@ namespace Vayosoft.Core.Specifications
         ICollection<Expression<Func<T, object>>> Includes { get; }
         ICollection<string> IncludeStrings { get; }
     }
+
+    public interface ISpecification<T, TResult> : ISpecification<T>
+    {}
 }
