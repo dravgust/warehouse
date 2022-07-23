@@ -10,7 +10,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Vayosoft.Caching;
-using Vayosoft.Data.Dapper.MySQL;
 using Vayosoft.Data.Redis;
 using Warehouse.API.Resources;
 using Warehouse.API.Services.ExceptionHandling;
@@ -57,8 +56,6 @@ try
     builder.Services.AddUnhandledException();
 
     builder.Services.AddWarehouseDependencies(configuration);
-    //add dapper
-    builder.Services.AddScoped<DbConnection>();
 
     builder.Services.AddSingleton<IRequestHandler<GetResources, IEnumerable<ResourceGroup>>, GetResources.ResourcesQueryHandler>();
 

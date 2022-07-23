@@ -40,7 +40,6 @@ namespace Vayosoft.Data.Dapper.MySQL
         public void Dispose()
         {
             connection.Dispose();
-            GC.SuppressFinalize(this);
         }
     }
 }

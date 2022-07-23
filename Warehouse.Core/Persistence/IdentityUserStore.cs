@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Exceptions;
+using Vayosoft.Data.Dapper.MySQL;
 using Warehouse.Core.Entities.Models;
+using Warehouse.Core.UseCases.Administration.Models;
 
 namespace Warehouse.Core.Persistence
 {
@@ -11,7 +13,7 @@ namespace Warehouse.Core.Persistence
         public IUnitOfWork UnitOfWork => _context;
 
         public IdentityUserStore(WarehouseDbContext context)
-        {   
+        {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 

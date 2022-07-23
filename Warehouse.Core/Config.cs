@@ -12,6 +12,7 @@ using Vayosoft.Core.Persistence.Commands;
 using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
+using Vayosoft.Data.Dapper.MySQL;
 using Vayosoft.Data.EF.MySQL;
 using Vayosoft.Data.MongoDB;
 using Vayosoft.Data.MongoDB.QueryHandlers;
@@ -61,6 +62,9 @@ namespace Warehouse.Core
             services
                 .AddEntityDependencies(configuration)
                 .AddMongodDependencies(configuration);
+
+            //add dapper
+            services.AddScoped<DbConnection>();
 
             services.AddDefaultProvider()
                 .AddProviderHandlers();
