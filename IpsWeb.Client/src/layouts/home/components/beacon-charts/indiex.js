@@ -82,7 +82,7 @@ const BeaconTelemetryCharts = ({ item }) => {
                 <div></div>
               </SuiTypography>
             </SuiBox>
-            <GradientLineChart height="20.25rem" chart={temperatureChart} />
+            <GradientLineChart chart={temperatureChart} />
           </SuiBox>
         ) : (
           <Fade
@@ -105,7 +105,7 @@ const BeaconTelemetryCharts = ({ item }) => {
             <SuiBox mb={1}>
               <SuiTypography variant="h6">{"Humidity Overview"}</SuiTypography>
             </SuiBox>
-            <GradientLineChart height="20.25rem" chart={humidityChart} />
+            <GradientLineChart chart={humidityChart} />
           </SuiBox>
         ) : (
           <Fade
