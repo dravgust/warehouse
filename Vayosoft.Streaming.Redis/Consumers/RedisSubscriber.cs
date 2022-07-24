@@ -1,0 +1,51 @@
+﻿using System.Reactive;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using StackExchange.Redis;
+using Vayosoft.Data.Redis;
+
+namespace Vayosoft.Streaming.Redis.Consumers
+{
+    public class RedisSubscriber : IRedisConsumer
+    {
+        private readonly ISubscriber _subscriber;
+        private readonly ILogger<RedisConsumer> _logger;
+
+        public RedisSubscriber(IRedisSubscriberProvider connection, ILogger<RedisConsumer> logger)
+        {
+            _subscriber = connection.Subscriber;
+
+            this._logger = logger;
+        }
+
+        public void Subscribe(string[] topics, Action<ConsumeResult<string, string>> action, CancellationToken cancellationToken)
+        {
+            foreach (var topic in topics)
+            {
+                var observer = new AnonymousObserver<ConsumeResult<string, string>>(
+                onNext: action,
+                onCompleted: () => _logger.LogInformation($"Unsubscribed from channel {topic}"),
+                onError: (e) => _logger.LogError($"{e.Message}\r\n{e.StackTrace}"));
+
+                _subscriber.Subscribe(new RedisChannel(topic, RedisChannel.PatternMode.Auto), (channel, message) =>
+                {
+                    if (string.IsNullOrEmpty(message)) return;
+                    try
+                    {
+                        var eventMessage = JsonConvert.DeserializeObject<Message<string, string>>(message);
+                        if (eventMessage == null) return;
+                        observer.OnNext(new ConsumeResult<string, string>(topic, eventMessage.Key, eventMessage.Value));
+                    }
+                    catch (Exception ex) { observer.OnError(ex); }
+                });
+
+                _logger.LogInformation($"Subscribed to channel {topic}");
+            }
+        }
+
+        public void Close()
+        {
+            _subscriber.UnsubscribeAll();
+        }
+    }
+}
