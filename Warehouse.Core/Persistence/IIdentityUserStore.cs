@@ -3,14 +3,16 @@ using Warehouse.Core.Entities.Models;
 
 namespace Warehouse.Core.Persistence
 {
-    public interface IIdentityUserStore
+    public interface IIdentityUserStore<T> where T : IIdentityUser
     {
         public IUnitOfWork UnitOfWork { get; }
 
-        public IIdentityUser GetById(object id);
+        public Task<T?> FindByIdAsync(object userId, CancellationToken cancellationToken = default);
 
-        public IIdentityUser GetUserByRefreshToken(string token);
+        public Task<T?> FindByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default);
 
-        public IIdentityUser? FindUserByNameAsync(string username);
+        public Task<T?> FindByNameAsync(string username, CancellationToken cancellationToken = default);
+
+        public Task UpdateAsync(IIdentityUser user, CancellationToken cancellationToken);
     }
 }

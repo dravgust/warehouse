@@ -5,9 +5,9 @@ namespace Warehouse.Core.Services
 {
     public interface IIdentityUserService
     {
-        AuthenticateResponse Authenticate(AuthenticateRequest model, string ipAddress);
-        AuthenticateResponse RefreshToken(string token, string ipAddress);
-        void RevokeToken(string token, string ipAddress);
-        IIdentityUser GetById(object id);
+        Task<AuthenticateResponse> AuthenticateAsync(AuthenticateRequest model, string ipAddress, CancellationToken cancellationToken);
+        Task<AuthenticateResponse> RefreshTokenAsync(string token, string ipAddress, CancellationToken cancellationToken);
+        Task RevokeTokenAsync(string token, string ipAddress, CancellationToken cancellationToken);
+        Task<IIdentityUser> GetByIdAsync(object id, CancellationToken cancellationToken);
     }
 }

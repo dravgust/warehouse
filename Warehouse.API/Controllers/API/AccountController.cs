@@ -34,30 +34,30 @@ namespace Warehouse.API.Controllers.API
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public ActionResult<AuthenticateResponse> Post([FromBody] AuthenticateRequest model)
+        public async Task<ActionResult<AuthenticateResponse>> Post([FromBody] AuthenticateRequest model, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var response = _userService.Authenticate(model, IpAddress());
+            var response = await _userService.AuthenticateAsync(model, IpAddress(), cancellationToken);
             SetTokenCookie(response.RefreshToken);
             return Ok(response);
         }
 
         [AllowAnonymous]
         [HttpPost("refresh-token")]
-        public IActionResult RefreshToken(TokenRequest model)
+        public async Task<IActionResult> RefreshToken(TokenRequest model, CancellationToken cancellationToken)
         {
             var refreshToken = model.Token ?? Request.Cookies["refreshToken"];
             if (string.IsNullOrEmpty(refreshToken))
                 return BadRequest(new { message = "Token is required" });
 
-            var response = _userService.RefreshToken(refreshToken, IpAddress());
+            var response = await _userService.RefreshTokenAsync(refreshToken, IpAddress(), cancellationToken);
             SetTokenCookie(response.RefreshToken);
             return Ok(response);
         }
 
         [HttpPost("revoke-token")]
-        public IActionResult RevokeToken(TokenRequest model)
+        public async Task<IActionResult> RevokeToken(TokenRequest model, CancellationToken cancellationToken)
         {
             // accept refresh token in request body or cookie
             var refreshToken = model.Token ?? Request.Cookies["refreshToken"];
@@ -65,7 +65,7 @@ namespace Warehouse.API.Controllers.API
             if (string.IsNullOrEmpty(refreshToken))
                 return BadRequest(new { message = "Token is required" });
 
-            _userService.RevokeToken(refreshToken, IpAddress());
+            await _userService.RevokeTokenAsync(refreshToken, IpAddress(), cancellationToken);
             return Ok(new { message = "Token revoked" });
         }
 

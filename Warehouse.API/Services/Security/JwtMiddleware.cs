@@ -20,11 +20,12 @@ namespace Warehouse.API.Services.Security
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             if (token != null)
             {
+                var cancellationToken = context.RequestAborted;
                 var userId = jwtUtils.ValidateJwtToken(token);
                 if (userId != null)
                 {
                     // attach user to context on successful jwt validation
-                    context.Items["User"] = userService.GetById(userId.Value);
+                    context.Items["User"] = await userService.GetByIdAsync(userId.Value, cancellationToken);
                 }
             }
 

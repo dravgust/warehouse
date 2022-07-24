@@ -34,7 +34,7 @@ namespace Warehouse.API.Services.Security
             return tokenHandler.WriteToken(token);
         }
 
-        public int? ValidateJwtToken(string token)
+        public int? ValidateJwtToken(string? token)
         {
             if (token == null)
                 return null;
@@ -69,7 +69,7 @@ namespace Warehouse.API.Services.Security
         public RefreshToken GenerateRefreshToken(string ipAddress)
         {
             var random = new byte[64];
-            var rng = new RNGCryptoServiceProvider();
+            using var rng = RandomNumberGenerator.Create();
 
             var refreshToken = new RefreshToken
             {

@@ -110,7 +110,7 @@ function Users() {
                       ),
                       registered: (
                         <SuiTypography variant="caption" color="secondary" fontWeight="medium">
-                          {format(new Date(item.registrationDate), "dd/MM/yyy HH:mm:ss")}
+                          {format(new Date(item.registered), "dd/MM/yyy HH:mm:ss")}
                         </SuiTypography>
                       ),
                       action: (

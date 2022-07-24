@@ -1,11 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Vayosoft.Core.Persistence;
-using Vayosoft.Core.SharedKernel.Exceptions;
 using Warehouse.Core.Entities.Models;
 
 namespace Warehouse.Core.Persistence
 {
-    public class IdentityUserStore : IIdentityUserStore
+    public class IdentityUserStore : IIdentityUserStore<UserEntity>
     {
         private readonly WarehouseDbContext _context;
         public IUnitOfWork UnitOfWork => _context;
@@ -15,38 +14,34 @@ namespace Warehouse.Core.Persistence
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public IIdentityUser GetById(object id)
-        {
-            var user = _context
-                .Users
-                .Include(u => u.RefreshTokens)
-                .SingleOrDefault(u => u.Id.Equals(id));
-
-            if (user == null)
-                throw EntityNotFoundException.For<UserEntity>(id);
-
-            return user;
-        }
-
-        public IIdentityUser GetUserByRefreshToken(string token)
-        {
-            var user = _context
-                .Users
-                .Include(u => u.RefreshTokens)
-                .SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
-
-            if (user == null)
-                throw new ApplicationException("Invalid token");
-
-            return user;
-        }
-
-        public IIdentityUser? FindUserByNameAsync(string username)
+        public Task<UserEntity?> FindByIdAsync(object userId, CancellationToken cancellationToken)
         {
             return _context
-                    .Users
+                .Users
+                .Include(u => u.RefreshTokens)
+                .SingleOrDefaultAsync(u => u.Id.Equals(userId), cancellationToken: cancellationToken);
+        }
+
+        public Task<UserEntity?> FindByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken)
+        {
+            return _context
+                .Users
+                .Include(u => u.RefreshTokens)
+                .SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.Token == refreshToken), cancellationToken: cancellationToken);
+        }
+
+        public Task<UserEntity?> FindByNameAsync(string username, CancellationToken cancellationToken)
+        {
+            return _context
+                    .Set<UserEntity>()
                     .Include(u => u.RefreshTokens)
-                    .SingleOrDefault(u => u.Username == username);
+                    .SingleOrDefaultAsync(u => u.Username == username, cancellationToken: cancellationToken);
+        }
+
+        public async Task UpdateAsync(IIdentityUser user, CancellationToken cancellationToken)
+        {
+            _context.Update(user);
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

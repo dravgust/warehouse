@@ -76,7 +76,6 @@ namespace Warehouse.Core
 
         public static void AddOperationHistory(this IServiceCollection services)
         {
-            //services.AddScoped<IRepository<OperationHistoryEntity>, WarehouseRepository<OperationHistoryEntity>>();
             services.AddScoped<INotificationHandler<OperationOccurred>, OperationEventHandler>();
         }
 
@@ -86,11 +85,6 @@ namespace Warehouse.Core
 
             //repositories
             services.AddScoped(typeof(IRepository<>), typeof(WarehouseRepository<>));
-            //services.AddScoped<IRepository<FileEntity>, WarehouseRepository<FileEntity>>();
-            //services.AddScoped<IRepository<ProductEntity>, WarehouseRepository<ProductEntity>>();
-            //services.AddScoped<IRepository<WarehouseSiteEntity>, WarehouseRepository<WarehouseSiteEntity>>();
-            //services.AddScoped<IRepository<BeaconEntity>, WarehouseRepository<BeaconEntity>>();
-            //services.AddScoped<IRepository<IndoorPositionStatusEntity>, WarehouseRepository<IndoorPositionStatusEntity>>();
 
             //queries
             services.AddScoped<IRequestHandler<SetProduct, Unit>, ProductCommandHandler>();

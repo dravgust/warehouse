@@ -16,7 +16,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 function ProductList({
   searchTerm,
   selectedItem,
-  selectItem = (item) => {},
+  selectItem = () => {},
   resetToDefault = () => {},
   refresh,
 }) {

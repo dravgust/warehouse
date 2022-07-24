@@ -7,7 +7,7 @@ namespace Warehouse.Core.Services
 {
     public class IdentityUserService : IIdentityUserService
     {
-        private readonly IIdentityUserStore _identityUserStore;
+        private readonly IIdentityUserStore<UserEntity> _identityUserStore;
 
         private readonly IPasswordHasher _passwordHasher;
         private readonly IJwtService _jwtUtils;
@@ -17,7 +17,7 @@ namespace Warehouse.Core.Services
             IPasswordHasher passwordHasher,
             IJwtService jwtUtils,
             IOptions<AppSettings> appSettings,
-            IIdentityUserStore identityUserStore)
+            IIdentityUserStore<UserEntity> identityUserStore)
         {
             _passwordHasher = passwordHasher;
             _jwtUtils = jwtUtils;
@@ -25,9 +25,9 @@ namespace Warehouse.Core.Services
             _appSettings = appSettings.Value;
         }
 
-        public AuthenticateResponse Authenticate(AuthenticateRequest model, string ipAddress)
+        public async Task<AuthenticateResponse> AuthenticateAsync(AuthenticateRequest model, string ipAddress, CancellationToken cancellationToken)
         {
-            var user = _identityUserStore.FindUserByNameAsync(model.Email);
+            var user = await _identityUserStore.FindByNameAsync(model.Email, cancellationToken);
             // validate
             if (user == null || !_passwordHasher.VerifyHashedPassword(user.PasswordHash, model.Password))
                 throw new ApplicationException("Username or password is incorrect");
@@ -41,23 +41,24 @@ namespace Warehouse.Core.Services
             RemoveOldRefreshTokens(user);
 
             // save changes to db
-            _identityUserStore.UnitOfWork.Add(user);
-            _identityUserStore.UnitOfWork.Commit();
+            await _identityUserStore.UpdateAsync(user, cancellationToken);
 
             return new AuthenticateResponse(user, jwtToken, refreshToken.Token, refreshToken.Expires);
         }
 
-        public AuthenticateResponse RefreshToken(string token, string ipAddress)
+        public async Task<AuthenticateResponse> RefreshTokenAsync(string token, string ipAddress, CancellationToken cancellationToken)
         {
-            var user = _identityUserStore.GetUserByRefreshToken(token);
-            var refreshToken = user.RefreshTokens.Single(x => x.Token == token);
+            var user = await _identityUserStore.FindByRefreshTokenAsync(token, cancellationToken);
+            if (user == null)
+                throw new ApplicationException("Invalid token");
 
+            var refreshToken = user.RefreshTokens.Single(x => x.Token == token);
             if (refreshToken.IsRevoked)
             {
                 // revoke all descendant tokens in case this token has been compromised
                 RevokeDescendantRefreshTokens(refreshToken, user, ipAddress, $"Attempted reuse of revoked ancestor token: {token}");
-                _identityUserStore.UnitOfWork.Add(user);
-                _identityUserStore.UnitOfWork.Commit();
+                // save changes to db
+                await _identityUserStore.UpdateAsync(user, cancellationToken);
             }
 
             if (!refreshToken.IsActive)
@@ -69,10 +70,8 @@ namespace Warehouse.Core.Services
 
             // remove old refresh tokens from user
             RemoveOldRefreshTokens(user);
-
             // save changes to db
-            _identityUserStore.UnitOfWork.Add(user);
-            _identityUserStore.UnitOfWork.Commit();
+            await _identityUserStore.UpdateAsync(user, cancellationToken);
 
             // generate new jwt
             var jwtToken = _jwtUtils.GenerateJwtToken(user);
@@ -80,23 +79,28 @@ namespace Warehouse.Core.Services
             return new AuthenticateResponse(user, jwtToken, newRefreshToken.Token, newRefreshToken.Expires);
         }
 
-        public void RevokeToken(string token, string ipAddress)
+        public async Task RevokeTokenAsync(string token, string ipAddress, CancellationToken cancellationToken)
         {
-            var user = _identityUserStore.GetUserByRefreshToken(token);
-            var refreshToken = user.RefreshTokens.Single(x => x.Token == token);
+            var user = await _identityUserStore.FindByRefreshTokenAsync(token, cancellationToken);
+            if (user == null)
+                throw new ApplicationException("Invalid token");
 
+            var refreshToken = user.RefreshTokens.Single(x => x.Token == token);
             if (!refreshToken.IsActive)
                 throw new ApplicationException("Invalid token");
 
             // revoke token and save
             RevokeRefreshToken(refreshToken, ipAddress, "Revoked without replacement");
-            _identityUserStore.UnitOfWork.Add(user);
-            _identityUserStore.UnitOfWork.Commit();
+            // save changes to db
+            await _identityUserStore.UpdateAsync(user, cancellationToken);
         }
 
-        public IIdentityUser GetById(object id)
+        public async Task<IIdentityUser> GetByIdAsync(object useId, CancellationToken cancellationToken)
         {
-            return _identityUserStore.GetById(id);
+            var user = await _identityUserStore.FindByIdAsync(useId, cancellationToken);
+            if (user == null)
+                throw new ApplicationException("Invalid user");
+            return user;
         }
 
         private RefreshToken RotateRefreshToken(RefreshToken refreshToken, string ipAddress)
@@ -122,7 +126,7 @@ namespace Warehouse.Core.Services
                 var childToken = user.RefreshTokens.SingleOrDefault(x => x.Token == refreshToken.ReplacedByToken);
                 if (childToken is {IsActive: true})
                     RevokeRefreshToken(childToken, ipAddress, reason);
-                else
+                else if(childToken != null)
                     RevokeDescendantRefreshTokens(childToken, user, ipAddress, reason);
             }
         }
