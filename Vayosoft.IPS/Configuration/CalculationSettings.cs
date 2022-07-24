@@ -1,6 +1,6 @@
-﻿using Warehouse.IPS.Methods;
+﻿using Vayosoft.IPS.Methods;
 
-namespace Warehouse.IPS.Configuration
+namespace Vayosoft.IPS.Configuration
 {
     public class CalculationSettings : ICalculationSettings
     {

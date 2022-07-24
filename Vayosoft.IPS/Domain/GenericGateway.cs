@@ -1,8 +1,8 @@
 ﻿using Vayosoft.Core.SharedKernel.ValueObjects;
-using Warehouse.IPS.Configuration;
-using Warehouse.IPS.Filters;
+using Vayosoft.IPS.Configuration;
+using Vayosoft.IPS.Filters;
 
-namespace Warehouse.IPS.Domain
+namespace Vayosoft.IPS.Domain
 {
     public class GenericGateway : IComparable<GenericGateway>
     {

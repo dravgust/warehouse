@@ -1,6 +1,6 @@
 ﻿using MathNet.Numerics.Statistics;
 
-namespace Warehouse.IPS.Filters
+namespace Vayosoft.IPS.Filters
 {
     public class MedianRssiFilter : IRssiFilter
     {

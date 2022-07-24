@@ -1,5 +1,5 @@
 ﻿
-namespace Warehouse.IPS.Methods
+namespace Vayosoft.IPS.Methods
 {
     public class CalcMethod2 : ICalculationMethod
     {

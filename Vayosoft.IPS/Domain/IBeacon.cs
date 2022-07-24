@@ -1,8 +1,8 @@
 ﻿using Vayosoft.Core.SharedKernel.ValueObjects;
-using Warehouse.IPS.Filters;
-using Warehouse.IPS.Methods;
+using Vayosoft.IPS.Filters;
+using Vayosoft.IPS.Methods;
 
-namespace Warehouse.IPS.Domain
+namespace Vayosoft.IPS.Domain
 {
     public interface IBeacon
     {

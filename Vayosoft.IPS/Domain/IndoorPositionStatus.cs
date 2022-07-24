@@ -1,4 +1,4 @@
-﻿namespace Warehouse.IPS.Domain
+﻿namespace Vayosoft.IPS.Domain
 {
     public class IndoorPositionStatus
     {

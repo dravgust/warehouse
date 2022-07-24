@@ -1,6 +1,6 @@
-﻿using Warehouse.IPS.Configuration;
+﻿using Vayosoft.IPS.Configuration;
 
-namespace Warehouse.IPS.Domain
+namespace Vayosoft.IPS.Domain
 {
     public class GenericSite
     {

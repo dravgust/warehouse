@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace Warehouse.IPS.Domain
+namespace Vayosoft.IPS.Domain
 {
     public class KSensor
     {

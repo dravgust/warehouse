@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace Warehouse.IPS.Domain
+namespace Vayosoft.IPS.Domain
 {
     public class BeaconList : KeyedCollection<string, IBeacon>
     {

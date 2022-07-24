@@ -1,8 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using MathNet.Numerics.Statistics;
-using Warehouse.IPS.Filters;
+using Vayosoft.IPS.Filters;
 
-namespace Warehouse.IPS
+namespace Vayosoft.IPS
 {
     /*
          Broadcasting Power
