@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 
 namespace Warehouse.Host
 {
-    public class TimedHostedService : IHostedService, IDisposable
+    public class HostedService : IHostedService, IDisposable
     {
         private int executionCount = 0;
-        private readonly ILogger<TimedHostedService> _logger;
+        private readonly ILogger<HostedService> _logger;
         private Timer? _timer = null;
 
-        public TimedHostedService(ILogger<TimedHostedService> logger)
+        public HostedService(ILogger<HostedService> logger)
         {
             _logger = logger;
         }
 
         public Task StartAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("Timed Hosted Service running.");
+            _logger.LogInformation("Hosted Service running.");
 
             _timer = new Timer(DoWork, null, TimeSpan.Zero,
                 TimeSpan.FromSeconds(5));
@@ -32,12 +32,12 @@ namespace Warehouse.Host
             var count = Interlocked.Increment(ref executionCount);
 
             _logger.LogInformation(
-                "Timed Hosted Service is working. Count: {Count}", count);
+                "Hosted Service is working. Count: {Count}", count);
         }
 
         public Task StopAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("Timed Hosted Service is stopping.");
+            _logger.LogInformation("Hosted Service is stopping.");
 
             _timer?.Change(Timeout.Infinite, 0);
 

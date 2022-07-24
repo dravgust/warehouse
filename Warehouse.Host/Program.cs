@@ -18,7 +18,7 @@ IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
         //services.AddHostedService<Worker>();
-        services.AddHostedService<TimedHostedService>();
+        services.AddHostedService<HostedService>();
 
         if (OperatingSystem.IsWindows())
         {
