@@ -1,7 +1,8 @@
-﻿using Vayosoft.Core.SharedKernel.ValueObjects;
-using Warehouse.Core.Entities.Enums;
+﻿using System;
+using System.Collections.Generic;
+using Vayosoft.Core.SharedKernel.Enums;
 
-namespace Warehouse.Core.Entities.ValueObjects
+namespace Vayosoft.Core.SharedKernel.ValueObjects
 {
     public class Price : ValueObject
     {

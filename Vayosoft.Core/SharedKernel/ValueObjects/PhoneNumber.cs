@@ -1,6 +1,7 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 
-namespace Warehouse.Core.Entities.ValueObjects
+namespace Vayosoft.Core.SharedKernel.ValueObjects
 {
     public record PhoneNumber   
     {

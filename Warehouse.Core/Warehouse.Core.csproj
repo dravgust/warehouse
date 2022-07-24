@@ -25,4 +25,8 @@
     <ProjectReference Include="..\Vayosoft.Data.Redis\Vayosoft.Data.Redis.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Entities\ValueObjects\" />
+  </ItemGroup>
+
 </Project>

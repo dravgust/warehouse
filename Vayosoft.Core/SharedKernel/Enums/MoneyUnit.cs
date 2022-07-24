@@ -1,4 +1,4 @@
-﻿namespace Warehouse.Core.Entities.Enums
+﻿namespace Vayosoft.Core.SharedKernel.Enums
 {
     public enum MoneyUnit : int
     {

@@ -1,4 +1,6 @@
-namespace Warehouse.Core.Entities.ValueObjects
+using System;
+
+namespace Vayosoft.Core.SharedKernel.ValueObjects
 {
     public class DateRange
     {

@@ -1,6 +1,7 @@
-﻿using Warehouse.Core.Entities.Enums;
+﻿using System.Collections.Generic;
+using Vayosoft.Core.SharedKernel.Enums;
 
-namespace Warehouse.Core.Entities.ValueObjects
+namespace Vayosoft.Core.SharedKernel.ValueObjects
 {
     public static class MoneySymbols
     {
