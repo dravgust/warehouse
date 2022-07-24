@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 using FluentValidation;
-using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -19,7 +18,7 @@ using Warehouse.API.Services.Security;
 using Warehouse.API.TagHelpers;
 using Warehouse.API.UseCases.Resources;
 using Warehouse.Core;
-using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Validation;
 using Warehouse.Core.UseCases.Administration.Models;
@@ -57,6 +56,7 @@ try
     builder.Services.AddUnhandledException();
 
     builder.Services.AddWarehouseDependencies(configuration);
+
     builder.Services.AddSingleton<IRequestHandler<GetResources, IEnumerable<ResourceGroup>>, GetResources.ResourcesQueryHandler>();
 
     builder.Services.AddCors(options =>
@@ -116,7 +116,8 @@ try
     // configure DI for application services
     builder.Services.AddScoped<IJwtService, JwtService>();
     builder.Services.AddScoped<IPasswordHasher, MD5PasswordHasher>();
-    builder.Services.AddScoped<IUserService, UserService<UserEntity>>();
+    builder.Services.AddScoped<IIdentityUserStore, IdentityUserStore>();
+    builder.Services.AddScoped<IIdentityUserService, IdentityUserService>();
 
     builder.Services.AddSwaggerGen(c =>
     {

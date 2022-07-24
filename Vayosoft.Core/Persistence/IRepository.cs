@@ -5,17 +5,11 @@ using Vayosoft.Core.SharedKernel.Entities;
 
 namespace Vayosoft.Core.Persistence
 {
-    public interface IRepository<TEntity> : IRepository<TEntity, string> where TEntity : class, IEntity
-    { }
-
-    public interface IRepository<TEntity, in TKey> where TEntity : class, IEntity
+    public interface IRepository<T> where T : class, IEntity
     {
-        Task<TEntity> FindAsync(TKey id, CancellationToken cancellationToken = default);
-
-        Task AddAsync(TEntity entity, CancellationToken cancellationToken = default);
-
-        Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
-
-        Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default);
+        Task<T> FindAsync<TId>(TId id, CancellationToken cancellationToken = default) where TId : notnull;
+        Task AddAsync(T entity, CancellationToken cancellationToken = default);
+        Task UpdateAsync(T entity, CancellationToken cancellationToken = default);
+        Task DeleteAsync(T entity, CancellationToken cancellationToken = default);
     }
 }

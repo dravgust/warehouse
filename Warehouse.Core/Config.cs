@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson.Serialization;
@@ -11,6 +12,7 @@ using Vayosoft.Core.Persistence.Commands;
 using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
+using Vayosoft.Data.Dapper.MySQL;
 using Vayosoft.Data.EF.MySQL;
 using Vayosoft.Data.MongoDB;
 using Vayosoft.Data.MongoDB.QueryHandlers;
@@ -22,21 +24,16 @@ using Warehouse.Core.Persistence;
 using Warehouse.Core.Services.Providers;
 using Warehouse.Core.UseCases;
 using Warehouse.Core.UseCases.Administration.Spcecifications;
-using Warehouse.Core.UseCases.IPS;
-using Warehouse.Core.UseCases.IPS.Models;
-using Warehouse.Core.UseCases.IPS.Queries;
-using Warehouse.Core.UseCases.IPS.Specifications;
-using Warehouse.Core.UseCases.OperationHistory;
-using Warehouse.Core.UseCases.Products.Commands;
-using Warehouse.Core.UseCases.Products.Handlers;
-using Warehouse.Core.UseCases.Products.Queries;
-using Warehouse.Core.UseCases.Products.Specifications;
+using Warehouse.Core.UseCases.Management.Commands;
+using Warehouse.Core.UseCases.Management.Handlers;
+using Warehouse.Core.UseCases.Management.Models;
+using Warehouse.Core.UseCases.Management.Queries;
+using Warehouse.Core.UseCases.Management.Specifications;
+using Warehouse.Core.UseCases.Positioning;
+using Warehouse.Core.UseCases.Positioning.Models;
+using Warehouse.Core.UseCases.Positioning.Queries;
+using Warehouse.Core.UseCases.Positioning.Specifications;
 using Warehouse.Core.UseCases.Providers;
-using Warehouse.Core.UseCases.Warehouse;
-using Warehouse.Core.UseCases.Warehouse.Commands;
-using Warehouse.Core.UseCases.Warehouse.Models;
-using Warehouse.Core.UseCases.Warehouse.Queries;
-using Warehouse.Core.UseCases.Warehouse.Specifications;
 
 namespace Warehouse.Core
 {
@@ -66,6 +63,9 @@ namespace Warehouse.Core
                 .AddEntityDependencies(configuration)
                 .AddMongodDependencies(configuration);
 
+            //add dapper
+            services.AddScoped<DbConnection>();
+
             services.AddDefaultProvider()
                 .AddProviderHandlers();
             
@@ -76,7 +76,7 @@ namespace Warehouse.Core
 
         public static void AddOperationHistory(this IServiceCollection services)
         {
-            services.AddScoped<IRepository<OperationHistoryEntity, string>, WarehouseRepository<OperationHistoryEntity>>();
+            //services.AddScoped<IRepository<OperationHistoryEntity>, WarehouseRepository<OperationHistoryEntity>>();
             services.AddScoped<INotificationHandler<OperationOccurred>, OperationEventHandler>();
         }
 
@@ -85,13 +85,12 @@ namespace Warehouse.Core
             services.AddMongoDbContext(ConfigureMongoDb);
 
             //repositories
-            services.AddScoped<IRepository<FileEntity, string>, WarehouseRepository<FileEntity>>();
-            services.AddScoped<IRepository<ProductEntity, string>, WarehouseRepository<ProductEntity>>();
-            services.AddScoped<IRepository<WarehouseSiteEntity, string>, WarehouseRepository<WarehouseSiteEntity>>();
-            services.AddScoped<IReadOnlyRepository<ProductEntity>, WarehouseRepository<ProductEntity>>();
-            services.AddScoped<IRepository<BeaconEntity, string>, WarehouseRepository<BeaconEntity>>();
-            services.AddScoped<IReadOnlyRepository<BeaconRegisteredEntity>, WarehouseRepository<BeaconRegisteredEntity>>();
-            services.AddScoped<IRepository<IndoorPositionStatusEntity, string>, WarehouseRepository<IndoorPositionStatusEntity>>();
+            services.AddScoped(typeof(IRepository<>), typeof(WarehouseRepository<>));
+            //services.AddScoped<IRepository<FileEntity>, WarehouseRepository<FileEntity>>();
+            //services.AddScoped<IRepository<ProductEntity>, WarehouseRepository<ProductEntity>>();
+            //services.AddScoped<IRepository<WarehouseSiteEntity>, WarehouseRepository<WarehouseSiteEntity>>();
+            //services.AddScoped<IRepository<BeaconEntity>, WarehouseRepository<BeaconEntity>>();
+            //services.AddScoped<IRepository<IndoorPositionStatusEntity>, WarehouseRepository<IndoorPositionStatusEntity>>();
 
             //queries
             services.AddScoped<IRequestHandler<SetProduct, Unit>, ProductCommandHandler>();
@@ -130,11 +129,33 @@ namespace Warehouse.Core
             return services;
         }
 
+        public static IServiceCollection AddMySqlContext(this IServiceCollection services, IConfiguration configuration)
+        {
+            //var connectionString = configuration["EFContext:ConnectionString"];
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
+
+            // Replace with your server version and type.
+            // Use 'MariaDbServerVersion' for MariaDB.
+            // Alternatively, use 'ServerVersion.AutoDetect(connectionString)'.
+            // For common usages, see pull request #1233.
+            var serverVersion = new MySqlServerVersion(new Version(8, 0, 25));
+
+            // Replace 'YourDbContext' with the name of your own DbContext derived class.
+            services.AddDbContext<WarehouseDbContext>(
+                dbContextOptions => dbContextOptions
+                    .UseMySql(connectionString, serverVersion)
+                    .EnableSensitiveDataLogging() // <-- These two calls are optional but help
+                    .EnableDetailedErrors()       // <-- with debugging (remove for production).
+            );
+
+            return services;
+        }
+
         public static IServiceCollection AddEntityDependencies(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddMySqlContext(configuration);
-            services.AddScoped<IUnitOfWork>(s => s.GetRequiredService<DataContext>());
-            services.AddScoped<ILinqProvider>(s => s.GetRequiredService<DataContext>());
+            services.AddScoped<IUnitOfWork>(s => s.GetRequiredService<WarehouseDbContext>());
+            services.AddScoped<ILinqProvider>(s => s.GetRequiredService<WarehouseDbContext>());
 
             services.AddScoped<IRequestHandler<SpecificationQuery<UserSpec, IPagedEnumerable<UserEntityDto>>, IPagedEnumerable<UserEntityDto>>,
                 PagingQueryHandler<long, UserSpec, UserEntity, UserEntityDto>>();

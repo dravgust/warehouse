@@ -17,7 +17,7 @@ namespace Vayosoft.Data.MongoDB
         public IMongoDatabase Database { get; }
         public IClientSessionHandle Session { get; private set; }
 
-        public event OnTraceLine? TraceLine;
+        public event OnTraceLine TraceLine;
 
         [ActivatorUtilitiesConstructor]
         public MongoContext(IConfiguration config) : this(config.GetConnectionSetting()) { }

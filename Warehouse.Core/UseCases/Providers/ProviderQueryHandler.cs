@@ -22,10 +22,7 @@ namespace Warehouse.Core.UseCases.Providers
         {
             var (userName, providerName) = request;
             var provider = providerFactory.GetProviderService(providerName);
-            return await provider.GetUserSubscription(new UserEntity
-            {
-                Username = userName
-            });
+            return await provider.GetUserSubscription(new UserEntity(userName));
         }
     }
 }

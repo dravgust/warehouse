@@ -8,7 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="UseCases\Providers\Queries\" />
+    <Compile Remove="UseCases\Providers\Queries\**" />
+    <EmbeddedResource Remove="UseCases\Providers\Queries\**" />
+    <None Remove="UseCases\Providers\Queries\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Vayosoft.AutoMapper\Vayosoft.AutoMapper.csproj" />
     <ProjectReference Include="..\Vayosoft.Core\Vayosoft.Core.csproj" />
+    <ProjectReference Include="..\Vayosoft.Data.Dapper.MySQL\Vayosoft.Data.Dapper.MySQL.csproj" />
     <ProjectReference Include="..\Vayosoft.Data.EF.MySQL\Vayosoft.Data.EF.MySQL.csproj" />
     <ProjectReference Include="..\Vayosoft.Data.MongoDB\Vayosoft.Data.MongoDB.csproj" />
     <ProjectReference Include="..\Vayosoft.Data.Redis\Vayosoft.Data.Redis.csproj" />

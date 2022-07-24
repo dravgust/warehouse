@@ -9,16 +9,16 @@ namespace Vayosoft.Core.Persistence
 {
     public static class RepositoryExtensions
     {
-        public static async Task<TEntity> GetAsync<TEntity, TKey>(this IRepository<TEntity, TKey> repository, TKey id, CancellationToken cancellationToken = default)
-            where TEntity : class, IEntity
+        public static async Task<T> GetAsync<T, TId>(this IRepository<T> repository, TId id, CancellationToken cancellationToken = default)
+            where T : class, IEntity
         {
             var entity = await repository.FindAsync(id, cancellationToken);
 
-            return entity ?? throw EntityNotFoundException.For<TEntity>(id);
+            return entity ?? throw EntityNotFoundException.For<T>(id);
         }
 
-        public static async Task<Unit> GetAndUpdateAsync<TEntity, TKey>(this IRepository<TEntity, TKey> repository, TKey id, Action<TEntity> action, CancellationToken cancellationToken = default)
-            where TEntity : class, IEntity
+        public static async Task<Unit> GetAndUpdateAsync<T, TId>(this IRepository<T> repository, TId id, Action<T> action, CancellationToken cancellationToken = default)
+            where T : class, IEntity
         {
             var entity = await repository.GetAsync(id, cancellationToken);
             action(entity);

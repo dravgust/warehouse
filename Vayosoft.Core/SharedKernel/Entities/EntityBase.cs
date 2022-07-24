@@ -1,25 +1,25 @@
 ﻿namespace Vayosoft.Core.SharedKernel.Entities
 {
-    public abstract class EntityBase<T> : IEntity<T>
+    public abstract class EntityBase<TId> : IEntity<TId>
     {
         protected EntityBase() { }
 
-        protected EntityBase(T id) => Id = id;
+        protected EntityBase(TId id) => Id = id;
 
         protected int? RequestedHashCode;
 
-        public T Id { get; set; } = default!;
+        public TId Id { get; set; } = default!;
 
         public bool IsTransient()
         {
-            return Id == null || Id.Equals(default(T));
+            return Id == null || Id.Equals(default(TId));
         }
 
-        object IEntity.Id => Id;
+        object IEntity.Id => Id!;
 
         public override bool Equals(object? obj)
         {
-            if (obj is not EntityBase<T> item)
+            if (obj is not EntityBase<TId> item)
                 return false;
             if (object.ReferenceEquals(this, item))
                 return true;
@@ -43,11 +43,11 @@
             else
                 return base.GetHashCode();
         }
-        public static bool operator ==(EntityBase<T> left, EntityBase<T> right)
+        public static bool operator ==(EntityBase<TId> left, EntityBase<TId> right)
         {
             return left?.Equals(right) ?? object.Equals(right, null);
         }
-        public static bool operator !=(EntityBase<T> left, EntityBase<T> right)
+        public static bool operator !=(EntityBase<TId> left, EntityBase<TId> right)
         {
             return !(left == right);
         }

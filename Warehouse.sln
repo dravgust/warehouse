@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Data.Redis", "Vayo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Caching", "Vayosoft.Caching\Vayosoft.Caching.csproj", "{4994F452-9E0E-4F6F-A71E-2B16CE0E4164}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vayosoft.Data.Dapper.MySQL", "Vayosoft.Data.Dapper.MySQL\Vayosoft.Data.Dapper.MySQL.csproj", "{7C374C51-AECF-460E-B3CD-00F9AFE31F64}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{4994F452-9E0E-4F6F-A71E-2B16CE0E4164}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4994F452-9E0E-4F6F-A71E-2B16CE0E4164}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4994F452-9E0E-4F6F-A71E-2B16CE0E4164}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C374C51-AECF-460E-B3CD-00F9AFE31F64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C374C51-AECF-460E-B3CD-00F9AFE31F64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C374C51-AECF-460E-B3CD-00F9AFE31F64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C374C51-AECF-460E-B3CD-00F9AFE31F64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -76,6 +82,7 @@ Global
 		{AB8D60A4-1D10-4677-8998-772BB46B78E2} = {D93C441B-2A4E-491E-8D66-9A27436A84BA}
 		{6BFEDA15-CA11-4464-9D4B-3D04F7036EB9} = {3FCAE5A1-C515-4168-855B-BBFB91497BE4}
 		{4994F452-9E0E-4F6F-A71E-2B16CE0E4164} = {3FCAE5A1-C515-4168-855B-BBFB91497BE4}
+		{7C374C51-AECF-460E-B3CD-00F9AFE31F64} = {3FCAE5A1-C515-4168-855B-BBFB91497BE4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {428A41C0-7C0D-4D74-908D-EE1CF6554A29}

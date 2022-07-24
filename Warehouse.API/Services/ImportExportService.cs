@@ -2,7 +2,7 @@
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.UseCases.Products.Commands;
+using Warehouse.Core.UseCases.Management.Commands;
 
 namespace Warehouse.API.Services
 {
