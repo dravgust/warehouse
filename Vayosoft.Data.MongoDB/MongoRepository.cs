@@ -11,7 +11,7 @@ namespace Vayosoft.Data.MongoDB
         protected readonly IMongoCollection<T> Collection;
 
         public MongoRepository(IMongoContext context) =>
-            Collection = context.Database.GetCollection<T>(CollectionName.For<T>());
+            Collection = context.GetCollection<T>(CollectionName.For<T>());
 
         public Task<T> FindAsync<TId>(TId id, CancellationToken cancellationToken = default) =>
             Collection.Find(q => q.Id.Equals(id)).FirstOrDefaultAsync(cancellationToken);

@@ -4,6 +4,7 @@ using Vayosoft.Caching;
 using Vayosoft.Core;
 using Vayosoft.Streaming.Redis;
 using Warehouse.Core;
+using Warehouse.Core.Persistence;
 using Warehouse.Host;
 
 //https://code-maze.com/aspnetcore-running-applications-as-windows-service/
@@ -39,7 +40,6 @@ try
 
             services
                 .AddWarehouseDependencies(configuration);
-            services.AddScoped<WarehouseStore>();
 
             services.AddHostedService<Worker>();
             //services.AddHostedService<HostedService>();

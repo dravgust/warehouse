@@ -81,6 +81,8 @@ namespace Warehouse.Core
         {
             services.AddMongoDbContext(ConfigureMongoDb);
 
+            services.AddScoped<WarehouseStore>();
+
             //repositories
             services.AddScoped(typeof(IRepository<>), typeof(WarehouseRepository<>));
 

@@ -14,7 +14,7 @@ namespace Vayosoft.Data.MongoDB
     public class MongoContext : IMongoContext
     {
         private readonly MongoClient _client;
-        public IMongoDatabase Database { get; }
+        protected IMongoDatabase Database { get; }
         public IClientSessionHandle Session { get; private set; }
 
         public event OnTraceLine TraceLine;

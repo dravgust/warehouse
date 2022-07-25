@@ -8,6 +8,7 @@ using Vayosoft.IPS.Filters;
 using Vayosoft.IPS.Methods;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Entities.Models.Payloads;
+using Warehouse.Core.Persistence;
 
 namespace Warehouse.Host
 {

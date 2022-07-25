@@ -6,8 +6,6 @@ namespace Vayosoft.Data.MongoDB
 {
     public interface IMongoContext
     {
-        IMongoDatabase Database { get; }
-
         IClientSessionHandle Session { get; }
 
         Task<IClientSessionHandle> StartSession(CancellationToken cancellationToken = default);
