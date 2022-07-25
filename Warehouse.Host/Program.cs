@@ -3,6 +3,7 @@ using Serilog;
 using Vayosoft.Caching;
 using Vayosoft.Core;
 using Vayosoft.Streaming.Redis;
+using Warehouse.Core;
 using Warehouse.Host;
 
 //https://code-maze.com/aspnetcore-running-applications-as-windows-service/
@@ -29,12 +30,18 @@ try
         .UseWindowsService(options => { options.ServiceName = "WarehouseHostService"; })
         .ConfigureServices((hostContext, services) =>
         {
-            services.AddHostedService<Worker>();
-            //services.AddHostedService<HostedService>();
+            var configuration = hostContext.Configuration;
+
             services
                 .AddCoreServices()
                 .AddRedisProducerAndConsumer()
-                .AddCaching(hostContext.Configuration);
+                .AddCaching(configuration);
+
+            services
+                .AddWarehouseDependencies(configuration);
+
+            services.AddHostedService<Worker>();
+            //services.AddHostedService<HostedService>();
 
         }).Build();
 
