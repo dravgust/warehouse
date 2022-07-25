@@ -39,6 +39,7 @@ try
 
             services
                 .AddWarehouseDependencies(configuration);
+            services.AddScoped<WarehouseStore>();
 
             services.AddHostedService<Worker>();
             //services.AddHostedService<HostedService>();

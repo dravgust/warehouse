@@ -1,4 +1,3 @@
-using MongoDB.Driver;
 using Vayosoft.Core.Caching;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Data.MongoDB;
@@ -9,7 +8,6 @@ using Vayosoft.IPS.Filters;
 using Vayosoft.IPS.Methods;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Entities.Models.Payloads;
-using Warehouse.Core.UseCases.Positioning.Models;
 
 namespace Warehouse.Host
 {
@@ -19,17 +17,14 @@ namespace Warehouse.Host
         private const int CheckingPeriod = 6;
         public static readonly TimeSpan Interval = TimeSpan.FromSeconds(CheckingInterval);
 
-        private readonly IMongoCollection<WarehouseSiteEntity> _siteCollection;
         private readonly IDistributedMemoryCache _cache;
         private readonly ILogger<Worker> _logger;
-        private readonly IMongoCollection<IndoorPositionStatusEntity> _statusCollection;
 
-        private readonly WarehouseStore _store = new WarehouseStore();
+        private readonly WarehouseStore _store;
 
-        public Worker(IMongoContext context, IDistributedMemoryCache cache, ILogger<Worker> logger)
+        public Worker(WarehouseStore store, IDistributedMemoryCache cache, ILogger<Worker> logger)
         {
-            _siteCollection = context.Database.GetCollection<WarehouseSiteEntity>(CollectionName.For<WarehouseSiteEntity>());
-            _statusCollection = context.Database.GetCollection<IndoorPositionStatusEntity>(CollectionName.For<IndoorPositionStatusEntity>());
+            _store = store;
             _cache = cache;
             _logger = logger;
         }
@@ -45,7 +40,7 @@ namespace Warehouse.Host
                 {
                     _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
 
-                    var sites = await _store.GetAsync<WarehouseSiteEntity>(token);
+                    var sites = await _store.ListAsync<WarehouseSiteEntity>(token);
                     foreach (var site in sites)
                     {
                         var settings = new DolavSettings();
@@ -56,7 +51,7 @@ namespace Warehouse.Host
                         //    return data;
                         //});
 
-                        var gSite = GetGenericSite(site, settings);
+                        var gSite = await GetGenericSiteAsync(site, settings);
                         gSite.CalcBeaconsPosition();
 
 
@@ -106,7 +101,7 @@ namespace Warehouse.Host
                             if (beacon.Humidity == null && beacon.Temperature == null) continue;
                             try
                             {
-                                _store.AddBeaconEntity(new BeaconTelemetryDto
+                                var beaconReceived = new BeaconReceivedEntity
                                 {
                                     MacAddress = beacon.MacAddress,
                                     ReceivedAt = DateTime.Now,
@@ -117,8 +112,9 @@ namespace Warehouse.Host
                                     Temperature = beacon.Temperature,
                                     X0 = beacon.X0,
                                     Y0 = beacon.Y0,
-                                    Z0 = beacon.Z0
-                                }, BeaconType.Received);
+                                    Z0 = beacon.Z0,
+                                };
+                                await _store.AddAsync(beaconReceived, token);
                             }
                             catch (Exception e)
                             {
@@ -181,7 +177,7 @@ namespace Warehouse.Host
             };
         }
 
-        private GenericSite GetGenericSite(WarehouseSiteEntity site, DolavSettings settings)
+        private async Task<GenericSite> GetGenericSiteAsync(WarehouseSiteEntity site, DolavSettings settings)
         {
             var gSite = new GenericSite(site.Id)
             {
@@ -195,7 +191,7 @@ namespace Warehouse.Host
                 var gauge = gateway.Gauge;
                 if (string.IsNullOrEmpty(gauge?.MAC)) continue;
 
-                var payload = _store.GetGwPayload(gateway.MacAddress);
+                var payload = await _store.SingleOrDefaultAsync<GatewayPayload>(g => g.MacAddress == gateway.MacAddress);
                 var pGauge = payload?.Beacons.FirstOrDefault(p => p.MacAddress.Equals(gauge.MAC, StringComparison.Ordinal));
                 if (pGauge == null) continue;
 
