@@ -11,6 +11,7 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using Vayosoft.Caching;
 using Vayosoft.Data.Redis;
+using Vayosoft.Streaming.Redis;
 using Warehouse.API.Resources;
 using Warehouse.API.Services.ExceptionHandling;
 using Warehouse.API.Services.Localization;
@@ -159,6 +160,7 @@ try
 
     builder.Services.AddRedisConnection();
     builder.Services.AddCaching(configuration);
+    builder.Services.AddRedisProducer();
     //builder.Services.AddRedisCache(configuration);
     //builder.Services.AddMemoryCache();
     //builder.Services.AddDistributedMemoryCache();
