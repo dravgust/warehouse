@@ -262,6 +262,8 @@ namespace Warehouse.Core.UseCases.Positioning
                         var productItem = await _productItems.Find(q => q.Id.Equals(macAddress)).FirstOrDefaultAsync(cancellationToken: cancellationToken);
                         if (productItem != null)
                         {
+                            beaconPositionInfo.Beacon.Name = productItem.Name;
+
                             if (!string.IsNullOrEmpty(productItem.ProductId))
                             {
                                 var product = (await _productCollection.Find(p => p.Id == productItem.ProductId).ToListAsync(cancellationToken))
@@ -274,7 +276,7 @@ namespace Warehouse.Core.UseCases.Positioning
                             }
                         }
 
-                        info.In.Add(beaconPositionInfo);
+                        info.Out.Add(beaconPositionInfo);
                     }
 
                     result.Add(info);
