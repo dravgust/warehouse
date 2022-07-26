@@ -16,20 +16,20 @@ namespace Vayosoft.Data.MongoDB
     public static class CollectionExtensions
     {
         public static IMongoCollection<T> GetDocumentCollection<T>(this IMongoDatabase database, CollectionName collectionName = null)
-            where T : IEntity<string>
+            where T : IEntity
             => GetDocumentCollection<T>(database, collectionName ?? CollectionName.For<T>(), null);
 
         public static IMongoCollection<T> GetDocumentCollection<T>(
             this IMongoDatabase database,
             MongoCollectionSettings settings
-        ) where T : IEntity<string>
+        ) where T : IEntity
             => GetDocumentCollection<T>(database, CollectionName.For<T>(), settings);
 
         public static IMongoCollection<T> GetDocumentCollection<T>(
             this IMongoDatabase database,
             CollectionName collectionName,
             MongoCollectionSettings settings
-        ) where T : IEntity<string>
+        ) where T : IEntity
             => database.GetCollection<T>(collectionName == null ? CollectionName.For<T>() : collectionName, settings);
 
         public static Task<bool> DocumentExists<T>(
@@ -81,7 +81,7 @@ namespace Vayosoft.Data.MongoDB
             this IMongoCollection<T> collection,
             IEnumerable<string> ids,
             CancellationToken cancellationToken = default
-        ) where T : IEntity<string>
+        ) where T : IEntity
         {
             var idsList = ids.ToList();
 
@@ -98,7 +98,7 @@ namespace Vayosoft.Data.MongoDB
             IEnumerable<string> ids,
             Expression<Func<T, TResult>> projection,
             CancellationToken cancellationToken = default
-        ) where T : IEntity<string>
+        ) where T : IEntity
         {
             var idsList = ids.ToList();
 
@@ -147,7 +147,7 @@ namespace Vayosoft.Data.MongoDB
             T document,
             Action<ReplaceOptions> configure,
             CancellationToken cancellationToken = default
-        ) where T : IEntity<string>
+        ) where T : IEntity
         {
             if (document == null) throw new ArgumentNullException(nameof(document), "Document cannot be null.");
 
@@ -170,7 +170,7 @@ namespace Vayosoft.Data.MongoDB
             this IMongoCollection<T> collection,
             T document,
             CancellationToken cancellationToken = default
-        ) where T : IEntity<string>
+        ) where T : IEntity
             => collection.ReplaceDocument(document, null, cancellationToken);
 
         public static async Task<bool> DeleteDocument<T, TKey>(
@@ -190,7 +190,7 @@ namespace Vayosoft.Data.MongoDB
             this IMongoCollection<T> collection,
             FilterDefinition<T> filter,
             CancellationToken cancellationToken = default
-        ) where T : IEntity<string>
+        ) where T : IEntity
         {
             if (filter == null) throw new ArgumentNullException(nameof(filter));
 
@@ -203,7 +203,7 @@ namespace Vayosoft.Data.MongoDB
             this IMongoCollection<T> collection,
             Func<FilterDefinitionBuilder<T>, FilterDefinition<T>> filter,
             CancellationToken cancellationToken = default
-        ) where T : IEntity<string>
+        ) where T : IEntity
             => collection.DeleteManyDocuments(filter(Builders<T>.Filter), cancellationToken);
 
         public static async Task<long> BulkUpdateDocuments<T>(
@@ -213,7 +213,7 @@ namespace Vayosoft.Data.MongoDB
             Func<T, UpdateDefinitionBuilder<T>, UpdateDefinition<T>> update,
             Action<BulkWriteOptions> configure,
             CancellationToken cancellationToken = default
-        ) where T : IEntity<string>
+        ) where T : IEntity
         {
             var options = new BulkWriteOptions();
 
@@ -237,7 +237,7 @@ namespace Vayosoft.Data.MongoDB
             Func<T, WriteModel<T>> write,
             Action<BulkWriteOptions> configure,
             CancellationToken cancellationToken = default
-        ) where T : IEntity<string>
+        ) where T : IEntity
         {
             var options = new BulkWriteOptions();
 
@@ -253,14 +253,14 @@ namespace Vayosoft.Data.MongoDB
             Func<T, FilterDefinitionBuilder<T>, FilterDefinition<T>> filter,
             Func<T, UpdateDefinitionBuilder<T>, UpdateDefinition<T>> update,
             CancellationToken cancellationToken = default
-        ) where T : IEntity<string>
+        ) where T : IEntity
             => collection.BulkUpdateDocuments(documents, filter, update, null, cancellationToken);
 
         public static Task<string> CreateDocumentIndex<T>(
             this IMongoCollection<T> collection,
             Func<IndexKeysDefinitionBuilder<T>, IndexKeysDefinition<T>> index,
             Action<CreateIndexOptions> configure = null
-        ) where T : IEntity<string>
+        ) where T : IEntity
         {
             var options = new CreateIndexOptions();
 
@@ -279,7 +279,7 @@ namespace Vayosoft.Data.MongoDB
             Func<IndexKeysDefinitionBuilder<T>, IndexKeysDefinition<T>> index,
             Action<CreateIndexOptions> configure,
             CancellationToken cancellationToken
-        ) where T : IEntity<string>
+        ) where T : IEntity
         {
             var options = new CreateIndexOptions();
 
@@ -448,7 +448,7 @@ namespace Vayosoft.Data.MongoDB
             UpdateDefinition<T> update,
             Action<UpdateOptions>? configure,
             CancellationToken cancellationToken = default
-        ) where T : IEntity<string>
+        ) where T : IEntity
         {
             if (filter == null) throw new ArgumentNullException(nameof(filter));
             if (update == null) throw new ArgumentNullException(nameof(update));
@@ -471,7 +471,7 @@ namespace Vayosoft.Data.MongoDB
             Func<UpdateDefinitionBuilder<T>, UpdateDefinition<T>> update,
             Action<UpdateOptions> configure,
             CancellationToken cancellationToken = default
-        ) where T : IEntity<string>
+        ) where T : IEntity
             => collection.UpdateManyDocuments(filter(Builders<T>.Filter), update(Builders<T>.Update), configure, cancellationToken);
 
         /// <summary>
@@ -482,7 +482,7 @@ namespace Vayosoft.Data.MongoDB
             FilterDefinition<T> filter,
             UpdateDefinition<T> update,
             CancellationToken cancellationToken = default
-        ) where T : IEntity<string>
+        ) where T : IEntity
             => collection.UpdateManyDocuments(filter, update, null, cancellationToken);
 
         /// <summary>
@@ -493,12 +493,16 @@ namespace Vayosoft.Data.MongoDB
             Func<FilterDefinitionBuilder<T>, FilterDefinition<T>> filter,
             Func<UpdateDefinitionBuilder<T>, UpdateDefinition<T>> update,
             CancellationToken cancellationToken = default
-        ) where T : IEntity<string>
+        ) where T : IEntity
             => collection.UpdateManyDocuments(filter(Builders<T>.Filter), update(Builders<T>.Update), null, cancellationToken);
 
         #endregion
 
-        public static Task<IPagedEnumerable<T>> AggregateByPage<T>(this IMongoCollection<T> collection, IPagingModel<T, object> model, CancellationToken cancellationToken = default) where T : class, IEntity<string>
+        public static Task<IPagedEnumerable<T>> AggregateByPage<T>(
+            this IMongoCollection<T> collection,
+            IPagingModel<T, object> model,
+            CancellationToken cancellationToken = default)
+            where T : class, IEntity
         {
             var sortDefinition = model.OrderBy.SortOrder == SortOrder.Asc 
                 ? Builders<T>.Sort.Ascending(model.OrderBy.Expression) 

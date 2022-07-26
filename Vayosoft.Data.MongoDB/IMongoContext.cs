@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Driver;
+using Vayosoft.Core.SharedKernel.Entities;
 
 namespace Vayosoft.Data.MongoDB
 {
@@ -12,8 +13,6 @@ namespace Vayosoft.Data.MongoDB
 
         IMongoDatabase GetDatabase(string db);
 
-        IMongoCollection<T> GetCollection<T>(string db, string collectionName);
-
-        IMongoCollection<T> GetCollection<T>(string collectionName);
+        IMongoCollection<T> Collection<T>(CollectionName collectionName = null) where T : IEntity;
     }
 }

@@ -6,59 +6,68 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
-using Vayosoft.Core.Persistence;
+using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Entities;
-using Vayosoft.Core.Specifications;
+using Vayosoft.Core.SharedKernel.Exceptions;
 
 namespace Vayosoft.Data.MongoDB
 {
-    public class MongoContextBase : MongoContext, ILinqProvider
+    public class MongoContextBase : MongoContext
     {
-        public MongoContextBase(IConfiguration config) : base(config)
-        { }
-
-        public MongoContextBase(ConnectionSetting config) : base(config)
-        { }
-
-        public MongoContextBase(string connectionString, string[] bootstrapServers) : base(connectionString, bootstrapServers)
-        { }
-
-        protected IMongoCollection<T> Set<T>()
-            => GetCollection<T>(CollectionName.For<T>());
+        public MongoContextBase(IConfiguration config) : base(config) { }
+        public MongoContextBase(ConnectionSetting config) : base(config) { }
+        public MongoContextBase(string connectionString, string[] bootstrapServers)
+            : base(connectionString, bootstrapServers) { }
 
         public IQueryable<T> AsQueryable<T>() where T : class, IEntity =>
-            Set<T>().AsQueryable();
+            Collection<T>().AsQueryable();
 
-        public IQueryable<T> AsQueryable<T>(ISpecification<T> specification) where T : class, IEntity
+        public async Task<T> GetAsync<T>(object id, CancellationToken cancellationToken = default) where T : IEntity =>
+            await FindAsync<T>(id, cancellationToken) ?? throw EntityNotFoundException.For<T>(id);
+
+        public async Task GetAndUpdateAsync<T>(object id, Action<T> action, CancellationToken cancellationToken = default)
+            where T : class, IEntity
         {
-            return AsQueryable<T>().Where(specification.Criteria);
+            var entity = await GetAsync<T>(id, cancellationToken);
+            action(entity);
+            await UpdateAsync(entity, cancellationToken);
         }
 
-        public Task<T> FirstOrDefaultAsync<T>(ISpecification<T> specification, CancellationToken cancellationToken = default) where T : IEntity =>
-            Set<T>().Find(specification.Criteria).FirstOrDefaultAsync(cancellationToken);
+        public Task<T> FirstOrDefaultAsync<T>(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default) where T : IEntity =>
+            Collection<T>().Find(criteria).FirstOrDefaultAsync(cancellationToken);
 
         public Task<T> SingleOrDefaultAsync<T>(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default) where T : IEntity =>
-            Set<T>().Find(criteria).SingleOrDefaultAsync(cancellationToken);
+            Collection<T>().Find(criteria).SingleOrDefaultAsync(cancellationToken);
 
         public Task<List<T>> ListAsync<T>(CancellationToken cancellationToken = default) where T : IEntity =>
-            Set<T>().Find(Builders<T>.Filter.Empty).ToListAsync(cancellationToken);
+            Collection<T>().Find(Builders<T>.Filter.Empty).ToListAsync(cancellationToken);
 
         public Task<List<T>> ListAsync<T>(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default) where T : IEntity =>
-            Set<T>().Find(criteria).ToListAsync(cancellationToken);
+            Collection<T>().Find(criteria).ToListAsync(cancellationToken);
+
+        public Task<TResult> FirstOrDefaultAsync<T, TResult>(Expression<Func<T, bool>> criteria, IMapper mapper, CancellationToken cancellationToken = default) where T : IEntity =>
+            Collection<T>().Find(criteria).Project(x => mapper.Map<TResult>(x)).FirstOrDefaultAsync(cancellationToken);
+
+        public Task<TResult> SingleOrDefaultAsync<T, TResult>(Expression<Func<T, bool>> criteria, IMapper mapper, CancellationToken cancellationToken = default) where T : IEntity =>
+            Collection<T>().Find(criteria).Project(x => mapper.Map<TResult>(x)).SingleOrDefaultAsync(cancellationToken);
+
+        public Task<List<TResult>> ListAsync<T, TResult>(Expression<Func<T, bool>> criteria, IMapper mapper, CancellationToken cancellationToken = default) where T : IEntity =>
+            Collection<T>().Find(criteria).Project(x => mapper.Map<TResult>(x)).ToListAsync(cancellationToken);
 
         public Task<T> FindAsync<T>(object id, CancellationToken cancellationToken = default) where T : IEntity =>
-            Set<T>().Find(q => q.Id.Equals(id)).FirstOrDefaultAsync(cancellationToken);
+            Collection<T>().Find(q => q.Id.Equals(id)).FirstOrDefaultAsync(cancellationToken);
 
         public Task AddAsync<T>(T entity, CancellationToken cancellationToken = default) where T : IEntity =>
-            Set<T>().InsertOneAsync(entity, cancellationToken: cancellationToken);
+            Collection<T>().InsertOneAsync(entity, cancellationToken: cancellationToken);
 
         public Task UpdateAsync<T>(T entity, CancellationToken cancellationToken = default) where T : IEntity =>
-            Set<T>().ReplaceOneAsync(Builders<T>.Filter.Eq(e => e.Id, entity.Id), entity, cancellationToken: cancellationToken);
-
+            Collection<T>().ReplaceOneAsync(e => e.Id.Equals(entity.Id), entity, cancellationToken: cancellationToken);
+        
         public Task DeleteAsync<T>(T entity, CancellationToken cancellationToken = default) where T : IEntity =>
-            Set<T>().DeleteOneAsync(Builders<T>.Filter.Eq(e => e.Id, entity.Id), cancellationToken: cancellationToken);
+            Collection<T>().DeleteOneAsync(e => e.Id.Equals(entity.Id), cancellationToken: cancellationToken);
 
         public Task DeleteAsync<T>(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken) where T : IEntity =>
-            Set<T>().DeleteOneAsync(criteria, cancellationToken: cancellationToken);
+            Collection<T>().DeleteOneAsync(criteria, cancellationToken: cancellationToken);
+
     }
 }

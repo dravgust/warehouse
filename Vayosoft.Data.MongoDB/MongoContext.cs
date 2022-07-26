@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Core.Events;
+using Vayosoft.Core.SharedKernel.Entities;
 
 namespace Vayosoft.Data.MongoDB
 {
@@ -69,10 +70,8 @@ namespace Vayosoft.Data.MongoDB
         public IMongoDatabase GetDatabase(string db)
             => _client.GetDatabase(db);
 
-        public IMongoCollection<T> GetCollection<T>(string db, string collectionName)
-            => _client.GetDatabase(db).GetCollection<T>(collectionName);
-        public IMongoCollection<T> GetCollection<T>(string collection)
-            => Database.GetCollection<T>(collection);
+        public IMongoCollection<T> Collection<T>(CollectionName collectionName = null) where T : IEntity
+            => Database.GetDocumentCollection<T>(collectionName);
 
         private static string GetDatabaseName(string connectionString)
         {

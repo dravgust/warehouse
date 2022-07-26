@@ -5,8 +5,8 @@ using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.Utilities;
-using Vayosoft.Data.MongoDB;
 using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Persistence;
 using Warehouse.Core.UseCases.Management.Models;
 using Warehouse.Core.UseCases.Management.Queries;
 using Warehouse.Core.UseCases.Management.Specifications;
@@ -17,21 +17,17 @@ namespace Warehouse.Core.UseCases.Management.Handlers
         IQueryHandler<GetRegisteredBeaconList, IEnumerable<string>>,
         IQueryHandler<GetProductItems, IPagedEnumerable<ProductItemDto>>
     {
+        private readonly WarehouseStore _store;
         private readonly IDistributedMemoryCache _cache;
         private readonly IMapper _mapper;
         private readonly IQueryBus _queryBus;
-        private readonly IMongoCollection<BeaconRegisteredEntity> _collection;
-        private readonly IMongoCollection<ProductEntity> _products;
-        private readonly IMongoCollection<BeaconEntity> _productItems;
 
-        public WarehouseQueryHandler(IMongoContext context, IDistributedMemoryCache cache, IMapper mapper, IQueryBus queryBus)
+        public WarehouseQueryHandler(WarehouseStore store, IDistributedMemoryCache cache, IMapper mapper, IQueryBus queryBus)
         {
-            _collection = context.Database.GetCollection<BeaconRegisteredEntity>(CollectionName.For<BeaconRegisteredEntity>());
-            _products = context.Database.GetCollection<ProductEntity>(CollectionName.For<ProductEntity>());
+            _store = store;
             _cache = cache;
             _mapper = mapper;
             _queryBus = queryBus;
-            _productItems = context.Database.GetCollection<BeaconEntity>(CollectionName.For<BeaconEntity>());
         }
 
         public async Task<IEnumerable<string>> Handle(GetRegisteredBeaconList request, CancellationToken cancellationToken)
@@ -40,9 +36,8 @@ namespace Warehouse.Core.UseCases.Management.Handlers
             {
                 options.AbsoluteExpirationRelativeToNow = TimeSpans.FiveMinutes;
 
-                var data = await _collection
-                    .FindAsync(Builders<BeaconRegisteredEntity>.Filter.Empty, cancellationToken: cancellationToken);
-                return (await data.ToListAsync(cancellationToken: cancellationToken)).Select(b => b.MacAddress);
+                return (await _store.ListAsync<BeaconRegisteredEntity>(cancellationToken))
+                    .Select(b => b.MacAddress);
             });
 
             return data;
@@ -62,13 +57,12 @@ namespace Warehouse.Core.UseCases.Management.Handlers
                     MacAddress = item.MacAddress,
                 };
 
-                var productItem = await _productItems.Find(q => q.Id.Equals(item.MacAddress)).FirstOrDefaultAsync(cancellationToken: cancellationToken);
+                var productItem = await _store.FirstOrDefaultAsync<BeaconEntity>(q => q.Id.Equals(item.MacAddress), cancellationToken);
                 if (productItem != null)
                 {
                     if (!string.IsNullOrEmpty(productItem.ProductId))
                     {
-                        var product = await _products.Find(q => q.Id.Equals(productItem.ProductId))
-                            .FirstOrDefaultAsync(cancellationToken: cancellationToken);
+                        var product = await _store.FindAsync<ProductEntity>(productItem.ProductId, cancellationToken);
                         if (product != null)
                             dto.Product = _mapper.Map<ProductDto>(product);
                     }

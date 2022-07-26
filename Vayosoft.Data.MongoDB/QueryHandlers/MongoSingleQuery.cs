@@ -17,7 +17,7 @@ namespace Vayosoft.Data.MongoDB.QueryHandlers
 
         public MongoSingleQueryHandler(IMongoContext context)
         {
-            Collection = context.Database.GetCollection<TEntity>(CollectionName.For<TEntity>());
+            Collection = context.Collection<TEntity>();
         }
 
         public virtual async Task<TEntity> Handle(SingleQuery<TEntity> requiest, CancellationToken cancellationToken)

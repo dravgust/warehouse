@@ -16,7 +16,6 @@ namespace Warehouse.Host
     {
         private const int CheckingInterval = 10;
         private const int CheckingPeriod = 6;
-        public static readonly TimeSpan Interval = TimeSpan.FromSeconds(CheckingInterval);
 
         private readonly IDistributedMemoryCache _cache;
         private readonly ILogger<Worker> _logger;

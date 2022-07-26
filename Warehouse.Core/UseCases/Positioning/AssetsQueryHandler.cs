@@ -1,12 +1,11 @@
 ﻿using System.Collections.ObjectModel;
 using MongoDB.Driver;
-using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
-using Vayosoft.Data.MongoDB;
 using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Persistence;
 using Warehouse.Core.UseCases.Management.Models;
 using Warehouse.Core.UseCases.Positioning.Models;
 using Warehouse.Core.UseCases.Positioning.Queries;
@@ -22,30 +21,18 @@ namespace Warehouse.Core.UseCases.Positioning
         IQueryHandler<GetIpsStatus, IndoorPositionStatusDto>,
         IQueryHandler<GetSiteInfo, IEnumerable<IndoorPositionStatusDto>>
     {
+        private readonly WarehouseStore _store;
         private readonly IQueryBus _queryBus;
-        private readonly IRepository<WarehouseSiteEntity> _siteRepository;
-        private readonly IRepository<IndoorPositionStatusEntity> _statusRepository;
-        private readonly IMongoCollection<ProductEntity> _productCollection;
-        private readonly IMongoCollection<BeaconEntity> _productItems;
-        private readonly IMongoCollection<IndoorPositionStatusEntity> _statusCollection;
-        private readonly IMongoCollection<BeaconIndoorPositionEntity> _beaconStatusCollection;
-        private readonly IMongoCollection<BeaconReceivedEntity> _telemetryCollection;
         private readonly IMapper _mapper;
 
-        public AssetsQueryHandler(IQueryBus queryBus,
-            IRepository<WarehouseSiteEntity> siteRepository,
-            IRepository<IndoorPositionStatusEntity> statusRepository,
-            IMapper mapper, IMongoContext context)
+        public AssetsQueryHandler(
+            WarehouseStore store, 
+            IQueryBus queryBus,
+            IMapper mapper)
         {
+            _store = store;
             _queryBus = queryBus;
-            _siteRepository = siteRepository;
-            _statusRepository = statusRepository;
             _mapper = mapper;
-            _productItems = context.Database.GetCollection<BeaconEntity>(CollectionName.For<BeaconEntity>());
-            _statusCollection = context.Database.GetCollection<IndoorPositionStatusEntity>(CollectionName.For<IndoorPositionStatusEntity>());
-            _beaconStatusCollection = context.Database.GetCollection<BeaconIndoorPositionEntity>(CollectionName.For<BeaconIndoorPositionEntity>());
-            _telemetryCollection = context.Database.GetCollection<BeaconReceivedEntity>(CollectionName.For<BeaconReceivedEntity>());
-            _productCollection = context.Database.GetCollection<ProductEntity>(CollectionName.For<ProductEntity>());
         }
 
         public async Task<IPagedEnumerable<AssetDto>> Handle(GetAssets request, CancellationToken cancellationToken)
@@ -65,19 +52,18 @@ namespace Warehouse.Core.UseCases.Positioning
                     SiteId = b.SiteId
                 };
 
-                var site = await _siteRepository.FindAsync(b.SiteId, cancellationToken);
+                var site = await _store.FindAsync<WarehouseSiteEntity>(b.SiteId, cancellationToken);
                 if (site != null)
                 {
                     asset.Site = _mapper.Map<WarehouseSiteDto>(site);
                 }
 
-                var productItem = await _productItems.Find(q => q.Id.Equals(b.MacAddress)).FirstOrDefaultAsync(cancellationToken: cancellationToken);
+                var productItem = await _store.FirstOrDefaultAsync<BeaconEntity>(q => q.Id.Equals(b.MacAddress), cancellationToken);
                 if (productItem != null)
                 {
                     if (!string.IsNullOrEmpty(productItem.ProductId))
                     {
-                        var product = (await _productCollection.Find(p => p.Id == productItem.ProductId).ToListAsync(cancellationToken))
-                            .FirstOrDefault();
+                        var product = await _store.FirstOrDefaultAsync<ProductEntity>(p => p.Id == productItem.ProductId, cancellationToken);
                         if (product != null)
                         {
                             asset.Product = _mapper.Map<ProductDto>(product);
@@ -93,7 +79,7 @@ namespace Warehouse.Core.UseCases.Positioning
 
         public async Task<IEnumerable<AssetInfo>> Handle(GetAssetInfo request, CancellationToken cancellationToken)
         {
-            var result = await _beaconStatusCollection.Find(b => true).ToListAsync(cancellationToken);
+            var result = await _store.ListAsync<BeaconIndoorPositionEntity>(cancellationToken);
 
             var store = new SortedDictionary<(string, string), AssetInfo>(Comparer<(string, string)>.Create((x, y) => y.CompareTo(x)));
 
@@ -108,13 +94,12 @@ namespace Warehouse.Core.UseCases.Positioning
                     Id = b.SiteId
                 };
 
-                var productItem = await _productItems.Find(q => q.Id.Equals(b.MacAddress)).FirstOrDefaultAsync(cancellationToken: cancellationToken);
+                var productItem = await _store.FirstOrDefaultAsync<BeaconEntity>(q => q.Id.Equals(b.MacAddress), cancellationToken);
                 if (productItem != null)
                 {
                     if (!string.IsNullOrEmpty(productItem.ProductId))
                     {
-                        var product = (await _productCollection.Find(p => p.Id == productItem.ProductId).ToListAsync(cancellationToken))
-                            .FirstOrDefault();
+                        var product = await _store.FirstOrDefaultAsync<ProductEntity>(p => p.Id == productItem.ProductId, cancellationToken);
                         if (product != null)
                         {
                             productInfo.Id = product.Id;
@@ -125,7 +110,7 @@ namespace Warehouse.Core.UseCases.Positioning
                 
                 if (!store.ContainsKey((productInfo.Id, siteInfo.Id)))
                 {
-                    var site = await _siteRepository.FindAsync(b.SiteId, cancellationToken);
+                    var site = await _store.GetAsync<WarehouseSiteEntity>(b.SiteId, cancellationToken);
                     siteInfo.Name = site.Name;
 
                     var asset = new AssetInfo
@@ -160,7 +145,7 @@ namespace Warehouse.Core.UseCases.Positioning
 
         public async Task<IndoorPositionStatusDto> Handle(GetIpsStatus request, CancellationToken cancellationToken)
         {
-            var result = await _statusRepository.GetAsync(request.SiteId, cancellationToken);
+            var result = await _store.GetAsync<IndoorPositionStatusEntity>(request.SiteId, cancellationToken);
             return _mapper.Map<IndoorPositionStatusDto>(result);
         }
 
@@ -191,13 +176,12 @@ namespace Warehouse.Core.UseCases.Positioning
 
         public async Task<IEnumerable<IndoorPositionStatusDto>> Handle(GetSiteInfo request, CancellationToken cancellationToken)
         {
-            var filter = Builders<IndoorPositionStatusEntity>.Filter.Empty;
-            var statusEntities = await _statusCollection.Find(filter).ToListAsync(cancellationToken);
+            var statusEntities = await _store.ListAsync<IndoorPositionStatusEntity>(cancellationToken);
 
             var result  = new List<IndoorPositionStatusDto>();
             foreach (var s in statusEntities)
             {
-                var site = await _siteRepository.FindAsync(s.Id, cancellationToken);
+                var site = await _store.FindAsync<WarehouseSiteEntity>(s.Id, cancellationToken);
                 if (site != null)
                 {
                     var info = new IndoorPositionStatusDto
@@ -225,15 +209,14 @@ namespace Warehouse.Core.UseCases.Positioning
                             }
                         };
 
-                        var productItem = await _productItems.Find(q => q.Id.Equals(macAddress)).FirstOrDefaultAsync(cancellationToken: cancellationToken);
+                        var productItem = await _store.FirstOrDefaultAsync<BeaconEntity>(q => q.Id.Equals(macAddress), cancellationToken);
                         if (productItem != null)
                         {
                             beaconPositionInfo.Beacon.Name = productItem.Name;
 
                             if (!string.IsNullOrEmpty(productItem.ProductId))
                             {
-                                var product = (await _productCollection.Find(p => p.Id == productItem.ProductId).ToListAsync(cancellationToken))
-                                    .FirstOrDefault();
+                                var product = await _store.FirstOrDefaultAsync<ProductEntity>(p => p.Id == productItem.ProductId, cancellationToken);
                                 if (product != null)
                                 {
                                     beaconPositionInfo.Product.Id = product.Id;
@@ -259,15 +242,14 @@ namespace Warehouse.Core.UseCases.Positioning
                             }
                         };
 
-                        var productItem = await _productItems.Find(q => q.Id.Equals(macAddress)).FirstOrDefaultAsync(cancellationToken: cancellationToken);
+                        var productItem = await _store.FirstOrDefaultAsync<BeaconEntity>(q => q.Id.Equals(macAddress), cancellationToken);
                         if (productItem != null)
                         {
                             beaconPositionInfo.Beacon.Name = productItem.Name;
 
                             if (!string.IsNullOrEmpty(productItem.ProductId))
                             {
-                                var product = (await _productCollection.Find(p => p.Id == productItem.ProductId).ToListAsync(cancellationToken))
-                                    .FirstOrDefault();
+                                var product = await _store.FirstOrDefaultAsync<ProductEntity>(p => p.Id == productItem.ProductId, cancellationToken);
                                 if (product != null)
                                 {
                                     beaconPositionInfo.Product.Id = product.Id;
@@ -288,8 +270,8 @@ namespace Warehouse.Core.UseCases.Positioning
 
         public async Task<BeaconTelemetryDto> Handle(GetBeaconTelemetry request, CancellationToken cancellationToken)
         {
-            var data = _telemetryCollection
-                .AsQueryable()
+            var data = _store
+                .AsQueryable<BeaconReceivedEntity>()
                 .Where(t => t.MacAddress == request.MacAddress)
                 .OrderByDescending(m => m.ReceivedAt)
                 .FirstOrDefault();
@@ -311,7 +293,7 @@ namespace Warehouse.Core.UseCases.Positioning
 
         public async Task<BeaconTelemetry2Dto> Handle(GetBeaconTelemetry2 request, CancellationToken cancellationToken)
         {
-            var data = _telemetryCollection.Aggregate()
+            var data = _store.Collection<BeaconReceivedEntity>().Aggregate()
                 .Match(t => t.MacAddress == request.MacAddress && t.ReceivedAt > DateTime.UtcNow.AddHours(-12))
                 .Group(k =>
                         new DateTime(k.ReceivedAt.Year, k.ReceivedAt.Month, k.ReceivedAt.Day,

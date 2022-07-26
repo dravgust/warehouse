@@ -23,7 +23,7 @@ namespace Vayosoft.Data.MongoDB.QueryHandlers
 
         public MongoPagingQueryHandler(IMongoContext context)
         {
-            Collection = context.Database.GetCollection<TEntity>(CollectionName.For<TEntity>());
+            Collection = context.Collection<TEntity>();
         }
 
         public Task<IPagedEnumerable<TEntity>> Handle(SpecificationQuery<TSpecification, IPagedEnumerable<TEntity>> request, CancellationToken cancellationToken)
