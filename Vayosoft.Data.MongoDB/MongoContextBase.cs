@@ -22,10 +22,13 @@ namespace Vayosoft.Data.MongoDB
         public IQueryable<T> AsQueryable<T>() where T : class, IEntity =>
             Collection<T>().AsQueryable();
 
-        public async Task<T> GetAsync<T>(object id, CancellationToken cancellationToken = default) where T : IEntity =>
+        public async Task<T> GetAsync<T>(string id, CancellationToken cancellationToken = default) where T : IEntity =>
+            await GetAsync<T, string>(id, cancellationToken);
+
+        public async Task<T> GetAsync<T, TId>(TId id, CancellationToken cancellationToken = default) where T : IEntity =>
             await FindAsync<T>(id, cancellationToken) ?? throw EntityNotFoundException.For<T>(id);
 
-        public async Task GetAndUpdateAsync<T>(object id, Action<T> action, CancellationToken cancellationToken = default)
+        public async Task GetAndUpdateAsync<T>(string id, Action<T> action, CancellationToken cancellationToken = default)
             where T : class, IEntity
         {
             var entity = await GetAsync<T>(id, cancellationToken);

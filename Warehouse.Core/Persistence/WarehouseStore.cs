@@ -11,7 +11,8 @@ namespace Warehouse.Core.Persistence
     {
         private readonly IMapper _mapper;
 
-        public WarehouseStore(IConfiguration config, IMapper mapper) : base(config)
+        public WarehouseStore(IConfiguration config, IMapper mapper)
+            : base(config)
         {
             _mapper = mapper;
         }
