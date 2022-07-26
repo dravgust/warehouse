@@ -5,8 +5,9 @@ using Vayosoft.Core.SharedKernel.Entities;
 
 namespace Vayosoft.Data.MongoDB
 {
-    public interface IMongoContext
+    public interface IMongoDbContext
     {
+        IMongoDatabase Database { get; }
         IClientSessionHandle Session { get; }
 
         Task<IClientSessionHandle> StartSession(CancellationToken cancellationToken = default);

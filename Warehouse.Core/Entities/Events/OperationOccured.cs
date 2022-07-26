@@ -3,7 +3,7 @@ using Warehouse.Core.Entities.Enums;
 
 namespace Warehouse.Core.Entities.Events
 {
-    public record OperationOccurred(string SourceId, OperationType Type, string Name, DateTime Created, string ProviderName) : IExternalEvent
+    public record OperationOccurred(string SourceId, OperationType Type, string Name, DateTimeOffset TimeStamp, string ProviderName) : IExternalEvent
     {
         public static OperationOccurred Create(string sourceId, OperationType type, DateTime created, string providerName)
         {

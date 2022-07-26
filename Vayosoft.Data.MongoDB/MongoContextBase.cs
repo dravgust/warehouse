@@ -12,7 +12,7 @@ using Vayosoft.Core.SharedKernel.Exceptions;
 
 namespace Vayosoft.Data.MongoDB
 {
-    public class MongoContextBase : MongoContext
+    public class MongoContextBase : MongoDbContext
     {
         public MongoContextBase(IConfiguration config) : base(config) { }
         public MongoContextBase(ConnectionSetting config) : base(config) { }

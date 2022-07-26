@@ -29,7 +29,7 @@ namespace Warehouse.Core.UseCases.Management.Handlers
 
             var sourceId = @event.SourceId;
             var eventType = @event.Type;
-            var eventTime = @event.Created;
+            var eventTime = @event.TimeStamp;
 
             var provider = providerFactory.GetProviderService(@event.ProviderName);
             using var scope = _serviceProvider.CreateScope();

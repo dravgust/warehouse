@@ -12,18 +12,18 @@ using Vayosoft.Core.SharedKernel.Entities;
 namespace Vayosoft.Data.MongoDB
 {
     public delegate void OnTraceLine(string commandName, string command);
-    public class MongoContext : IMongoContext
+    public class MongoDbContext : IMongoDbContext
     {
         private readonly MongoClient _client;
-        protected IMongoDatabase Database { get; }
+        public IMongoDatabase Database { get; }
         public IClientSessionHandle Session { get; private set; }
 
         public event OnTraceLine TraceLine;
 
         [ActivatorUtilitiesConstructor]
-        public MongoContext(IConfiguration config) : this(config.GetConnectionSetting()) { }
-        public MongoContext(ConnectionSetting config) : this(config.ConnectionString, config.ReplicaSet?.BootstrapServers) { }
-        public MongoContext(string connectionString, string[] bootstrapServers)
+        public MongoDbContext(IConfiguration config) : this(config.GetConnectionSetting()) { }
+        public MongoDbContext(ConnectionSetting config) : this(config.ConnectionString, config.ReplicaSet?.BootstrapServers) { }
+        public MongoDbContext(string connectionString, string[] bootstrapServers)
         {
             if (!string.IsNullOrWhiteSpace(connectionString))
             {
@@ -64,8 +64,12 @@ namespace Vayosoft.Data.MongoDB
             }
         }
 
-        public async Task<IClientSessionHandle> StartSession(CancellationToken cancellationToken = default) =>
-            await _client.StartSessionAsync(cancellationToken: cancellationToken);
+        public async Task<IClientSessionHandle> StartSession(CancellationToken cancellationToken = default)
+        {
+            var session = await _client.StartSessionAsync(cancellationToken: cancellationToken);
+            Session = session;
+            return session;
+        }
 
         public IMongoDatabase GetDatabase(string db)
             => _client.GetDatabase(db);
@@ -91,6 +95,9 @@ namespace Vayosoft.Data.MongoDB
 
             throw new ArgumentException("Unsupported DB connection string", nameof(connectionString));
         }
+
+        protected virtual void OnClassMapping()
+        { }
 
     }
 }

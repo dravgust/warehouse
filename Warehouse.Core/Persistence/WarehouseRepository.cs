@@ -5,7 +5,7 @@ namespace Warehouse.Core.Persistence
 {
     public class WarehouseRepository<TEntity> : MongoRepository<TEntity> where TEntity : class, IEntity
     {
-        public WarehouseRepository(IMongoContext context) : base(context)
+        public WarehouseRepository(IMongoDbContext context) : base(context)
         { }
     }
 }

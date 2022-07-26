@@ -21,7 +21,7 @@ namespace Vayosoft.Data.MongoDB.QueryHandlers
     {
         protected readonly IMongoCollection<TEntity> Collection;
 
-        public MongoPagingQueryHandler(IMongoContext context)
+        public MongoPagingQueryHandler(IMongoDbContext context)
         {
             Collection = context.Collection<TEntity>();
         }

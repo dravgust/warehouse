@@ -20,8 +20,8 @@ namespace Warehouse.Core.Entities.Models
         public string OpName { get; set; }
         public string OpInfo { get; set; }
 
-        public DateTime Start { get; set; }
-        public DateTime End { get; set; }
+        public DateTimeOffset Start { get; set; }
+        public DateTimeOffset End { get; set; }
         public OperationStatus OpStatus { get; set; }
 
     }
