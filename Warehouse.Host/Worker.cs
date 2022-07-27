@@ -63,11 +63,11 @@ namespace Warehouse.Host
                         gSite.CalcBeaconsPosition();
 
                         var prevStatus = await store.GetAsync<IndoorPositionStatusEntity>(gSite.Id, token);
-                        var status = GetIndoorPositionStatus(gSite, prevStatus);
-                        await store.SetAsync(status, token);
+                        var currentStatus = GetIndoorPositionStatus(gSite, prevStatus);
+                        await store.SetAsync(currentStatus, token);
 
                         var reportGenerator = new ReportGenerator(store, _logger);
-                        await reportGenerator.Calculate(site, gSite, prevStatus, status, token);
+                        await reportGenerator.Calculate(site, gSite, prevStatus, currentStatus, token);
                     }
 
                     await Task.Delay(Interval, token);
@@ -78,6 +78,37 @@ namespace Warehouse.Host
                     _logger.LogError($"{e.Message}\r\n{e.StackTrace}");
                 }
             }
+        }
+
+        private static IndoorPositionStatusEntity GetSnapshots(GenericSite gSite, IndoorPositionStatusEntity prevStatus)
+        {
+            var timeStamp = DateTime.UtcNow;
+            var checkingPeriod = timeStamp.AddSeconds(-60);
+
+            List<IndoorPositionSnapshot> snapshots;
+            if (prevStatus is { Snapshots: { } })
+            {
+                snapshots = prevStatus.Snapshots
+                    .Where(s => s.TimeStamp > checkingPeriod).ToList();
+            }
+            else
+            {
+                snapshots = new List<IndoorPositionSnapshot>(1);
+            }
+
+            snapshots.Add(new IndoorPositionSnapshot
+            {
+                TimeStamp = timeStamp,
+                In = gSite.Status.In,
+                Out = gSite.Status.Out
+            });
+
+            return new IndoorPositionStatusEntity
+            {
+                Id = gSite.Id,
+                TimeStamp = timeStamp,
+                Snapshots = snapshots,
+            };
         }
 
         private static IndoorPositionStatusEntity GetIndoorPositionStatus(GenericSite gSite, IndoorPositionStatusEntity prevStatus)

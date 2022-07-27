@@ -49,7 +49,7 @@ namespace Warehouse.Host
                 {
                     TimeStamp = DateTime.UtcNow,
                     MacAddress = bMacAddress,
-                    SiteId = gSite.Id
+                    SiteId = site.Id
                 }, position => position.MacAddress == bMacAddress, token);
             }
 
