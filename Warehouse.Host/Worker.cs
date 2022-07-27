@@ -1,5 +1,6 @@
 using Vayosoft.Core.Caching;
 using Vayosoft.Core.SharedKernel.Entities;
+using Vayosoft.Core.Utilities;
 using Vayosoft.Data.MongoDB;
 using Vayosoft.IPS;
 using Vayosoft.IPS.Configuration;
@@ -20,11 +21,14 @@ namespace Warehouse.Host
         private readonly IDistributedMemoryCache _cache;
         private readonly ILogger<Worker> _logger;
 
-        private readonly WarehouseStore _store;
+        private readonly IServiceProvider _serviceProvider;
 
-        public Worker(WarehouseStore store, IDistributedMemoryCache cache, ILogger<Worker> logger)
+        public Worker(
+            IServiceProvider serviceProvider,
+            IDistributedMemoryCache cache,
+            ILogger<Worker> logger)
         {
-            _store = store;
+            _serviceProvider = serviceProvider;
             _cache = cache;
             _logger = logger;
         }
@@ -36,28 +40,28 @@ namespace Warehouse.Host
 
             while (!token.IsCancellationRequested)
             {
+                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+
+                using var scope = _serviceProvider.CreateScope();
+                var store = scope.ServiceProvider.GetRequiredService<WarehouseStore>();
+
                 try
                 {
-                    _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-
-                    var sites = await _store.ListAsync<WarehouseSiteEntity>(token);
+                    var sites = await store.ListAsync<WarehouseSiteEntity>(token);
                     foreach (var site in sites)
                     {
-                        var settings = new DolavSettings();
-                        //var settings = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<DolavSettings>(), async options =>
-                        //{
-                        //    options.AbsoluteExpirationRelativeToNow = TimeSpans.FiveMinutes;
-                        //    var data = ;
-                        //    return data;
-                        //});
+                        var settings = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<IpsSettings>(), async options =>
+                        {
+                            options.AbsoluteExpirationRelativeToNow = TimeSpans.FiveMinutes;
+                            return await store.SingleOrDefaultAsync<IpsSettings>(e => true, cancellationToken: token) ?? new IpsSettings();
+                        });
 
-                        var gSite = await GetGenericSiteAsync(site, settings);
+                        var gSite = await GetGenericSiteAsync(store, site, settings);
                         gSite.CalcBeaconsPosition();
 
-
-                        var prevStatus = await _store.GetAsync<IndoorPositionStatusEntity>(gSite.Id, token);
+                        var prevStatus = await store.GetAsync<IndoorPositionStatusEntity>(gSite.Id, token);
                         var status = GetIndoorPositionStatus(gSite, prevStatus);
-                        await _store.SetAsync(status, token);
+                        await store.SetAsync(status, token);
 
                         //Trace.WriteLineIf(gSite.Status.In.Contains("DD340206128B"), $"{DateTime.Now:T}| Current Status: IN");
                         //Trace.WriteLineIf(gSite.Status.Out.Contains("DD340206128B"), $"{DateTime.Now:T}| Current Status: OUT");
@@ -65,7 +69,7 @@ namespace Warehouse.Host
                         foreach (var bMacAddress in status.Out.Where(bMacAddress => prevStatus?.In == null || prevStatus.In.Contains(bMacAddress)))
                         {
                             //Trace.WriteLineIf(bMacAddress == "DD340206128B", $"{DateTime.Now:T}| Throw Event: {bMacAddress} => OUT");
-                            await _store.AddAsync(new BeaconEventEntity
+                            await store.AddAsync(new BeaconEventEntity
                             {
                                 MacAddress = bMacAddress,
                                 TimeStamp = DateTime.UtcNow,
@@ -73,13 +77,13 @@ namespace Warehouse.Host
                                 Event = "OUT"
                             }, token);
 
-                            await _store.DeleteAsync<BeaconIndoorPositionEntity>(e => e.MacAddress == bMacAddress, token);
+                            await store.DeleteAsync<BeaconIndoorPositionEntity>(e => e.MacAddress == bMacAddress, token);
                         }
 
                         foreach (var bMacAddress in status.In.Where(bMacAddress => prevStatus?.In == null || prevStatus.Out.Contains(bMacAddress)))
                         {
                             //Trace.WriteLineIf(bMacAddress == "DD340206128B", $"{DateTime.Now:T}| Throw Event: {bMacAddress} => IN");
-                            await _store.AddAsync(new BeaconEventEntity
+                            await store.AddAsync(new BeaconEventEntity
                             {
                                 MacAddress = bMacAddress,
                                 TimeStamp = DateTime.UtcNow,
@@ -87,7 +91,7 @@ namespace Warehouse.Host
                                 Event = "IN"
                             }, token);
 
-                            await _store.SetAsync(new BeaconIndoorPositionEntity
+                            await store.SetAsync(new BeaconIndoorPositionEntity
                             {
                                 TimeStamp = DateTime.UtcNow,
                                 MacAddress = bMacAddress,
@@ -114,7 +118,7 @@ namespace Warehouse.Host
                                     Y0 = beacon.Y0,
                                     Z0 = beacon.Z0,
                                 };
-                                await _store.AddAsync(beaconReceived, token);
+                                await store.AddAsync(beaconReceived, token);
                             }
                             catch (Exception e)
                             {
@@ -177,7 +181,7 @@ namespace Warehouse.Host
             };
         }
 
-        private async Task<GenericSite> GetGenericSiteAsync(WarehouseSiteEntity site, DolavSettings settings)
+        private static async Task<GenericSite> GetGenericSiteAsync(MongoContextBase store, WarehouseSiteEntity site, IpsSettings settings)
         {
             var gSite = new GenericSite(site.Id)
             {
@@ -191,7 +195,7 @@ namespace Warehouse.Host
                 var gauge = gateway.Gauge;
                 if (string.IsNullOrEmpty(gauge?.MAC)) continue;
 
-                var payload = await _store.SingleOrDefaultAsync<GatewayPayload>(g => g.MacAddress == gateway.MacAddress);
+                var payload = await store.SingleOrDefaultAsync<GatewayPayload>(g => g.MacAddress == gateway.MacAddress);
                 var pGauge = payload?.Beacons.FirstOrDefault(p => p.MacAddress.Equals(gauge.MAC, StringComparison.Ordinal));
                 if (pGauge == null) continue;
 
@@ -231,56 +235,23 @@ namespace Warehouse.Host
     }
 
     [CollectionName("dolav_settings")]
-    [Serializable]
-    public class DolavSettings : EntityBase<string>
+    public class IpsSettings : EntityBase<string>
     {
         public int CalcMethod { set; get; }
         public int BufferLength { set; get; }
         public SmoothAlgorithm SmoothAlgorithm { set; get; }
         public SelectMethod SelectMethod { set; get; }
-    }
 
-    public class CustomDolavPayload
-    {
-        public DateTime ReportedAt { get; set; }
-        public string DeviceType { get; set; }
-        public string MacAddress { get; set; }
-        public string Name { get; set; }
-        //public Dictionary<string, string> Fields { get; set; }
-    }
-
-    [CollectionName("dolav")]
-    public class DolavGatewayPayload : CustomDolavPayload
-    {
-        public string ID { get; set; }
-
-        public DateTime ReceivedAt { get; set; }
-
-        public string OriginalJson { get; set; }
-
-        public string MqttHost { get; set; }
-
-        //public CustomDolavPayload Gateway { get; set; }
-        public int GatewayFree { get; set; }
-        public double GatewayLoad { get; set; }
-        public int TotalBeaconsCount { get; set; }
-        public int UniqBeaconsCount { get; set; }
-
-        public List<BeaconPayload> Beacons { get; set; }
-    }
-
-    public static class DolavExtensions
-    {
-        public static CalculationSettings GetCalculationSettings(this DolavSettings settings)
+        public CalculationSettings GetCalculationSettings()
         {
             return new CalculationSettings
             {
-                CalcMethod = settings.CalcMethod switch
+                CalcMethod = CalcMethod switch
                 {
                     1 => new CalcMethod1(),
                     _ => new CalcMethod2(),
                 },
-                RssiFilter = settings.SmoothAlgorithm switch
+                RssiFilter = SmoothAlgorithm switch
                 {
                     SmoothAlgorithm.Kalman => typeof(KalmanRssiFilter),
                     SmoothAlgorithm.Feedback => typeof(FeedbackRssiFilter),
