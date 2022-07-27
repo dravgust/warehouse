@@ -22,7 +22,7 @@ namespace Vayosoft.Data.MongoDB
 
         [ActivatorUtilitiesConstructor]
         public MongoDbContext(IConfiguration config) : this(config.GetConnectionSetting()) { }
-        public MongoDbContext(ConnectionSetting config) : this(config.ConnectionString, config.ReplicaSet?.BootstrapServers) { }
+        public MongoDbContext(ConnectionSetting config) : this(config?.ConnectionString, config?.ReplicaSet?.BootstrapServers) { }
         public MongoDbContext(string connectionString, string[] bootstrapServers)
         {
             if (!string.IsNullOrWhiteSpace(connectionString))

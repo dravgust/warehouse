@@ -8,10 +8,9 @@ using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.UseCases.Management.Models;
-using Warehouse.Core.UseCases.Management.Queries;
 using Warehouse.Core.UseCases.Management.Specifications;
 
-namespace Warehouse.Core.UseCases.Management.Handlers
+namespace Warehouse.Core.UseCases.Management.Queries
 {
     public class WarehouseQueryHandler :
         IQueryHandler<GetRegisteredBeaconList, IEnumerable<string>>,

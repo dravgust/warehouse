@@ -23,11 +23,12 @@ using Warehouse.Core.Services.Providers;
 using Warehouse.Core.UseCases;
 using Warehouse.Core.UseCases.Administration.Spcecifications;
 using Warehouse.Core.UseCases.Management.Commands;
-using Warehouse.Core.UseCases.Management.Handlers;
+using Warehouse.Core.UseCases.Management.Events;
 using Warehouse.Core.UseCases.Management.Models;
 using Warehouse.Core.UseCases.Management.Queries;
 using Warehouse.Core.UseCases.Management.Specifications;
 using Warehouse.Core.UseCases.Positioning;
+using Warehouse.Core.UseCases.Positioning.Events;
 using Warehouse.Core.UseCases.Positioning.Models;
 using Warehouse.Core.UseCases.Positioning.Queries;
 using Warehouse.Core.UseCases.Positioning.Specifications;
@@ -119,6 +120,10 @@ namespace Warehouse.Core
             services.AddScoped<IRequestHandler<SetGatewayToSite, Unit>, WarehouseCommandHandler>();
             services.AddScoped<IRequestHandler<RemoveGatewayFromSite, Unit>, WarehouseCommandHandler>();
             services.AddScoped<IRequestHandler<SetBeacon, Unit>, WarehouseCommandHandler>();
+
+            //events 
+            services
+                .AddScoped<INotificationHandler<UserEventOccurred>, UserEventHandler>();
 
             return services;
         }

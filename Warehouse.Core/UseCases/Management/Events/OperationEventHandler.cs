@@ -8,7 +8,7 @@ using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services.Providers;
 using Warehouse.Core.UseCases.Providers.Models;
 
-namespace Warehouse.Core.UseCases.Management.Handlers
+namespace Warehouse.Core.UseCases.Management.Events
 {
     public class OperationEventHandler : IEventHandler<OperationOccurred>
     {

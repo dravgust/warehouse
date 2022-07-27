@@ -3,9 +3,8 @@ using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.UseCases.Management.Queries;
 
-namespace Warehouse.Core.UseCases.Management.Handlers
+namespace Warehouse.Core.UseCases.Management.Queries
 {
     public class ProductQueryHandler : IQueryHandler<GetProductMetadata, ProductMetadata>,
         IQueryHandler<GetProductItemMetadata, ProductMetadata>
@@ -25,7 +24,7 @@ namespace Warehouse.Core.UseCases.Management.Handlers
             {
                 options.SlidingExpiration = TimeSpans.FiveMinutes;
                 var entity = await _fileRepository.GetAsync("product_metadata", cancellationToken);
-                ProductMetadata? data = null;
+                ProductMetadata data = null;
                 if (!string.IsNullOrEmpty(entity?.Content))
                     data = entity.Content.FromJson<ProductMetadata>();
 
@@ -41,7 +40,7 @@ namespace Warehouse.Core.UseCases.Management.Handlers
             {
                 options.SlidingExpiration = TimeSpans.FiveMinutes;
                 var entity = await _fileRepository.GetAsync("beacon_metadata", cancellationToken);
-                ProductMetadata? data = null;
+                ProductMetadata data = null;
                 if (!string.IsNullOrEmpty(entity?.Content))
                     data = entity.Content.FromJson<ProductMetadata>();
 

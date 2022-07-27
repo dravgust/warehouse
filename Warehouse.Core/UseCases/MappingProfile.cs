@@ -15,7 +15,8 @@ namespace Warehouse.Core.UseCases
             CreateMap<WarehouseSiteDto, WarehouseSiteEntity>()
                 .ForMember(m => m.Gateways,
                     des =>
-                        des.MapFrom(m => m.Gateways ?? new List<GatewayDto>()));
+                        des.MapFrom(m => m.Gateways ?? new List<GatewayDto>()))
+                .ForMember(m => m.ProviderId, dest => dest.Ignore());
 
             CreateMap<ProductEntity, ProductDto>()
                 .ForMember(p => p.Metadata, des => des.MapFrom(m => m.Metadata));

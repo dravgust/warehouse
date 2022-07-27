@@ -17,13 +17,13 @@ namespace Warehouse.Core.Entities.Models
 
         public string Username { get; } = null!;
         public string PasswordHash { get; set; } = null!;
-        public string? Phone { get; set; }
-        public string? Email { get; set; }
+        public string Phone { get; set; }
+        public string Email { get; set; }
         public UserType Kind { get; set; }
         public DateTime? Registered { get; set; }
         public DateTime? Deregistered { get; set; }
-        public string? CultureId { get; set; }
-        public ulong ProviderId { get; set; }
+        public string CultureId { get; set; }
+        public long ProviderId { get; set; }
         public LogEventType? LogLevel { get; set; }
         public virtual List<RefreshToken> RefreshTokens { get; } = new();
     }
@@ -33,15 +33,15 @@ namespace Warehouse.Core.Entities.Models
     {
         object IEntity.Id => Id;
         public long Id { get; set; }
-        public string? Username { get; set; }
-        public string? Phone { get; set; }
-        public string? Email { get; set; }
+        public string Username { get; set; }
+        public string Phone { get; set; }
+        public string Email { get; set; }
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public UserType Kind { get; set; }
         public DateTime? Registered { get; set; }
         public DateTime? Deregistered { get; set; }
-        public string? CultureId { get; set; }
-        public ulong ProviderId { get; set; }
+        public string CultureId { get; set; }
+        public long ProviderId { get; set; }
         public LogEventType? LogLevel { get; set; }
 
     }

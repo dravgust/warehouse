@@ -1,5 +1,6 @@
 using Vayosoft.Core.Caching;
 using Vayosoft.Core.SharedKernel.Entities;
+using Vayosoft.Core.SharedKernel.Events;
 using Vayosoft.Core.Utilities;
 using Vayosoft.Data.MongoDB;
 using Vayosoft.IPS;
@@ -10,6 +11,7 @@ using Vayosoft.IPS.Methods;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Entities.Models.Payloads;
 using Warehouse.Core.Persistence;
+using Warehouse.Core.UseCases.Positioning.Events;
 
 namespace Warehouse.Host
 {
@@ -17,6 +19,7 @@ namespace Warehouse.Host
     {
         private const int CheckingInterval = 10;
         private const int CheckingPeriod = 6;
+        public static readonly TimeSpan Interval = TimeSpan.FromSeconds(CheckingInterval);
 
         private readonly IDistributedMemoryCache _cache;
         private readonly ILogger<Worker> _logger;
@@ -63,72 +66,11 @@ namespace Warehouse.Host
                         var status = GetIndoorPositionStatus(gSite, prevStatus);
                         await store.SetAsync(status, token);
 
-                        //Trace.WriteLineIf(gSite.Status.In.Contains("DD340206128B"), $"{DateTime.Now:T}| Current Status: IN");
-                        //Trace.WriteLineIf(gSite.Status.Out.Contains("DD340206128B"), $"{DateTime.Now:T}| Current Status: OUT");
-
-                        foreach (var bMacAddress in status.Out.Where(bMacAddress => prevStatus?.In == null || prevStatus.In.Contains(bMacAddress)))
-                        {
-                            //Trace.WriteLineIf(bMacAddress == "DD340206128B", $"{DateTime.Now:T}| Throw Event: {bMacAddress} => OUT");
-                            await store.AddAsync(new BeaconEventEntity
-                            {
-                                MacAddress = bMacAddress,
-                                TimeStamp = DateTime.UtcNow,
-                                SiteName = site.Name,
-                                Event = "OUT"
-                            }, token);
-
-                            await store.DeleteAsync<BeaconIndoorPositionEntity>(e => e.MacAddress == bMacAddress, token);
-                        }
-
-                        foreach (var bMacAddress in status.In.Where(bMacAddress => prevStatus?.In == null || prevStatus.Out.Contains(bMacAddress)))
-                        {
-                            //Trace.WriteLineIf(bMacAddress == "DD340206128B", $"{DateTime.Now:T}| Throw Event: {bMacAddress} => IN");
-                            await store.AddAsync(new BeaconEventEntity
-                            {
-                                MacAddress = bMacAddress,
-                                TimeStamp = DateTime.UtcNow,
-                                SiteName = site.Name,
-                                Event = "IN"
-                            }, token);
-
-                            await store.SetAsync(new BeaconIndoorPositionEntity
-                            {
-                                TimeStamp = DateTime.UtcNow,
-                                MacAddress = bMacAddress,
-                                SiteId = gSite.Id
-                            }, position => position.MacAddress == bMacAddress, token);
-                        }
-
-                        foreach (var beacon in gSite.Gateways.SelectMany(genericGateway => genericGateway.Beacons.Cast<TelemetryBeacon>()))
-                        {
-                            if (!status.In.Contains(beacon.MacAddress)) continue;
-                            if (beacon.Humidity == null && beacon.Temperature == null) continue;
-                            try
-                            {
-                                var beaconReceived = new BeaconReceivedEntity
-                                {
-                                    MacAddress = beacon.MacAddress,
-                                    ReceivedAt = DateTime.Now,
-                                    RSSI = beacon.Rssi,
-                                    TxPower = beacon.TxPower,
-                                    Battery = beacon.Battery,
-                                    Humidity = beacon.Humidity,
-                                    Temperature = beacon.Temperature,
-                                    X0 = beacon.X0,
-                                    Y0 = beacon.Y0,
-                                    Z0 = beacon.Z0,
-                                };
-                                await store.AddAsync(beaconReceived, token);
-                            }
-                            catch (Exception e)
-                            {
-                                _logger.LogError($"Add received beacon entity: {e}");
-                            }
-                        }
-
+                        var reportGenerator = new ReportGenerator(store, _logger);
+                        await reportGenerator.Calculate(site, gSite, prevStatus, status, token);
                     }
 
-                    await Task.Delay(10000, token);
+                    await Task.Delay(Interval, token);
                 }
                 catch (OperationCanceledException) { }
                 catch (Exception e)
@@ -196,7 +138,9 @@ namespace Warehouse.Host
                 if (string.IsNullOrEmpty(gauge?.MAC)) continue;
 
                 var payload = await store.SingleOrDefaultAsync<GatewayPayload>(g => g.MacAddress == gateway.MacAddress);
-                var pGauge = payload?.Beacons.FirstOrDefault(p => p.MacAddress.Equals(gauge.MAC, StringComparison.Ordinal));
+                if (payload == null) continue;
+
+                var pGauge = payload.Beacons.FirstOrDefault(p => p.MacAddress.Equals(gauge.MAC, StringComparison.Ordinal));
                 if (pGauge == null) continue;
 
                 var gGateway = new GenericGateway(gateway.MacAddress)

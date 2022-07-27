@@ -8,7 +8,7 @@ namespace Warehouse.Core.UseCases.Positioning.Specifications
 {
     public class BeaconPositionSpec : PagingBase<BeaconIndoorPositionEntity, object>, IFilteringSpecification<BeaconIndoorPositionEntity>
     {
-        public BeaconPositionSpec(int page, int take, string? filterString)
+        public BeaconPositionSpec(int page, int take, string filterString)
             : base(page, take, new Sorting<BeaconIndoorPositionEntity>(p => p.TimeStamp, SortOrder.Desc))
         {
             FilterString = filterString;
@@ -21,7 +21,7 @@ namespace Warehouse.Core.UseCases.Positioning.Specifications
         protected override Sorting<BeaconIndoorPositionEntity, object> BuildDefaultSorting()
             => new(x => x.Id, SortOrder.Desc);
 
-        public string? FilterString { get; }
+        public string FilterString { get; }
         public ICollection<Expression<Func<BeaconIndoorPositionEntity, object>>> FilterBy { get; }
             = new List<Expression<Func<BeaconIndoorPositionEntity, object>>>();
     }

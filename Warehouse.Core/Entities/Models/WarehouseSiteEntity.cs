@@ -11,5 +11,6 @@ namespace Warehouse.Core.Entities.Models
         public double LeftLength { get; set; }
         public double Error { get; set; }
         public List<Gateway> Gateways { get; set; }
+        public long ProviderId { get; set; }
     }
 }

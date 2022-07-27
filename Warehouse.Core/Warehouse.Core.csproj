@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <Folder Include="Entities\ValueObjects\" />
+    <Folder Include="UseCases\Positioning\Commands\" />
   </ItemGroup>
 
 </Project>

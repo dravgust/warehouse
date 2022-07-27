@@ -271,7 +271,7 @@ namespace Warehouse.Core.UseCases.Positioning
         public async Task<BeaconTelemetryDto> Handle(GetBeaconTelemetry request, CancellationToken cancellationToken)
         {
             var data = _store
-                .AsQueryable<BeaconReceivedEntity>()
+                .AsQueryable<BeaconTelemetryEntity>()
                 .Where(t => t.MacAddress == request.MacAddress)
                 .OrderByDescending(m => m.ReceivedAt)
                 .FirstOrDefault();
@@ -293,7 +293,7 @@ namespace Warehouse.Core.UseCases.Positioning
 
         public async Task<BeaconTelemetry2Dto> Handle(GetBeaconTelemetry2 request, CancellationToken cancellationToken)
         {
-            var data = _store.Collection<BeaconReceivedEntity>().Aggregate()
+            var data = _store.Collection<BeaconTelemetryEntity>().Aggregate()
                 .Match(t => t.MacAddress == request.MacAddress && t.ReceivedAt > DateTime.UtcNow.AddHours(-12))
                 .Group(k =>
                         new DateTime(k.ReceivedAt.Year, k.ReceivedAt.Month, k.ReceivedAt.Day,

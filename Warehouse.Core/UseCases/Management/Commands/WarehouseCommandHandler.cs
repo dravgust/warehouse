@@ -1,16 +1,14 @@
 ﻿using MediatR;
 using Vayosoft.Core.Commands;
-using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Events;
 using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Events;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Persistence;
-using Warehouse.Core.UseCases.Management.Commands;
 using Warehouse.Core.UseCases.Providers.Models;
 
-namespace Warehouse.Core.UseCases.Management.Handlers
+namespace Warehouse.Core.UseCases.Management.Commands
 {
     public class WarehouseCommandHandler :
         ICommandHandler<SetWarehouseSite>,

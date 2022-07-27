@@ -16,8 +16,8 @@ namespace Warehouse.Core.Entities.Models
         public LocationAnchor Location { set; get; } = LocationAnchor.Unknown;
     }
 
-    [CollectionName("dolav_beacons_telemetry")]
-    public class BeaconReceivedEntity : EntityBase<string>
+    [CollectionName("beacons_telemetry")]
+    public class BeaconTelemetryEntity : EntityBase<string>
     {
         public string MacAddress { get; set; }
         public DateTime ReceivedAt { get; set; }
@@ -30,6 +30,23 @@ namespace Warehouse.Core.Entities.Models
         public double? Y0 { get; set; }
         public double? Z0 { get; set; }
     }
+
+    [CollectionName("beacons_received")]
+    public class BeaconReceivedEntity : IEntity<string>
+    {
+        public string MacAddress { get; set; }
+        public DateTime ReceivedAt { get; set; }
+        public double RSSI { get; set; }
+        public double TxPower { get; set; }
+        public int Battery { get; set; }
+        public double? Temperature { get; set; }
+        public double? Humidity { get; set; }
+        public double? X0 { get; set; }
+        public double? Y0 { get; set; }
+        public double? Z0 { get; set; }
+        object IEntity.Id => Id;
+        public string Id => MacAddress;
+    }
     
     [CollectionName("dolav_beacons_registered")]
     public class BeaconRegisteredEntity : IEntity<string>
@@ -39,7 +56,6 @@ namespace Warehouse.Core.Entities.Models
 
         public DateTime ReceivedAt { get; set; }
         object IEntity.Id => Id;
-
         public string Id => MacAddress;
     }
 

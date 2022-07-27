@@ -6,10 +6,9 @@ using Vayosoft.Core.SharedKernel.Events;
 using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Events;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.UseCases.Management.Commands;
 using Warehouse.Core.UseCases.Providers.Models;
 
-namespace Warehouse.Core.UseCases.Management.Handlers
+namespace Warehouse.Core.UseCases.Management.Commands
 {
     public class ProductCommandHandler :
         ICommandHandler<SetProduct>,
@@ -31,7 +30,7 @@ namespace Warehouse.Core.UseCases.Management.Handlers
 
         public async Task<Unit> Handle(SetProduct request, CancellationToken cancellationToken)
         {
-            ProductEntity? entity;
+            ProductEntity entity;
             if (!string.IsNullOrEmpty(request.Id) && (entity = await _repository.FindAsync(request.Id, cancellationToken)) != null)
                 await _repository.UpdateAsync(_mapper.Map(request, entity), cancellationToken);
             else

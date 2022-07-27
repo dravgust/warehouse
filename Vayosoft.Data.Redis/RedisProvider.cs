@@ -7,7 +7,7 @@ namespace Vayosoft.Data.Redis
 {
     public class RedisProvider : IRedisProvider
     {
-        private readonly Lazy<IConnectionMultiplexer> Lazy;
+        protected readonly Lazy<IConnectionMultiplexer> Lazy;
         
         [ActivatorUtilitiesConstructor]
         public RedisProvider(IConfiguration config)
