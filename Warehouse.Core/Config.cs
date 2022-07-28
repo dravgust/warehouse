@@ -93,6 +93,7 @@ namespace Warehouse.Core
             services.AddScoped<IRequestHandler<GetProductMetadata, ProductMetadata>, ProductQueryHandler>();
             services.AddScoped<IRequestHandler<GetProductItemMetadata, ProductMetadata>, ProductQueryHandler>();
             services.AddScoped<IRequestHandler<GetAssets, IPagedEnumerable<AssetDto>>, AssetsQueryHandler>();
+            services.AddScoped<IRequestHandler<GetBeaconEvents, IPagedEnumerable<BeaconEventDto>>, AssetsQueryHandler>();
             services.AddScoped<IRequestHandler<GetAssetInfo, IEnumerable<AssetInfo>>, AssetsQueryHandler>();
             services.AddScoped<IRequestHandler<GetBeaconTelemetry, BeaconTelemetryDto>, AssetsQueryHandler>();
             services.AddScoped<IRequestHandler<GetBeaconTelemetry2, BeaconTelemetry2Dto>, AssetsQueryHandler>();

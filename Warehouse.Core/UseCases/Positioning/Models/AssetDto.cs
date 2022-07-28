@@ -29,7 +29,7 @@ namespace Warehouse.Core.UseCases.Positioning.Models
     public class BeaconInfo
     {
         public string MacAddress { set; get; }
-        public string? Name { set; get; }
+        public string Name { set; get; }
     }
 
     public class SiteInfo

@@ -28,10 +28,10 @@ function Dashboard() {
   const [selectedBeacon, setSelectBeacon] = useState(null);
   const [selectedView, setSelectView] = useState(0);
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (event, value) => {
     setSelectProduct(null);
     setSelectBeacon(null);
-    setSelectView(newValue);
+    setSelectView(value);
   };
 
   return (
