@@ -108,8 +108,8 @@ namespace Warehouse.Core
                 MongoPagingQueryHandler<WarehouseProductSpec, BeaconRegisteredEntity>>();
             services.AddScoped<IRequestHandler<SpecificationQuery<BeaconEventSpec, IPagedEnumerable<BeaconEventEntity>>, IPagedEnumerable<BeaconEventEntity>>,
                 MongoPagingQueryHandler<BeaconEventSpec, BeaconEventEntity>>();
-            services.AddScoped<IRequestHandler<SpecificationQuery<BeaconPositionSpec, IPagedEnumerable<BeaconIndoorPositionEntity>>, IPagedEnumerable<BeaconIndoorPositionEntity>>,
-                MongoPagingQueryHandler<BeaconPositionSpec, BeaconIndoorPositionEntity>>();
+            services.AddScoped<IRequestHandler<SpecificationQuery<BeaconPositionSpec, IPagedEnumerable<BeaconReceivedEntity>>, IPagedEnumerable<BeaconReceivedEntity>>,
+                MongoPagingQueryHandler<BeaconPositionSpec, BeaconReceivedEntity>>();
             services.AddScoped<IRequestHandler<SpecificationQuery<ProductSpec, IPagedEnumerable<ProductEntity>>, IPagedEnumerable<ProductEntity>>,
                 MongoPagingQueryHandler<ProductSpec, ProductEntity>>();
             services.AddScoped<IRequestHandler<SingleQuery<ProductEntity>, ProductEntity>, MongoSingleQueryHandler<string, ProductEntity>>();

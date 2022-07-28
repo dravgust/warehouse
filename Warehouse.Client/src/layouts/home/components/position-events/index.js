@@ -42,12 +42,12 @@ function PositionEvents({ searchTerm = "" }) {
           response.data.map((item) => (
             <TimelineItem
               key={item.id}
-              color={item.event === "IN" ? "success" : "error"}
-              icon={item.event == "IN" ? "location_on" : "location_off"}
+              color={item.type === 1 ? "success" : "error"}
+              icon={item.type == 1 ? "location_on" : "location_off"}
               title={
                 <SuiTypography variant="caption" fontWeight="medium">
-                  The {item.macAddress} is {item.event === "OUT" ? "out of the" : "entered"} the the{" "}
-                  <span style={{ color: "#17c1e8" }}>{item.siteName}</span>
+                  The {item.macAddress} is {item.type === 2 ? "out of the" : "entered"} the{" "}
+                  <span style={{ color: "#17c1e8" }}>{JSON.stringify(item)}</span>
                 </SuiTypography>
               }
               dateTime={formatDistance(new Date(item.timeStamp), new Date(), {

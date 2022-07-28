@@ -3,12 +3,21 @@ using Vayosoft.Data.MongoDB;
 
 namespace Warehouse.Core.Entities.Models
 {
-    [CollectionName("dolav_beacon_event")]
+    [CollectionName("dolav_beacons_events")]
     public class BeaconEventEntity : EntityBase<string>
     {
         public string MacAddress { set; get; }
         public DateTime TimeStamp { get; set; }
-        public string SiteName { set; get; }
-        public string Event { set; get; }
+        public string SourceId { set; get; }
+        public string DestinationId { set; get; }
+        public BeaconEventType Type { set; get; }
+    }
+
+    public enum BeaconEventType
+    {
+        UNDEFINED,
+        IN,
+        OUT,
+        MOVE
     }
 }
