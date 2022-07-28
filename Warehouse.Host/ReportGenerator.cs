@@ -31,10 +31,11 @@ namespace Warehouse.Host
                     Event = "OUT"
                 }, token);
 
-                await store.DeleteAsync<BeaconIndoorPositionEntity>(e => e.MacAddress == bMacAddress, token);
+                await store.DeleteAsync<BeaconIndoorPositionEntity>(e =>
+                    e.MacAddress == bMacAddress && e.SiteId == site.Id, token);
             }
 
-            foreach (var bMacAddress in status.In.Where(bMacAddress => prevStatus?.In == null || prevStatus.Out.Contains(bMacAddress)))
+            foreach (var bMacAddress in status.In.Where(bMacAddress => prevStatus?.In == null || !prevStatus.In.Contains(bMacAddress)))
             {
                 //Trace.WriteLineIf(bMacAddress == "DD340206128B", $"{DateTime.Now:T}| Throw Event: {bMacAddress} => IN");
                 await store.AddAsync(new BeaconEventEntity
@@ -50,7 +51,7 @@ namespace Warehouse.Host
                     TimeStamp = DateTime.UtcNow,
                     MacAddress = bMacAddress,
                     SiteId = gSite.Id
-                }, position => position.MacAddress == bMacAddress, token);
+                }, e => e.MacAddress == bMacAddress && e.SiteId == site.Id, token);
             }
 
             foreach (var beacon in gSite.Gateways.SelectMany(genericGateway => genericGateway.Beacons.Cast<TelemetryBeacon>()))
