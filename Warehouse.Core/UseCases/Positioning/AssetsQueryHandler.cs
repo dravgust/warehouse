@@ -15,6 +15,7 @@ namespace Warehouse.Core.UseCases.Positioning
 {
     public class AssetsQueryHandler :
         IQueryHandler<GetAssets, IPagedEnumerable<AssetDto>>,
+        IQueryHandler<GetBeaconEvents, IPagedEnumerable<BeaconEventDto>>,
         IQueryHandler<GetAssetInfo, IEnumerable<AssetInfo>>,
         IQueryHandler<GetBeaconTelemetry, BeaconTelemetryDto>,
         IQueryHandler<GetBeaconTelemetry2, BeaconTelemetry2Dto>,
@@ -38,7 +39,7 @@ namespace Warehouse.Core.UseCases.Positioning
         public async Task<IPagedEnumerable<AssetDto>> Handle(GetAssets request, CancellationToken cancellationToken)
         {
             var spec = new BeaconPositionSpec(request.Page, request.Size, request.SearchTerm);
-            var query = new SpecificationQuery<BeaconPositionSpec, IPagedEnumerable<BeaconIndoorPositionEntity>>(spec);
+            var query = new SpecificationQuery<BeaconPositionSpec, IPagedEnumerable<BeaconReceivedEntity>>(spec);
             var result = await _queryBus.Send(query, cancellationToken);
 
             var data = new List<AssetDto>();
@@ -47,12 +48,12 @@ namespace Warehouse.Core.UseCases.Positioning
                 var asset = new AssetDto
                 {
                     MacAddress = b.MacAddress,
-                    TimeStamp = b.TimeStamp,
+                    TimeStamp = b.ReceivedAt,
 
-                    SiteId = b.SiteId
+                    SiteId = b.SourceId
                 };
 
-                var site = await _store.FindAsync<WarehouseSiteEntity>(b.SiteId, cancellationToken);
+                var site = await _store.FindAsync<WarehouseSiteEntity>(b.SourceId, cancellationToken);
                 if (site != null)
                 {
                     asset.Site = _mapper.Map<WarehouseSiteDto>(site);
@@ -79,7 +80,7 @@ namespace Warehouse.Core.UseCases.Positioning
 
         public async Task<IEnumerable<AssetInfo>> Handle(GetAssetInfo request, CancellationToken cancellationToken)
         {
-            var result = await _store.ListAsync<BeaconIndoorPositionEntity>(cancellationToken);
+            var result = await _store.ListAsync<BeaconReceivedEntity>(cancellationToken);
 
             var store = new SortedDictionary<(string, string), AssetInfo>(Comparer<(string, string)>.Create((x, y) => y.CompareTo(x)));
 
@@ -91,7 +92,7 @@ namespace Warehouse.Core.UseCases.Positioning
                 };
                 var siteInfo = new SiteInfo
                 {
-                    Id = b.SiteId
+                    Id = b.SourceId
                 };
 
                 var productItem = await _store.FirstOrDefaultAsync<BeaconEntity>(q => q.Id.Equals(b.MacAddress), cancellationToken);
@@ -110,8 +111,8 @@ namespace Warehouse.Core.UseCases.Positioning
                 
                 if (!store.ContainsKey((productInfo.Id, siteInfo.Id)))
                 {
-                    var site = await _store.GetAsync<WarehouseSiteEntity>(b.SiteId, cancellationToken);
-                    siteInfo.Name = site.Name;
+                    var site = await _store.FindAsync<WarehouseSiteEntity>(b.SourceId, cancellationToken);
+                    siteInfo.Name = site?.Name;
 
                     var asset = new AssetInfo
                     {
@@ -327,6 +328,49 @@ namespace Warehouse.Core.UseCases.Positioning
             }
 
             return await Task.FromResult(result);
+        }
+
+        public async Task<IPagedEnumerable<BeaconEventDto>> Handle(GetBeaconEvents request, CancellationToken cancellationToken)
+        {
+            var spec = new BeaconEventSpec(request.Page, request.Size, request.SearchTerm);
+            var query = new SpecificationQuery<BeaconEventSpec, IPagedEnumerable<BeaconEventEntity>>(spec);
+
+            var data = await _queryBus.Send(query, cancellationToken);
+            var list = new List<BeaconEventDto>();
+            foreach (var e in data)
+            {
+                var productItem = await _store.FirstOrDefaultAsync<BeaconEntity>(q => q.Id.Equals(e.MacAddress), cancellationToken);
+                var dto = new BeaconEventDto
+                {
+                    Beacon = new BeaconInfo
+                    {
+                        MacAddress = e.MacAddress,
+                        Name = productItem?.Name
+                    },
+                    TimeStamp = e.TimeStamp,
+                    Type = e.Type,
+                };
+                if (!string.IsNullOrEmpty(e.SourceId))
+                {
+                    var site = await _store.FindAsync<WarehouseSiteEntity>(e.SourceId, cancellationToken);
+                    dto.Source = new SiteInfo
+                    {
+                        Id = e.SourceId,
+                        Name = site.Name
+                    };
+                }
+                if (!string.IsNullOrEmpty(e.DestinationId))
+                {
+                    var site = await _store.FindAsync<WarehouseSiteEntity>(e.DestinationId, cancellationToken);
+                    dto.Destination = new SiteInfo
+                    {
+                        Id = e.DestinationId,
+                        Name = site.Name
+                    };
+                }
+                list.Add(dto);
+            }
+            return new PagedEnumerable<BeaconEventDto>(list, data.TotalCount);
         }
     }
 }

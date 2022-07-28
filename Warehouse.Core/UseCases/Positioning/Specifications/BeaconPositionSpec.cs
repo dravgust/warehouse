@@ -6,10 +6,10 @@ using Warehouse.Core.Entities.Models;
 
 namespace Warehouse.Core.UseCases.Positioning.Specifications
 {
-    public class BeaconPositionSpec : PagingBase<BeaconIndoorPositionEntity, object>, IFilteringSpecification<BeaconIndoorPositionEntity>
+    public class BeaconPositionSpec : PagingBase<BeaconReceivedEntity, object>, IFilteringSpecification<BeaconReceivedEntity>
     {
         public BeaconPositionSpec(int page, int take, string filterString)
-            : base(page, take, new Sorting<BeaconIndoorPositionEntity>(p => p.TimeStamp, SortOrder.Desc))
+            : base(page, take, new Sorting<BeaconReceivedEntity>(p => p.ReceivedAt, SortOrder.Desc))
         {
             FilterString = filterString;
             if (!string.IsNullOrEmpty(FilterString))
@@ -18,11 +18,11 @@ namespace Warehouse.Core.UseCases.Positioning.Specifications
             }
         }
 
-        protected override Sorting<BeaconIndoorPositionEntity, object> BuildDefaultSorting()
+        protected override Sorting<BeaconReceivedEntity, object> BuildDefaultSorting()
             => new(x => x.Id, SortOrder.Desc);
 
         public string FilterString { get; }
-        public ICollection<Expression<Func<BeaconIndoorPositionEntity, object>>> FilterBy { get; }
-            = new List<Expression<Func<BeaconIndoorPositionEntity, object>>>();
+        public ICollection<Expression<Func<BeaconReceivedEntity, object>>> FilterBy { get; }
+            = new List<Expression<Func<BeaconReceivedEntity, object>>>();
     }
 }

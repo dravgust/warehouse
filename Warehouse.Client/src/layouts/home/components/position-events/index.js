@@ -9,6 +9,22 @@ import React from "react";
 import { fetchEvents } from "utils/query-keys";
 import { getEvents } from "services/warehouse-service";
 
+function renderEvent({ type, beacon, source, destination }) {
+  let name = beacon.name ? beacon.name : beacon.macAddress;
+  switch (type) {
+    case 1:
+      return `The ${name} entered '${destination ? destination.name : "n/a"}'`;
+    case 2:
+      return `The ${name} out of '${source ? source.name : "n/a"}'`;
+    case 3:
+      return `The ${name} moved from '${source ? source.name : "n/a"}' to '${
+        destination ? destination.name : "n/a"
+      }'`;
+    default:
+      return "n/a";
+  }
+}
+
 function PositionEvents({ searchTerm = "" }) {
   const [reload, updateReloadState] = useState(null);
   const forceUpdate = () => updateReloadState(Date.now());
@@ -39,20 +55,25 @@ function PositionEvents({ searchTerm = "" }) {
       </SuiBox>
       <SuiBox p={2}>
         {isSuccess &&
-          response.data.map((item) => (
+          response.data.map((item, index) => (
             <TimelineItem
-              key={item.id}
-              color={item.event === "IN" ? "success" : "error"}
-              icon={item.event == "IN" ? "location_on" : "location_off"}
+              key={index}
+              color={item.type === 1 ? "success" : item.type == 2 ? "error" : "warning"}
+              icon={
+                item.type === 1
+                  ? "add_location_alt"
+                  : item.type == 2
+                  ? "location_off"
+                  : "location_on"
+              }
               title={
                 <SuiTypography variant="caption" fontWeight="medium">
-                  The {item.macAddress} is {item.event === "OUT" ? "out of the" : "entered"} the the{" "}
-                  <span style={{ color: "#17c1e8" }}>{item.siteName}</span>
+                  {renderEvent(item)}
                 </SuiTypography>
               }
               dateTime={formatDistance(new Date(item.timeStamp), new Date(), {
                 addSuffix: true,
-              }).toUpperCase()}
+              })}
             />
           ))}
 

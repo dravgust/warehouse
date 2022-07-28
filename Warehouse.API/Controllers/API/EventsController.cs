@@ -4,6 +4,8 @@ using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Warehouse.API.Services.Security.Attributes;
 using Warehouse.Core.Entities.Models;
+using Warehouse.Core.UseCases.Positioning.Models;
+using Warehouse.Core.UseCases.Positioning.Queries;
 using Warehouse.Core.UseCases.Positioning.Specifications;
 
 namespace Warehouse.API.Controllers.API
@@ -21,18 +23,14 @@ namespace Warehouse.API.Controllers.API
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> Get(int page, int size, string? searchTerm = null, CancellationToken token = default)
+        public async Task<IActionResult> Get([FromQuery] GetBeaconEvents query, CancellationToken token = default)
         {
-            var spec = new BeaconEventSpec(page, size, searchTerm);
-            var query = new SpecificationQuery<BeaconEventSpec, IPagedEnumerable<BeaconEventEntity>>(spec);
-            
             var result = await _queryBus.Send(query, token);
-
             return Ok(new
             {
                 data = result,
                 totalItems = result.TotalCount,
-                totalPages = (long)Math.Ceiling((double)result.TotalCount / size)
+                totalPages = (long)Math.Ceiling((double)result.TotalCount / query.Size)
             });
         }
     }

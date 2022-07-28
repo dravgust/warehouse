@@ -1,6 +1,5 @@
 using Vayosoft.Core.Caching;
 using Vayosoft.Core.SharedKernel.Entities;
-using Vayosoft.Core.SharedKernel.Events;
 using Vayosoft.Core.Utilities;
 using Vayosoft.Data.MongoDB;
 using Vayosoft.IPS;
@@ -11,14 +10,13 @@ using Vayosoft.IPS.Methods;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Entities.Models.Payloads;
 using Warehouse.Core.Persistence;
-using Warehouse.Core.UseCases.Positioning.Events;
 
 namespace Warehouse.Host
 {
     public class Worker : BackgroundService
     {
         private const int CheckingInterval = 10;
-        private const int CheckingPeriod = 6;
+        private const int CheckingPeriod = 12;
         public static readonly TimeSpan Interval = TimeSpan.FromSeconds(CheckingInterval);
 
         private readonly IDistributedMemoryCache _cache;
@@ -36,8 +34,6 @@ namespace Warehouse.Host
             _logger = logger;
         }
 
-        private readonly Dictionary<string, string?[]> _beaconsIn = new();
-
         protected override async Task ExecuteAsync(CancellationToken token)
         {
             string[] args = Environment.GetCommandLineArgs();
@@ -45,10 +41,13 @@ namespace Warehouse.Host
 
             while (!token.IsCancellationRequested)
             {
-                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                _logger.LogDebug("Worker running at: {time}", DateTimeOffset.Now);
 
                 using var scope = _serviceProvider.CreateScope();
                 var store = scope.ServiceProvider.GetRequiredService<WarehouseStore>();
+
+                Dictionary<string, string?[]> beaconsIn = new();
+                HashSet<string> beaconsOut = new();
 
                 try
                 {
@@ -71,34 +70,6 @@ namespace Warehouse.Host
                         //********************** telemetry
                         foreach (var beacon in gSite.Gateways.SelectMany(genericGateway => genericGateway.Beacons.Cast<TelemetryBeacon>()))
                         {
-                            try
-                            {
-                                var beaconReceived = new BeaconReceivedEntity
-                                {
-                                    MacAddress = beacon.MacAddress,
-                                    ReceivedAt = DateTime.UtcNow,
-                                    RSSI = beacon.Rssi,
-                                    TxPower = beacon.TxPower,
-                                    Battery = beacon.Battery,
-                                    Humidity = beacon.Humidity,
-                                    Temperature = beacon.Temperature,
-                                    X0 = beacon.X0,
-                                    Y0 = beacon.Y0,
-                                    Z0 = beacon.Z0,
-                                };
-
-                                if (await store.FindAsync<BeaconReceivedEntity>(beacon.MacAddress, token) != null)
-                                    await store.UpdateAsync(beaconReceived, token);
-                                else
-                                {
-                                    await store.AddAsync(beaconReceived, token);
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                _logger.LogError($"Add received beacon entity: {e}");
-                            }
-
                             if (!currentStatus.In.Contains(beacon.MacAddress)) continue;
                             if (beacon.Humidity == null && beacon.Temperature == null) continue;
                             try
@@ -127,29 +98,55 @@ namespace Warehouse.Host
                         //**************** events
                         foreach (var @in in prevStatus.In)
                         {
-                            if (!_beaconsIn.ContainsKey(@in)) 
-                                _beaconsIn[@in] = new[] { site.Id, null };
+                            if (!beaconsIn.ContainsKey(@in)) 
+                                beaconsIn[@in] = new[] { site.Id, null };
                             else
                             {
-                                _beaconsIn[@in][0] = site.Id;
+                                beaconsIn[@in][0] = site.Id;
                             }
                             
                         }
 
+                        foreach (var @out in currentStatus.Out)
+                        {
+                            if (!beaconsOut.Contains(@out)
+                                && !beaconsIn.ContainsKey(@out))
+                                beaconsOut.Add(@out);
+                        }
+
                         foreach (var @in in currentStatus.In)
                         {
-                            if (!_beaconsIn.ContainsKey(@in))
-                                _beaconsIn[@in] = new[] { null, site.Id };
+                            if (beaconsOut.Contains(@in))
+                                beaconsOut.Remove(@in);
+
+                            if (!beaconsIn.ContainsKey(@in))
+                                beaconsIn[@in] = new[] { null, site.Id };
                             else
                             {
-                                _beaconsIn[@in][1] = site.Id;
+                                beaconsIn[@in][1] = site.Id;
                             }
-
                         }
                     }
 
-                    foreach (var (macAddress, site) in _beaconsIn)
+                    foreach (var (macAddress, site) in beaconsIn)
                     {
+                        //*************** received beacons IN
+                        var beaconReceived = new BeaconReceivedEntity
+                        {
+                            MacAddress = macAddress,
+                            ReceivedAt = DateTime.UtcNow,
+                            SourceId = site[1],
+                            Status = BeaconStatus.IN
+                        };
+
+                        if (await store.FindAsync<BeaconReceivedEntity>(macAddress, token) != null)
+                            await store.UpdateAsync(beaconReceived, token);
+                        else
+                        {
+                            await store.AddAsync(beaconReceived, token);
+                        }
+
+                        //******************* events
                         if (site[0] == null)
                         {
                             //macAddress in to beacon.Value[1]
@@ -157,16 +154,9 @@ namespace Warehouse.Host
                             {
                                 MacAddress = macAddress,
                                 TimeStamp = DateTime.UtcNow,
-                                SiteName = site[1],
-                                Event = "IN"
+                                DestinationId = site[1],
+                                Type = BeaconEventType.IN,
                             }, token);
-
-                            await store.SetAsync(new BeaconIndoorPositionEntity
-                            {
-                                TimeStamp = DateTime.UtcNow,
-                                MacAddress = macAddress,
-                                SiteId = site[1]
-                            }, position => position.MacAddress == macAddress, token);
                         }
                         else if (site[1] == null)
                         {
@@ -175,11 +165,9 @@ namespace Warehouse.Host
                             {
                                 MacAddress = macAddress,
                                 TimeStamp = DateTime.UtcNow,
-                                SiteName = site[0],
-                                Event = "OUT"
+                                SourceId = site[0],
+                                Type = BeaconEventType.OUT,
                             }, token);
-
-                            await store.DeleteAsync<BeaconIndoorPositionEntity>(e => e.MacAddress == macAddress, token);
                         }
                         else if (site[0] != site[1])
                         {
@@ -188,20 +176,32 @@ namespace Warehouse.Host
                             {
                                 MacAddress = macAddress,
                                 TimeStamp = DateTime.UtcNow,
-                                SiteName = site[1],
-                                Event = "MOVE"
+                                SourceId = site[0],
+                                DestinationId = site[1],
+                                Type = BeaconEventType.MOVE,
                             }, token);
-
-                            await store.SetAsync(new BeaconIndoorPositionEntity
-                            {
-                                TimeStamp = DateTime.UtcNow,
-                                MacAddress = macAddress,
-                                SiteId = site[1]
-                            }, position => position.MacAddress == macAddress, token);
                         }
                         else
                         {
                             //state not changed
+                        }
+                    }
+
+                    //*************** received beacons OUT
+                    foreach (var macAddress in beaconsOut)
+                    {
+                        var beaconReceived = new BeaconReceivedEntity
+                        {
+                            MacAddress = macAddress,
+                            ReceivedAt = DateTime.UtcNow,
+                            Status = BeaconStatus.OUT
+                        };
+
+                        if (await store.FindAsync<BeaconReceivedEntity>(macAddress, token) != null)
+                            await store.UpdateAsync(beaconReceived, token);
+                        else
+                        {
+                            await store.AddAsync(beaconReceived, token);
                         }
                     }
 
@@ -213,37 +213,6 @@ namespace Warehouse.Host
                     _logger.LogError($"{e.Message}\r\n{e.StackTrace}");
                 }
             }
-        }
-
-        private static IndoorPositionStatusEntity GetSnapshots(GenericSite gSite, IndoorPositionStatusEntity prevStatus)
-        {
-            var timeStamp = DateTime.UtcNow;
-            var checkingPeriod = timeStamp.AddSeconds(-60);
-
-            List<IndoorPositionSnapshot> snapshots;
-            if (prevStatus is { Snapshots: { } })
-            {
-                snapshots = prevStatus.Snapshots
-                    .Where(s => s.TimeStamp > checkingPeriod).ToList();
-            }
-            else
-            {
-                snapshots = new List<IndoorPositionSnapshot>(1);
-            }
-
-            snapshots.Add(new IndoorPositionSnapshot
-            {
-                TimeStamp = timeStamp,
-                In = gSite.Status.In,
-                Out = gSite.Status.Out
-            });
-
-            return new IndoorPositionStatusEntity
-            {
-                Id = gSite.Id,
-                TimeStamp = timeStamp,
-                Snapshots = snapshots,
-            };
         }
 
         private static IndoorPositionStatusEntity GetIndoorPositionStatus(GenericSite gSite, IndoorPositionStatusEntity prevStatus)

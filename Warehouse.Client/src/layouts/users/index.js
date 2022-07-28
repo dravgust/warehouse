@@ -10,6 +10,7 @@ import Footer from "examples/Footer";
 import Table from "examples/Tables/Table";
 import { useQuery } from "react-query";
 import { format } from "date-fns";
+import { he } from "date-fns/locale";
 import userIcon from "assets/images/user.png";
 import { getUsers } from "../../services/administration-service";
 import { fetchUsers } from "../../utils/query-keys";
@@ -110,7 +111,7 @@ function Users() {
                       ),
                       registered: (
                         <SuiTypography variant="caption" color="secondary" fontWeight="medium">
-                          {format(new Date(item.registered), "dd/MM/yyy HH:mm:ss")}
+                          {format(new Date(item.registered), "HH:mm:ss, dd MMM", { locale: he })}
                         </SuiTypography>
                       ),
                       action: (
