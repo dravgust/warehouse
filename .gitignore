@@ -4,7 +4,6 @@
 # Custom
 .svn/
 Logs/
-Warehouse.API/appsettings.json
 
 # User-specific files
 *.suo
@@ -217,27 +216,5 @@ FakesAssemblies/
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
-/Configuration/CDM_BE.config
-/Configuration/CDM_FE.config
-/Configuration/CDM_FE.config
-/Configuration/CDM_BE.config
-/Cdm.BE/App_Data/*.back
-/Cdm.sln.DotSettings
-/Cdm.BE/App_Data/vayo_sync_task.1.dat
-/Cdm.Web/Content/images/cars/bmw-x7-g2.jpg
-/Cdm.Web/Content/images/cars/cadillac-ats.jpg
-/Cdm.Web/Content/images/cars/hyundai-i25-g4.jpg
-/Cdm.BE/App_Data/vayo_sms_task.1.dat
-/Cdm.BE/App_Data/vayo_sms_task.1.dat
-/Cdm.BE/App_Data/vayo_sms_task.1.dat
-/Cdm.BE/App_Data/sms_customerentity_task.1.dat
-/Cdm.BE/App_Data/sms_deviceentity_task.1.dat
-/Cdm.BE/App_Data/sms_deviceentity_task.2.dat
-/Cdm.BE/App_Data/vayo_sms_task.1.dat
 
-/Cdm.Web/Content/app/*.map
-/Cdm.Web/Content/app/**/*.map
-/Cdm.Web/Content/app/**/*.js
-/Cdm.Web/Content/images/cars
-/cars
-/SmartCar.Host.API/metrics
+appsettings.json
