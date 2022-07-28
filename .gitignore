@@ -4,8 +4,6 @@
 # Custom
 .svn/
 Logs/
-Warehouse.Host/appsettings.json
-Warehouse.API/appsettings.json
 
 # User-specific files
 *.suo
@@ -218,3 +216,8 @@ FakesAssemblies/
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
+
+appsettings.json
+
+appsettings.json
+appsettings.json
