@@ -65,7 +65,10 @@ namespace Vayosoft.Data.MongoDB
 
         public Task UpdateAsync<T>(T entity, CancellationToken cancellationToken = default) where T : IEntity =>
             Collection<T>().ReplaceOneAsync(e => e.Id.Equals(entity.Id), entity, cancellationToken: cancellationToken);
-        
+
+        public Task UpdateAsync<T>(Expression<Func<T, bool>> criteria, T entity, CancellationToken cancellationToken = default) where T : IEntity =>
+            Collection<T>().ReplaceOneAsync(criteria, entity, cancellationToken: cancellationToken);
+
         public Task DeleteAsync<T>(T entity, CancellationToken cancellationToken = default) where T : IEntity =>
             Collection<T>().DeleteOneAsync(e => e.Id.Equals(entity.Id), cancellationToken: cancellationToken);
 

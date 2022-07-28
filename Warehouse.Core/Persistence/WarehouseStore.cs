@@ -31,14 +31,13 @@ namespace Warehouse.Core.Persistence
 
         public async Task SetAsync<T>(T entity, Expression<Func<T, bool>> criteria, CancellationToken cancellationToken) where T : EntityBase<string>
         {
-            var collection = Collection<T>();
-            var p = await collection.Find(criteria).SingleOrDefaultAsync(cancellationToken: cancellationToken);
-            if (p == null)
-                await collection.InsertOneAsync(entity, cancellationToken: cancellationToken);
+            T p;
+            if (string.IsNullOrEmpty(entity.Id) || (p = await SingleOrDefaultAsync(criteria, cancellationToken: cancellationToken)) == null)
+                await AddAsync(entity, cancellationToken: cancellationToken);
             else
             {
                 entity.Id = p.Id;
-                await collection.ReplaceOneAsync(criteria, entity, cancellationToken: cancellationToken);
+                await UpdateAsync(criteria, entity, cancellationToken: cancellationToken);
             }
         }
     }
