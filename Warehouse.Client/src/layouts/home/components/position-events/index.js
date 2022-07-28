@@ -4,7 +4,7 @@ import SuiBox from "components/SuiBox";
 import SuiTypography from "components/SuiTypography";
 import TimelineItem from "examples/Timeline/TimelineItem";
 import { useQuery } from "react-query";
-import { format } from "date-fns";
+import { formatDistance } from "date-fns";
 import React from "react";
 import { fetchEvents } from "utils/query-keys";
 import { getEvents } from "services/warehouse-service";
@@ -71,7 +71,9 @@ function PositionEvents({ searchTerm = "" }) {
                   {renderEvent(item)}
                 </SuiTypography>
               }
-              dateTime={format(new Date(item.timeStamp), "HH:mm:ss - MM/dd/yyyy")}
+              dateTime={formatDistance(new Date(item.timeStamp), new Date(), {
+                addSuffix: true,
+              })}
             />
           ))}
 
