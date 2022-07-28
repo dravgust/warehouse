@@ -1,0 +1,31 @@
+﻿using Microsoft.Extensions.DependencyInjection;
+using Vayosoft.Core.Persistence.Queries;
+using Vayosoft.Core.Queries;
+using Vayosoft.Core.SharedKernel.Models.Pagination;
+using Vayosoft.Data.MongoDB.QueryHandlers;
+using Warehouse.Core.Entities.Models;
+using Warehouse.Core.UseCases.Positioning.Models;
+using Warehouse.Core.UseCases.Positioning.Queries;
+using Warehouse.Core.UseCases.Positioning.Specifications;
+
+namespace Warehouse.Core.UseCases.Positioning
+{
+    internal static class Configuration
+    {
+        public static IServiceCollection AddPositionReportServices(this IServiceCollection services) =>
+            services
+                .AddQueryHandlers();
+
+        private static IServiceCollection AddQueryHandlers(this IServiceCollection services) =>
+            services
+                .AddQueryHandler<GetAssets, IPagedEnumerable<AssetDto>, AssetsQueryHandler>()
+                .AddQueryHandler<GetBeaconEvents, IPagedEnumerable<BeaconEventDto>, AssetsQueryHandler>()
+                .AddQueryHandler<GetAssetInfo, IEnumerable<AssetInfo>, AssetsQueryHandler>()
+                .AddQueryHandler<GetSiteInfo, IEnumerable<IndoorPositionStatusDto>, AssetsQueryHandler>()
+                .AddQueryHandler<GetIpsStatus, IndoorPositionStatusDto, AssetsQueryHandler>()
+                .AddQueryHandler<GetBeaconTelemetry2, BeaconTelemetry2Dto, AssetsQueryHandler>()
+                .AddQueryHandler<GetBeaconTelemetry, BeaconTelemetryDto, AssetsQueryHandler>()
+                .AddQueryHandler<SpecificationQuery<BeaconEventSpec, IPagedEnumerable<BeaconEventEntity>>, IPagedEnumerable<BeaconEventEntity>,
+                    MongoPagingQueryHandler<BeaconEventSpec, BeaconEventEntity>>();
+    }
+}

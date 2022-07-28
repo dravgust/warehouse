@@ -93,6 +93,7 @@ const BeaconTelemetryCharts = ({ item }) => {
           <ScaleLoader
             loading={isLoading || isChartLoading}
             color={"#17c1e8"}
+            height={"100"}
             cssOverride={{ position: "absolute", display: "inherit", top: "50%", left: "50%" }}
           />
           <GradientLineChart chart={temperatureChart} />
@@ -107,6 +108,7 @@ const BeaconTelemetryCharts = ({ item }) => {
           <ScaleLoader
             loading={isLoading || isChartLoading}
             color={"#17c1e8"}
+            height={"100"}
             cssOverride={{ position: "absolute", display: "inherit", top: "50%", left: "50%" }}
           />
           <GradientLineChart chart={humidityChart} />

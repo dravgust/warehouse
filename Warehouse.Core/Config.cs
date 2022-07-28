@@ -21,7 +21,9 @@ using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.Services.Providers;
 using Warehouse.Core.UseCases;
+using Warehouse.Core.UseCases.Administration;
 using Warehouse.Core.UseCases.Administration.Spcecifications;
+using Warehouse.Core.UseCases.Management;
 using Warehouse.Core.UseCases.Management.Commands;
 using Warehouse.Core.UseCases.Management.Events;
 using Warehouse.Core.UseCases.Management.Models;
@@ -88,39 +90,19 @@ namespace Warehouse.Core
             services.AddScoped(typeof(IRepository<>), typeof(WarehouseRepository<>));
 
             //queries
-            services.AddScoped<IRequestHandler<SetProduct, Unit>, ProductCommandHandler>();
-            services.AddScoped<IRequestHandler<DeleteProduct, Unit>, ProductCommandHandler>();
-            services.AddScoped<IRequestHandler<GetProductMetadata, ProductMetadata>, ProductQueryHandler>();
-            services.AddScoped<IRequestHandler<GetProductItemMetadata, ProductMetadata>, ProductQueryHandler>();
-            services.AddScoped<IRequestHandler<GetAssets, IPagedEnumerable<AssetDto>>, AssetsQueryHandler>();
-            services.AddScoped<IRequestHandler<GetBeaconEvents, IPagedEnumerable<BeaconEventDto>>, AssetsQueryHandler>();
-            services.AddScoped<IRequestHandler<GetAssetInfo, IEnumerable<AssetInfo>>, AssetsQueryHandler>();
-            services.AddScoped<IRequestHandler<GetBeaconTelemetry, BeaconTelemetryDto>, AssetsQueryHandler>();
-            services.AddScoped<IRequestHandler<GetBeaconTelemetry2, BeaconTelemetry2Dto>, AssetsQueryHandler>();
-            services.AddScoped<IRequestHandler<GetIpsStatus, IndoorPositionStatusDto>, AssetsQueryHandler>();
-            services.AddScoped<IRequestHandler<GetSiteInfo, IEnumerable<IndoorPositionStatusDto>>, AssetsQueryHandler>();
-            services.AddScoped<IRequestHandler<GetRegisteredBeaconList, IEnumerable<string>>, WarehouseQueryHandler>();
-            services.AddScoped<IRequestHandler<GetProductItems, IPagedEnumerable<ProductItemDto>>, WarehouseQueryHandler>();
-            services.AddScoped<IRequestHandler<GetRegisteredGwList, IEnumerable<string>>, GetRegisteredGwList.RegisteredGwQueryHandler>();
+            services
+                .AddPositionReportServices()
+                .AddWarehouseManagementServices();
 
             services.AddScoped<IRequestHandler<SpecificationQuery<WarehouseSiteSpec, IPagedEnumerable<WarehouseSiteEntity>>, IPagedEnumerable<WarehouseSiteEntity>>,
                 MongoPagingQueryHandler<WarehouseSiteSpec, WarehouseSiteEntity>>();
             services.AddScoped<IRequestHandler<SpecificationQuery<WarehouseProductSpec, IPagedEnumerable<BeaconRegisteredEntity>>, IPagedEnumerable<BeaconRegisteredEntity>>,
                 MongoPagingQueryHandler<WarehouseProductSpec, BeaconRegisteredEntity>>();
-            services.AddScoped<IRequestHandler<SpecificationQuery<BeaconEventSpec, IPagedEnumerable<BeaconEventEntity>>, IPagedEnumerable<BeaconEventEntity>>,
-                MongoPagingQueryHandler<BeaconEventSpec, BeaconEventEntity>>();
             services.AddScoped<IRequestHandler<SpecificationQuery<BeaconPositionSpec, IPagedEnumerable<BeaconReceivedEntity>>, IPagedEnumerable<BeaconReceivedEntity>>,
                 MongoPagingQueryHandler<BeaconPositionSpec, BeaconReceivedEntity>>();
             services.AddScoped<IRequestHandler<SpecificationQuery<ProductSpec, IPagedEnumerable<ProductEntity>>, IPagedEnumerable<ProductEntity>>,
                 MongoPagingQueryHandler<ProductSpec, ProductEntity>>();
             services.AddScoped<IRequestHandler<SingleQuery<ProductEntity>, ProductEntity>, MongoSingleQueryHandler<string, ProductEntity>>();
-
-            //commands
-            services.AddScoped<IRequestHandler<SetWarehouseSite, Unit>, WarehouseCommandHandler>();
-            services.AddScoped<IRequestHandler<DeleteWarehouseSite, Unit>, WarehouseCommandHandler>();
-            services.AddScoped<IRequestHandler<SetGatewayToSite, Unit>, WarehouseCommandHandler>();
-            services.AddScoped<IRequestHandler<RemoveGatewayFromSite, Unit>, WarehouseCommandHandler>();
-            services.AddScoped<IRequestHandler<SetBeacon, Unit>, WarehouseCommandHandler>();
 
             //events 
             services
@@ -157,13 +139,8 @@ namespace Warehouse.Core
             services.AddScoped<IUnitOfWork>(s => s.GetRequiredService<WarehouseDbContext>());
             services.AddScoped<ILinqProvider>(s => s.GetRequiredService<WarehouseDbContext>());
 
-            services.AddScoped<IRequestHandler<SpecificationQuery<UserSpec, IPagedEnumerable<UserEntityDto>>, IPagedEnumerable<UserEntityDto>>,
-                PagingQueryHandler<long, UserSpec, UserEntity, UserEntityDto>>();
             services
-                .AddScoped<IRequestHandler<SingleQuery<UserEntityDto>, UserEntityDto>,
-                    SingleQueryHandler<long, UserEntity, UserEntityDto>>();
-
-            services.AddScoped<IRequestHandler<CreateOrUpdateCommand<UserEntityDto>, Unit>, CreateOrUpdateHandler<long, UserEntity, UserEntityDto>>();
+                .AddWarehouseAdministrationServices();
 
             return services;
         }
