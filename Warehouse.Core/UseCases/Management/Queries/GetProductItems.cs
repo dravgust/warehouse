@@ -8,6 +8,6 @@ namespace Warehouse.Core.UseCases.Management.Queries
     {
         public int Page { set; get; }
         public int Size { set; get; }
-        public string? SearchTerm { set; get; }
+        public string SearchTerm { set; get; }
     }
 }

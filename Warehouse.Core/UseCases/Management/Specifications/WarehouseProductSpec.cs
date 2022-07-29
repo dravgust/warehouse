@@ -8,7 +8,7 @@ namespace Warehouse.Core.UseCases.Management.Specifications
 {
     public class WarehouseProductSpec : PagingBase<BeaconRegisteredEntity, object>, IFilteringSpecification<BeaconRegisteredEntity>
     {
-        public WarehouseProductSpec(int page, int take, string? filterString)
+        public WarehouseProductSpec(int page, int take, string filterString)
             : base(page, take,
                 new Sorting<BeaconRegisteredEntity, object>(p => p.MacAddress, SortOrder.Asc))
         {
@@ -22,7 +22,7 @@ namespace Warehouse.Core.UseCases.Management.Specifications
         protected override Sorting<BeaconRegisteredEntity, object> BuildDefaultSorting()
             => new(x => x.Id, SortOrder.Desc);
 
-        public string? FilterString { get; }
+        public string FilterString { get; }
 
         public ICollection<Expression<Func<BeaconRegisteredEntity, object>>> FilterBy { get; }
             = new List<Expression<Func<BeaconRegisteredEntity, object>>>();

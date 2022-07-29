@@ -7,7 +7,7 @@ namespace Warehouse.Core.Entities.Models
         public string MacAddress { get; set; }
         public string Name { get; set; }
         public string ProductId { get; set; }
-        public ProductMetadata? Metadata { get; set; }
+        public ProductMetadata Metadata { get; set; }
         object IEntity.Id => Id;
 
         public string Id { get; set; }

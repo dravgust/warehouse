@@ -36,7 +36,7 @@ namespace Warehouse.API.Controllers.API
             Ok(await _queryBus.Send(new GetProductItemMetadata(), token));
 
         [HttpGet("")]
-        public async Task<IActionResult> Get(int page, int size, string? searchTerm = null, CancellationToken token = default)
+        public async Task<IActionResult> Get(int page, int size, string searchTerm = null, CancellationToken token = default)
         {
             var spec = new ProductSpec(page, size, searchTerm);
             var query = new SpecificationQuery<ProductSpec, IPagedEnumerable<ProductEntity>>(spec);
@@ -110,7 +110,7 @@ namespace Warehouse.API.Controllers.API
 
         public class FileImport
         {
-            public IFormFile? File { get; set; }
+            public IFormFile File { get; set; }
         }
     }
 }

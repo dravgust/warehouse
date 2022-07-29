@@ -28,7 +28,7 @@ namespace Vayosoft.Core.SharedKernel.ValueObjects
 
         public static implicit operator MacAddress(string value) => new(value);
 
-        public int CompareTo(MacAddress? other)
+        public int CompareTo(MacAddress other)
         {
             if (ReferenceEquals(this, other)) return 0;
             if (ReferenceEquals(null, other)) return 1;

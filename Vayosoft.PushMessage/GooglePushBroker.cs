@@ -11,7 +11,7 @@ namespace Vayosoft.PushMessage
     {
         private const string FCM_SEND_URL = "https://fcm.googleapis.com/fcm/send";
 
-        protected readonly GcmServiceBroker? Broker;
+        protected readonly GcmServiceBroker Broker;
 
         public event HandlerPushBrokerEvent OnEvent = null!;
 
@@ -104,7 +104,7 @@ namespace Vayosoft.PushMessage
             });
         }
 
-        public void Send(string token, JObject data, object? tag = null)
+        public void Send(string token, JObject data, object tag = null)
         {
             if (string.IsNullOrEmpty(token))
                 throw new ApplicationException("parameter: 'token' was not received");

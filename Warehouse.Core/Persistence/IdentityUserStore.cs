@@ -14,7 +14,7 @@ namespace Warehouse.Core.Persistence
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public Task<UserEntity?> FindByIdAsync(object userId, CancellationToken cancellationToken)
+        public Task<UserEntity> FindByIdAsync(object userId, CancellationToken cancellationToken)
         {
             return _context
                 .Users
@@ -22,7 +22,7 @@ namespace Warehouse.Core.Persistence
                 .SingleOrDefaultAsync(u => u.Id.Equals(userId), cancellationToken: cancellationToken);
         }
 
-        public Task<UserEntity?> FindByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken)
+        public Task<UserEntity> FindByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken)
         {
             return _context
                 .Users
@@ -30,7 +30,7 @@ namespace Warehouse.Core.Persistence
                 .SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.Token == refreshToken), cancellationToken: cancellationToken);
         }
 
-        public Task<UserEntity?> FindByNameAsync(string username, CancellationToken cancellationToken)
+        public Task<UserEntity> FindByNameAsync(string username, CancellationToken cancellationToken)
         {
             return _context
                     .Set<UserEntity>()

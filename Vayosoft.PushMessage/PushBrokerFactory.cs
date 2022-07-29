@@ -2,7 +2,7 @@
 
 namespace Vayosoft.PushMessage
 {
-    public delegate void HandlerPushBrokerEvent(object tag, PushBrokerException? ex = null);
+    public delegate void HandlerPushBrokerEvent(object tag, PushBrokerException ex = null);
 
     public class PushBrokerFactory
     {

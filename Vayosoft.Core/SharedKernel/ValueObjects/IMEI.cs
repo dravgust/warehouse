@@ -19,7 +19,7 @@ namespace Vayosoft.Core.SharedKernel.ValueObjects
         }
         public override string ToString() => Value;
 
-        public static implicit operator string?(IMEI? imei) => imei?.Value;
+        public static implicit operator string(IMEI imei) => imei?.Value;
         public static implicit operator IMEI(string value) => new(value);
     }
 }

@@ -6,7 +6,7 @@ namespace Warehouse.API.Extensions
 {
     public static class DistributedCacheExtension
     {
-        public static T? Get<T>(this IDistributedCache cache, string key)
+        public static T Get<T>(this IDistributedCache cache, string key)
         {
             var value = cache.Get(key);
             return value == null ? default : Encoding.UTF8.GetString(value).FromJson<T>();

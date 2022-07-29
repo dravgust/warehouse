@@ -7,8 +7,8 @@ namespace Vayosoft.Streaming.Consumers
     //See more: https://www.stevejgordon.co.uk/asp-net-core-2-ihostedservice
     public class ExternalEventConsumerBackgroundWorker: IHostedService
     {
-        private Task? executingTask;
-        private CancellationTokenSource? cts;
+        private Task executingTask;
+        private CancellationTokenSource cts;
         private readonly IExternalEventConsumer externalEventConsumer;
         private readonly ILogger<ExternalEventConsumerBackgroundWorker> logger;
 

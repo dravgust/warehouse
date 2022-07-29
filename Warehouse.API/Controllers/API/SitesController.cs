@@ -32,7 +32,7 @@ namespace Warehouse.API.Controllers.API
         }
 
         [HttpGet("")]
-        public async Task<dynamic> Get(int page, int size, string? searchTerm = null, CancellationToken token = default)
+        public async Task<dynamic> Get(int page, int size, string searchTerm = null, CancellationToken token = default)
         {
             var spec = new WarehouseSiteSpec(page, size, searchTerm);
             var query = new SpecificationQuery<WarehouseSiteSpec, IPagedEnumerable<WarehouseSiteEntity>>(spec);

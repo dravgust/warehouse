@@ -8,10 +8,10 @@ namespace Vayosoft.PushMessage
 {
     public class ApplePushBroker : IPushBroker, IDisposable
     {
-        private FeedbackService? _fbs;
-        private Timer? _fbsTimer;
+        private FeedbackService _fbs;
+        private Timer _fbsTimer;
         private const int CallbackTimeout = 1000 * 60 * 30;
-        protected ApnsServiceBroker? Broker;
+        protected ApnsServiceBroker Broker;
 
         public event HandlerPushBrokerEvent OnEvent = null!;
 
@@ -82,7 +82,7 @@ namespace Vayosoft.PushMessage
             });
         }
 
-        public void Send(string token, JObject payload, object? tag = null)
+        public void Send(string token, JObject payload, object tag = null)
         {
             if (string.IsNullOrEmpty(token))
                 throw new ApplicationException("parameter: 'token' was not received");

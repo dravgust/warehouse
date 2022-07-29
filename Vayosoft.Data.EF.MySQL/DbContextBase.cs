@@ -46,7 +46,7 @@ namespace Vayosoft.Data.EF.MySQL
             Set<TEntity>().Remove(entity);
         }
 
-        public TEntity? Find<TEntity>(object id) where TEntity : class, IEntity
+        public TEntity Find<TEntity>(object id) where TEntity : class, IEntity
         {
             return Set<TEntity>().SingleOrDefault(x => x.Id == id);
         }
@@ -60,7 +60,7 @@ namespace Vayosoft.Data.EF.MySQL
             return entity;
         }
 
-        public Task<TEntity?> FindAsync<TEntity>(object id, CancellationToken cancellationToken) where TEntity : class, IEntity
+        public Task<TEntity> FindAsync<TEntity>(object id, CancellationToken cancellationToken) where TEntity : class, IEntity
         {
             return Set<TEntity>().SingleOrDefaultAsync(x => x.Id == id, cancellationToken: cancellationToken);
         }

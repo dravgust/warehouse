@@ -4,7 +4,7 @@ namespace Vayosoft.Data.MongoDB
 {
     public class ConnectionSetting
     {
-        public ReplicaSetSetting? ReplicaSet { set; get; }
+        public ReplicaSetSetting ReplicaSet { set; get; }
 
         public string ConnectionString { set; get; }
     }

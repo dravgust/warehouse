@@ -17,7 +17,7 @@ namespace Vayosoft.Core.SharedKernel.ValueObjects
         }
         public override string ToString() => Value;
 
-        public static implicit operator string?(PhoneNumber? phoneNumber) => phoneNumber?.Value;
+        public static implicit operator string(PhoneNumber phoneNumber) => phoneNumber?.Value;
         public static explicit operator PhoneNumber(string value) => new(value);
     }
 }

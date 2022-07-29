@@ -4,14 +4,14 @@ namespace Vayosoft.Streaming.Redis.Consumers
 {
     public class RedisStreamConsumerConfig
     {
-        public string? GroupId { set; get; }
-        public string? ConsumerId { set; get; }
-        public string[]? BootstrapServers { set; get; }
+        public string GroupId { set; get; }
+        public string ConsumerId { set; get; }
+        public string[] BootstrapServers { set; get; }
     }
 
     public class ExternalEventConsumerConfig
     {
-        public string[]? Topics { get; set; }
+        public string[] Topics { get; set; }
     }
 
     public static class RedisConsumerConfigExtensions

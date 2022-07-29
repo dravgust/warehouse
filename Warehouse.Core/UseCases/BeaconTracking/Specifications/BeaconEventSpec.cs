@@ -20,7 +20,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Specifications
 
         protected override Sorting<BeaconEventEntity, object> BuildDefaultSorting()
             => new(x => x.Id, SortOrder.Desc);
-        public string? FilterString { get; }
+        public string FilterString { get; }
 
         public ICollection<Expression<Func<BeaconEventEntity, object>>> FilterBy { get; }
             = new List<Expression<Func<BeaconEventEntity, object>>>();

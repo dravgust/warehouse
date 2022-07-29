@@ -4,20 +4,20 @@ namespace Vayosoft.PushMessage
 {
     public class PushBrokerConfig
     {
-        public GoogleConfig? Google { set; get; }
-        public AppleConfig? Apple { set; get; }
+        public GoogleConfig Google { set; get; }
+        public AppleConfig Apple { set; get; }
     }
 
     public class GoogleConfig
     {
-        public string? SenderId { set; get; }
-        public string? AuthToken { set; get; }
+        public string SenderId { set; get; }
+        public string AuthToken { set; get; }
     }
 
     public class AppleConfig
     {
-        public string? CertificatePath { set; get; }
-        public string? Password { set; get; }
+        public string CertificatePath { set; get; }
+        public string Password { set; get; }
         public bool IsProduction { set; get; }
     }
 

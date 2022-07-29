@@ -7,13 +7,13 @@ namespace Warehouse.Core.UseCases.Management.Models
     public class ProductDto : IEntity<string>
     {
         object IEntity.Id { get; }
-        public string? Id { get; set; }
+        public string Id { get; set; }
         [Required]
         public string Name { get; set; }
 
-        public string? Description { get; set; }
+        public string Description { get; set; }
 
-        public string? MacAddress { get; set; }
-        public ProductMetadata? Metadata { get; set; }
+        public string MacAddress { get; set; }
+        public ProductMetadata Metadata { get; set; }
     }
 }

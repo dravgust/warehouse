@@ -8,7 +8,7 @@ namespace Warehouse.Core.UseCases.Management.Specifications
 {
     public class WarehouseSiteSpec : PagingBase<WarehouseSiteEntity, object>, IFilteringSpecification<WarehouseSiteEntity>
     {
-        public WarehouseSiteSpec(int page, int take, string? filterString)
+        public WarehouseSiteSpec(int page, int take, string filterString)
             : base(page, take,
                 new Sorting<WarehouseSiteEntity, object>(p => p.Name, SortOrder.Asc))
         {
@@ -22,7 +22,7 @@ namespace Warehouse.Core.UseCases.Management.Specifications
         protected override Sorting<WarehouseSiteEntity, object> BuildDefaultSorting()
             => new(x => x.Id, SortOrder.Desc);
 
-        public string? FilterString { get; }
+        public string FilterString { get; }
 
         public ICollection<Expression<Func<WarehouseSiteEntity, object>>> FilterBy { get; }
             = new List<Expression<Func<WarehouseSiteEntity, object>>>();

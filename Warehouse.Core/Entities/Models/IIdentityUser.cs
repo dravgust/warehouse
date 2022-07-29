@@ -7,7 +7,7 @@ namespace Warehouse.Core.Entities.Models
     public interface IIdentityUser : IEntity
     {
         public string Username { get; }
-        public string? Email { get; }
+        public string Email { get; }
 
         [JsonIgnore]
         public string PasswordHash { get; }

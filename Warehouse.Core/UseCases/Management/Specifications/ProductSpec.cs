@@ -8,7 +8,7 @@ namespace Warehouse.Core.UseCases.Management.Specifications
 {
     public class ProductSpec : PagingBase<ProductEntity, object>, IFilteringSpecification<ProductEntity>
     {
-        public ProductSpec(int page, int take, string? filterString)
+        public ProductSpec(int page, int take, string filterString)
             : base(page, take, new Sorting<ProductEntity>(p => p.Name, SortOrder.Asc))
         {
             FilterString = filterString;
@@ -21,7 +21,7 @@ namespace Warehouse.Core.UseCases.Management.Specifications
         protected override Sorting<ProductEntity, object> BuildDefaultSorting()
             => new(x => x.Id, SortOrder.Desc);
 
-        public string? FilterString { get; }
+        public string FilterString { get; }
 
         public ICollection<Expression<Func<ProductEntity, object>>> FilterBy { get; }
             = new List<Expression<Func<ProductEntity, object>>>();

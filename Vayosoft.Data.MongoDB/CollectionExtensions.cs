@@ -446,7 +446,7 @@ namespace Vayosoft.Data.MongoDB
             this IMongoCollection<T> collection,
             FilterDefinition<T> filter,
             UpdateDefinition<T> update,
-            Action<UpdateOptions>? configure,
+            Action<UpdateOptions> configure,
             CancellationToken cancellationToken = default
         ) where T : IEntity
         {

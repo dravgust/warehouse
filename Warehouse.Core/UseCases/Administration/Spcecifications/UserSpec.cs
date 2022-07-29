@@ -6,9 +6,9 @@ namespace Warehouse.Core.UseCases.Administration.Spcecifications
 {
     public class UserSpec : SortByIdPaging<UserEntityDto>, ILinqSpecification<UserEntity>
     {
-        private readonly string? _searchTerm;
+        private readonly string _searchTerm;
 
-        public UserSpec(int page, int take, string? searchTerm = null)
+        public UserSpec(int page, int take, string searchTerm = null)
         {
             Page = page;
             Take = take;

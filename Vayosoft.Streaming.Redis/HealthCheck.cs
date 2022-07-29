@@ -18,7 +18,7 @@ namespace Vayosoft.Streaming.Redis
             {
                 
 
-                return HealthCheckResult.Healthy(name);
+                return await Task.FromResult(HealthCheckResult.Healthy(name));
             }
             catch (Exception e)
             {

@@ -54,7 +54,7 @@ namespace Vayosoft.Caching.Redis
             _log.LogTrace($"Published token cancellation message {message.ToString()}");
         }
 
-        protected virtual void OnConnectionFailed(object? sender, ConnectionFailedEventArgs e)
+        protected virtual void OnConnectionFailed(object sender, ConnectionFailedEventArgs e)
         {
             _log.LogError($"Redis disconnected from instance {InstanceId}. Endpoint is {e.EndPoint}, failure type is {e.FailureType}");
 
@@ -66,7 +66,7 @@ namespace Vayosoft.Caching.Redis
             GlobalCacheRegion.ExpireRegion();
         }
 
-        protected virtual void OnConnectionRestored(object? sender, ConnectionFailedEventArgs e)
+        protected virtual void OnConnectionRestored(object sender, ConnectionFailedEventArgs e)
         {
             _log.LogTrace($"Redis backplane connection restored for instance {InstanceId}");
 

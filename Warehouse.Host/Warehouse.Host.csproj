@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
+	  <ImplicitUsings>enable</ImplicitUsings>
+	  <LangVersion>latest</LangVersion>
     <UserSecretsId>dotnet-Warehouse.Host-25213A6B-D619-4E68-8E9D-1F072C8CAA88</UserSecretsId>
   </PropertyGroup>
 

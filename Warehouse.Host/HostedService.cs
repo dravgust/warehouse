@@ -10,7 +10,7 @@ namespace Warehouse.Host
     {
         private int executionCount = 0;
         private readonly ILogger<HostedService> _logger;
-        private Timer? _timer = null;
+        private Timer _timer = null;
 
         public HostedService(ILogger<HostedService> logger)
         {
@@ -27,7 +27,7 @@ namespace Warehouse.Host
             return Task.CompletedTask;
         }
 
-        private void DoWork(object? state)
+        private void DoWork(object state)
         {
             var count = Interlocked.Increment(ref executionCount);
 

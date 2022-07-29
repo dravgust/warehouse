@@ -17,9 +17,9 @@ namespace Warehouse.Core.Entities.Models
 
     public class ProductMetadataItem
     {
-        public string? Key { set; get; }
-        public string? Value { set; get; }
-        public string? Type { set; get; }
+        public string Key { set; get; }
+        public string Value { set; get; }
+        public string Type { set; get; }
         public bool IsRequired { set; get; }
     }
 

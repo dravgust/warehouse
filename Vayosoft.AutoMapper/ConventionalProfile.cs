@@ -8,7 +8,7 @@ namespace Vayosoft.AutoMapper
 {
     public class ConventionalProfile : Profile
     {
-        public static IDictionary<Type, Type[]>? TypeMap;
+        public static IDictionary<Type, Type[]> TypeMap;
 
         public static void Scan(params Assembly[] assemblies)
         {

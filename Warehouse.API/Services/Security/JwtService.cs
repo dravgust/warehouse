@@ -34,7 +34,7 @@ namespace Warehouse.API.Services.Security
             return tokenHandler.WriteToken(token);
         }
 
-        public int? ValidateJwtToken(string? token)
+        public int? ValidateJwtToken(string token)
         {
             if (token == null)
                 return null;

@@ -17,7 +17,7 @@
 
         object IEntity.Id => Id!;
 
-        public override bool Equals(object? obj)
+        public override bool Equals(object obj)
         {
             if (obj is not EntityBase<TId> item)
                 return false;

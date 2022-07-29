@@ -46,7 +46,7 @@ namespace Warehouse.Host
                 using var scope = _serviceProvider.CreateScope();
                 var store = scope.ServiceProvider.GetRequiredService<WarehouseStore>();
 
-                Dictionary<string, string?[]> beaconsIn = new();
+                Dictionary<string, string[]> beaconsIn = new();
                 HashSet<string> beaconsOut = new();
 
                 try
