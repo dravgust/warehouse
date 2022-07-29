@@ -19,8 +19,8 @@ using Warehouse.Core.UseCases;
 using Warehouse.Core.UseCases.Administration;
 using Warehouse.Core.UseCases.Management;
 using Warehouse.Core.UseCases.Management.Events;
-using Warehouse.Core.UseCases.Positioning;
 using Warehouse.Core.UseCases.Providers;
+using Warehouse.Core.UseCases.Tracking;
 
 namespace Warehouse.Core
 {

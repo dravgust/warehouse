@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Queries;
 using Warehouse.API.Services.Security.Attributes;
-using Warehouse.Core.UseCases.Positioning.Queries;
+using Warehouse.Core.UseCases.Tracking.Queries;
 
 namespace Warehouse.API.Controllers.API
 {

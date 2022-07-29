@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="UseCases\Positioning\Commands\**" />
+    <Compile Remove="UseCases\Tracking\Commands\**" />
     <Compile Remove="UseCases\Providers\Queries\**" />
-    <EmbeddedResource Remove="UseCases\Positioning\Commands\**" />
+    <EmbeddedResource Remove="UseCases\Tracking\Commands\**" />
     <EmbeddedResource Remove="UseCases\Providers\Queries\**" />
-    <None Remove="UseCases\Positioning\Commands\**" />
+    <None Remove="UseCases\Tracking\Commands\**" />
     <None Remove="UseCases\Providers\Queries\**" />
   </ItemGroup>
 

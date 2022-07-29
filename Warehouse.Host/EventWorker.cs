@@ -3,7 +3,7 @@ using Vayosoft.Core.SharedKernel.Events;
 using Vayosoft.Core.SharedKernel.ValueObjects;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Persistence;
-using Warehouse.Core.UseCases.Positioning.Events;
+using Warehouse.Core.UseCases.Tracking.Events;
 
 namespace Warehouse.Host
 {
