@@ -23,7 +23,7 @@ namespace Warehouse.Core.UseCases.Management.Queries
             var data = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<ProductMetadata>(), async options =>
             {
                 options.SlidingExpiration = TimeSpans.FiveMinutes;
-                var entity = await _fileRepository.GetAsync("product_metadata", cancellationToken);
+                var entity = await _fileRepository.FindAsync("product_metadata", cancellationToken);
                 ProductMetadata data = null;
                 if (!string.IsNullOrEmpty(entity?.Content))
                     data = entity.Content.FromJson<ProductMetadata>();
@@ -39,7 +39,7 @@ namespace Warehouse.Core.UseCases.Management.Queries
             var data = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<ProductMetadata>("beacon"), async options =>
             {
                 options.SlidingExpiration = TimeSpans.FiveMinutes;
-                var entity = await _fileRepository.GetAsync("beacon_metadata", cancellationToken);
+                var entity = await _fileRepository.FindAsync("beacon_metadata", cancellationToken);
                 ProductMetadata data = null;
                 if (!string.IsNullOrEmpty(entity?.Content))
                     data = entity.Content.FromJson<ProductMetadata>();

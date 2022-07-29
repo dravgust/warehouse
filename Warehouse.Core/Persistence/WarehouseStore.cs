@@ -1,6 +1,5 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.Extensions.Configuration;
-using MongoDB.Driver;
 using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Data.MongoDB;
