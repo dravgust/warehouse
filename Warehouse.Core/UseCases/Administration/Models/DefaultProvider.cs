@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace Warehouse.Core.UseCases.Providers.Models
+namespace Warehouse.Core.UseCases.Administration.Models
 {
     public abstract partial class Provider
     {

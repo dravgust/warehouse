@@ -1,5 +1,5 @@
 ﻿using Warehouse.Core.Services.Providers.Default;
-using Provider = Warehouse.Core.UseCases.Providers.Models.Provider;
+using Provider = Warehouse.Core.UseCases.Administration.Models.Provider;
 
 namespace Warehouse.Core.Services.Providers
 {

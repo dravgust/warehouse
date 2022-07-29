@@ -6,7 +6,7 @@ using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Events;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Persistence;
-using Warehouse.Core.UseCases.Providers.Models;
+using Warehouse.Core.UseCases.Administration.Models;
 
 namespace Warehouse.Core.UseCases.Management.Commands
 {

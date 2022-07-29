@@ -6,7 +6,7 @@ using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Events;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services.Providers;
-using Warehouse.Core.UseCases.Providers.Models;
+using Warehouse.Core.UseCases.Administration.Models;
 
 namespace Warehouse.Core.UseCases.Management.Events
 {

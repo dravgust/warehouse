@@ -5,7 +5,7 @@ using Warehouse.Core.Services.Providers;
 using Warehouse.Core.UseCases.Administration.Models;
 using Warehouse.Core.UseCases.Administration.Queries;
 
-namespace Warehouse.Core.UseCases.Providers
+namespace Warehouse.Core.UseCases.Administration
 {
     public class ProviderQueryHandler : IQueryHandler<GetUserSubscription, UserSubscription>
     {

@@ -5,6 +5,8 @@ using Vayosoft.Core.Commands;
 using Vayosoft.Core.Persistence.Commands;
 using Vayosoft.Core.Persistence.Queries;
 using Warehouse.Core.Entities.Models;
+using Warehouse.Core.UseCases.Administration.Models;
+using Warehouse.Core.UseCases.Administration.Queries;
 using Warehouse.Core.UseCases.Administration.Spcecifications;
 
 namespace Warehouse.Core.UseCases.Administration
@@ -20,7 +22,8 @@ namespace Warehouse.Core.UseCases.Administration
             services
                 .AddQueryHandler<SpecificationQuery<UserSpec, IPagedEnumerable<UserEntityDto>>, IPagedEnumerable<UserEntityDto>,
                     PagingQueryHandler<long, UserSpec, UserEntity, UserEntityDto>>()
-                .AddQueryHandler<SingleQuery<UserEntityDto>, UserEntityDto, SingleQueryHandler<long, UserEntity, UserEntityDto>>();
+                .AddQueryHandler<SingleQuery<UserEntityDto>, UserEntityDto, SingleQueryHandler<long, UserEntity, UserEntityDto>>()
+                .AddQueryHandler<GetUserSubscription, UserSubscription, ProviderQueryHandler>();
 
         private static IServiceCollection AddCommandHandlers(this IServiceCollection services) =>
             services

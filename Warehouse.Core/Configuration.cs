@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using AutoMapper;
+using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,18 +14,17 @@ using Vayosoft.Data.EF.MySQL;
 using Vayosoft.Data.MongoDB;
 using Warehouse.Core.Entities.Events;
 using Warehouse.Core.Persistence;
-using Warehouse.Core.Services.Providers;
+using Warehouse.Core.Services;
 using Warehouse.Core.Services.Serialization;
 using Warehouse.Core.UseCases;
 using Warehouse.Core.UseCases.Administration;
+using Warehouse.Core.UseCases.BeaconTracking;
 using Warehouse.Core.UseCases.Management;
 using Warehouse.Core.UseCases.Management.Events;
-using Warehouse.Core.UseCases.Providers;
-using Warehouse.Core.UseCases.Tracking;
 
 namespace Warehouse.Core
 {
-    public static class Config
+    public static class Configuration
     {
         public static IServiceCollection AddWarehouseDependencies(this IServiceCollection services,
             IConfiguration configuration)
@@ -62,14 +62,19 @@ namespace Warehouse.Core
                 .AddScoped(typeof(IRepository<>), typeof(WarehouseRepository<>));
 
             services
-                .AddPositionReportServices()
+                .AddDefaultProvider()
+                .AddWarehouseTrackingServices()
                 .AddWarehouseManagementServices()
                 .AddWarehouseAdministrationServices();
 
-            services.AddDefaultProvider()
-                .AddProviderHandlers();
-
             services.AddScoped<INotificationHandler<OperationOccurred>, OperationEventHandler>();
+
+            services
+                //.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<SetProduct.CertificateRequestValidator>())
+                .AddValidatorsFromAssembly(Assembly.GetAssembly(typeof(Services.Configuration)), ServiceLifetime.Transient)
+                .AddValidation();
+
+            services.AddQueryUnhandledException();
 
             return services;
         }

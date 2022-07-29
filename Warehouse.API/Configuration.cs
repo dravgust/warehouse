@@ -17,7 +17,6 @@ using Warehouse.Core;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
-using Warehouse.Core.Services.Validation;
 using Warehouse.Core.UseCases.Administration.Models;
 
 namespace Warehouse.API
@@ -27,12 +26,6 @@ namespace Warehouse.API
         public static IServiceCollection AddApplication(this IServiceCollection services,
             IConfiguration configuration)
         {
-            services
-                //.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<SetProduct.CertificateRequestValidator>())
-                .AddValidatorsFromAssembly(Assembly.GetAssembly(typeof(Core.Services.Validation.Config)), ServiceLifetime.Transient)
-                .AddValidation();
-            services.AddUnhandledException();
-
             services.AddWarehouseDependencies(configuration);
 
             services

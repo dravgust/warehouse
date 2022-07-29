@@ -4,7 +4,7 @@ using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.Specifications;
 using Warehouse.Core.Entities.Models;
 
-namespace Warehouse.Core.UseCases.Tracking.Specifications
+namespace Warehouse.Core.UseCases.BeaconTracking.Specifications
 {
     public class BeaconPositionSpec : PagingBase<BeaconReceivedEntity, object>, IFilteringSpecification<BeaconReceivedEntity>
     {

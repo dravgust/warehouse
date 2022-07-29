@@ -5,16 +5,16 @@ using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Data.MongoDB.QueryHandlers;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.UseCases.Tracking.Events;
-using Warehouse.Core.UseCases.Tracking.Models;
-using Warehouse.Core.UseCases.Tracking.Queries;
-using Warehouse.Core.UseCases.Tracking.Specifications;
+using Warehouse.Core.UseCases.BeaconTracking.Events;
+using Warehouse.Core.UseCases.BeaconTracking.Models;
+using Warehouse.Core.UseCases.BeaconTracking.Queries;
+using Warehouse.Core.UseCases.BeaconTracking.Specifications;
 
-namespace Warehouse.Core.UseCases.Tracking
+namespace Warehouse.Core.UseCases.BeaconTracking
 {
     internal static class Configuration
     {
-        public static IServiceCollection AddPositionReportServices(this IServiceCollection services) =>
+        public static IServiceCollection AddWarehouseTrackingServices(this IServiceCollection services) =>
             services
                 .AddQueryHandlers()
                 .AddEventHandlers();

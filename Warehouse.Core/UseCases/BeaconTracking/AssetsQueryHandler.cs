@@ -6,12 +6,12 @@ using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Persistence;
+using Warehouse.Core.UseCases.BeaconTracking.Models;
+using Warehouse.Core.UseCases.BeaconTracking.Queries;
+using Warehouse.Core.UseCases.BeaconTracking.Specifications;
 using Warehouse.Core.UseCases.Management.Models;
-using Warehouse.Core.UseCases.Tracking.Models;
-using Warehouse.Core.UseCases.Tracking.Queries;
-using Warehouse.Core.UseCases.Tracking.Specifications;
 
-namespace Warehouse.Core.UseCases.Tracking
+namespace Warehouse.Core.UseCases.BeaconTracking
 {
     public class AssetsQueryHandler :
         IQueryHandler<GetAssets, IPagedEnumerable<AssetDto>>,

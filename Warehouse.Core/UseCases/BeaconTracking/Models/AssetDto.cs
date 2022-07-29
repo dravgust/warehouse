@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using Warehouse.Core.UseCases.Management.Models;
 
-namespace Warehouse.Core.UseCases.Tracking.Models
+namespace Warehouse.Core.UseCases.BeaconTracking.Models
 {
     public class AssetDto
     {

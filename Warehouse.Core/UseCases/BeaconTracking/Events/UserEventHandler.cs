@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Vayosoft.Core.SharedKernel.Events;
 
-namespace Warehouse.Core.UseCases.Tracking.Events
+namespace Warehouse.Core.UseCases.BeaconTracking.Events
 {
     public class UserEventHandler : IEventHandler<UserEventOccurred>
     {

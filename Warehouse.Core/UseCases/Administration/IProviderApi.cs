@@ -1,4 +1,4 @@
-﻿namespace Warehouse.Core.UseCases.Providers
+﻿namespace Warehouse.Core.UseCases.Administration
 {
     public interface IProviderApi
     {

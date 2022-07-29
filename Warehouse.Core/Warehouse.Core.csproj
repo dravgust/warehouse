@@ -7,15 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="UseCases\Tracking\Commands\**" />
-    <Compile Remove="UseCases\Providers\Queries\**" />
-    <EmbeddedResource Remove="UseCases\Tracking\Commands\**" />
-    <EmbeddedResource Remove="UseCases\Providers\Queries\**" />
-    <None Remove="UseCases\Tracking\Commands\**" />
-    <None Remove="UseCases\Providers\Queries\**" />
+    <Compile Remove="UseCases\BeaconTracking\Commands\**" />
+    <EmbeddedResource Remove="UseCases\BeaconTracking\Commands\**" />
+    <None Remove="UseCases\BeaconTracking\Commands\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.1.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
   </ItemGroup>
 

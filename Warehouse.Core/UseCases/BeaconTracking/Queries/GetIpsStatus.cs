@@ -1,7 +1,7 @@
 ﻿using Vayosoft.Core.Queries;
-using Warehouse.Core.UseCases.Tracking.Models;
+using Warehouse.Core.UseCases.BeaconTracking.Models;
 
-namespace Warehouse.Core.UseCases.Tracking.Queries
+namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 {
     public class GetIpsStatus : IQuery<IndoorPositionStatusDto>
     {

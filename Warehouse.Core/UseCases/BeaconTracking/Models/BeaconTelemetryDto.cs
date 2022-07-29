@@ -1,4 +1,4 @@
-﻿namespace Warehouse.Core.UseCases.Tracking.Models
+﻿namespace Warehouse.Core.UseCases.BeaconTracking.Models
 {
     public class BeaconTelemetryDto
     {
