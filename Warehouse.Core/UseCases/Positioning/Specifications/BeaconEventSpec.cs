@@ -8,7 +8,7 @@ namespace Warehouse.Core.UseCases.Positioning.Specifications
 {
     public class BeaconEventSpec : PagingBase<BeaconEventEntity, object>, IFilteringSpecification<BeaconEventEntity>
     {
-        public BeaconEventSpec(int page, int take, string? filterString)
+        public BeaconEventSpec(int page, int take, string filterString)
             : base(page, take, new Sorting<BeaconEventEntity>(p => p.TimeStamp, SortOrder.Desc))
         {
             FilterString = filterString;

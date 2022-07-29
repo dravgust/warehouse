@@ -7,8 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="UseCases\Positioning\Commands\**" />
     <Compile Remove="UseCases\Providers\Queries\**" />
+    <EmbeddedResource Remove="UseCases\Positioning\Commands\**" />
     <EmbeddedResource Remove="UseCases\Providers\Queries\**" />
+    <None Remove="UseCases\Positioning\Commands\**" />
     <None Remove="UseCases\Providers\Queries\**" />
   </ItemGroup>
 
@@ -27,7 +30,6 @@
 
   <ItemGroup>
     <Folder Include="Entities\ValueObjects\" />
-    <Folder Include="UseCases\Positioning\Commands\" />
   </ItemGroup>
 
 </Project>

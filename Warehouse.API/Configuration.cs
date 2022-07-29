@@ -1,0 +1,95 @@
+﻿using System.Globalization;
+using System.Reflection;
+using FluentValidation;
+using MediatR;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.OpenApi.Models;
+using Vayosoft.Caching;
+using Vayosoft.Core;
+using Vayosoft.Core.Queries;
+using Vayosoft.Data.Redis;
+using Vayosoft.Streaming.Redis;
+using Warehouse.API.Services.Localization;
+using Warehouse.API.Services.Security;
+using Warehouse.API.TagHelpers;
+using Warehouse.API.UseCases.Resources;
+using Warehouse.Core;
+using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Persistence;
+using Warehouse.Core.Services;
+using Warehouse.Core.Services.Validation;
+using Warehouse.Core.UseCases.Administration.Models;
+
+namespace Warehouse.API
+{
+    public static class Configuration
+    {
+        public static IServiceCollection AddApplication(this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            services
+                //.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<SetProduct.CertificateRequestValidator>())
+                .AddValidatorsFromAssembly(Assembly.GetAssembly(typeof(Core.Services.Validation.Config)), ServiceLifetime.Transient)
+                .AddValidation();
+            services.AddUnhandledException();
+
+            services.AddWarehouseDependencies(configuration);
+
+            services
+                .AddCoreServices()
+                .AddRedisConnection()
+                .AddRedisProducer()
+                .AddCaching(configuration);
+            //builder.Services.AddRedisCache(configuration);
+            //builder.Services.AddMemoryCache();
+            //builder.Services.AddDistributedMemoryCache();
+
+            return services;
+        }
+
+        public static IServiceCollection AddIdentityService(this IServiceCollection services, IConfiguration configuration)
+        {
+            // configure strongly typed settings object
+            services.Configure<AppSettings>(configuration.GetSection("AppSettings"));
+
+            // configure DI for application services
+            services.AddScoped<IJwtService, JwtService>();
+            services.AddScoped<IPasswordHasher, MD5PasswordHasher>();
+            services.AddScoped<IIdentityUserStore<UserEntity>, IdentityUserStore>();
+            services.AddScoped<IIdentityUserService, IdentityUserService>();
+
+            //builder.Services.AddAuthorization(options =>
+            //{
+            //    options.AddPolicy("Over18",
+            //        policy => policy.Requirements.Add(new Over18Requirement()));
+            //});
+
+            return services;
+        }
+
+        public static IServiceCollection AddLocalizationService(this IServiceCollection services)
+        {
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
+            services.AddSingleton<SharedLocalizationService>();
+
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var supportedCultures = new[]
+                {
+                    new CultureInfo("en"),
+                    new CultureInfo("he"),
+                };
+
+                options.DefaultRequestCulture = new RequestCulture("he");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+
+                options.ApplyCurrentCultureToResponseHeaders = true;
+            });
+
+            services.AddQueryHandler<GetResources, IEnumerable<ResourceGroup>, GetResources.ResourcesQueryHandler>();
+
+            return services;
+        }
+    }
+}

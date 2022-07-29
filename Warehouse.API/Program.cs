@@ -1,29 +1,12 @@
 
 using System.Diagnostics;
-using System.Globalization;
-using System.Reflection;
-using FluentValidation;
-using MediatR;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Options;
-using Microsoft.OpenApi.Models;
 using Serilog;
-using Vayosoft.Caching;
-using Vayosoft.Data.Redis;
-using Vayosoft.Streaming.Redis;
+using Warehouse.API;
 using Warehouse.API.Resources;
 using Warehouse.API.Services.ExceptionHandling;
-using Warehouse.API.Services.Localization;
 using Warehouse.API.Services.Security;
-using Warehouse.API.TagHelpers;
-using Warehouse.API.UseCases.Resources;
-using Warehouse.Core;
-using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Persistence;
-using Warehouse.Core.Services;
-using Warehouse.Core.Services.Validation;
-using Warehouse.Core.UseCases.Administration.Models;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Debug()
@@ -46,20 +29,16 @@ try
 #endif
         );
 
-    builder.Services.AddHealthChecks();
-    //services.AddAppMetricsCollectors();
-
     var configuration = builder.Configuration;
 
     builder.Services
-        //.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<SetProduct.CertificateRequestValidator>())
-        .AddValidatorsFromAssembly(Assembly.GetAssembly(typeof(Warehouse.Core.Services.Validation.Config)), ServiceLifetime.Transient)
-        .AddValidation();
-    builder.Services.AddUnhandledException();
+        .AddApplication(configuration)
+        .AddIdentityService(configuration)
+        .AddLocalizationService();
 
-    builder.Services.AddWarehouseDependencies(configuration);
-
-    builder.Services.AddSingleton<IRequestHandler<GetResources, IEnumerable<ResourceGroup>>, GetResources.ResourcesQueryHandler>();
+    builder.Services.AddSwaggerService();
+    builder.Services.AddHealthChecks();
+    //services.AddAppMetricsCollectors();
 
     builder.Services.AddCors(options =>
     {
@@ -73,100 +52,18 @@ try
             });
     });
 
-    //builder.Services.AddAuthorization(options =>
-    //{
-    //    options.AddPolicy("Over18",
-    //        policy => policy.Requirements.Add(new Over18Requirement()));
-    //});
-
     // Add services to the container.
     builder.Services.AddControllersWithViews(options =>
-    {
-        //options.Filters.Add(new AuthorizeAttribute());
-    })
-        .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix,
-    options =>
-    {
-        options.ResourcesPath = "Resources";
-    })
+    { /*options.Filters.Add(new AuthorizeAttribute());*/ })
+    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix,
+    options => { options.ResourcesPath = "Resources"; })
     .AddDataAnnotationsLocalization(resOptions =>
     {
-        resOptions.DataAnnotationLocalizerProvider = (type, factory) => factory.Create(typeof(SharedResources));
+        resOptions.DataAnnotationLocalizerProvider = (type, factory) =>
+            factory.Create(typeof(SharedResources));
     });
-
-    builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
-    builder.Services.AddSingleton<SharedLocalizationService>();
-
-    builder.Services.Configure<RequestLocalizationOptions>(options =>
-    {
-        var supportedCultures = new[]
-        {
-            new CultureInfo("en"),
-            new CultureInfo("he"),
-        };
-
-        options.DefaultRequestCulture = new RequestCulture("he");
-        options.SupportedCultures = supportedCultures;
-        options.SupportedUICultures = supportedCultures;
-
-        options.ApplyCurrentCultureToResponseHeaders = true;
-    });
-
-    // configure strongly typed settings object
-    builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
-
-    // configure DI for application services
-    builder.Services.AddScoped<IJwtService, JwtService>();
-    builder.Services.AddScoped<IPasswordHasher, MD5PasswordHasher>();
-    builder.Services.AddScoped<IIdentityUserStore<UserEntity>, IdentityUserStore>();
-    builder.Services.AddScoped<IIdentityUserService, IdentityUserService>();
-
-    builder.Services.AddSwaggerGen(c =>
-    {
-        c.SwaggerDoc("v1", new OpenApiInfo { Title = "IPS Dashboard", Version = "v1" });
-        c.AddSecurityDefinition("Bearer",
-            new OpenApiSecurityScheme
-            {
-                Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n 
-                      Enter 'Bearer' [space] and then your token in the text input below.
-                      \r\n\r\nExample: 'Bearer 12345abcdef'",
-                Name = "Authorization",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.ApiKey,
-                Scheme = "Bearer"
-            });
-        c.AddSecurityRequirement(new OpenApiSecurityRequirement
-        {
-            {
-                new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer"
-                    },
-                    Scheme = "oauth2",
-                    Name = "Bearer",
-                    In = ParameterLocation.Header,
-
-                },
-                new List<string>()
-            }
-        });
-        //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-        //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-        //c.IncludeXmlComments(xmlPath);
-    });
-
-    builder.Services.AddRedisConnection();
-    builder.Services.AddCaching(configuration);
-    builder.Services.AddRedisProducer();
-    //builder.Services.AddRedisCache(configuration);
-    //builder.Services.AddMemoryCache();
-    //builder.Services.AddDistributedMemoryCache();
 
     var app = builder.Build();
-
     // Configure the HTTP request pipeline.
     if (!app.Environment.IsDevelopment())
     {
