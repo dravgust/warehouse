@@ -1,4 +1,6 @@
+using System.Reactive;
 using Vayosoft.Core.Caching;
+using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.Utilities;
 using Vayosoft.Data.MongoDB;
@@ -47,6 +49,7 @@ namespace Warehouse.Host
 
                 using var scope = _serviceProvider.CreateScope();
                 var store = scope.ServiceProvider.GetRequiredService<WarehouseStore>();
+                var eventStore = scope.ServiceProvider.GetRequiredService<IEventStore>();
 
                 Dictionary<string, string[]> beaconsIn = new();
                 HashSet<string> beaconsOut = new();
@@ -149,9 +152,11 @@ namespace Warehouse.Host
                         }
 
                         //******************* events
+                        //var trackedItem = new TrackedItem();
                         if (site[0] == null)
                         {
                             //macAddress in to beacon.Value[1]
+                            //trackedItem.Enter(site[1]);
                             await store.AddAsync(new BeaconEventEntity
                             {
                                 MacAddress = macAddress,
@@ -163,6 +168,7 @@ namespace Warehouse.Host
                         else if (site[1] == null)
                         {
                             //macAddress out from beacon.Value[0]
+                            //trackedItem.GetOut(site[0]);
                             await store.AddAsync(new BeaconEventEntity
                             {
                                 MacAddress = macAddress,
@@ -174,6 +180,7 @@ namespace Warehouse.Host
                         else if (site[0] != site[1])
                         {
                             //macAddress moved from beacon.Value[0] to beacon.Value[1]
+                            //trackedItem.Move(site[0], site[1]);
                             await store.AddAsync(new BeaconEventEntity
                             {
                                 MacAddress = macAddress,
@@ -187,6 +194,8 @@ namespace Warehouse.Host
                         {
                             //state not changed
                         }
+
+                        //await eventStore.SaveAsync(trackedItem, token);
                     }
 
                     //*************** received beacons OUT

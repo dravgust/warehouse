@@ -4,6 +4,8 @@ using Warehouse.Core.UseCases.Administration.Models;
 
 namespace Warehouse.API.Services.Security
 {
+    //https://docs.microsoft.com/ru-ru/aspnet/core/fundamentals/app-state?cid=kerryherger&view=aspnetcore-6.0
+    //https://metanit.com/sharp/aspnet5/2.26.php?ysclid=l67iov921a229435244
     public class JwtMiddleware
     {
         private readonly RequestDelegate _next;

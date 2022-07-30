@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Vayosoft.Data.MongoDB
 {
-    public static class Config
+    public static class Configuration
     {
         public static IServiceCollection AddMongoDbContext(this IServiceCollection services,
             Action configureOptions = null)

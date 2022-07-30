@@ -63,6 +63,15 @@ try
             factory.Create(typeof(SharedResources));
     });
 
+    //builder.Services.AddMemoryCache();
+    builder.Services.AddDistributedMemoryCache();
+    builder.Services.AddSession(options =>
+    {
+        options.IdleTimeout = TimeSpan.FromSeconds(10); //Set Session Timeout. Default is 20 minutes.
+        options.Cookie.HttpOnly = true;
+        options.Cookie.IsEssential = true;
+    });
+
     var app = builder.Build();
     // Configure the HTTP request pipeline.
     if (!app.Environment.IsDevelopment())
@@ -76,12 +85,6 @@ try
 
     app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-    // custom jwt auth middleware
-    app.UseMiddleware<JwtMiddleware>();
-
-    var locOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
-    app.UseRequestLocalization(locOptions!.Value);
-
     app.UseStaticFiles();
 
     // Write streamlined request completion events, instead of the more verbose ones from the framework.
@@ -94,8 +97,38 @@ try
     app.UseCors("AllowCors");
 
     app.UseAuthorization();
-    //app.UseSession();
+    app.UseSession();
+    //**********************************************
+    //app.Use(async (context, next) =>
+    //{
+    //    context.Items.Add("message", "Hello METANIT.COM");
+    //    await next.Invoke();
+    //});
+
+    //app.Run(async (context) =>
+    //{
+    //    if (context.Items.ContainsKey("message"))
+    //        await context.Response.WriteAsync($"Message: {context.Items["message"]}");
+    //    else
+    //        await context.Response.WriteAsync("Random Text");
+    //});
+    //app.Run(async (context) =>
+    //{
+    //    if (context.Session.Keys.Contains("name"))
+    //        await context.Response.WriteAsync($"Hello {context.Session.GetString("name")}!");
+    //    else
+    //    {
+    //        context.Session.SetString("name", "Tom");
+    //        await context.Response.WriteAsync("Hello World!");
+    //    }
+    //});
+    //**********************************************
     // app.UseResponseCaching();
+    // custom jwt auth middleware
+    app.UseMiddleware<JwtMiddleware>();
+
+    var locOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
+    app.UseRequestLocalization(locOptions!.Value);
 
     app.MapControllerRoute(
         name: "default",

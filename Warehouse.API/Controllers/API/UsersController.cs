@@ -27,6 +27,9 @@ namespace Warehouse.API.Controllers.API
         [HttpGet]
         public async Task<IActionResult> Get(int page, int take, CancellationToken token)
         {
+            //IHttpContextAccessor httpContextAccessor
+            var user2 = HttpContext.Items["User"];
+            var user = HttpContext.User;
             var spec = new UserSpec(page, take);
             var query = new SpecificationQuery<UserSpec, IPagedEnumerable<UserEntityDto>>(spec);
 

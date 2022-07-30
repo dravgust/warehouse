@@ -9,7 +9,7 @@ namespace Vayosoft.Core.Persistence
 {
     public interface IEventStore
     {
-        Task Save(IAggregate aggregate, CancellationToken cancellationToken = default);
+        Task SaveAsync(IAggregate aggregate, CancellationToken cancellationToken = default);
         Task<IEnumerable<IEvent>> Get(
             Guid aggregateId,
             int fromVersion,

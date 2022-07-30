@@ -12,6 +12,7 @@ using Vayosoft.Core.SharedKernel.ValueObjects;
 using Vayosoft.Data.Dapper.MySQL;
 using Vayosoft.Data.EF.MySQL;
 using Vayosoft.Data.MongoDB;
+using Vayosoft.Data.MongoDB.EventStore;
 using Warehouse.Core.Entities.Events;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
@@ -59,7 +60,8 @@ namespace Warehouse.Core
                 BsonSerializer.RegisterSerializer(typeof(MacAddress), new MacAddressSerializer());
                 //db.setProfilingLevel(2,1)
             }).AddScoped<WarehouseStore>()
-                .AddScoped(typeof(IRepository<>), typeof(WarehouseRepository<>));
+                .AddScoped(typeof(IRepository<>), typeof(WarehouseRepository<>))
+                .AddSingleton<IEventStore, MongoDbEventStore>();
 
             services
                 .AddDefaultProvider()

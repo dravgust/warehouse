@@ -1,9 +1,5 @@
 ﻿using System.Globalization;
-using System.Reflection;
-using FluentValidation;
-using MediatR;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.OpenApi.Models;
 using Vayosoft.Caching;
 using Vayosoft.Core;
 using Vayosoft.Core.Queries;
@@ -34,8 +30,6 @@ namespace Warehouse.API
                 .AddRedisProducer()
                 .AddCaching(configuration);
             //builder.Services.AddRedisCache(configuration);
-            //builder.Services.AddMemoryCache();
-            //builder.Services.AddDistributedMemoryCache();
 
             return services;
         }

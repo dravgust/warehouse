@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Aggregates;
@@ -14,17 +15,16 @@ namespace Vayosoft.Data.MongoDB.EventStore
 {
     public class MongoDbEventStore : IEventStore
     {
-        private readonly IEventBus _publisher;
-
+        private readonly IServiceProvider _serviceProvider;
         private readonly IMongoDbContext _context;
 
         private readonly IMongoCollection<EventData> _events;
 
         private const string EventsCollection = "events";
 
-        public MongoDbEventStore(IEventBus publisher, IMongoDbContext context)
+        public MongoDbEventStore(IServiceProvider serviceProvider, IMongoDbContext context)
         {
-            _publisher = publisher;
+            _serviceProvider = serviceProvider;
             _context = context;
             _events = _context.Database.GetCollection<EventData>(EventsCollection);
         }
@@ -39,10 +39,13 @@ namespace Vayosoft.Data.MongoDB.EventStore
             return (await result.ToListAsync(cancellationToken)).Select(x => x.PayLoad);
         }
 
-        public async Task Save(IAggregate aggregate, CancellationToken cancellationToken = default)
+        public async Task SaveAsync(IAggregate aggregate, CancellationToken cancellationToken = default)
         {
             var events = aggregate.DequeueUncommittedEvents();
             if (!events.Any()) return;
+
+            using var scope = _serviceProvider.CreateScope();
+            var publisher = scope.ServiceProvider.GetRequiredService<IEventBus>();
 
             using var session = await _context.StartSession(cancellationToken);
             var transactionOptions = new TransactionOptions(ReadConcern.Snapshot, ReadPreference.Primary, WriteConcern.WMajority);
@@ -62,7 +65,7 @@ namespace Vayosoft.Data.MongoDB.EventStore
                         PayLoad = @event
                     };
                     bulkOps.Add(new InsertOneModel<EventData>(eventData));
-                    await _publisher.Publish(@event);
+                    await publisher.Publish(@event);
                 }
                 await _events.BulkWriteAsync(session, bulkOps, cancellationToken: cancellationToken).ConfigureAwait(false);
 
