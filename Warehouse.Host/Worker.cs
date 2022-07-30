@@ -7,9 +7,11 @@ using Vayosoft.IPS.Configuration;
 using Vayosoft.IPS.Domain;
 using Vayosoft.IPS.Filters;
 using Vayosoft.IPS.Methods;
+using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Entities.Models.Payloads;
 using Warehouse.Core.Persistence;
+using LocationAnchor = Vayosoft.IPS.Domain.LocationAnchor;
 
 namespace Warehouse.Host
 {

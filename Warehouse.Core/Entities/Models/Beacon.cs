@@ -42,13 +42,6 @@ namespace Warehouse.Core.Entities.Models
         public string Id => MacAddress;
     }
 
-    public enum BeaconStatus
-    {
-        UNDEFINED,
-        IN,
-        OUT,
-    }
-
     [CollectionName("dolav_beacons_registered")]
     public class BeaconRegisteredEntity : IEntity<string>
     {
@@ -58,12 +51,5 @@ namespace Warehouse.Core.Entities.Models
         public DateTime ReceivedAt { get; set; }
         object IEntity.Id => Id;
         public string Id => MacAddress;
-    }
-
-    public enum BeaconType
-    {
-        Unknown = 0,
-        Received = 1,
-        Registered = 2
     }
 }

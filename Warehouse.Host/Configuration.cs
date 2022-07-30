@@ -17,7 +17,7 @@ namespace Warehouse.Host
                 .AddCaching(configuration);
 
             services.AddHostedService<Worker>();
-            services.AddHostedService<EventWorker>();
+            services.AddHostedService<NotificationWorker>();
             //services.AddHostedService<HostedService>();
 
             return services;

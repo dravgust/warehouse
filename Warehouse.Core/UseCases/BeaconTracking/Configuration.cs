@@ -4,6 +4,7 @@ using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Data.MongoDB.QueryHandlers;
+using Warehouse.Core.Entities.Events;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.BeaconTracking.Events;
 using Warehouse.Core.UseCases.BeaconTracking.Models;
@@ -35,6 +36,9 @@ namespace Warehouse.Core.UseCases.BeaconTracking
 
             private static IServiceCollection AddEventHandlers(this IServiceCollection services) =>
                 services
-                    .AddScoped<INotificationHandler<UserEventOccurred>, UserEventHandler>();
+                    .AddScoped<INotificationHandler<TrackedItemRegistered>, TrackedItemEventHandler>()
+                    .AddScoped<INotificationHandler<TrackedItemMoved>, TrackedItemEventHandler>()
+                    .AddScoped<INotificationHandler<TrackedItemGotOut>, TrackedItemEventHandler>()
+                    .AddScoped<INotificationHandler<TrackedItemEntered>, TrackedItemEventHandler>();
     }
 }

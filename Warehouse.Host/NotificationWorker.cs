@@ -7,7 +7,7 @@ using Warehouse.Core.UseCases.BeaconTracking.Events;
 
 namespace Warehouse.Host
 {
-    public class EventWorker : BackgroundService
+    public class NotificationWorker : BackgroundService
     {
         private const int CheckingInterval = 60;
         public static readonly TimeSpan Interval = TimeSpan.FromSeconds(CheckingInterval);
@@ -17,7 +17,7 @@ namespace Warehouse.Host
 
         private readonly IServiceProvider _serviceProvider;
 
-        public EventWorker(
+        public NotificationWorker(
             IServiceProvider serviceProvider,
             IDistributedMemoryCache cache,
             ILogger<Worker> logger)
@@ -46,7 +46,8 @@ namespace Warehouse.Host
                     var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
                     foreach (var beacon in result)
                     {
-                        await eventBus.Publish(new UserEventOccurred(beacon));
+                        //await eventBus.Publish(UserNotification.Create);
+                        _logger.LogInformation($"Event Notification => Beacon: {beacon.Id}| more then 30 min. | {beacon.ReceivedAt}");
                     }
 
                     await Task.Delay(Interval, token);
