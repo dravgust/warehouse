@@ -1,11 +1,15 @@
 
 using System.Diagnostics;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.Options;
 using Serilog;
 using Warehouse.API;
 using Warehouse.API.Resources;
 using Warehouse.API.Services.ExceptionHandling;
+using Warehouse.API.Services.Monitoring;
 using Warehouse.API.Services.Security;
 
 Log.Logger = new LoggerConfiguration()
@@ -45,9 +49,9 @@ try
         options.AddPolicy(name: "AllowCors",
             policy =>
             {
-                policy.WithOrigins("http://localhost:3000")
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
+                policy
+                    .WithOrigins("http://localhost:3000")
+                    .AllowAnyHeader().AllowAnyMethod()
                     .AllowCredentials();
             });
     });
@@ -64,10 +68,22 @@ try
     });
 
     //builder.Services.AddMemoryCache();
-    builder.Services.AddDistributedMemoryCache();
+    //builder.Services.AddDistributedMemoryCache();
+    //builder.Services.Configure<RedisCacheOptions>(options =>
+    //{
+    //    options.Configuration = configuration.GetConnectionString("RedisConnectionString");
+    //    options.InstanceName = "SessionInstance";
+    //});
+    //builder.Services.AddSingleton<IDistributedCache, RedisCache>();
+    builder.Services.AddStackExchangeRedisCache(options =>
+    {
+        options.Configuration = configuration.GetConnectionString("RedisConnectionString");
+        options.InstanceName = "SessionInstance";
+    });
     builder.Services.AddSession(options =>
     {
-        options.IdleTimeout = TimeSpan.FromSeconds(10); //Default is 20 minutes.
+        options.Cookie.Name = ".session";
+        options.IdleTimeout = TimeSpan.FromSeconds(3600); //Default is 20 minutes.
         options.Cookie.HttpOnly = true;
         options.Cookie.IsEssential = false;
     });
@@ -98,37 +114,24 @@ try
 
     app.UseAuthorization();
     app.UseSession();
-    //**********************************************
-    //app.Use(async (context, next) =>
-    //{
-    //    context.Items.Add("message", "Hello METANIT.COM");
-    //    await next.Invoke();
-    //});
 
-    //app.Run(async (context) =>
-    //{
-    //    if (context.Items.ContainsKey("message"))
-    //        await context.Response.WriteAsync($"Message: {context.Items["message"]}");
-    //    else
-    //        await context.Response.WriteAsync("Random Text");
-    //});
-    //app.Run(async (context) =>
-    //{
-    //    if (context.Session.Keys.Contains("name"))
-    //        await context.Response.WriteAsync($"Hello {context.Session.GetString("name")}!");
-    //    else
-    //    {
-    //        context.Session.SetString("name", "Tom");
-    //        await context.Response.WriteAsync("Hello World!");
-    //    }
-    //});
-    //**********************************************
     // app.UseResponseCaching();
     // custom jwt auth middleware
     app.UseMiddleware<JwtMiddleware>();
 
     var locOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
     app.UseRequestLocalization(locOptions!.Value);
+
+    app.MapHealthChecks("/health", new HealthCheckOptions()
+    {
+        AllowCachingResponses = false,
+        ResponseWriter = HealthCheckResponse.Write
+    });
+    app.MapHealthChecks("/live", new HealthCheckOptions()
+    {
+        Predicate = (check) => check.Tags.Contains("infrastructure"),
+        ResponseWriter = HealthCheckResponse.Write
+    });
 
     app.MapControllerRoute(
         name: "default",

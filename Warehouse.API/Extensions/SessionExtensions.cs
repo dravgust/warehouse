@@ -6,7 +6,7 @@
     {
         public static T Get<T>(this ISession session, string key)
         {
-            var value = session.GetString(key);
+            var value = session.Keys.Contains(key) ? session.GetString(key) : null;
             return value == null ? default : JsonSerializer.Deserialize<T>(value);
         }
 
