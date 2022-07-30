@@ -10,7 +10,7 @@ using Warehouse.Core.UseCases.Administration.Models;
 
 namespace Warehouse.Core.UseCases.Management.Events
 {
-    public class OperationEventHandler : IEventHandler<OperationOccurred>
+    public class OperationEventHandler : IEventHandler<OperationEvent>
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly ProviderFactory providerFactory;
@@ -23,7 +23,7 @@ namespace Warehouse.Core.UseCases.Management.Events
             _logger = logger;
         }
 
-        public async Task Handle(OperationOccurred @event, CancellationToken cancellationToken)
+        public async Task Handle(OperationEvent @event, CancellationToken cancellationToken)
         {
             _logger.LogDebug($"operation history event listener catch: {@event.ToJson()}");
 

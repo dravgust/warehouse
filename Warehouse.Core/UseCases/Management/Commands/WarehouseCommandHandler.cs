@@ -41,7 +41,7 @@ namespace Warehouse.Core.UseCases.Management.Commands
 
             var events = new IEvent[]
             {
-                OperationOccurred.Create(nameof(WarehouseCommandHandler), OperationType.Delete, DateTime.UtcNow, Provider.Default.ToString())
+                OperationEvent.Create(nameof(WarehouseCommandHandler), OperationType.Delete, DateTime.UtcNow, Provider.Default.ToString())
             };
             await _eventBus.Publish(events);
             return Unit.Value;

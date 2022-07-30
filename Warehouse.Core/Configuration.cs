@@ -67,7 +67,7 @@ namespace Warehouse.Core
                 .AddWarehouseManagementServices()
                 .AddWarehouseAdministrationServices();
 
-            services.AddScoped<INotificationHandler<OperationOccurred>, OperationEventHandler>();
+            services.AddScoped<INotificationHandler<OperationEvent>, OperationEventHandler>();
 
             services
                 //.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<SetProduct.CertificateRequestValidator>())
