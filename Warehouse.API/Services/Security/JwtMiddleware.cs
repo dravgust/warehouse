@@ -1,4 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
+using Warehouse.API.Extensions;
+using Warehouse.API.Services.Security.Session;
+using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services;
 using Warehouse.Core.UseCases.Administration.Models;
 
@@ -26,6 +29,15 @@ namespace Warehouse.API.Services.Security
                 var userId = jwtUtils.ValidateJwtToken(token);
                 if (userId != null)
                 {
+                    IdentityData identity;
+                    if (context.Session.Keys.Contains(nameof(IdentityData)))
+                        identity = context.Session.Get<IdentityData>(nameof(IdentityData));
+                    else
+                    {
+                        var user = (UserEntity)await userService.GetByIdAsync(userId.Value, cancellationToken);
+                        identity = new IdentityData(user.Id, user.ProviderId);
+                        context.Session.Set(nameof(IdentityData), identity);
+                    }
                     // attach user to context on successful jwt validation
                     context.Items["User"] = await userService.GetByIdAsync(userId.Value, cancellationToken);
                 }

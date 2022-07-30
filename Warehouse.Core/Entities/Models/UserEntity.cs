@@ -17,12 +17,12 @@ namespace Warehouse.Core.Entities.Models
 
         public string Username { get; } = null!;
         public string PasswordHash { get; set; } = null!;
-        public string Phone { get; set; }
-        public string Email { get; set; }
+        public string Phone { get; set; } = null!;
+        public string Email { get; set; } = null!;
         public UserType Kind { get; set; }
         public DateTime? Registered { get; set; }
         public DateTime? Deregistered { get; set; }
-        public string CultureId { get; set; }
+        public string CultureId { get; set; } = null!;
         public long ProviderId { get; set; }
         public LogEventType? LogLevel { get; set; }
         public virtual List<RefreshToken> RefreshTokens { get; } = new();

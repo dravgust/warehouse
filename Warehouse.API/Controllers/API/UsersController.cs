@@ -5,8 +5,10 @@ using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Warehouse.API.Services.Security.Attributes;
+using Warehouse.API.Services.Security.Session;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Administration.Specifications;
+using Warehouse.API.Extensions;
 
 namespace Warehouse.API.Controllers.API
 {
@@ -28,9 +30,12 @@ namespace Warehouse.API.Controllers.API
         public async Task<IActionResult> Get(int page, int take, CancellationToken token)
         {
             //IHttpContextAccessor httpContextAccessor
-            var user2 = HttpContext.Items["User"];
-            var user = HttpContext.User;
-            var spec = new UserSpec(page, take);
+            //HttpContext.Items.TryGetValue("User", out var user3);
+            //var user2 = HttpContext.Items["User"];
+            //var user = HttpContext.User;
+            var identityData = HttpContext.Session.Get<IdentityData>(nameof(IdentityData));
+
+            var spec = new UserSpec(page, take, identityData.ProviderId);
             var query = new SpecificationQuery<UserSpec, IPagedEnumerable<UserEntityDto>>(spec);
 
             var data = await queryBus.Send(query, token);
