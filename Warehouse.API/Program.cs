@@ -67,9 +67,9 @@ try
     builder.Services.AddDistributedMemoryCache();
     builder.Services.AddSession(options =>
     {
-        options.IdleTimeout = TimeSpan.FromSeconds(10); //Set Session Timeout. Default is 20 minutes.
+        options.IdleTimeout = TimeSpan.FromSeconds(10); //Default is 20 minutes.
         options.Cookie.HttpOnly = true;
-        options.Cookie.IsEssential = true;
+        options.Cookie.IsEssential = false;
     });
 
     var app = builder.Build();

@@ -4,7 +4,7 @@ using Vayosoft.Core.Utilities;
 
 namespace Warehouse.API.Extensions
 {
-    public static class DistributedCacheExtension
+    public static class DistributedCacheExtensions
     {
         public static T Get<T>(this IDistributedCache cache, string key)
         {

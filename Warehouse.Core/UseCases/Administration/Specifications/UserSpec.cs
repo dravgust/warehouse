@@ -2,7 +2,7 @@
 using Vayosoft.Core.Specifications;
 using Warehouse.Core.Entities.Models;
 
-namespace Warehouse.Core.UseCases.Administration.Spcecifications
+namespace Warehouse.Core.UseCases.Administration.Specifications
 {
     public class UserSpec : SortByIdPaging<UserEntityDto>, ILinqSpecification<UserEntity>
     {

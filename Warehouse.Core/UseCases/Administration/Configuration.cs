@@ -7,7 +7,7 @@ using Vayosoft.Core.Persistence.Queries;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Administration.Models;
 using Warehouse.Core.UseCases.Administration.Queries;
-using Warehouse.Core.UseCases.Administration.Spcecifications;
+using Warehouse.Core.UseCases.Administration.Specifications;
 
 namespace Warehouse.Core.UseCases.Administration
 { 
