@@ -1,7 +1,6 @@
 ﻿using System;
 using MongoDB.Bson.Serialization.Attributes;
 using Vayosoft.Core.SharedKernel.Events;
-using Vayosoft.Core.Utilities;
 
 namespace Vayosoft.Data.MongoDB.EventStore
 {
@@ -12,7 +11,7 @@ namespace Vayosoft.Data.MongoDB.EventStore
         public const string VersionFieldName = "_version";
 
         [BsonElement(IdFieldName)]
-        [BsonId(IdGenerator = typeof(GuidGenerator))]
+        [BsonId(IdGenerator = typeof(GuidIdGenerator))]
         public Guid Id { get; set; }
 
         [BsonElement(StreamIdFieldName)]

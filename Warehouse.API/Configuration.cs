@@ -22,14 +22,14 @@ namespace Warehouse.API
         public static IServiceCollection AddApplication(this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.AddWarehouseDependencies(configuration);
-
             services
                 .AddCoreServices()
                 .AddRedisConnection()
                 .AddRedisProducer()
                 .AddCaching(configuration);
             //builder.Services.AddRedisCache(configuration);
+
+            services.AddWarehouseDependencies(configuration);
 
             return services;
         }

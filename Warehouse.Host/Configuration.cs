@@ -9,12 +9,13 @@ namespace Warehouse.Host
     {
         public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddWarehouseDependencies(configuration);
-
             services
                 .AddCoreServices()
                 .AddRedisProducerAndConsumer()
                 .AddCaching(configuration);
+
+
+            services.AddWarehouseDependencies(configuration);
 
             services.AddHostedService<Worker>();
             services.AddHostedService<NotificationWorker>();

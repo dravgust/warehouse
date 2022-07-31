@@ -57,7 +57,6 @@ namespace Vayosoft.Data.MongoDB.EventStore
                 {
                     var eventData = new EventData
                     {
-                        Id = GuidGenerator.New(),
                         StreamId = aggregate.Id,
                         TimeStamp = DateTimeOffset.UtcNow,
                         Version = aggregate.Version,
