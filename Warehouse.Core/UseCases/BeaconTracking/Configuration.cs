@@ -24,6 +24,8 @@ namespace Warehouse.Core.UseCases.BeaconTracking
             services
                 .AddQueryHandler<GetAssets, IPagedEnumerable<AssetDto>, AssetsQueryHandler>()
                 .AddQueryHandler<GetBeaconEvents, IPagedEnumerable<BeaconEventDto>, AssetsQueryHandler>()
+                .AddQueryHandler<SpecificationQuery<NotificationSpec, IPagedEnumerable<NotificationEntity>>, IPagedEnumerable<NotificationEntity>,
+                    MongoPagingQueryHandler<NotificationSpec, NotificationEntity>>()
                 .AddQueryHandler<GetAssetInfo, IEnumerable<AssetInfo>, AssetsQueryHandler>()
                 .AddQueryHandler<GetSiteInfo, IEnumerable<IndoorPositionStatusDto>, AssetsQueryHandler>()
                 .AddQueryHandler<GetIpsStatus, IndoorPositionStatusDto, AssetsQueryHandler>()

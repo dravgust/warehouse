@@ -59,6 +59,7 @@ import Home from "layouts/home";
 import SiteConfiguration from "layouts/site-configuration";
 import Beacons from "layouts/beacons";
 import Icon from "@mui/material/Icon";
+import WarehouseAlerts from "./layouts/alerts";
 
 const routes = [
   {
@@ -119,6 +120,16 @@ const routes = [
     route: "/beacons",
     icon: <Icon fontSize="12px">sensors</Icon>,
     component: <Beacons />,
+    noCollapse: true,
+    protected: true,
+  },
+  {
+    type: "collapse",
+    name: "Alerts",
+    key: "alerts",
+    route: "/alerts",
+    icon: <Icon fontSize="12px">notifications</Icon>,
+    component: <WarehouseAlerts />,
     noCollapse: true,
     protected: true,
   },

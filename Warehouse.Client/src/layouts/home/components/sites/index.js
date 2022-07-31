@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Card } from "@mui/material";
+import { Card, Icon, IconButton, Tooltip } from "@mui/material";
 import SuiBox from "components/SuiBox";
 import { useState } from "react";
 import { useQuery } from "react-query";
@@ -145,11 +145,15 @@ export default function SiteInfo({
       </ListItemButton>
     </ListItem>
   );
-
-  const { isLoading, error, data: response, isSuccess } = useQuery([fetchSitesInfo], getSitesInfo);
-
+  const [reload, updateReloadState] = useState(null);
+  const forceUpdate = () => updateReloadState(Date.now());
+  const {
+    isLoading,
+    error,
+    data: response,
+    isSuccess,
+  } = useQuery([fetchSitesInfo, reload], getSitesInfo);
   const [expanded, setExpanded] = React.useState("");
-
   const handleChange = (panel, row) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
     setPattern("");
@@ -164,6 +168,13 @@ export default function SiteInfo({
           <SuiTypography variant="h6" gutterBottom>
             Sites
           </SuiTypography>
+        </SuiBox>
+        <SuiBox display="flex" alignItems="center" mt={{ xs: 2, sm: 0 }} ml={{ xs: -1.5, sm: 0 }}>
+          <IconButton size="xl" color="inherit" onClick={forceUpdate}>
+            <Tooltip title="Reload">
+              <Icon>sync</Icon>
+            </Tooltip>
+          </IconButton>
         </SuiBox>
       </SuiBox>
       <SuiBox pb={3}>

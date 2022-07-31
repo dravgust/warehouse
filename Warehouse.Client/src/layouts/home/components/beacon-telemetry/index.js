@@ -22,7 +22,7 @@ const BeaconTelemetry = ({ item }) => {
       <Grid item xs={12}>
         <Beacon
           macAddress={item.macAddress}
-          name={item.name}
+          name={item.name ? item.name : "n/a"}
           lastUpdate={
             response && response.receivedAt
               ? format(new Date(response.receivedAt), "HH:mm:ss")

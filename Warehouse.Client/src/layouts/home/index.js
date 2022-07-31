@@ -18,6 +18,7 @@ import Tab from "@mui/material/Tab";
 import QrCode2SharpIcon from "@mui/icons-material/QrCode2Sharp";
 import SensorsOutlinedIcon from "@mui/icons-material/SensorsOutlined";
 import TabOutlinedIcon from "@mui/icons-material/TabOutlined";
+import UserNotifications from "./components/notifications";
 
 function Dashboard() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -61,7 +62,10 @@ function Dashboard() {
               {selectedView === 2 && (
                 <Assets
                   onRowSelect={(row) =>
-                    setSelectBeacon({ macAddress: row.macAddress, name: row.site.name })
+                    setSelectBeacon({
+                      macAddress: row.macAddress,
+                      name: row.site ? row.site.name : null,
+                    })
                   }
                   searchTerm={searchTerm}
                   selectedItem={selectedBeacon}
@@ -86,8 +90,15 @@ function Dashboard() {
                   </Grid>
                 </Zoom>
               )}
-              <Grid item xs={12} md={6}>
-                <PositionEvents searchTerm={selectedBeacon ? selectedBeacon.macAddress : ""} />
+              <Grid item xs={12} md={Boolean(selectedBeacon) ? 6 : 12}>
+                <Stack
+                  spacing={3}
+                  direction={Boolean(selectedBeacon) ? "column" : "row"}
+                  style={{ height: "100% " }}
+                >
+                  <PositionEvents searchTerm={selectedBeacon ? selectedBeacon.macAddress : ""} />
+                  <UserNotifications searchTerm={selectedBeacon ? selectedBeacon.macAddress : ""} />
+                </Stack>
               </Grid>
               {Boolean(selectedBeacon) && (
                 <Grid item xs={12}>

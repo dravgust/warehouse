@@ -14,7 +14,6 @@ namespace Warehouse.Host
                 .AddRedisProducerAndConsumer()
                 .AddCaching(configuration);
 
-
             services.AddWarehouseDependencies(configuration);
 
             services.AddHostedService<Worker>();

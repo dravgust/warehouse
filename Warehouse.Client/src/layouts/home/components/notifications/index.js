@@ -6,26 +6,14 @@ import TimelineItem from "examples/Timeline/TimelineItem";
 import { useQuery } from "react-query";
 import { format } from "date-fns";
 import React from "react";
-import { fetchEvents } from "utils/query-keys";
-import { getEvents } from "services/warehouse-service";
+import { fetchNotifications } from "utils/query-keys";
+import { getNotifications } from "services/warehouse-service";
 
-function renderEvent({ type, beacon, source, destination }) {
-  let name = beacon.name ? beacon.name : beacon.macAddress;
-  switch (type) {
-    case 1:
-      return `The ${name} entered '${destination ? destination.name : "n/a"}'`;
-    case 2:
-      return `The ${name} out of '${source ? source.name : "n/a"}'`;
-    case 3:
-      return `The ${name} moved from '${source ? source.name : "n/a"}' to '${
-        destination ? destination.name : "n/a"
-      }'`;
-    default:
-      return "n/a";
-  }
+function renderEvent({ macAddress, receivedAt }) {
+  return `The ${macAddress} was last available at ${format(new Date(receivedAt), "hh:mm:ss")}`;
 }
 
-function PositionEvents({ searchTerm = "" }) {
+function UserNotifications({ searchTerm = "" }) {
   const [reload, updateReloadState] = useState(null);
   const forceUpdate = () => updateReloadState(Date.now());
   const [page, setPage] = useState(1);
@@ -35,15 +23,15 @@ function PositionEvents({ searchTerm = "" }) {
     error,
     data: response,
     isSuccess,
-  } = useQuery([fetchEvents, page, searchTerm, reload], getEvents);
+  } = useQuery([fetchNotifications, page, searchTerm, reload], getNotifications);
 
   return (
     <Card className="h-100" style={{ width: "100%", height: "100%" }}>
       <SuiBox display="flex" justifyContent="space-between" alignItems="center" pt={3} px={3}>
         <SuiBox display="flex" alignItems="center">
-          <Icon>event_note</Icon>
+          <Icon>notifications</Icon>
           <SuiTypography variant="h6" fontWeight="medium">
-            &nbsp;Events
+            &nbsp;Alerts
           </SuiTypography>
         </SuiBox>
         <SuiBox display="flex" alignItems="center" mt={{ xs: 2, sm: 0 }} ml={{ xs: -1.5, sm: 0 }}>
@@ -59,14 +47,8 @@ function PositionEvents({ searchTerm = "" }) {
           response.data.map((item, index) => (
             <TimelineItem
               key={index}
-              color={item.type === 1 ? "success" : item.type == 2 ? "error" : "warning"}
-              icon={
-                item.type === 1
-                  ? "add_location_alt"
-                  : item.type == 2
-                  ? "wrong_location"
-                  : "location_on"
-              }
+              color={"error"}
+              icon={"location_off"}
               title={
                 <SuiTypography variant="caption" fontWeight="medium">
                   {renderEvent(item)}
@@ -102,4 +84,4 @@ function PositionEvents({ searchTerm = "" }) {
   );
 }
 
-export default PositionEvents;
+export default UserNotifications;

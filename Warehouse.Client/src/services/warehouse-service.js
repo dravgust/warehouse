@@ -18,6 +18,12 @@ export const getEvents = async ({ queryKey }) => {
   return res?.data;
 };
 
+export const getNotifications = async ({ queryKey }) => {
+  const [_key, page, searchTerm] = queryKey;
+  const res = await axios.get(`notifications?page=${page}&size=10&searchTerm=${searchTerm}`);
+  return res?.data;
+};
+
 export const getSites = async ({ queryKey }) => {
   const [_key, page, searchTerm] = queryKey;
   const res = await axios.get(`sites?page=${page}&size=10&searchTerm=${searchTerm}`);

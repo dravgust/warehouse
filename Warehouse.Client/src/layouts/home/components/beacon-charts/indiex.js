@@ -4,7 +4,7 @@ import { fetchBeaconTelemetryCharts } from "../../../../utils/query-keys";
 import { getBeaconTelemetryCharts } from "../../../../services/warehouse-service";
 import PropTypes from "prop-types";
 import { format } from "date-fns";
-import { Card, Stack } from "@mui/material";
+import { Card, Icon, Stack } from "@mui/material";
 import GradientLineChart from "../../../../examples/Charts/LineCharts/GradientLineChart";
 import SuiBox from "../../../../components/SuiBox";
 import SuiTypography from "../../../../components/SuiTypography";
@@ -71,8 +71,9 @@ const BeaconTelemetryCharts = ({ item }) => {
     <Stack spacing={3}>
       <Card>
         <SuiBox p={2}>
-          <SuiBox mb={1}>
-            <SuiTypography variant="h6">{"Temperature Overview"}</SuiTypography>
+          <SuiBox mb={1} display="flex" alignItems="center">
+            <Icon>thermostat</Icon>
+            <SuiTypography variant="h6">&nbsp;Temperature Overview</SuiTypography>
           </SuiBox>
           <SuiBox mb={2}>
             <SuiTypography component="div" variant="button" fontWeight="regular" color="text">
@@ -93,7 +94,7 @@ const BeaconTelemetryCharts = ({ item }) => {
           <ScaleLoader
             loading={isLoading || isChartLoading}
             color={"#17c1e8"}
-            height={"100"}
+            height={"100px"}
             cssOverride={{ position: "absolute", display: "inherit", top: "50%", left: "50%" }}
           />
           <GradientLineChart chart={temperatureChart} />
@@ -102,13 +103,14 @@ const BeaconTelemetryCharts = ({ item }) => {
 
       <Card>
         <SuiBox p={2}>
-          <SuiBox mb={1}>
-            <SuiTypography variant="h6">{"Humidity Overview"}</SuiTypography>
+          <SuiBox mb={1} display="flex" alignItems="center">
+            <Icon>waves</Icon>
+            <SuiTypography variant="h6">&nbsp;Humidity Overview</SuiTypography>
           </SuiBox>
           <ScaleLoader
             loading={isLoading || isChartLoading}
             color={"#17c1e8"}
-            height={"100"}
+            height={"100px"}
             cssOverride={{ position: "absolute", display: "inherit", top: "50%", left: "50%" }}
           />
           <GradientLineChart chart={humidityChart} />

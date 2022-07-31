@@ -114,6 +114,7 @@ function SignIn() {
               }}
               type="email"
               placeholder="Email"
+              autoComplete="username"
             />
           </SuiBox>
           <SuiBox mb={2}>
@@ -130,6 +131,7 @@ function SignIn() {
               }}
               type="password"
               placeholder="Password"
+              autoComplete="current-password"
             />
           </SuiBox>
           <SuiBox display="flex" alignItems="center">
