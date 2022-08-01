@@ -131,9 +131,14 @@ try
         ResponseWriter = HealthCheckResponse.Write
     });
 
+    //app.MapControllerRoute(
+    //    name: "default",
+    //    pattern: "{controller=Home}/{action=Index}/{id?}");
     app.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}");
+        name: "api",
+        pattern: "/api/{controller=Home}/{id?}");
+
+    app.MapFallbackToFile("/index.html");
 
     app.UseSwaggerService();
 
