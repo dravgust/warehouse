@@ -31,8 +31,8 @@ import { menuItem, menuImage } from "examples/Items/LanguageItem/styles";
 const LanguageItem = forwardRef(({ color, image, title, date, ...rest }, ref) => (
   <MenuItem {...rest} ref={ref} sx={(theme) => menuItem(theme)}>
     <SuiBox
-      width="2.25rem"
-      height="2.25rem"
+      width="2rem"
+      height="2rem"
       mt={0.25}
       mr={2}
       mb={0.25}
