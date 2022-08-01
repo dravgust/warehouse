@@ -1,7 +1,12 @@
 using Vayosoft.Core.Caching;
+using Vayosoft.Core.SharedKernel.Entities;
+using Vayosoft.Core.SharedKernel.Events;
+using Vayosoft.Core.SharedKernel.ValueObjects;
 using Vayosoft.Core.Utilities;
+using Vayosoft.Data.MongoDB;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Persistence;
+using Warehouse.Core.UseCases.BeaconTracking.Events;
 
 namespace Warehouse.Host
 {
@@ -27,16 +32,6 @@ namespace Warehouse.Host
 
         protected override async Task ExecuteAsync(CancellationToken token)
         {
-            var alerts = new List<AlertEntity>
-            {
-                new AlertEntity
-                {
-                    Id = GuidGenerator.New().ToString(),
-                    CheckPeriod = 5 * 60,
-                    Enabled = true
-                }
-            };
-
             while (!token.IsCancellationRequested)
             {
                 _logger.LogInformation("Event worker running at: {time}", DateTimeOffset.Now);
@@ -47,6 +42,7 @@ namespace Warehouse.Host
                 try
                 {
                     //var registeredBeacons = await store.ListAsync<BeaconRegisteredEntity>(cancellationToken: token);
+                    var alerts = await store.ListAsync<AlertEntity>(cancellationToken: token);
 
                     foreach (var alert in alerts.Where(a => a.Enabled))
                     {

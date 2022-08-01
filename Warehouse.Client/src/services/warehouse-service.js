@@ -6,6 +6,21 @@ export const getBeacons = async ({ queryKey }) => {
   return res?.data;
 };
 
+export const getAlerts = async ({ queryKey }) => {
+  const [_key, page, searchTerm] = queryKey;
+  const res = await axios.get(`sites/alerts?searchTerm=${searchTerm}&page=${page}&size=6`);
+  return res?.data;
+};
+
+export const saveAlert = async (item) => {
+  const res = await axios.post(`sites/alerts/set`, item);
+  return res?.data;
+};
+export const deleteAlert = async (item) => {
+  const res = await axios.post(`sites/alerts/delete`, item);
+  return res?.data;
+};
+
 export const getProducts = async ({ queryKey }) => {
   const [_key, page, searchTerm] = queryKey;
   const res = await axios.get(`items?searchTerm=${searchTerm}&page=${page}&size=3`);
@@ -14,13 +29,17 @@ export const getProducts = async ({ queryKey }) => {
 
 export const getEvents = async ({ queryKey }) => {
   const [_key, page, searchTerm] = queryKey;
-  const res = await axios.get(`events?page=${page}&size=10&searchTerm=${searchTerm}`);
+  const res = await axios.get(
+    `events?page=${page}&size=${searchTerm ? "3" : "10"}&searchTerm=${searchTerm}`
+  );
   return res?.data;
 };
 
 export const getNotifications = async ({ queryKey }) => {
   const [_key, page, searchTerm] = queryKey;
-  const res = await axios.get(`notifications?page=${page}&size=10&searchTerm=${searchTerm}`);
+  const res = await axios.get(
+    `notifications?page=${page}&size=${searchTerm ? "3" : "10"}&searchTerm=${searchTerm}`
+  );
   return res?.data;
 };
 

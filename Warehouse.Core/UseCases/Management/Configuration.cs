@@ -32,7 +32,9 @@ namespace Warehouse.Core.UseCases.Management
                 .AddQueryHandler<SpecificationQuery<WarehouseProductSpec, IPagedEnumerable<BeaconRegisteredEntity>>, IPagedEnumerable<BeaconRegisteredEntity>,
                     MongoPagingQueryHandler<WarehouseProductSpec, BeaconRegisteredEntity>>()
                 .AddQueryHandler<SpecificationQuery<ProductSpec, IPagedEnumerable<ProductEntity>>, IPagedEnumerable<ProductEntity>,
-                    MongoPagingQueryHandler<ProductSpec, ProductEntity>>()
+                    MongoPagingQueryHandler<ProductSpec, ProductEntity>>()    
+                .AddQueryHandler<SpecificationQuery<WarehouseAlertSpec, IPagedEnumerable<AlertEntity>>, IPagedEnumerable<AlertEntity>,
+                    MongoPagingQueryHandler<WarehouseAlertSpec, AlertEntity>>()
                 .AddQueryHandler<SingleQuery<ProductEntity>, ProductEntity, MongoSingleQueryHandler<string, ProductEntity>>();
 
         
@@ -43,6 +45,8 @@ namespace Warehouse.Core.UseCases.Management
                 .AddCommandHandler<SetGatewayToSite, WarehouseCommandHandler>()
                 .AddCommandHandler<RemoveGatewayFromSite, WarehouseCommandHandler>()
                 .AddCommandHandler<SetBeacon, WarehouseCommandHandler>()
+                .AddCommandHandler<SetAlert, WarehouseCommandHandler>()
+                .AddCommandHandler<DeleteAlert, WarehouseCommandHandler>()
                 .AddCommandHandler<SetProduct, ProductCommandHandler>()
                 .AddCommandHandler<DeleteProduct, ProductCommandHandler>();
     }

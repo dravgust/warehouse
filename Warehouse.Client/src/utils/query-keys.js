@@ -1,6 +1,7 @@
 export const fetchUsers = "FETCH_USERS";
 export const fetchProducts = "FETCH_PRODUCTS";
 export const fetchBeacons = "FETCH_BEACONS";
+export const fetchAlerts = "FETCH_ALERTS";
 export const fetchEvents = "FETCH_EVENTS";
 export const fetchNotifications = "FETCH_NOTIFICATIONS";
 export const fetchSites = "FETCH_SITES";

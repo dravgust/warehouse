@@ -72,7 +72,7 @@ function PositionEvents({ searchTerm = "" }) {
                   {renderEvent(item)}
                 </SuiTypography>
               }
-              dateTime={format(new Date(item.timeStamp), "hh:mm:ss dd/MM/y")}
+              dateTime={format(new Date(item.timeStamp), "HH:mm:ss dd/MM/y")}
             />
           ))}
 

@@ -16,7 +16,9 @@ namespace Warehouse.Core.UseCases.Management.Commands
         ICommandHandler<SetGatewayToSite>,
         ICommandHandler<RemoveGatewayFromSite>,
         ICommandHandler<SetBeacon>,
-        ICommandHandler<DeleteBeacon>
+        ICommandHandler<DeleteBeacon>,
+        ICommandHandler<SetAlert>,
+        ICommandHandler<DeleteAlert>
     {
         private readonly WarehouseStore _store;
         private readonly IEventBus _eventBus;
@@ -101,6 +103,26 @@ namespace Warehouse.Core.UseCases.Management.Commands
         {
             await _store.DeleteAsync(new BeaconEntity { Id = request.MacAddress }, cancellationToken);
 
+            return Unit.Value;
+        }
+
+        public async Task<Unit> Handle(SetAlert request, CancellationToken cancellationToken)
+        {
+            AlertEntity entity;
+            if (!string.IsNullOrEmpty(request.Id) && (entity = await _store.FindAsync<AlertEntity>(request.Id, cancellationToken)) != null)
+            {
+                await _store.UpdateAsync(request, cancellationToken);
+            }
+            else
+            {
+                await _store.AddAsync(request, cancellationToken);
+            }
+            return Unit.Value;
+        }
+
+        public async Task<Unit> Handle(DeleteAlert request, CancellationToken cancellationToken)
+        {
+            await _store.DeleteAsync(new AlertEntity { Id = request.Id }, cancellationToken);
             return Unit.Value;
         }
     }

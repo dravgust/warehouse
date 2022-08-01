@@ -146,7 +146,12 @@ export default function SiteInfo({
     </ListItem>
   );
   const [reload, updateReloadState] = useState(null);
-  const forceUpdate = () => updateReloadState(Date.now());
+  const forceUpdate = () => {
+    setExpanded("");
+    onBeaconSelect("");
+    onSiteSelect(null);
+    updateReloadState(Date.now());
+  };
   const {
     isLoading,
     error,

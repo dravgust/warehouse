@@ -6,6 +6,7 @@ namespace Warehouse.Core.Entities.Models
     [CollectionName("dolav_alerts")]
     public class AlertEntity : EntityBase<string>
     {
+        public string Name { get; set; }
         public int CheckPeriod { get; set; }
         public bool Enabled { get; set; }
     }

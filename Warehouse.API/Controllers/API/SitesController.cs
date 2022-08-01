@@ -116,6 +116,34 @@ namespace Warehouse.API.Controllers.API
         {
             await _commandBus.Send(command, token);
             return Ok(new { });
+        } 
+        
+        [HttpGet("alerts")]
+        public async Task<IActionResult> GetAlerts([FromQuery] GetAlerts request, CancellationToken token)
+        {
+            var spec = new WarehouseAlertSpec(request.Page, request.Size, request.SearchTerm);
+            var query = new SpecificationQuery<WarehouseAlertSpec, IPagedEnumerable<AlertEntity>>(spec);
+            var result = await _queryBus.Send(query, token);
+            return Ok(new
+            {
+                items = result,
+                totalItems = result.TotalCount,
+                totalPages = (long)Math.Ceiling((double)result.TotalCount / request.Size)
+            });
+        }
+
+        [HttpPost("alerts/delete")]
+        public async Task<IActionResult> DeleteAlert([FromBody] DeleteAlert command, CancellationToken token)
+        {
+            await _commandBus.Send(command, token);
+            return Ok(new { command.Id });
+        }
+
+        [HttpPost("alerts/set")]
+        public async Task<IActionResult> PostAlert([FromBody] SetAlert command, CancellationToken token)
+        {
+            await _commandBus.Send(command, token);
+            return Ok(new { });
         }
     }
 }

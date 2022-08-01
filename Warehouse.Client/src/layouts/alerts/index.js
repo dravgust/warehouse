@@ -4,11 +4,8 @@ import { useState } from "react";
 import Footer from "../../examples/Footer";
 import SuiBox from "../../components/SuiBox";
 import { Grid, Zoom } from "@mui/material";
-import BeaconList from "../beacons/components/beacon-list";
-import SelectedBeacon from "../beacons/components/selected-beacon";
-import { useQuery } from "react-query";
-import { fetchBeaconMetadata } from "../../utils/query-keys";
-import { getBeaconMetadata } from "../../services/warehouse-service";
+import SelectedAlert from "./components/selected-alert";
+import AlertList from "./components/alert-list";
 
 function WarehouseAlerts() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -19,20 +16,13 @@ function WarehouseAlerts() {
   const resetToNull = () => selectItem(null);
   const resetToDefault = () =>
     selectItem({
-      macAddress: "",
       name: "",
+      checkPeriod: 0,
+      enabled: true,
     });
   const onSelectItem = (item, key) => {
     if (item) {
-      let result = metadata
-        ? metadata.map((e) => {
-            let rm = item.metadata && item.metadata.find((m) => m.key === e.key);
-            return rm && rm.value
-              ? Object.assign({}, e, { value: rm.value })
-              : Object.assign({}, e);
-          })
-        : [];
-      selectItem({ ...item, metadata: result, key: key });
+      selectItem({ ...item, key: key });
     }
   };
 
@@ -40,9 +30,7 @@ function WarehouseAlerts() {
     resetToNull();
     forceUpdate();
   }
-
   const handleSave = () => forceUpdate();
-  const { data: metadata } = useQuery([fetchBeaconMetadata], getBeaconMetadata);
 
   return (
     <DashboardLayout>
@@ -50,7 +38,7 @@ function WarehouseAlerts() {
       <SuiBox mb={3} py={3}>
         <Grid container spacing={3}>
           <Grid item xs={12} lg={selectedItem ? 5 : 12}>
-            <BeaconList
+            <AlertList
               searchTerm={searchTerm}
               selectedItem={selectedItem}
               onRowSelect={onSelectItem}
@@ -61,7 +49,7 @@ function WarehouseAlerts() {
           <Zoom in={Boolean(selectedItem)}>
             <Grid item xs={12} lg={7}>
               {Boolean(selectedItem) && (
-                <SelectedBeacon
+                <SelectedAlert
                   item={selectedItem}
                   onSave={handleSave}
                   onDelete={handleDelete}
