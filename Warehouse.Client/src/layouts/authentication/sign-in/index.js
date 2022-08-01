@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 // react-router-dom components
 import { Link } from "react-router-dom";
@@ -46,6 +46,21 @@ function SignIn() {
   const [error, setError] = useState(undefined);
   const [buttonText, setButtonText] = useState("Sign in");
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
+
+  //----------------------------------------------------------
+  const submitButton = useRef();
+  useEffect(() => {
+    const listener = (event) => {
+      if (event.code === "Enter" || event.code === "NumpadEnter") {
+        event.preventDefault();
+        submitButton.current.click();
+      }
+    };
+    document.addEventListener("keydown", listener);
+    return () => {
+      document.removeEventListener("keydown", listener);
+    };
+  }, []);
 
   //----------------------------------------------------------
   const login = async (event) => {
@@ -159,12 +174,12 @@ function SignIn() {
             </h6>
           </SuiBox>
           <SuiBox mt={4} mb={1}>
-            <SuiButton variant="gradient" color="info" fullWidth onClick={login}>
+            <SuiButton variant="gradient" color="info" fullWidth onClick={login} ref={submitButton}>
               {buttonText}
             </SuiButton>
           </SuiBox>
           <SuiBox mt={3} textAlign="center">
-            <SuiTypography variant="button" color="text" fontWeight="regular">
+            {/*<SuiTypography variant="button" color="text" fontWeight="regular">
               Don&apos;t have an account?{" "}
               <SuiTypography
                 component={Link}
@@ -176,7 +191,7 @@ function SignIn() {
               >
                 Sign up
               </SuiTypography>
-            </SuiTypography>
+            </SuiTypography>*/}
           </SuiBox>
         </SuiBox>
       )}

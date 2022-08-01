@@ -86,7 +86,8 @@ function Footer() {
         </Grid>
         <Grid item xs={12} lg={8} sx={{ textAlign: "center" }}>
           <SuiTypography variant="body2" color="secondary">
-            Copyright &copy; 2021 Soft by Creative Tim.
+            Copyright &copy; {new Date().getFullYear()}, Powered by Vayosoft Network Technologies
+            Ltd.
           </SuiTypography>
         </Grid>
       </Grid>

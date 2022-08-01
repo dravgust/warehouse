@@ -4,6 +4,7 @@ using Warehouse.Host;
 
 //https://code-maze.com/aspnetcore-running-applications-as-windows-service/
 //https://csharp.christiannagel.com/2022/03/22/windowsservice-2/
+//sc create "WarehouseHostService" binPath="C:\Vayosoft\host\Warehouse.Host.exe"
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Debug()
