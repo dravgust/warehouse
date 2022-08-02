@@ -41,7 +41,7 @@ namespace Warehouse.API.Controllers.API
         {
             //var spec = new ProductSpec(page, size, searchTerm);
             //var query = new SpecificationQuery<ProductSpec, IPagedEnumerable<ProductEntity>>(spec);
-            return Ok((await _queryBus.Send(GetProducts.Create(page, size, searchTerm), token))
+            return Ok((await _queryBus.Send(GetProducts.Create(page, size, 0, searchTerm), token))
                 .ToResponse(size));
         }
 
