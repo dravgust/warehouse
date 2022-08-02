@@ -15,7 +15,8 @@ namespace Vayosoft.Data.MongoDB.QueryHandlers
 {
     using static String;
 
-    public class MongoPagingQueryHandler<TSpecification, TEntity> : IQueryHandler<SpecificationQuery<TSpecification, IPagedEnumerable<TEntity>>, IPagedEnumerable<TEntity>>
+    public class MongoPagingQueryHandler<TSpecification, TEntity> :
+        IQueryHandler<SpecificationQuery<TSpecification, IPagedEnumerable<TEntity>>, IPagedEnumerable<TEntity>>
         where TEntity : class, IEntity
         where TSpecification : IPagingModel<TEntity, object>
     {
@@ -35,11 +36,16 @@ namespace Vayosoft.Data.MongoDB.QueryHandlers
                 : Builders<TEntity>.Sort.Descending(spec.OrderBy.Expression);
 
             FilterDefinition<TEntity> filter = null;
-            if (spec is IFilteringSpecification<TEntity> specification && !IsNullOrEmpty(specification.FilterString))
+            if (spec is ISpecification<TEntity> specification)
             {
-                foreach (var field in specification.FilterBy)
+                filter = Builders<TEntity>.Filter.Where(specification.Criteria);
+            }
+
+            if (spec is IFilteringSpecification<TEntity> filterSpecification && !IsNullOrEmpty(filterSpecification.FilterString))
+            {
+                foreach (var field in filterSpecification.FilterBy)
                 {
-                    var pattern = new Regex(".*" + specification.FilterString + ".*", RegexOptions.IgnoreCase);
+                    var pattern = new Regex(".*" + filterSpecification.FilterString + ".*", RegexOptions.IgnoreCase);
                     var regularExpression = BsonRegularExpression.Create(pattern);
 
                     if (filter == null)
@@ -48,6 +54,7 @@ namespace Vayosoft.Data.MongoDB.QueryHandlers
                         filter |= Builders<TEntity>.Filter.Regex(field, regularExpression);
                 }
             }
+
             filter ??= Builders<TEntity>.Filter.Empty;
 
             return Collection.AggregateByPage(filter, sortDefinition, spec.Page, spec.Take, cancellationToken);
