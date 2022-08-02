@@ -39,7 +39,11 @@ try
         .AddLocalizationService();
 
     builder.Services.AddSwaggerService();
-    builder.Services.AddHealthChecks();
+    builder.Services
+        .AddHealthChecks()
+        .AddRedis(configuration["ConnectionStrings:RedisConnectionString"], tags: new[] { "infrastructure" })
+        .AddMySql(configuration["ConnectionStrings:DefaultConnection"], tags: new[] { "infrastructure" })
+        .AddMongoDb(configuration["MongoDbContext:ConnectionString"], tags: new[] { "infrastructure" });
     //services.AddAppMetricsCollectors();
 
     builder.Services.AddCors(options =>
@@ -128,7 +132,7 @@ try
     app.MapHealthChecks("/live", new HealthCheckOptions()
     {
         Predicate = (check) => check.Tags.Contains("infrastructure"),
-        ResponseWriter = HealthCheckResponse.Write
+        ResponseWriter = HealthCheckResponse.WriteRaw
     });
 
     //app.MapControllerRoute(
