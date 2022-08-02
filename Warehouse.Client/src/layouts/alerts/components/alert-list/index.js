@@ -73,7 +73,7 @@ const AlertList = ({
               ),
               "check period": (
                 <SuiTypography variant="caption" color="text" fontWeight="medium" px={2}>
-                  {item.checkPeriod}
+                  {item.checkPeriod} sec
                 </SuiTypography>
               ),
               email: (

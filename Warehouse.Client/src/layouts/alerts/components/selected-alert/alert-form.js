@@ -10,6 +10,7 @@ import DeletePromt from "./delete-promt";
 import { deleteAlert, saveAlert } from "services/warehouse-service";
 import Checkbox from "@mui/material/Checkbox";
 import SuiBox from "../../../../components/SuiBox";
+import SuiTypography from "../../../../components/SuiTypography";
 
 const validationSchema = yup.object({
   name: yup.string("Enter alert name"),
@@ -91,10 +92,35 @@ export default function AlertForm({ onSave = () => {}, onDelete = () => {}, item
               onChange={formik.handleChange}
               id="enabled"
               name="enabled"
+              sx={{ "&.MuiCheckbox-root": { backgroundColor: "white !important" } }}
             />
           }
           label="Enabled"
         />
+        <Stack direction="row" spacing={1} mt={2} alignItems="center">
+          <FormControlLabel
+            control={
+              <Checkbox
+                disabled
+                id="email"
+                name="email"
+                sx={{ "&.MuiCheckbox-root": { backgroundColor: "white !important" } }}
+              />
+            }
+            label="Email"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                disabled
+                id="sms"
+                name="sms"
+                sx={{ "&.MuiCheckbox-root": { backgroundColor: "white !important" } }}
+              />
+            }
+            label="SMS"
+          />
+        </Stack>
       </SuiBox>
 
       <Stack my={2} py={2} direction="row" spacing={1} justifyContent="end">
