@@ -52,10 +52,8 @@ namespace Warehouse.Core.UseCases.Management.Queries
         {
             if (!string.IsNullOrEmpty(query.FilterString))
             {
-                var pattern = new Regex(".*" + query.FilterString + ".*", RegexOptions.IgnoreCase);
-                var regularExpression = BsonRegularExpression.Create(pattern);
-                var filter = Builders<ProductEntity>.Filter.Regex(p => p.Name, regularExpression);
-                return store.Collection<ProductEntity>().AggregateByPage(query, filter, cancellationToken);
+                return store.PagedListAsync(query, e => 
+                        e.Name.ToLower().Contains(query.FilterString.ToLower()), cancellationToken);
             }
 
             return store.PagedListAsync(query,  cancellationToken);

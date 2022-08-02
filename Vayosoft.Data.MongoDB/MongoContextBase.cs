@@ -50,11 +50,7 @@ namespace Vayosoft.Data.MongoDB
             Collection<T>().Find(criteria).ToListAsync(cancellationToken);
 
         public Task<IPagedEnumerable<T>> PagedListAsync<T>(IPagingModel<T, object> model, Expression<Func<T, bool>> criteria, CancellationToken cancellationToken)
-            where T : class, IEntity
-        {
-            var filter = Builders<T>.Filter.Where(criteria);
-            return Collection<T>().AggregateByPage(model, filter, cancellationToken);
-        }
+            where T : class, IEntity => Collection<T>().AggregateByPage(model, Builders<T>.Filter.Where(criteria), cancellationToken);
 
         public Task<IPagedEnumerable<T>> PagedListAsync<T>(IPagingModel<T, object> model, CancellationToken cancellationToken) where T : class, IEntity =>
             Collection<T>().AggregateByPage(model, Builders<T>.Filter.Empty, cancellationToken);
