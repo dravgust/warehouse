@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Queries;
@@ -41,6 +42,16 @@ namespace Warehouse.API.Controllers.API
             var response = await _userService.AuthenticateAsync(model, IpAddress(), cancellationToken);
             SetTokenCookie(response.RefreshToken);
             return Ok(response);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("logout")]
+        public async Task<IActionResult> PostLogout()
+        {
+            //await HttpContext.SignOutAsync(".session");
+            HttpContext.Session.Clear();
+            await Task.CompletedTask;
+            return Ok();
         }
 
         [AllowAnonymous]
