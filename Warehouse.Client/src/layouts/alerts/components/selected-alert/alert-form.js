@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useFormik } from "formik";
 import { useMutation } from "react-query";
 import * as yup from "yup";
-// Soft UI Dashboard React components
 import Stack from "@mui/material/Stack";
 import { Icon, TextField, Box, FormControlLabel } from "@mui/material";
 import SuiAlert from "components/SuiAlert";
@@ -10,7 +9,6 @@ import SuiButton from "components/SuiButton";
 import DeletePromt from "./delete-promt";
 import { deleteAlert, saveAlert } from "services/warehouse-service";
 import Checkbox from "@mui/material/Checkbox";
-import { pink } from "@mui/material/colors";
 import SuiBox from "../../../../components/SuiBox";
 
 const validationSchema = yup.object({
@@ -75,10 +73,10 @@ export default function AlertForm({ onSave = () => {}, onDelete = () => {}, item
       />
 
       <TextField
-        fullWidth
         id="checkPeriod"
         name="checkPeriod"
-        label="Check Period"
+        label="Check Period (sec)"
+        type="number"
         value={formik.values.checkPeriod}
         onChange={formik.handleChange}
         error={formik.touched.checkPeriod && Boolean(formik.errors.checkPeriod)}

@@ -97,7 +97,7 @@ const BeaconTelemetryCharts = ({ item }) => {
             height={"100px"}
             cssOverride={{ position: "absolute", display: "inherit", top: "50%", left: "50%" }}
           />
-          <GradientLineChart chart={temperatureChart} height="306px" />
+          <GradientLineChart chart={temperatureChart} height="100%" />
         </SuiBox>
       </Card>
 
@@ -113,7 +113,7 @@ const BeaconTelemetryCharts = ({ item }) => {
             height={"100px"}
             cssOverride={{ position: "absolute", display: "inherit", top: "50%", left: "50%" }}
           />
-          <GradientLineChart chart={humidityChart} height="306px" />
+          <GradientLineChart chart={humidityChart} height="100%" />
         </SuiBox>
       </Card>
     </Stack>
