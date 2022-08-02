@@ -501,6 +501,7 @@ namespace Vayosoft.Data.MongoDB
         public static Task<IPagedEnumerable<T>> AggregateByPage<T>(
             this IMongoCollection<T> collection,
             IPagingModel<T, object> model,
+            FilterDefinition<T> filterDefinition,
             CancellationToken cancellationToken = default)
             where T : class, IEntity
         {
@@ -508,7 +509,7 @@ namespace Vayosoft.Data.MongoDB
                 ? Builders<T>.Sort.Ascending(model.OrderBy.Expression) 
                 : Builders<T>.Sort.Descending(model.OrderBy.Expression);
 
-            return collection.AggregateByPage(Builders<T>.Filter.Empty, sortDefinition, model.Page, model.Take, cancellationToken);
+            return collection.AggregateByPage(filterDefinition, sortDefinition, model.Page, model.Take, cancellationToken);
         }
 
         public static async Task<IPagedEnumerable<T>> AggregateByPage<T>(

@@ -9,6 +9,7 @@ using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Management.Commands;
 using Warehouse.Core.UseCases.Management.Queries;
 using Warehouse.Core.UseCases.Management.Specifications;
+using Warehouse.Core.Utilities;
 
 namespace Warehouse.API.Controllers.API
 {
@@ -38,17 +39,10 @@ namespace Warehouse.API.Controllers.API
         [HttpGet("")]
         public async Task<IActionResult> Get(int page, int size, string searchTerm = null, CancellationToken token = default)
         {
-            var spec = new ProductSpec(page, size, searchTerm);
-            var query = new SpecificationQuery<ProductSpec, IPagedEnumerable<ProductEntity>>(spec);
-
-            var data = await _queryBus.Send(query, token);
-
-            return Ok(new
-            {
-                data,
-                totalItems = data.TotalCount,
-                totalPages = (long) Math.Ceiling((double)data.TotalCount / size)
-            });
+            //var spec = new ProductSpec(page, size, searchTerm);
+            //var query = new SpecificationQuery<ProductSpec, IPagedEnumerable<ProductEntity>>(spec);
+            return Ok((await _queryBus.Send(GetProducts.Create(page, size, searchTerm), token))
+                .ToResponse(size));
         }
 
         [HttpGet("{id}")]

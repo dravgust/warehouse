@@ -31,16 +31,7 @@ namespace Vayosoft.Data.MongoDB.QueryHandlers
         {
             var spec = request.Specification;
 
-            var sortDefinition = spec.OrderBy.SortOrder == SortOrder.Asc
-                ? Builders<TEntity>.Sort.Ascending(spec.OrderBy.Expression)
-                : Builders<TEntity>.Sort.Descending(spec.OrderBy.Expression);
-
             FilterDefinition<TEntity> filter = null;
-            if (spec is ISpecification<TEntity> specification)
-            {
-                filter = Builders<TEntity>.Filter.Where(specification.Criteria);
-            }
-
             if (spec is IFilteringSpecification<TEntity> filterSpecification && !IsNullOrEmpty(filterSpecification.FilterString))
             {
                 foreach (var field in filterSpecification.FilterBy)
@@ -57,7 +48,7 @@ namespace Vayosoft.Data.MongoDB.QueryHandlers
 
             filter ??= Builders<TEntity>.Filter.Empty;
 
-            return Collection.AggregateByPage(filter, sortDefinition, spec.Page, spec.Take, cancellationToken);
+            return Collection.AggregateByPage(spec, filter, cancellationToken);
         }
     }
 }

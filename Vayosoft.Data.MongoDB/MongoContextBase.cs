@@ -9,6 +9,7 @@ using MongoDB.Driver;
 using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.SharedKernel.Exceptions;
+using Vayosoft.Core.SharedKernel.Models.Pagination;
 
 namespace Vayosoft.Data.MongoDB
 {
@@ -47,6 +48,16 @@ namespace Vayosoft.Data.MongoDB
 
         public Task<List<T>> ListAsync<T>(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default) where T : IEntity =>
             Collection<T>().Find(criteria).ToListAsync(cancellationToken);
+
+        public Task<IPagedEnumerable<T>> PagedListAsync<T>(IPagingModel<T, object> model, Expression<Func<T, bool>> criteria, CancellationToken cancellationToken)
+            where T : class, IEntity
+        {
+            var filter = Builders<T>.Filter.Where(criteria);
+            return Collection<T>().AggregateByPage(model, filter, cancellationToken);
+        }
+
+        public Task<IPagedEnumerable<T>> PagedListAsync<T>(IPagingModel<T, object> model, CancellationToken cancellationToken) where T : class, IEntity =>
+            Collection<T>().AggregateByPage(model, Builders<T>.Filter.Empty, cancellationToken);
 
         public Task<TResult> FirstOrDefaultAsync<T, TResult>(Expression<Func<T, bool>> criteria, IMapper mapper, CancellationToken cancellationToken = default) where T : IEntity =>
             Collection<T>().Find(criteria).Project(x => mapper.Map<TResult>(x)).FirstOrDefaultAsync(cancellationToken);

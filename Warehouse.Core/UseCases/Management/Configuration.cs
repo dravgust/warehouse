@@ -27,6 +27,7 @@ namespace Warehouse.Core.UseCases.Management
                 .AddQueryHandler<GetRegisteredBeaconList, IEnumerable<string>, WarehouseQueryHandler>()
                 .AddQueryHandler<GetRegisteredGwList, IEnumerable<string>, GetRegisteredGwList.RegisteredGwQueryHandler>()
                 .AddQueryHandler<GetProductItems, IPagedEnumerable<ProductItemDto>, WarehouseQueryHandler>()
+                .AddQueryHandler<GetProducts, IPagedEnumerable<ProductEntity>, HandleGetProducts>()
                 .AddQueryHandler<SpecificationQuery<WarehouseSiteSpec, IPagedEnumerable<WarehouseSiteEntity>>, IPagedEnumerable<WarehouseSiteEntity>,
                     MongoPagingQueryHandler<WarehouseSiteSpec, WarehouseSiteEntity>>()
                 .AddQueryHandler<SpecificationQuery<WarehouseProductSpec, IPagedEnumerable<BeaconRegisteredEntity>>, IPagedEnumerable<BeaconRegisteredEntity>,
