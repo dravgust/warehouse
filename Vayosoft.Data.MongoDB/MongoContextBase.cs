@@ -9,6 +9,7 @@ using MongoDB.Driver;
 using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.SharedKernel.Exceptions;
+using Vayosoft.Core.SharedKernel.Models;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 
 namespace Vayosoft.Data.MongoDB
@@ -51,6 +52,25 @@ namespace Vayosoft.Data.MongoDB
 
         public Task<IPagedEnumerable<T>> PagedListAsync<T>(IPagingModel<T, object> model, Expression<Func<T, bool>> criteria, CancellationToken cancellationToken)
             where T : class, IEntity => Collection<T>().AggregateByPage(model, Builders<T>.Filter.Where(criteria), cancellationToken);
+
+        //public async Task<IPagedEnumerable<T>> PagedListAsync2<T>(IPagingModel<T, object> model,
+        //    Expression<Func<T, bool>> criteria, CancellationToken cancellationToken) where T : class, IEntity
+        //{
+        //    var filterDefinition = Builders<T>.Filter.Where(criteria);
+        //    var sortDefinition = model.OrderBy.SortOrder == SortOrder.Asc
+        //        ? Builders<T>.Sort.Ascending(model.OrderBy.Expression)
+        //        : Builders<T>.Sort.Descending(model.OrderBy.Expression);
+
+        //    var data = await Collection<T>().Find(filterDefinition)
+        //        .Sort(sortDefinition)
+        //        .Skip((model.Page - 1) * model.Take)
+        //        .Limit(model.Take)
+        //        .ToListAsync(cancellationToken: cancellationToken);
+
+        //    var count = await Collection<T>().CountDocumentsAsync(filterDefinition, cancellationToken: cancellationToken);
+
+        //    return new PagedEnumerable<T>(data, count);
+        //}
 
         public Task<IPagedEnumerable<T>> PagedListAsync<T>(IPagingModel<T, object> model, CancellationToken cancellationToken) where T : class, IEntity =>
             Collection<T>().AggregateByPage(model, Builders<T>.Filter.Empty, cancellationToken);

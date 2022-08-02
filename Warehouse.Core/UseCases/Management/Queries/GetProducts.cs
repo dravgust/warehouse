@@ -1,10 +1,7 @@
-﻿using System.Text.RegularExpressions;
-using MongoDB.Bson;
-using MongoDB.Driver;
+﻿using System.Linq.Expressions;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
-using Vayosoft.Data.MongoDB;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Persistence;
 
@@ -12,19 +9,21 @@ namespace Warehouse.Core.UseCases.Management.Queries
 {
     public class GetProducts : PagingBase<ProductEntity, object>, IQuery<IPagedEnumerable<ProductEntity>>
     {
+        public long ProviderId { get; }
         public string FilterString { get; }
 
-        public GetProducts(int page, int take, string filterString = null)
+        public GetProducts(int page, int take, long providerId, string searchTerm = null)
         {
             Page = page;
             Take = take;
-            
-            FilterString = filterString;
+
+            ProviderId = providerId;
+            FilterString = searchTerm;
         }
 
-        public static GetProducts Create(int pageNumber = 1, int pageSize = 20, string filterString = null)
+        public static GetProducts Create(int pageNumber = 1, int pageSize = 20, long providerId = 0, string searchTerm = null)
         {
-            return new GetProducts(pageNumber, pageSize, filterString);
+            return new GetProducts(pageNumber, pageSize, providerId, searchTerm);
         }
 
         protected override Sorting<ProductEntity, object> BuildDefaultSorting() => 
@@ -50,6 +49,7 @@ namespace Warehouse.Core.UseCases.Management.Queries
 
         public Task<IPagedEnumerable<ProductEntity>> Handle(GetProducts query, CancellationToken cancellationToken)
         {
+            //Expression<Func<ProductEntity, bool>> filter = entity => entity.ProviderId == query.ProviderId;
             if (!string.IsNullOrEmpty(query.FilterString))
             {
                 return store.PagedListAsync(query, e => 

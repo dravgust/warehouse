@@ -7,6 +7,8 @@ namespace Warehouse.Core.Entities.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public ProductMetadata Metadata { get; set; }
+
+        public long ProviderId { get; set; }
     }
 
     public class ProductMetadata : List<ProductMetadataItem> { }
