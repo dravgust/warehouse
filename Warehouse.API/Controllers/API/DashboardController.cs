@@ -38,7 +38,7 @@ namespace Warehouse.API.Controllers.API
             Ok(await _queryBus.Send(new GetDashboardByProduct(), token));
 
         [HttpGet("status")]
-        public async Task<IActionResult> GetStatus([FromQuery] GetIpsStatus query, CancellationToken token = default) =>
+        public async Task<IActionResult> GetStatus([FromQuery] GetDashboardSite query, CancellationToken token = default) =>
             Ok(await _queryBus.Send(query, token));
 
         [HttpGet("beacon")]

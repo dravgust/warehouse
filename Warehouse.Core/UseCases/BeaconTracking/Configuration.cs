@@ -28,9 +28,9 @@ namespace Warehouse.Core.UseCases.BeaconTracking
                     MongoPagingQueryHandler<NotificationSpec, NotificationEntity>>()
                 .AddQueryHandler<GetDashboardByProduct, IEnumerable<DashboardByProduct>, HandleGetDashboardByProduct>()
                 .AddQueryHandler<GetDashboardBySite, IEnumerable<DashboardBySite>, HandleGetDashboardBySite>()
-                .AddQueryHandler<GetIpsStatus, DashboardBySite, AssetsQueryHandler>()
-                .AddQueryHandler<GetBeaconTelemetry2, BeaconTelemetry2Dto, AssetsQueryHandler>()
-                .AddQueryHandler<GetBeaconTelemetry, BeaconTelemetryDto, AssetsQueryHandler>()
+                .AddQueryHandler<GetDashboardSite, DashboardBySite, HandleGetIpsStatus>()
+                .AddQueryHandler<GetBeaconTelemetry2, BeaconTelemetry2Dto, HandleGetBeaconTelemetry>()
+                .AddQueryHandler<GetBeaconTelemetry, BeaconTelemetryDto, HandleGetBeaconTelemetry>()
                 .AddQueryHandler<SpecificationQuery<BeaconEventSpec, IPagedEnumerable<BeaconEventEntity>>, IPagedEnumerable<BeaconEventEntity>,
                     MongoPagingQueryHandler<BeaconEventSpec, BeaconEventEntity>>()
                 .AddQueryHandler<SpecificationQuery<BeaconPositionSpec, IPagedEnumerable<BeaconReceivedEntity>>, IPagedEnumerable<BeaconReceivedEntity>,
