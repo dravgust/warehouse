@@ -4,6 +4,7 @@ using Vayosoft.Core.Commands;
 using Vayosoft.Core.SharedKernel;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Persistence;
+using Warehouse.Core.Services.Session;
 using Warehouse.Core.UseCases.Management.Models;
 
 namespace Warehouse.Core.UseCases.Management.Commands
@@ -23,15 +24,19 @@ namespace Warehouse.Core.UseCases.Management.Commands
     {
         private readonly WarehouseStore _store;
         private readonly IMapper _mapper;
+        private readonly ISessionProvider _session;
 
-        public HandleSetWarehouseSite(WarehouseStore store, IMapper mapper)
+        public HandleSetWarehouseSite(WarehouseStore store, IMapper mapper, ISessionProvider session)
         {
             _store = store;
             _mapper = mapper;
+            _session = session;
         }
 
         public async Task<Unit> Handle(SetWarehouseSite request, CancellationToken cancellationToken)
         {
+            var providerId = _session.ProviderId;
+
             if (!string.IsNullOrEmpty(request.Id))
             {
                 await _store.GetAndUpdateAsync<WarehouseSiteEntity>(request.Id, entity =>

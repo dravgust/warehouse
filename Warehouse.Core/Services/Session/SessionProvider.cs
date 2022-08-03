@@ -2,9 +2,11 @@
 
 namespace Warehouse.Core.Services.Session
 {
-    public class SessionProvider
+    public class SessionProvider : ISessionProvider
     {
-        public SessionData Data { get; private set; }
+        public SessionContext Data { get; private set; }
+        public long UserId { get; set; }
+        public long ProviderId { get; set; }
         public SessionProvider()
         {
            
@@ -12,7 +14,7 @@ namespace Warehouse.Core.Services.Session
 
         public void Initialise(UserEntity user)
         {
-            Data = new SessionData(user.Id, user.ProviderId);
+            Data = new SessionContext(user.Id, user.ProviderId);
         }
     }
 }

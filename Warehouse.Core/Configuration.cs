@@ -17,6 +17,7 @@ using Warehouse.Core.Entities.Events;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Serialization;
+using Warehouse.Core.Services.Session;
 using Warehouse.Core.UseCases;
 using Warehouse.Core.UseCases.Administration;
 using Warehouse.Core.UseCases.BeaconTracking;
@@ -68,6 +69,8 @@ namespace Warehouse.Core
                 .AddWarehouseTrackingServices()
                 .AddWarehouseManagementServices()
                 .AddWarehouseAdministrationServices();
+
+            services.AddScoped<ISessionProvider, SessionProvider>();
 
             services.AddScoped<INotificationHandler<OperationEvent>, OperationEventHandler>();
 
