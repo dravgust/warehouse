@@ -1,12 +1,12 @@
 ﻿namespace Warehouse.Core.UseCases.BeaconTracking.Models
 {
-    public class IndoorPositionStatusDto
+    public class DashboardBySite
     {
         public SiteInfo Site { set; get; }
-        public ICollection<BeaconIndoorPositionInfo> In { set; get; }
-        public ICollection<BeaconIndoorPositionInfo> Out { set; get; }
+        public ICollection<DashboardBySiteItem> In { set; get; }
+        public ICollection<DashboardBySiteItem> Out { set; get; }
     }
-    public class BeaconIndoorPositionInfo
+    public class DashboardBySiteItem
     {
         public ProductInfo Product { set; get; }
         public BeaconInfo Beacon { set; get; }

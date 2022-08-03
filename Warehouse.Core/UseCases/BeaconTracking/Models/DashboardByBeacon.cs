@@ -3,7 +3,7 @@ using Warehouse.Core.UseCases.Management.Models;
 
 namespace Warehouse.Core.UseCases.BeaconTracking.Models
 {
-    public class AssetDto
+    public class DashboardByBeacon
     {
         public DateTime TimeStamp { get; set; }
         public string MacAddress { set; get; }
@@ -13,7 +13,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Models
     }
 
 
-    public class AssetInfo
+    public class DashboardByProduct
     {
         public ProductInfo Product { set; get; }
         public SiteInfo Site { set; get; }

@@ -4,13 +4,10 @@ using Warehouse.Core.UseCases.BeaconTracking.Models;
 
 namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 {
-    public class GetAssets : IQuery<IPagedEnumerable<AssetDto>>
+    public class GetDashboardByBeacon : IQuery<IPagedEnumerable<DashboardByBeacon>>
     {
         public int Page { set; get; }
         public int Size { set; get; }
         public string SearchTerm { set; get; }
     }
-
-    public class GetAssetInfo : IQuery<IEnumerable<AssetInfo>>
-    { }
 }

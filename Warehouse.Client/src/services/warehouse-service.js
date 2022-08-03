@@ -51,29 +51,29 @@ export const getSites = async ({ queryKey }) => {
 
 export const getBeaconTelemetry = async ({ queryKey }) => {
   const [_key, id] = queryKey;
-  const res = await axios.get(`assets/beacon?macAddress=${id}`);
+  const res = await axios.get(`dashboard/beacon?macAddress=${id}`);
   return res?.data;
 };
 
 export const getAssets = async ({ queryKey }) => {
   const [_key, page, searchTerm] = queryKey;
-  const res = await axios.get(`assets?page=${page}&size=6&searchTerm=${searchTerm}`);
+  const res = await axios.get(`dashboard?page=${page}&size=6&searchTerm=${searchTerm}`);
   return res?.data;
 };
 
 export const getBeaconTelemetryCharts = async ({ queryKey }) => {
   const [_key, id] = queryKey;
-  const res = await axios.get(`assets/beacon-telemetry?macAddress=${id}`);
+  const res = await axios.get(`dashboard/beacon-telemetry?macAddress=${id}`);
   return res?.data;
 };
 
 export const getAssetsInfo = async () => {
-  const res = await axios.get(`assets/info`);
+  const res = await axios.get(`dashboard/info`);
   return res?.data;
 };
 
 export const getSitesInfo = async () => {
-  const res = await axios.get(`assets/sites`);
+  const res = await axios.get(`dashboard/sites`);
   return res?.data;
 };
 

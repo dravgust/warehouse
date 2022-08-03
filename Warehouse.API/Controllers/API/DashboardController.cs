@@ -8,17 +8,17 @@ namespace Warehouse.API.Controllers.API
     //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class AssetsController : ControllerBase
+    public class DashboardController : ControllerBase
     {
         private readonly IQueryBus _queryBus;
 
-        public AssetsController(IQueryBus queryBus)
+        public DashboardController(IQueryBus queryBus)
         {
             this._queryBus = queryBus;
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> Get([FromQuery] GetAssets query, CancellationToken token = default)
+        public async Task<IActionResult> Get([FromQuery] GetDashboardByBeacon query, CancellationToken token = default)
         {
             var result = await _queryBus.Send(query, token);
             return Ok(new
@@ -30,12 +30,12 @@ namespace Warehouse.API.Controllers.API
         }
 
         [HttpGet("sites")]
-        public async Task<IActionResult> GetSites([FromQuery] GetSiteInfo query, CancellationToken token = default) =>
+        public async Task<IActionResult> GetSites([FromQuery] GetDashboardBySite query, CancellationToken token = default) =>
             Ok(await _queryBus.Send(query, token));
 
         [HttpGet("info")]
         public async Task<IActionResult> GetInfo(CancellationToken token = default) =>
-            Ok(await _queryBus.Send(new GetAssetInfo(), token));
+            Ok(await _queryBus.Send(new GetDashboardByProduct(), token));
 
         [HttpGet("status")]
         public async Task<IActionResult> GetStatus([FromQuery] GetIpsStatus query, CancellationToken token = default) =>

@@ -14,13 +14,13 @@ using Warehouse.Core.UseCases.Management.Models;
 namespace Warehouse.Core.UseCases.BeaconTracking
 {
     public class AssetsQueryHandler :
-        IQueryHandler<GetAssets, IPagedEnumerable<AssetDto>>,
+        IQueryHandler<GetDashboardByBeacon, IPagedEnumerable<DashboardByBeacon>>,
         IQueryHandler<GetBeaconEvents, IPagedEnumerable<BeaconEventDto>>,
-        IQueryHandler<GetAssetInfo, IEnumerable<AssetInfo>>,
+        IQueryHandler<GetDashboardByProduct, IEnumerable<DashboardByProduct>>,
         IQueryHandler<GetBeaconTelemetry, BeaconTelemetryDto>,
         IQueryHandler<GetBeaconTelemetry2, BeaconTelemetry2Dto>,
-        IQueryHandler<GetIpsStatus, IndoorPositionStatusDto>,
-        IQueryHandler<GetSiteInfo, IEnumerable<IndoorPositionStatusDto>>
+        IQueryHandler<GetIpsStatus, DashboardBySite>,
+        IQueryHandler<GetDashboardBySite, IEnumerable<DashboardBySite>>
     {
         private readonly WarehouseStore _store;
         private readonly IQueryBus _queryBus;
@@ -36,16 +36,16 @@ namespace Warehouse.Core.UseCases.BeaconTracking
             _mapper = mapper;
         }
 
-        public async Task<IPagedEnumerable<AssetDto>> Handle(GetAssets request, CancellationToken cancellationToken)
+        public async Task<IPagedEnumerable<DashboardByBeacon>> Handle(GetDashboardByBeacon request, CancellationToken cancellationToken)
         {
             var spec = new BeaconPositionSpec(request.Page, request.Size, request.SearchTerm);
             var query = new SpecificationQuery<BeaconPositionSpec, IPagedEnumerable<BeaconReceivedEntity>>(spec);
             var result = await _queryBus.Send(query, cancellationToken);
 
-            var data = new List<AssetDto>();
+            var data = new List<DashboardByBeacon>();
             foreach (var b in result)
             {
-                var asset = new AssetDto
+                var asset = new DashboardByBeacon
                 {
                     MacAddress = b.MacAddress,
                     TimeStamp = b.ReceivedAt,
@@ -75,14 +75,14 @@ namespace Warehouse.Core.UseCases.BeaconTracking
                 data.Add(asset);
             }
 
-            return new PagedEnumerable<AssetDto>(data, result.TotalCount);
+            return new PagedEnumerable<DashboardByBeacon>(data, result.TotalCount);
         }
 
-        public async Task<IEnumerable<AssetInfo>> Handle(GetAssetInfo request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<DashboardByProduct>> Handle(GetDashboardByProduct request, CancellationToken cancellationToken)
         {
             var result = await _store.ListAsync<BeaconReceivedEntity>(cancellationToken);
 
-            var store = new SortedDictionary<(string, string), AssetInfo>(Comparer<(string, string)>.Create((x, y) => y.CompareTo(x)));
+            var store = new SortedDictionary<(string, string), DashboardByProduct>(Comparer<(string, string)>.Create((x, y) => y.CompareTo(x)));
 
             foreach (var b in result)
             {
@@ -114,7 +114,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking
                     var site = await _store.FindAsync<WarehouseSiteEntity>(b.SourceId, cancellationToken);
                     siteInfo.Name = site?.Name;
 
-                    var asset = new AssetInfo
+                    var asset = new DashboardByProduct
                     {
                        Product = productInfo,
                        Site = siteInfo,
@@ -144,61 +144,36 @@ namespace Warehouse.Core.UseCases.BeaconTracking
             return store.Values;
         }
 
-        public async Task<IndoorPositionStatusDto> Handle(GetIpsStatus request, CancellationToken cancellationToken)
+        public async Task<DashboardBySite> Handle(GetIpsStatus request, CancellationToken cancellationToken)
         {
             var result = await _store.GetAsync<IndoorPositionStatusEntity>(request.SiteId, cancellationToken);
-            return _mapper.Map<IndoorPositionStatusDto>(result);
+            return _mapper.Map<DashboardBySite>(result);
         }
 
-        //public async Task<IEnumerable<WarehouseSiteDto>> Handle(GetSiteInfo request, CancellationToken cancellationToken)
-        //{
-        //    var result = new Dictionary<string, WarehouseSiteDto>();
-        //    var beacons = await _productItems.Find(entity => entity.ProductId == request.ProductId).ToListAsync(cancellationToken);
-        //    foreach (var beacon in beacons)
-        //    {
-        //        var statusEntities = await _statusCollection.Find(x => x.In.Contains(beacon.MacAddress))
-        //            .ToListAsync(cancellationToken: cancellationToken);
-
-        //        foreach (var b in statusEntities)
-        //        {
-        //            if (!result.ContainsKey(b.Id))
-        //            {
-        //                var site = await _siteRepository.FindAsync(b.Id, cancellationToken);
-        //                if (site != null)
-        //                {
-        //                    result.Add(b.Id, _mapper.Map<WarehouseSiteDto>(site));
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    return result.Values;
-        //}
-
-        public async Task<IEnumerable<IndoorPositionStatusDto>> Handle(GetSiteInfo request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<DashboardBySite>> Handle(GetDashboardBySite request, CancellationToken cancellationToken)
         {
             var statusEntities = await _store.ListAsync<IndoorPositionStatusEntity>(cancellationToken);
 
-            var result  = new List<IndoorPositionStatusDto>();
+            var result  = new List<DashboardBySite>();
             foreach (var s in statusEntities)
             {
                 var site = await _store.FindAsync<WarehouseSiteEntity>(s.Id, cancellationToken);
                 if (site != null)
                 {
-                    var info = new IndoorPositionStatusDto
+                    var info = new DashboardBySite
                     {
                         Site = new SiteInfo
                         {
                             Id = site.Id,
                             Name = site.Name
                         },
-                        In = new List<BeaconIndoorPositionInfo>(),
-                        Out = new List<BeaconIndoorPositionInfo>()
+                        In = new List<DashboardBySiteItem>(),
+                        Out = new List<DashboardBySiteItem>()
                     };
 
                     foreach (var macAddress in s.In)
                     {
-                        var beaconPositionInfo = new BeaconIndoorPositionInfo
+                        var beaconPositionInfo = new DashboardBySiteItem
                         {
                             Product = new ProductInfo
                             {
@@ -231,7 +206,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking
 
                     foreach (var macAddress in s.Out)
                     {
-                        var beaconPositionInfo = new BeaconIndoorPositionInfo
+                        var beaconPositionInfo = new DashboardBySiteItem
                         {
                             Product = new ProductInfo
                             {
