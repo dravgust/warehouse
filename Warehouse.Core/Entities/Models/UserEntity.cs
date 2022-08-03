@@ -7,7 +7,7 @@ using Warehouse.Core.UseCases.Administration.Models;
 
 namespace Warehouse.Core.Entities.Models
 {
-    public class UserEntity : EntityBase<long>, IIdentityUser
+    public class UserEntity : EntityBase<long>, IIdentityUser, IProviderable<long>
     {
         private UserEntity() { }
         public UserEntity(string username)
@@ -24,6 +24,7 @@ namespace Warehouse.Core.Entities.Models
         public DateTime? Deregistered { get; set; }
         public string CultureId { get; set; } = null!;
         public long ProviderId { get; set; }
+        object IProviderable.ProviderId => ProviderId;
         public LogEventType? LogLevel { get; set; }
         public virtual List<RefreshToken> RefreshTokens { get; } = new();
     }

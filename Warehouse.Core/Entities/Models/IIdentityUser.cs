@@ -15,4 +15,14 @@ namespace Warehouse.Core.Entities.Models
         [JsonIgnore]
         public List<RefreshToken> RefreshTokens { get; }
     }
+
+    public interface IProviderable
+    {
+        object ProviderId { get; }
+    }
+
+    public interface IProviderable<out TKey> : IProviderable
+    {
+        new TKey ProviderId { get; }
+    }
 }
