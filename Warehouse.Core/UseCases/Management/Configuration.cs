@@ -22,8 +22,8 @@ namespace Warehouse.Core.UseCases.Management
 
         private static IServiceCollection AddQueryHandlers(this IServiceCollection services) =>
             services
-                .AddQueryHandler<GetProductMetadata, ProductMetadata, ProductQueryHandler>()
-                .AddQueryHandler<GetProductItemMetadata, ProductMetadata, ProductQueryHandler>()
+                .AddQueryHandler<GetProductMetadata, ProductMetadata, HandleGetProductMetadata>()
+                .AddQueryHandler<GetProductItemMetadata, ProductMetadata, HandlerGetProductItemMetadata>()
                 .AddQueryHandler<GetRegisteredBeaconList, IEnumerable<string>, HandleGetRegisteredBeaconList>()
                 .AddQueryHandler<GetRegisteredGwList, IEnumerable<string>, GetRegisteredGwList.RegisteredGwQueryHandler>()
                 .AddQueryHandler<GetProductItems, IPagedEnumerable<ProductItemDto>, HandleGetProductItems>()
