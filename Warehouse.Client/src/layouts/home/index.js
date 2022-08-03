@@ -93,7 +93,7 @@ function Dashboard() {
               <Grid item xs={12} md={Boolean(selectedBeacon) ? 6 : 12}>
                 <Stack
                   spacing={3}
-                  direction={Boolean(selectedBeacon) ? "column" : "row"}
+                  direction={{ xs: "column", xl: Boolean(selectedBeacon) ? "column" : "row" }}
                   style={{ height: "100% " }}
                 >
                   <PositionEvents searchTerm={selectedBeacon ? selectedBeacon.macAddress : ""} />
