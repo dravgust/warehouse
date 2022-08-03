@@ -10,7 +10,7 @@ import PropTypes from "prop-types";
 import { setSite } from "services/warehouse-service";
 
 export default function SetSite({ item, onClose, onSave = () => {} }) {
-  const mutation = useMutation((item) => setSite, {
+  const mutation = useMutation(setSite, {
     onSuccess: () => {
       formik.resetForm();
       return onSave();

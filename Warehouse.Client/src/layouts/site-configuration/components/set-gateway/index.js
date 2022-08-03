@@ -44,7 +44,6 @@ export default function SetGateway({
   beacons = [],
 }) {
   const saveItem = async (values) => {
-    const token = await auth.getToken();
     const item = {
       siteId: values.siteId,
       macAddress: values.macAddress,

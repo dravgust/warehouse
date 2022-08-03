@@ -36,7 +36,7 @@ const BeaconTelemetryCharts = ({ item }) => {
         datasets: [],
       };
       const temperature = [];
-      Object.keys(response.temperature).map(function (key, index) {
+      Object.keys(response.temperature).map(function (key) {
         temperatureChartData.labels.push(format(new Date(key), "HH:mm"));
         temperature.push(response.temperature[key]);
       });
@@ -52,7 +52,7 @@ const BeaconTelemetryCharts = ({ item }) => {
         datasets: [],
       };
       const humidity = [];
-      Object.keys(response.humidity).map(function (key, index) {
+      Object.keys(response.humidity).map(function (key) {
         humidityChartData.labels.push(format(new Date(key), "HH:mm"));
         humidity.push(response.humidity[key]);
       });

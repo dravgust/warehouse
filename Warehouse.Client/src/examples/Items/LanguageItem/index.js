@@ -28,7 +28,7 @@ import SuiTypography from "components/SuiTypography";
 // custom styles for the LanguageItem
 import { menuItem, menuImage } from "examples/Items/LanguageItem/styles";
 
-const LanguageItem = forwardRef(({ color, image, title, date, ...rest }, ref) => (
+const LanguageItem = forwardRef(({ color, image, title, ...rest }, ref) => (
   <MenuItem {...rest} ref={ref} sx={(theme) => menuItem(theme)}>
     <SuiBox
       width="2rem"

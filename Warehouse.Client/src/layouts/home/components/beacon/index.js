@@ -38,6 +38,9 @@ function Beacon({ macAddress = "n/a", name = "n/a", lastUpdate = "" }) {
             </SuiTypography>
           </SuiBox>
           <SuiBox sx={{ textAlign: "center" }}>
+            <SuiTypography color="white" sx={{ opacity: ".5" }}>
+              Last update
+            </SuiTypography>
             <SuiTypography
               color="white"
               fontWeight="bold"

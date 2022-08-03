@@ -13,7 +13,7 @@ import { getAlerts } from "services/warehouse-service";
 const AlertList = ({
   searchTerm,
   selectedItem,
-  onRowSelect = (item) => {},
+  onRowSelect = () => {},
   onAdd = () => {},
   refresh,
 }) => {
