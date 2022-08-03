@@ -6,12 +6,12 @@ using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.Utilities;
 using Warehouse.API.Services.Security.Attributes;
-using Warehouse.API.Services.Security.Session;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Management.Commands;
 using Warehouse.Core.UseCases.Management.Queries;
 using Warehouse.Core.UseCases.Management.Specifications;
 using Warehouse.API.Extensions;
+using Warehouse.Core.Services.Session;
 
 namespace Warehouse.API.Controllers.API
 {
@@ -36,7 +36,7 @@ namespace Warehouse.API.Controllers.API
         [HttpGet("")]
         public async Task<dynamic> Get(int page, int size, string searchTerm = null, CancellationToken token = default)
         {
-            var identityData = HttpContext.Session.Get<IdentityData>(nameof(IdentityData));
+            var identityData = HttpContext.Session.Get<SessionContext>(nameof(SessionContext));
 
             var spec = new WarehouseSiteSpec(page, size, searchTerm);
             var query = new SpecificationQuery<WarehouseSiteSpec, IPagedEnumerable<WarehouseSiteEntity>>(spec);

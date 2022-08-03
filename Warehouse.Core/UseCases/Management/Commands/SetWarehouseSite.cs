@@ -35,8 +35,6 @@ namespace Warehouse.Core.UseCases.Management.Commands
 
         public async Task<Unit> Handle(SetWarehouseSite request, CancellationToken cancellationToken)
         {
-            var providerId = _session.ProviderId;
-
             if (!string.IsNullOrEmpty(request.Id))
             {
                 await _store.GetAndUpdateAsync<WarehouseSiteEntity>(request.Id, entity =>
@@ -50,7 +48,8 @@ namespace Warehouse.Core.UseCases.Management.Commands
             else
             {
                 var entity = _mapper.Map<WarehouseSiteEntity>(request);
-                entity.ProviderId = 1000;
+                var sessionContext = _session.Get<SessionContext>(nameof(SessionContext));
+                entity.ProviderId = sessionContext?.ProviderId ?? 0;
                 await _store.AddAsync(entity, cancellationToken: cancellationToken);
             }
 

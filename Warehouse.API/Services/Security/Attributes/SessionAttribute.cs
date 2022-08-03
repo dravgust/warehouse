@@ -1,6 +1,5 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Warehouse.API.Services.Security.Session;
 using Warehouse.Core.Services.Session;
 using Warehouse.API.Extensions;
 
@@ -12,17 +11,17 @@ namespace Warehouse.API.Services.Security.Attributes
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var services = context.HttpContext.RequestServices;
-            var sessionProvider = services.GetRequiredService(typeof(ISessionProvider)) as SessionProvider;
+            var sessionContext = services.GetRequiredService(typeof(SessionContext)) as SessionContext;
 
             //var claimsIdentity = (ClaimsIdentity)context.HttpContext.User.Identity;
 
             var session = context.HttpContext.Session;
-            var identityData = session.Get<IdentityData>(nameof(IdentityData));
+            var sessionContextData = session.Get<SessionContext>(nameof(SessionContext));
 
-            if (sessionProvider != null)
+            if (sessionContext != null)
             {
-                sessionProvider.UserId = identityData.UserId;
-                sessionProvider.ProviderId = identityData.ProviderId;
+                sessionContext.UserId = sessionContextData.UserId;
+                sessionContext.ProviderId = sessionContextData.ProviderId;
             }
 
             var resultContext = await next();

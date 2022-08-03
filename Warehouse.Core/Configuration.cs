@@ -70,8 +70,6 @@ namespace Warehouse.Core
                 .AddWarehouseManagementServices()
                 .AddWarehouseAdministrationServices();
 
-            services.AddScoped<ISessionProvider, SessionProvider>();
-
             services.AddScoped<INotificationHandler<OperationEvent>, OperationEventHandler>();
 
             services
