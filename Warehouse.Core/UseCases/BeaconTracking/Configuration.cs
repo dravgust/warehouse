@@ -22,12 +22,12 @@ namespace Warehouse.Core.UseCases.BeaconTracking
 
         private static IServiceCollection AddQueryHandlers(this IServiceCollection services) =>
             services
-                .AddQueryHandler<GetDashboardByBeacon, IPagedEnumerable<DashboardByBeacon>, AssetsQueryHandler>()
-                .AddQueryHandler<GetBeaconEvents, IPagedEnumerable<BeaconEventDto>, AssetsQueryHandler>()
+                .AddQueryHandler<GetDashboardByBeacon, IPagedEnumerable<DashboardByBeacon>, HandleDashboardByBeacon>()
+                .AddQueryHandler<GetBeaconEvents, IPagedEnumerable<BeaconEventDto>, HandleGetBeaconEvents>()
                 .AddQueryHandler<SpecificationQuery<NotificationSpec, IPagedEnumerable<NotificationEntity>>, IPagedEnumerable<NotificationEntity>,
                     MongoPagingQueryHandler<NotificationSpec, NotificationEntity>>()
-                .AddQueryHandler<GetDashboardByProduct, IEnumerable<DashboardByProduct>, AssetsQueryHandler>()
-                .AddQueryHandler<GetDashboardBySite, IEnumerable<DashboardBySite>, AssetsQueryHandler>()
+                .AddQueryHandler<GetDashboardByProduct, IEnumerable<DashboardByProduct>, HandleGetDashboardByProduct>()
+                .AddQueryHandler<GetDashboardBySite, IEnumerable<DashboardBySite>, HandleGetDashboardBySite>()
                 .AddQueryHandler<GetIpsStatus, DashboardBySite, AssetsQueryHandler>()
                 .AddQueryHandler<GetBeaconTelemetry2, BeaconTelemetry2Dto, AssetsQueryHandler>()
                 .AddQueryHandler<GetBeaconTelemetry, BeaconTelemetryDto, AssetsQueryHandler>()
