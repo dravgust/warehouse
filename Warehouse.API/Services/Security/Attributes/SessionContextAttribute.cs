@@ -6,7 +6,7 @@ using Warehouse.API.Extensions;
 namespace Warehouse.API.Services.Security.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public class SessionAttribute : Attribute, IAsyncActionFilter
+    public class SessionContextAttribute : Attribute, IAsyncActionFilter
     {
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
@@ -15,13 +15,13 @@ namespace Warehouse.API.Services.Security.Attributes
 
             //var claimsIdentity = (ClaimsIdentity)context.HttpContext.User.Identity;
 
-            var session = context.HttpContext.Session;
-            var sessionContextData = session.Get<SessionContext>(nameof(SessionContext));
+            var items = context.HttpContext.Items;
+            var sessionContextData = items[nameof(SessionContext)] as SessionContext;
 
             if (sessionContext != null)
             {
-                sessionContext.UserId = sessionContextData.UserId;
-                sessionContext.ProviderId = sessionContextData.ProviderId;
+                sessionContext.UserId = sessionContextData?.UserId;
+                sessionContext.ProviderId = sessionContextData?.ProviderId;
             }
 
             var resultContext = await next();

@@ -67,7 +67,7 @@ namespace Warehouse.API.Controllers.API
         }
 
         [HttpPost("set")]
-        [Session]
+        [SessionContext]
         public async Task<IActionResult> Post([FromBody] SetWarehouseSite command, CancellationToken token)
         {
             await _commandBus.Send(command, token);

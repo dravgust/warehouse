@@ -12,6 +12,10 @@
 
         public void Set<T>(string key, T value);
 
+        public Task<T> GetAsync<T>(string key);
+
+        public Task SetAsync<T>(string key, T value);
+
         public void SetBoolean(string key, bool value);
 
         public bool? GetBoolean(string key);

@@ -48,7 +48,7 @@ namespace Warehouse.Core.UseCases.Management.Commands
             else
             {
                 var entity = _mapper.Map<WarehouseSiteEntity>(request);
-                var sessionContext = _session.Get<SessionContext>(nameof(SessionContext));
+                var sessionContext = await _session.GetAsync<SessionContext>(nameof(SessionContext));
                 entity.ProviderId = sessionContext?.ProviderId ?? 0;
                 await _store.AddAsync(entity, cancellationToken: cancellationToken);
             }

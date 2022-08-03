@@ -19,22 +19,20 @@ namespace Warehouse.API.Services.Security.Session
             set => Session?.Set(key, value);
         }
 
-        public T Get<T>(string key)
-        {
-            return Session != null 
-                ? Session.Get<T>(key)
-                : default;
-        }
+        public T Get<T>(string key) =>
+            Session != null ? Session.Get<T>(key) : default;
 
-        public void Set<T>(string key, T value)
-        {
+        public void Set<T>(string key, T value) =>
             Session?.Set(key, value);
-        }
 
-        public void SetBoolean( string key, bool value)
-        {
+        public Task<T> GetAsync<T>(string key) =>
+            Session?.GetAsync<T>(key);
+
+        public Task SetAsync<T>(string key, T value) =>
+            Session?.SetAsync(key, value);
+
+        public void SetBoolean( string key, bool value) =>
             Session?.Set(key, BitConverter.GetBytes(value));
-        }
 
         public bool? GetBoolean(string key)
         {

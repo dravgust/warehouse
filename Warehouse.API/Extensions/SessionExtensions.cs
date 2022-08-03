@@ -15,6 +15,21 @@
             session.SetString(key, JsonSerializer.Serialize<T>(value));
         }
 
+        public static async Task SetAsync<T>(this ISession session, string key, T value)
+        {
+            if (!session.IsAvailable)
+                await session.LoadAsync();
+            session.SetString(key, JsonSerializer.Serialize(value));
+        }
+
+        public static async Task<T> GetAsync<T>(this ISession session, string key)
+        {
+            if (!session.IsAvailable)
+                await session.LoadAsync();
+            var value = session.GetString(key);
+            return value == null ? default : JsonSerializer.Deserialize<T>(value);
+        }
+
         public static void SetBoolean(this ISession session, string key, bool value)
         {
             session.Set(key, BitConverter.GetBytes(value));

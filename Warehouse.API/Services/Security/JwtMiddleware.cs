@@ -29,18 +29,24 @@ namespace Warehouse.API.Services.Security
                 var userId = jwtUtils.ValidateJwtToken(token);
                 if (userId != null)
                 {
+                    SessionContext sessionContext;
                     if (!context.Session.Keys.Contains(nameof(SessionContext)))
                     {
+                        //var claimsIdentity = (ClaimsIdentity)context.HttpContext.User.Identity;
                         var user = (UserEntity)await userService.GetByIdAsync(userId.Value, cancellationToken);
-                        var sessionContext = new SessionContext 
+                        sessionContext = new SessionContext 
                         {
                             UserId = user.Id,
                             ProviderId = user.ProviderId
                         };
-                        context.Session.Set(nameof(SessionContext), sessionContext);
+                        await context.Session.SetAsync(nameof(SessionContext), sessionContext);
+                    }
+                    else
+                    {
+                        sessionContext = await context.Session.GetAsync<SessionContext>(nameof(SessionContext));
                     }
                     // attach user to context on successful jwt validation
-                    context.Items["User"] = await userService.GetByIdAsync(userId.Value, cancellationToken);
+                    context.Items[nameof(SessionContext)] = sessionContext;
                 }
             }
 

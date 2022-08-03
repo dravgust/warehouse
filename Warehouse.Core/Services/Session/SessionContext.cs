@@ -2,7 +2,7 @@
 {
     public class SessionContext
     {
-        public long UserId { get; set; }
-        public long ProviderId { get; set; }
+        public long? UserId { get; set; }
+        public long? ProviderId { get; set; }
     }
 }
