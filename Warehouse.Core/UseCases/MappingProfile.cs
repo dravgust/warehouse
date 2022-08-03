@@ -8,7 +8,8 @@ namespace Warehouse.Core.UseCases
     {
         public MappingProfile()
         {
-            CreateMap<ProductDto, ProductEntity>();
+            CreateMap<ProductDto, ProductEntity>()
+                .ForMember(p => p.ProviderId, des => des.Ignore());
 
             CreateMap<GatewayDto, Gateway>();
             CreateMap<BeaconDto, Beacon>();
