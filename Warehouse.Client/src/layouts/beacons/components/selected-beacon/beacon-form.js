@@ -2,16 +2,14 @@ import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useMutation } from "react-query";
 import * as yup from "yup";
-// Soft UI Dashboard React components
 import Stack from "@mui/material/Stack";
 import { Icon, TextField, Box } from "@mui/material";
-import * as auth from "services/auth-provider";
-import { client } from "utils/api-client";
 import Autocomplete from "@mui/material/Autocomplete";
 import SuiAlert from "components/SuiAlert";
 import SuiButton from "components/SuiButton";
 import DeletePromt from "./delete-promt";
 import CircularProgress from "@mui/material/CircularProgress";
+import { getProducts, setBeacon, deleteBeacon } from "services/warehouse-service";
 
 const validationSchema = yup.object({
   macAddress: yup
@@ -20,15 +18,7 @@ const validationSchema = yup.object({
 });
 
 export default function BeaconForm({ onSave = () => {}, onDelete = () => {}, item = {} }) {
-  const saveItem = async (item) => {
-    const token = await auth.getToken();
-    const res = await client(`sites/beacons/set`, {
-      data: item,
-      token,
-    });
-    return res;
-  };
-  const mutation = useMutation((item) => saveItem(item), {
+  const mutation = useMutation(setBeacon, {
     onSuccess: () => {
       formik.resetForm();
       return onSave();
@@ -36,12 +26,11 @@ export default function BeaconForm({ onSave = () => {}, onDelete = () => {}, ite
   });
 
   const handleDelete = async (item) => {
-    const token = await auth.getToken();
     try {
-      await client(`sites/beacons/delete`, { data: item, token });
+      await deleteBeacon(item);
       return onDelete();
     } catch (err) {
-      console.log("delete-item", err);
+      console.log("delete-beacon", err);
     }
   };
 
@@ -71,8 +60,8 @@ export default function BeaconForm({ onSave = () => {}, onDelete = () => {}, ite
     }
     (async () => {
       if (active) {
-        const token = await auth.getToken();
-        const res = await client(`items?page=1&size=1000`, { token });
+        const queryKey = ["", "1", "", "1000"];
+        const res = await getProducts({ queryKey });
         if (res.data) {
           setOptions([{ name: "n/a", id: "" }, ...res.data]);
         }
@@ -108,6 +97,9 @@ export default function BeaconForm({ onSave = () => {}, onDelete = () => {}, ite
 
       <TextField
         fullWidth
+        sx={{
+          "& .MuiInputBase-input": { width: "100% !important" },
+        }}
         id="macAddress"
         name="macAddress"
         label="MacAddress"
@@ -122,6 +114,9 @@ export default function BeaconForm({ onSave = () => {}, onDelete = () => {}, ite
 
       <TextField
         fullWidth
+        sx={{
+          "& .MuiInputBase-input": { width: "100% !important" },
+        }}
         id="name"
         name="name"
         label="Name"

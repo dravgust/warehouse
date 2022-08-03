@@ -6,23 +6,11 @@ import SuiAlert from "components/SuiAlert";
 import SuiButton from "components/SuiButton";
 import { useMutation } from "react-query";
 import * as yup from "yup";
-import * as auth from "services/auth-provider";
-import { client } from "utils/api-client";
-
-// prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
+import { setSite } from "services/warehouse-service";
 
 export default function SetSite({ item, onClose, onSave = () => {} }) {
-  const saveItem = async (item) => {
-    const token = await auth.getToken();
-    const res = await client(`sites/set`, {
-      data: item,
-      token,
-    });
-    return res;
-  };
-
-  const mutation = useMutation((item) => saveItem(item), {
+  const mutation = useMutation((item) => setSite, {
     onSuccess: () => {
       formik.resetForm();
       return onSave();
@@ -97,6 +85,9 @@ export default function SetSite({ item, onClose, onSave = () => {} }) {
             <Stack direction="row" spacing={2} alignItems="center">
               <TextField
                 fullWidth
+                sx={{
+                  "& .MuiInputBase-input": { width: "100% !important" },
+                }}
                 id="name"
                 name="name"
                 label="Name"
@@ -110,6 +101,9 @@ export default function SetSite({ item, onClose, onSave = () => {} }) {
             <Stack direction="row" spacing={2} alignItems="center">
               <TextField
                 fullWidth
+                sx={{
+                  "& .MuiInputBase-input": { width: "100% !important" },
+                }}
                 id="topLength"
                 name="topLength"
                 label="topLength"
@@ -121,6 +115,9 @@ export default function SetSite({ item, onClose, onSave = () => {} }) {
               />
               <TextField
                 fullWidth
+                sx={{
+                  "& .MuiInputBase-input": { width: "100% !important" },
+                }}
                 id="leftLength"
                 name="leftLength"
                 label="leftLength"
@@ -134,6 +131,9 @@ export default function SetSite({ item, onClose, onSave = () => {} }) {
             <Stack direction="row" spacing={2} alignItems="center">
               <TextField
                 fullWidth
+                sx={{
+                  "& .MuiInputBase-input": { width: "100% !important" },
+                }}
                 id="error"
                 name="error"
                 label="error"

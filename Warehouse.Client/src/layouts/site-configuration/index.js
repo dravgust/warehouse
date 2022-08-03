@@ -13,7 +13,7 @@ import { fetchRegisteredBeacons, fetchRegisteredGw } from "../../utils/query-key
 import { getRegisteredBeacons, getRegisteredGw } from "../../services/warehouse-service";
 
 const SiteConfiguration = () => {
-  const [refresh, updateRefreshState] = useState();
+  const [refresh, updateRefreshState] = useState(null);
   const forceUpdate = () => updateRefreshState(Date.now());
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -49,6 +49,16 @@ const SiteConfiguration = () => {
       location: 0,
       envFactor: 0,
     });
+  const onSiteSave = () => resetPage();
+  const resetPage = () => {
+    resetGwToNull();
+    resetToNull();
+    setSelectedSite(null);
+    forceUpdate();
+  };
+  const onSiteDelete = () => resetPage();
+  const onGwSave = () => resetPage();
+  const onGwDelete = () => resetPage();
 
   const { data: beacons } = useQuery([fetchRegisteredBeacons], getRegisteredBeacons);
   const { data: gateways } = useQuery([fetchRegisteredGw], getRegisteredGw);
@@ -63,14 +73,7 @@ const SiteConfiguration = () => {
               <Zoom in={Boolean(siteForEdit)}>
                 <Grid item xs={12}>
                   {Boolean(siteForEdit) && (
-                    <SetSite
-                      item={siteForEdit}
-                      onClose={resetToNull}
-                      onSave={() => {
-                        resetToNull();
-                        forceUpdate();
-                      }}
-                    />
+                    <SetSite item={siteForEdit} onClose={resetToNull} onSave={onSiteSave} />
                   )}
                 </Grid>
               </Zoom>
@@ -82,8 +85,9 @@ const SiteConfiguration = () => {
                     setSiteForEdit(selectedSite);
                   }}
                   onAdd={resetToDefault}
-                  onDelete={forceUpdate}
+                  onDelete={onSiteDelete}
                   refresh={refresh}
+                  searchTerm={searchTerm}
                 />
               </Grid>
             </Grid>
@@ -92,16 +96,11 @@ const SiteConfiguration = () => {
             <Grid container spacing={gwForEdit ? 3 : 0}>
               <Zoom in={Boolean(gwForEdit)}>
                 <Grid item xs={12}>
-                  {gwForEdit && (
+                  {Boolean(gwForEdit) && (
                     <SetGateway
                       item={gwForEdit}
                       onClose={resetGwToNull}
-                      onSave={() => {
-                        resetGwToNull();
-                        resetToNull();
-                        setSelectedSite(null);
-                        forceUpdate();
-                      }}
+                      onSave={onGwSave}
                       gateways={gateways}
                       beacons={beacons}
                     />
@@ -114,12 +113,7 @@ const SiteConfiguration = () => {
                     data={selectedSite}
                     onEdit={setGwForEdit}
                     onAdd={resetGwToDefault}
-                    onDelete={() => {
-                      resetGwToNull();
-                      resetToNull();
-                      setSelectedSite(null);
-                      forceUpdate();
-                    }}
+                    onDelete={onGwDelete}
                   />
                 </Grid>
               </Zoom>

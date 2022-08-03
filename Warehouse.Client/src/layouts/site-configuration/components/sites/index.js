@@ -77,7 +77,11 @@ export default function Sites({
                   <SuiBox mx={2}>
                     <SuiAvatar src={siteIcon} alt={item.name} size="sm" variant="rounded" />
                   </SuiBox>
-                  <SuiTypography variant="button" fontWeight="medium">
+                  <SuiTypography
+                    variant="button"
+                    fontWeight="medium"
+                    style={{ overflow: "hidden", textOverflow: "ellipsis", width: "11rem" }}
+                  >
                     {item.name}
                   </SuiTypography>
                 </SuiBox>

@@ -24,20 +24,5 @@ namespace Warehouse.Core.Persistence
 
         public Task <List<TResult>> ListAsync<T, TResult>(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default) where T : IEntity =>
             ListAsync<T, TResult>(criteria, _mapper, cancellationToken);
-
-        public Task SetAsync<T>(T entity, CancellationToken cancellationToken) where T : EntityBase<string> =>
-            SetAsync(entity, d => d.Id == entity.Id, cancellationToken);
-
-        public async Task SetAsync<T>(T entity, Expression<Func<T, bool>> criteria, CancellationToken cancellationToken) where T : EntityBase<string>
-        {
-            T p;
-            if (string.IsNullOrEmpty(entity.Id) || (p = await SingleOrDefaultAsync(criteria, cancellationToken: cancellationToken)) == null)
-                await AddAsync(entity, cancellationToken: cancellationToken);
-            else
-            {
-                entity.Id = p.Id;
-                await UpdateAsync(criteria, entity, cancellationToken: cancellationToken);
-            }
-        }
     }
 }

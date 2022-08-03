@@ -20,10 +20,8 @@ import SuiButton from "components/SuiButton";
 import { useMutation } from "react-query";
 import * as yup from "yup";
 import * as auth from "services/auth-provider";
-import { client } from "utils/api-client";
-
-// prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
+import { setSiteGw } from "services/warehouse-service";
 
 const locations = [
   "Unknown",
@@ -61,11 +59,7 @@ export default function SetGateway({
       },
     };
 
-    const res = await client(`sites/set-gateway`, {
-      data: item,
-      token,
-    });
-    return res;
+    return await setSiteGw(item);
   };
 
   const mutation = useMutation((values) => saveItem(values), {
@@ -165,6 +159,9 @@ export default function SetGateway({
 
             <TextField
               fullWidth
+              sx={{
+                "& .MuiInputBase-input": { width: "100% !important" },
+              }}
               id="name"
               name="name"
               label="Name"
@@ -176,6 +173,9 @@ export default function SetGateway({
             <Stack direction="row" spacing={2} alignItems="center">
               <TextField
                 fullWidth
+                sx={{
+                  "& .MuiInputBase-input": { width: "100% !important" },
+                }}
                 id="envFactor"
                 name="envFactor"
                 label="EnvFactor"
@@ -231,6 +231,10 @@ export default function SetGateway({
             <Stack direction="row" spacing={2} alignItems="center">
               <TextField
                 fullWidth
+                sx={{
+                  "& .MuiInputBase-input": { width: "100% !important" },
+                }}
+                type="number"
                 id="radiusG"
                 name="radiusG"
                 label="Radius"
@@ -241,6 +245,9 @@ export default function SetGateway({
               />
               <TextField
                 fullWidth
+                sx={{
+                  "& .MuiInputBase-input": { width: "100% !important" },
+                }}
                 type={"number"}
                 id="txPowerG"
                 name="txPowerG"

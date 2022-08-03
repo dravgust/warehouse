@@ -41,7 +41,7 @@ namespace Warehouse.Core.UseCases.Management
         
         private static IServiceCollection AddCommandHandlers(this IServiceCollection services) =>
             services
-                .AddCommandHandler<SetWarehouseSite, WarehouseCommandHandler>()
+                .AddCommandHandler<SetWarehouseSite, HandleSetWarehouseSite>()
                 .AddCommandHandler<DeleteWarehouseSite, WarehouseCommandHandler>()
                 .AddCommandHandler<SetGatewayToSite, WarehouseCommandHandler>()
                 .AddCommandHandler<RemoveGatewayFromSite, WarehouseCommandHandler>()

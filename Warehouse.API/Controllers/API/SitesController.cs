@@ -68,7 +68,7 @@ namespace Warehouse.API.Controllers.API
 
         [HttpPost("set")]
         public async Task<IActionResult> Post([FromBody] SetWarehouseSite command, CancellationToken token)
-        { 
+        {
             await _commandBus.Send(command, token);
             return Ok(new { });
         }

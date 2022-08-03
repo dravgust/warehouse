@@ -11,7 +11,6 @@ using Warehouse.Core.UseCases.Administration.Models;
 namespace Warehouse.Core.UseCases.Management.Commands
 {
     public class WarehouseCommandHandler :
-        ICommandHandler<SetWarehouseSite>,
         ICommandHandler<DeleteWarehouseSite>,
         ICommandHandler<SetGatewayToSite>,
         ICommandHandler<RemoveGatewayFromSite>,
@@ -29,12 +28,6 @@ namespace Warehouse.Core.UseCases.Management.Commands
             _store = store;
             _eventBus = eventBus;
             _mapper = mapper;
-        }
-
-        public async Task<Unit> Handle(SetWarehouseSite request, CancellationToken cancellationToken)
-        {
-            await _store.SetAsync(_mapper.Map<WarehouseSiteEntity>(request), cancellationToken);
-            return Unit.Value;
         }
 
         public async Task<Unit> Handle(DeleteWarehouseSite request, CancellationToken cancellationToken)

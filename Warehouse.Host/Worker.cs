@@ -68,9 +68,14 @@ namespace Warehouse.Host
                         var gSite = await GetGenericSiteAsync(store, site, settings);
                         gSite.CalcBeaconsPosition();
 
-                        var prevStatus = await store.GetAsync<IndoorPositionStatusEntity>(gSite.Id, token);
+                        var prevStatus = await store.FindAsync<IndoorPositionStatusEntity>(gSite.Id, token);
                         var currentStatus = GetIndoorPositionStatus(gSite, prevStatus);
-                        await store.SetAsync(currentStatus, token);
+                        if(!string.IsNullOrEmpty(currentStatus.Id))
+                            await store.UpdateAsync(currentStatus, token);
+                        else
+                        {
+                            await store.AddAsync(currentStatus, token);
+                        }
 
                         //********************** telemetry
                         foreach (var beacon in gSite.Gateways.SelectMany(genericGateway => genericGateway.Beacons.Cast<TelemetryBeacon>()))

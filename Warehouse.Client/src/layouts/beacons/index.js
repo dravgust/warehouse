@@ -44,7 +44,10 @@ const Beacons = () => {
     forceUpdate();
   }
 
-  const handleSave = () => forceUpdate();
+  const handleSave = () => {
+    resetToNull();
+    forceUpdate();
+  };
   const { data: metadata } = useQuery([fetchBeaconMetadata], getBeaconMetadata);
 
   return (
