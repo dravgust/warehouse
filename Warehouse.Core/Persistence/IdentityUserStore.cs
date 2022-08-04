@@ -15,33 +15,26 @@ namespace Warehouse.Core.Persistence
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public dynamic GetRolePermissions(string roleid)
-        {
-            var query = (from rp in _context.Set<SecurityRolePermissionsEntity>()
-                join so in _context.Set<SecurityObjectEntity>() on rp.ObjID equals so.Id
-                select new
-                {
-                    ID = rp.Id,
-                    RoleID = rp.RoleID,
-                    ObjID = rp.ObjID,
-                    ObjName = so.ObjName,
-                    Permissions = rp.Permissions
-                });
-
-            return query.Where(rp => rp.RoleID == roleid).ToList();
-        }
-
-        public dynamic GetUserRoles(object userid)
+        public dynamic GetUserRoles(object userId)
         {
             var query = (from ur in _context.Set<UserRoleEntity>()
-                join r in _context.Set<SecurityRoleEntity>()
-                    on ur.RoleID equals r.Id
+                join r in _context.Set<SecurityRoleEntity>() on ur.RoleId equals r.Id
+                where ur.UserId.Equals(userId)
                 select new
                 {
-                    ID = r.Id,
-                    RoleName = r.RoleName,
-                    RoleDesc = r.RoleDesc,
-                    Items = GetRolePermissions(r.Id)
+                    Id = r.Id,
+                    Name = r.Name,
+                    Description = r.Description,
+                    Items = (from rp in _context.Set<SecurityRolePermissionsEntity>()
+                        join so in _context.Set<SecurityObjectEntity>() on rp.ObjectId equals so.Id
+                        select new
+                        {
+                            Id = rp.Id,
+                            RoleId = rp.RoleId,
+                            ObjectId = rp.ObjectId,
+                            ObjectName = so.Name,
+                            Permissions = rp.Permissions
+                        }).Where(rp => rp.RoleId == r.Id).ToList()
                 });
 
             return query.ToList();
@@ -49,8 +42,6 @@ namespace Warehouse.Core.Persistence
 
         public Task<UserEntity> FindByIdAsync(object userId, CancellationToken cancellationToken)
         {
-            //var roles = GetUserRoles(userId);
-            
             return _context
                 .Users
                 .Include(u => u.RefreshTokens)

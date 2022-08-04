@@ -4,28 +4,28 @@ namespace Warehouse.Core.UseCases.Administration.Models
 {
     public class SecurityObjectEntity : EntityBase<string>
     {
-        public string ObjName { get; set; }
-        public string ObjDesc { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
     }
 
     public class SecurityRoleEntity : EntityBase<string>
     {
-        public virtual string RoleName { get; set; }
-        public virtual string RoleDesc { get; set; }
-        public ulong? ProviderID { get; set; }
+        public virtual string Name { get; set; }
+        public virtual string Description { get; set; }
+        public ulong? ProviderId { get; set; }
     }
 
     public class SecurityRolePermissionsEntity : EntityBase<string>
     {
-        public virtual string RoleID { get; set; }
-        public virtual string ObjID { get; set; }
+        public virtual string RoleId { get; set; }
+        public virtual string ObjectId { get; set; }
         public virtual WarehousePermissions Permissions { get; set; }
     }
 
     public class UserRoleEntity : EntityBase<string>
     {
-        public ulong UserID { get; set; }
-        public string RoleID { get; set; }
+        public ulong UserId { get; set; }
+        public string RoleId { get; set; }
     }
 
     [Flags]

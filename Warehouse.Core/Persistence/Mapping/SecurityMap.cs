@@ -11,8 +11,8 @@ namespace Warehouse.Core.Persistence.Mapping
         {
             builder.ToTable("sec_objs").HasKey(t => t.Id);
             builder.Property(t => t.Id).HasColumnName("objid").ValueGeneratedOnAdd();
-            builder.Property(t => t.ObjName).HasColumnName("obj_name").IsRequired();
-            builder.Property(t => t.ObjDesc).HasColumnName("obj_desc");
+            builder.Property(t => t.Name).HasColumnName("obj_name").IsRequired();
+            builder.Property(t => t.Description).HasColumnName("obj_desc");
         }
     } 
     
@@ -22,9 +22,9 @@ namespace Warehouse.Core.Persistence.Mapping
         {
             builder.ToTable("sec_roles").HasKey(t => t.Id);
             builder.Property(t => t.Id).HasColumnName("roleid").ValueGeneratedOnAdd();
-            builder.Property(t => t.ProviderID).HasColumnName("providerid").IsRequired();
-            builder.Property(t => t.RoleName).HasColumnName("role_name").IsRequired();
-            builder.Property(t => t.RoleDesc).HasColumnName("role_desc");
+            builder.Property(t => t.ProviderId).HasColumnName("providerid").IsRequired();
+            builder.Property(t => t.Name).HasColumnName("role_name").IsRequired();
+            builder.Property(t => t.Description).HasColumnName("role_desc");
         }
     }
 
@@ -34,8 +34,8 @@ namespace Warehouse.Core.Persistence.Mapping
         {
             builder.ToTable("sec_role_permissions").HasKey(t => t.Id);
             builder.Property(t => t.Id).HasColumnName("permid").ValueGeneratedOnAdd();
-            builder.Property(t => t.RoleID).HasColumnName("roleid").IsRequired();
-            builder.Property(t => t.ObjID).HasColumnName("objid").IsRequired();
+            builder.Property(t => t.RoleId).HasColumnName("roleid").IsRequired();
+            builder.Property(t => t.ObjectId).HasColumnName("objid").IsRequired();
             builder.Property(t => t.Permissions).HasColumnName("perms").IsRequired();
         }
     }
@@ -46,8 +46,8 @@ namespace Warehouse.Core.Persistence.Mapping
         {
             builder.ToTable("sec_user_roles").HasKey(t => t.Id);
             builder.Property(t => t.Id).HasColumnName("urid").ValueGeneratedOnAdd();
-            builder.Property(t => t.RoleID).HasColumnName("userid").IsRequired();
-            builder.Property(t => t.RoleID).HasColumnName("roleid").IsRequired();
+            builder.Property(t => t.RoleId).HasColumnName("userid").IsRequired();
+            builder.Property(t => t.RoleId).HasColumnName("roleid").IsRequired();
         }
     }
 
