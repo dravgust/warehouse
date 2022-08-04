@@ -79,54 +79,9 @@ namespace Warehouse.API.Controllers.API
         }
 
         [HttpGet("gw-registered")]
-        public async Task<IActionResult> GetRegisteredGwList(CancellationToken token) =>
-            Ok(await _queryBus.Send(new GetRegisteredGwList(), token));
-
-
-        [HttpGet("beacons-registered")]
-        public async Task<IActionResult> GetRegisteredBeaconList(CancellationToken token) =>
-            Ok(await _queryBus.Send(new GetRegisteredBeaconList(), token));
-
-        [HttpGet("beacons")]
-        public async Task<IActionResult> GetBeacons([FromQuery] GetProductItems query, CancellationToken token)
+        public async Task<IActionResult> GetRegisteredGwList(CancellationToken token)
         {
-            return Ok((await _queryBus.Send(query, token)).ToPagedResponse(query.Size));
-        }
-
-        [HttpGet("beacons/delete")]
-        public async Task<IActionResult> DeleteBeaconByMac(string mac, CancellationToken token)
-        {
-            await _commandBus.Send(new DeleteBeacon { MacAddress = mac }, token);
-            return Ok(new { mac });
-        }
-
-        [HttpPost("beacons/set")]
-        public async Task<IActionResult> PostBeacon([FromBody] SetBeacon command, CancellationToken token)
-        {
-            await _commandBus.Send(command, token);
-            return Ok(new { });
-        } 
-        
-        [HttpGet("alerts")]
-        public async Task<IActionResult> GetAlerts([FromQuery] GetAlerts request, CancellationToken token)
-        {
-            var spec = new WarehouseAlertSpec(request.Page, request.Size, request.SearchTerm);
-            var query = new SpecificationQuery<WarehouseAlertSpec, IPagedEnumerable<AlertEntity>>(spec);
-            return Ok((await _queryBus.Send(query, token)).ToPagedResponse(request.Size));
-        }
-
-        [HttpPost("alerts/delete")]
-        public async Task<IActionResult> DeleteAlert([FromBody] DeleteAlert command, CancellationToken token)
-        {
-            await _commandBus.Send(command, token);
-            return Ok(new { command.Id });
-        }
-
-        [HttpPost("alerts/set")]
-        public async Task<IActionResult> PostAlert([FromBody] SetAlert command, CancellationToken token)
-        {
-            await _commandBus.Send(command, token);
-            return Ok(new { });
+            return Ok(await _queryBus.Send(new GetRegisteredGwList(), token));
         }
     }
 }

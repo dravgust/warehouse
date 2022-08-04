@@ -61,13 +61,13 @@ function ProductList({
     const formData = new FormData();
     formData.append("file", file, file.name);
     try {
-      await axios.post(`items/file/upload`, formData, {
+      await axios.post(`products/file/upload`, formData, {
         onUploadProgress: (ProgressEvent) => {
           let progress = Math.round((ProgressEvent.loaded / ProgressEvent.total) * 100);
           setProgress(progress);
         },
       });
-      //await client(`items/file/upload`, { formData });
+      //await client(`products/file/upload`, { formData });
       forceUpdate();
     } catch (err) {
       console.log("upload-file", err);

@@ -2,6 +2,7 @@
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.Queries;
+using Vayosoft.Core.Utilities;
 using Warehouse.API.Services;
 using Warehouse.API.Services.Security.Attributes;
 using Warehouse.Core.Entities.Models;
@@ -15,43 +16,40 @@ namespace Warehouse.API.Controllers.API
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class ItemsController : ControllerBase
+    public class ProductsController : ControllerBase
     {
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
 
-        public ItemsController(IQueryBus queryBus, ICommandBus commandBus)
+        public ProductsController(IQueryBus queryBus, ICommandBus commandBus)
         {
             _queryBus = queryBus;
             _commandBus = commandBus;
         }
 
         [HttpGet("metadata")]
-        public async Task<IActionResult> GetMetadataTemplate(CancellationToken token) =>
-            Ok(await _queryBus.Send(new GetProductMetadata(), token));
+        public async Task<IActionResult> GetMetadataTemplate(CancellationToken token) {
+            return Ok(await _queryBus.Send(new GetProductMetadata(), token));
+        }
 
         [HttpGet("item-metadata")]
-        public async Task<IActionResult> GetItemMetadataTemplate(CancellationToken token) =>
-            Ok(await _queryBus.Send(new GetProductItemMetadata(), token));
+        public async Task<IActionResult> GetItemMetadataTemplate(CancellationToken token) {
+            return Ok(await _queryBus.Send(new GetProductItemMetadata(), token));
+        }
 
         [HttpGet("")]
         public async Task<IActionResult> Get(int page, int size, string searchTerm = null, CancellationToken token = default)
         {
             //var spec = new ProductSpec(page, size, searchTerm);
             //var query = new SpecificationQuery<ProductSpec, IPagedEnumerable<ProductEntity>>(spec);
-            return Ok((await _queryBus.Send(GetProducts.Create(page, size, 0, searchTerm), token)).ToPagedResponse(size));
+            var query = GetProducts.Create(page, size, 0, searchTerm);
+            return Ok((await _queryBus.Send(query, token)).ToPagedResponse(size));
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(string id, CancellationToken token)
-        {
-            var query = new SingleQuery<ProductEntity>(id);
-            var data = await _queryBus.Send(query, token);
-            return Ok(new
-            {
-                data
-            });
-
+        public async Task<IActionResult> GetById(string id, CancellationToken token) {
+            Guard.NotEmpty(id, nameof(id));
+            return Ok(await _queryBus.Send(new SingleQuery<ProductEntity>(id), token));
         }
 
         [HttpPost("delete")]
@@ -70,14 +68,12 @@ namespace Warehouse.API.Controllers.API
 
         [HttpPost]
         [Route("file/upload")]
-        public async Task<IActionResult> ImportSnippets([FromForm] FileImport request, CancellationToken token)
+        public async Task<IActionResult> ImportProducts([FromForm] FileImport request, CancellationToken token)
         {
-            if (request.File == null || request.File.Length == 0)
-                return Content("File Not Selected");
+            if (request.File == null || request.File.Length == 0) return Content("File Not Selected");
 
             string fileExtension = Path.GetExtension(request.File.FileName);
-            if (fileExtension != ".xls" && fileExtension != ".xlsx")
-                return Content("File Not Selected");
+            if (fileExtension != ".xls" && fileExtension != ".xlsx") return Content("File Not Selected");
 
             var ie = new ImportExportService();
 
@@ -88,8 +84,7 @@ namespace Warehouse.API.Controllers.API
                 data = ms.ToArray();
             }
 
-            if (data.Length <= 0)
-                return BadRequest("File Not Found");
+            if (data.Length <= 0) return BadRequest("File Not Found");
 
             foreach (var setProduct in ie.ImportProducts(data))
             {

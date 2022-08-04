@@ -2,28 +2,49 @@ import axios from "../api";
 
 export const getBeacons = async ({ queryKey }) => {
   const [_key, page, searchTerm] = queryKey;
-  const res = await axios.get(`sites/beacons?searchTerm=${searchTerm}&page=${page}&size=6`);
+  const res = await axios.get(`beacons?searchTerm=${searchTerm}&page=${page}&size=6`);
   return res?.data;
 };
 
 export const getAlerts = async ({ queryKey }) => {
   const [_key, page, searchTerm] = queryKey;
-  const res = await axios.get(`sites/alerts?searchTerm=${searchTerm}&page=${page}&size=6`);
+  const res = await axios.get(`alerts?searchTerm=${searchTerm}&page=${page}&size=6`);
   return res?.data;
 };
 
 export const saveAlert = async (item) => {
-  const res = await axios.post(`sites/alerts/set`, item);
+  const res = await axios.post(`alerts/set`, item);
   return res?.data;
 };
 export const deleteAlert = async (item) => {
-  const res = await axios.post(`sites/alerts/delete`, item);
+  const res = await axios.post(`alerts/delete`, item);
   return res?.data;
 };
 
+//Products
 export const getProducts = async ({ queryKey }) => {
   const [_key, page, searchTerm, size] = queryKey;
-  const res = await axios.get(`items?searchTerm=${searchTerm}&page=${page}&size=${size || "3"}`);
+  const res = await axios.get(`products?searchTerm=${searchTerm}&page=${page}&size=${size || "3"}`);
+  return res?.data;
+};
+
+export const getProductMetadata = async () => {
+  const res = await axios.get(`products/metadata`);
+  return res?.data;
+};
+
+export const getBeaconMetadata = async () => {
+  const res = await axios.get(`products/item-metadata`);
+  return res?.data;
+};
+
+export const setProduct = async (item) => {
+  const res = await axios.post(`products/set`, item);
+  return res?.data;
+};
+
+export const deleteProduct = async (item) => {
+  const res = await axios.post(`products/delete`, item);
   return res?.data;
 };
 
@@ -78,7 +99,7 @@ export const getSitesInfo = async () => {
 };
 
 export const getRegisteredBeacons = async () => {
-  const res = await axios.get(`sites/beacons-registered`);
+  const res = await axios.get(`beacons/registered`);
   return res?.data;
 };
 export const getRegisteredGw = async () => {
@@ -97,21 +118,11 @@ export const setSite = async (item) => {
 };
 
 export const setBeacon = async (item) => {
-  const res = await axios.post(`sites/beacons/set`, item);
+  const res = await axios.post(`beacons/set`, item);
   return res?.data;
 };
 
 export const deleteBeacon = async (item) => {
-  const res = await axios.post(`sites/beacons/delete`, item);
-  return res?.data;
-};
-
-export const getProductMetadata = async () => {
-  const res = await axios.get(`items/metadata`);
-  return res?.data;
-};
-
-export const getBeaconMetadata = async () => {
-  const res = await axios.get(`items/item-metadata`);
+  const res = await axios.post(`beacons/delete`, item);
   return res?.data;
 };

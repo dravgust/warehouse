@@ -4,11 +4,10 @@ import { useMutation } from "react-query";
 import * as yup from "yup";
 import Stack from "@mui/material/Stack";
 import { Icon, TextField, Box } from "@mui/material";
-import * as auth from "services/auth-provider";
-import { client } from "utils/api-client";
 import SuiAlert from "components/SuiAlert";
 import SuiButton from "components/SuiButton";
 import DeletePromt from "./delete-promt";
+import { deleteProduct, setProduct } from "services/warehouse-service";
 
 const validationSchema = yup.object({
   name: yup
@@ -30,16 +29,7 @@ const validationSchema = yup.object({
 });
 
 export default function ItemForm({ onSave = () => {}, onDelete = () => {}, item = {} }) {
-  const saveItem = async (item) => {
-    const token = await auth.getToken();
-    const res = await client(`items/set`, {
-      data: item,
-      token,
-    });
-    return res;
-  };
-
-  const mutation = useMutation((item) => saveItem(item), {
+  const mutation = useMutation(setProduct, {
     onSuccess: () => {
       formik.resetForm();
       return onSave();
@@ -47,12 +37,11 @@ export default function ItemForm({ onSave = () => {}, onDelete = () => {}, item 
   });
 
   const handleDelete = async (item) => {
-    const token = await auth.getToken();
     try {
-      await client(`items/delete`, { data: item, token });
+      await deleteProduct(item);
       return onDelete();
     } catch (err) {
-      console.log("delete-item", err);
+      console.log("delete-product", err);
     }
   };
 

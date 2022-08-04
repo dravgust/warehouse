@@ -61,6 +61,7 @@ namespace Warehouse.API
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/api/v1/swagger.json", "IPS Dashboard V1");
+                c.InjectStylesheet("/css/swagger.css");
                 c.RoutePrefix = "api";
             });
 
