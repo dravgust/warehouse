@@ -97,7 +97,7 @@ function Users() {
                   ]}
                   rows={
                     isSuccess &&
-                    response.data.map((item) => ({
+                    response.items.map((item) => ({
                       user: <User image={userIcon} name={item.username} email={item.email} />,
                       function: <Function job={item.kind} org={ProviderName(item.providerId)} />,
                       status: (

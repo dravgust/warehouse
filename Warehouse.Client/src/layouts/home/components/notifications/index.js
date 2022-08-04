@@ -44,7 +44,7 @@ function UserNotifications({ searchTerm = "" }) {
       </SuiBox>
       <SuiBox p={2}>
         {isSuccess &&
-          response.data.map((item, index) => (
+          response.items.map((item, index) => (
             <TimelineItem
               key={index}
               color={"error"}

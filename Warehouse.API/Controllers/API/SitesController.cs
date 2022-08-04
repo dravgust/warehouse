@@ -10,6 +10,7 @@ using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Management.Commands;
 using Warehouse.Core.UseCases.Management.Queries;
 using Warehouse.Core.UseCases.Management.Specifications;
+using Warehouse.Core.Utilities;
 
 namespace Warehouse.API.Controllers.API
 {
@@ -38,14 +39,7 @@ namespace Warehouse.API.Controllers.API
             var spec = new WarehouseSiteSpec(page, size, searchTerm);
             var query = new SpecificationQuery<WarehouseSiteSpec, IPagedEnumerable<WarehouseSiteEntity>>(spec);
 
-            var result = await _queryBus.Send(query, token);
-
-            return new
-            {
-                items = result,
-                totalItems = result.TotalCount,
-                totalPages = (long)Math.Ceiling((double)result.TotalCount / size)
-            };
+            return Ok((await _queryBus.Send(query, token)).ToPagedResponse(size));
         }
 
         [HttpGet("{id}")]
@@ -96,13 +90,7 @@ namespace Warehouse.API.Controllers.API
         [HttpGet("beacons")]
         public async Task<IActionResult> GetBeacons([FromQuery] GetProductItems query, CancellationToken token)
         {
-            var result = await _queryBus.Send(query, token);
-            return Ok(new
-            {
-                items = result,
-                totalItems = result.TotalCount,
-                totalPages = (long)Math.Ceiling((double)result.TotalCount / query.Size)
-            });
+            return Ok((await _queryBus.Send(query, token)).ToPagedResponse(query.Size));
         }
 
         [HttpGet("beacons/delete")]
@@ -124,13 +112,7 @@ namespace Warehouse.API.Controllers.API
         {
             var spec = new WarehouseAlertSpec(request.Page, request.Size, request.SearchTerm);
             var query = new SpecificationQuery<WarehouseAlertSpec, IPagedEnumerable<AlertEntity>>(spec);
-            var result = await _queryBus.Send(query, token);
-            return Ok(new
-            {
-                items = result,
-                totalItems = result.TotalCount,
-                totalPages = (long)Math.Ceiling((double)result.TotalCount / request.Size)
-            });
+            return Ok((await _queryBus.Send(query, token)).ToPagedResponse(request.Size));
         }
 
         [HttpPost("alerts/delete")]

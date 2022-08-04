@@ -34,9 +34,9 @@ function ProductList({
   } = useQuery([fetchProducts, page, searchTerm, refresh, reload], getProducts);
 
   useEffect(() => {
-    if (isSuccess && response.data.length > 0) {
+    if (isSuccess && response.items.length > 0) {
       if (selectedItem) {
-        let e = response.data.find((item) => selectedItem.id === item.id);
+        let e = response.items.find((item) => selectedItem.id === item.id);
         if (e) {
           selectItem(e);
         } else if (selectedItem.id) {
@@ -153,7 +153,7 @@ function ProductList({
       <SuiBox pt={1} pb={2} px={2}>
         <SuiBox component="ul" display="flex" flexDirection="column">
           {isSuccess &&
-            response.data.map((item) => (
+            response.items.map((item) => (
               <ProductItem
                 isSelected={selectedItem && selectedItem.id === item.id}
                 key={item.id}

@@ -2,10 +2,11 @@
 using Vayosoft.Core.Queries;
 using Warehouse.API.Services.Security.Attributes;
 using Warehouse.Core.UseCases.BeaconTracking.Queries;
+using Warehouse.Core.Utilities;
 
 namespace Warehouse.API.Controllers.API
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class DashboardController : ControllerBase
@@ -20,13 +21,7 @@ namespace Warehouse.API.Controllers.API
         [HttpGet("")]
         public async Task<IActionResult> Get([FromQuery] GetDashboardByBeacon query, CancellationToken token = default)
         {
-            var result = await _queryBus.Send(query, token);
-            return Ok(new
-            {
-                data = result,
-                totalItems = result.TotalCount,
-                totalPages = (long)Math.Ceiling((double)result.TotalCount / query.Size)
-            });
+            return Ok((await _queryBus.Send(query, token)).ToPagedResponse(query.Size));
         }
 
         [HttpGet("sites")]

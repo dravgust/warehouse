@@ -56,7 +56,7 @@ function PositionEvents({ searchTerm = "" }) {
       </SuiBox>
       <SuiBox p={2}>
         {isSuccess &&
-          response.data.map((item, index) => (
+          response.items.map((item, index) => (
             <TimelineItem
               key={index}
               color={item.type === 1 ? "success" : item.type == 2 ? "error" : "warning"}

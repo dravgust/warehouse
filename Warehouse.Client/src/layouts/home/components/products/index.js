@@ -48,7 +48,7 @@ const AccordionSummary = styled((props) => (
     transform: "rotate(90deg)",
   },
   "& .MuiAccordionSummary-content": {
-    //marginLeft: theme.spacing(1),
+    marginLeft: theme.spacing(0),
   },
 }));
 
@@ -85,14 +85,13 @@ function Site({ site }) {
   return (
     <SuiBox display="flex" alignItems="center" px={2}>
       <SuiTypography variant="h6" color="info">
-        {site.name}
+        {site.name || "n/a"}
       </SuiTypography>
     </SuiBox>
   );
 }
 
 export default function ProductsTreeView({
-  searchTerm = "",
   selectedProduct = { beacons: [] },
   onProductSelect = () => {},
   selectedBeacon = "",
@@ -100,7 +99,7 @@ export default function ProductsTreeView({
 }) {
   const [pattern, setPattern] = useState("");
   const onSearchProduct = (productItem) => setPattern(productItem);
-  const [controller, dispatch] = useSoftUIController();
+  const [controller] = useSoftUIController();
   const { direction } = controller;
 
   let beacons =

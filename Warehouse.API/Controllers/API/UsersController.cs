@@ -8,6 +8,7 @@ using Warehouse.API.Services.Security.Attributes;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Administration.Specifications;
 using Warehouse.Core.UseCases.Administration.Models;
+using Warehouse.Core.Utilities;
 
 namespace Warehouse.API.Controllers.API
 {
@@ -36,14 +37,7 @@ namespace Warehouse.API.Controllers.API
             var spec = new UserSpec(page, take, identityUser?.ProviderId ?? 0);
             var query = new SpecificationQuery<UserSpec, IPagedEnumerable<UserEntityDto>>(spec);
 
-            var data = await queryBus.Send(query, token);
-
-            return Ok(new
-            {
-                data,
-                totalItems = data.TotalCount,
-                totalPages = (long) Math.Ceiling((double)data.TotalCount / take)
-            });
+            return Ok((await queryBus.Send(query, token)).ToPagedResponse(take));
         }
 
         [HttpGet("{id}")]

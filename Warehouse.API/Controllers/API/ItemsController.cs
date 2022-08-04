@@ -2,13 +2,11 @@
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.Queries;
-using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Warehouse.API.Services;
 using Warehouse.API.Services.Security.Attributes;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Management.Commands;
 using Warehouse.Core.UseCases.Management.Queries;
-using Warehouse.Core.UseCases.Management.Specifications;
 using Warehouse.Core.Utilities;
 
 namespace Warehouse.API.Controllers.API
@@ -41,8 +39,7 @@ namespace Warehouse.API.Controllers.API
         {
             //var spec = new ProductSpec(page, size, searchTerm);
             //var query = new SpecificationQuery<ProductSpec, IPagedEnumerable<ProductEntity>>(spec);
-            return Ok((await _queryBus.Send(GetProducts.Create(page, size, 0, searchTerm), token))
-                .ToResponse(size));
+            return Ok((await _queryBus.Send(GetProducts.Create(page, size, 0, searchTerm), token)).ToPagedResponse(size));
         }
 
         [HttpGet("{id}")]

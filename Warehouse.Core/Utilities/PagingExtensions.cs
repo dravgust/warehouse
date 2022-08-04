@@ -5,7 +5,7 @@ namespace Warehouse.Core.Utilities
 {
     public static class PagedListExtensions
     {
-        public static PagedListResponse<T> ToResponse<T>(this IPagedEnumerable<T> pagedList, int pageSize) =>
+        public static PagedListResponse<T> ToPagedResponse<T>(this IPagedEnumerable<T> pagedList, int pageSize) =>
             new(pagedList, pageSize);
     }
 }

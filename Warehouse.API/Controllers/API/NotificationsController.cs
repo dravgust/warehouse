@@ -5,6 +5,7 @@ using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.BeaconTracking.Queries;
 using Warehouse.Core.UseCases.BeaconTracking.Specifications;
+using Warehouse.Core.Utilities;
 
 namespace Warehouse.API.Controllers.API
 {
@@ -25,13 +26,7 @@ namespace Warehouse.API.Controllers.API
         {
             var spec = new NotificationSpec(request.Page, request.Size, request.SearchTerm);
             var query = new SpecificationQuery<NotificationSpec, IPagedEnumerable<NotificationEntity>>(spec);
-            var result = await _queryBus.Send(query, token);
-            return Ok(new
-            {
-                data = result,
-                totalItems = result.TotalCount,
-                totalPages = (long)Math.Ceiling((double)result.TotalCount / request.Size)
-            });
+            return Ok((await _queryBus.Send(query, token)).ToPagedResponse(request.Size));
         }
     }
 }

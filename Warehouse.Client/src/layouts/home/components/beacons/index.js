@@ -20,7 +20,7 @@ function Assets({ searchTerm = "", selectedItem, onRowSelect = () => {} }) {
     isSuccess,
   } = useQuery([fetchAssets, page, searchTerm], getAssets);
 
-  function Beacon({ image, name, product }) {
+  function Beacon({ name, product }) {
     return (
       <SuiBox display="flex" alignItems="center" px={1} py={0.5}>
         <SuiBox mr={2}>
@@ -96,7 +96,7 @@ function Assets({ searchTerm = "", selectedItem, onRowSelect = () => {} }) {
             ]}
             rows={
               isSuccess &&
-              response.data.map((item) => ({
+              response.items.map((item) => ({
                 key: item.macAddress,
                 item: item,
                 beacon: <Beacon image={beaconIcon} name={item.macAddress} product={item.product} />,
