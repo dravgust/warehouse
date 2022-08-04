@@ -27,7 +27,16 @@ namespace Vayosoft.Data.MongoDB
         {
             if (!string.IsNullOrWhiteSpace(connectionString))
             {
-                _client = new MongoClient(connectionString);
+                var connectionUrl = new MongoUrl(connectionString);
+                var settings = MongoClientSettings.FromUrl(connectionUrl);
+                settings.ClusterConfigurator = cb =>
+                {
+                    cb.Subscribe<CommandStartedEvent>(e =>
+                    {
+                        TraceLine?.Invoke(e.CommandName, e.Command.ToJson());
+                    });
+                };
+                _client = new MongoClient(settings);
                 var databaseName = GetDatabaseName(connectionString!);
                 Database = _client.GetDatabase(databaseName);
             }
@@ -89,7 +98,7 @@ namespace Vayosoft.Data.MongoDB
                     if (endIndex > 0)
                         return connectionString.Substring(startIndex, endIndex - startIndex);
                     else
-                        return connectionString.Substring(startIndex);
+                        return connectionString[startIndex..];
                 }
             }
 

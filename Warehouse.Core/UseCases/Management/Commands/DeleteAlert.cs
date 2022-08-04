@@ -29,6 +29,8 @@ namespace Warehouse.Core.UseCases.Management.Commands
 
         public async Task<Unit> Handle(DeleteAlert request, CancellationToken cancellationToken)
         {
+            //todo delete notification on delete alert event
+            await _store.DeleteAsync<NotificationEntity>(e => e.AlertId == request.Id, cancellationToken);
             await _store.DeleteAsync(new AlertEntity { Id = request.Id }, cancellationToken);
             return Unit.Value;
         }

@@ -17,7 +17,6 @@ using Warehouse.Core.Entities.Events;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Serialization;
-using Warehouse.Core.Services.Session;
 using Warehouse.Core.UseCases;
 using Warehouse.Core.UseCases.Administration;
 using Warehouse.Core.UseCases.BeaconTracking;
@@ -59,7 +58,6 @@ namespace Warehouse.Core
             {
                 AutoRegistration.RegisterClassMap(Assembly.GetExecutingAssembly());
                 BsonSerializer.RegisterSerializer(typeof(MacAddress), new MacAddressSerializer());
-                //db.setProfilingLevel(2,1)
             }).AddScoped<WarehouseStore>()
                 .AddScoped(typeof(IRepository<>), typeof(WarehouseRepository<>))
                 .AddSingleton<IEventStore, MongoDbEventStore>();

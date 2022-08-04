@@ -10,7 +10,10 @@ import { fetchNotifications } from "utils/query-keys";
 import { getNotifications } from "services/warehouse-service";
 
 function renderEvent({ macAddress, receivedAt }) {
-  return `The ${macAddress} was last available at ${format(new Date(receivedAt), "HH:mm:ss")}`;
+  return `The ${macAddress} was last available at ${format(
+    new Date(receivedAt),
+    "dd MMM HH:mm:ss"
+  )}`;
 }
 
 function UserNotifications({ searchTerm = "" }) {
