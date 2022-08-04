@@ -6,9 +6,9 @@ using Microsoft.Extensions.Options;
 using Serilog;
 using Warehouse.API;
 using Warehouse.API.Resources;
+using Warehouse.API.Services.Authorization;
 using Warehouse.API.Services.ExceptionHandling;
 using Warehouse.API.Services.Monitoring;
-using Warehouse.API.Services.Security;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Debug()

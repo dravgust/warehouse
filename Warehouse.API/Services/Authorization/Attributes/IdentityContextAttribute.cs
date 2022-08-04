@@ -1,9 +1,7 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Warehouse.API.Extensions;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Warehouse.Core.UseCases.Administration.Models;
 
-namespace Warehouse.API.Services.Security.Attributes
+namespace Warehouse.API.Services.Authorization.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class IdentityContextAttribute : Attribute, IAsyncActionFilter

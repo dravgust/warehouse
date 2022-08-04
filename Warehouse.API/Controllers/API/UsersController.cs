@@ -4,7 +4,7 @@ using Vayosoft.Core.Persistence.Commands;
 using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
-using Warehouse.API.Services.Security.Attributes;
+using Warehouse.API.Services.Authorization.Attributes;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Administration.Specifications;
 using Warehouse.Core.UseCases.Administration.Models;

@@ -1,12 +1,11 @@
 ﻿using System.Diagnostics;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Management.Commands;
 
 namespace Warehouse.API.Services
 {
-    public class ImportExportService
+    public class ExcelService
     {
         public List<SetProduct> ImportProducts(byte[] data)
         {

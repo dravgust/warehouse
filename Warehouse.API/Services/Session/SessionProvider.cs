@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
-using Warehouse.Core.Services.Session;
 using Warehouse.API.Extensions;
+using Warehouse.Core.Services.Session;
 
-namespace Warehouse.API.Services.Security.Session
+namespace Warehouse.API.Services.Session
 {
     public class SessionProvider : ISessionProvider
     {

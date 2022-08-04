@@ -1,5 +1,4 @@
 ﻿
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Queries;
@@ -10,7 +9,7 @@ using Warehouse.Core.UseCases.Administration.Models;
 
 namespace Warehouse.API.Controllers.API
 {
-    [Services.Security.Attributes.Authorize]
+    [Services.Authorization.Attributes.Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AccountController : ControllerBase

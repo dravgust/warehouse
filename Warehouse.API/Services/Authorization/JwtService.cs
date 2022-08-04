@@ -8,7 +8,7 @@ using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services;
 using Warehouse.Core.UseCases.Administration.Models;
 
-namespace Warehouse.API.Services.Security
+namespace Warehouse.API.Services.Authorization
 {
     public class JwtService : IJwtService
     {

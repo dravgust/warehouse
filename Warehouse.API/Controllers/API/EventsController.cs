@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Queries;
-using Warehouse.API.Services.Security.Attributes;
+using Warehouse.API.Services.Authorization.Attributes;
 using Warehouse.Core.UseCases.BeaconTracking.Queries;
 using Warehouse.Core.Utilities;
 

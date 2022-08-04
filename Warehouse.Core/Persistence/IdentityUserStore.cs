@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Vayosoft.Core.Persistence;
 using Warehouse.Core.Entities.Models;
+using Warehouse.Core.UseCases.Administration.Models;
 
 namespace Warehouse.Core.Persistence
 {
@@ -14,8 +15,42 @@ namespace Warehouse.Core.Persistence
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
+        public dynamic GetRolePermissions(string roleid)
+        {
+            var query = (from rp in _context.Set<SecurityRolePermissionsEntity>()
+                join so in _context.Set<SecurityObjectEntity>() on rp.ObjID equals so.Id
+                select new
+                {
+                    ID = rp.Id,
+                    RoleID = rp.RoleID,
+                    ObjID = rp.ObjID,
+                    ObjName = so.ObjName,
+                    Permissions = rp.Permissions
+                });
+
+            return query.Where(rp => rp.RoleID == roleid).ToList();
+        }
+
+        public dynamic GetUserRoles(object userid)
+        {
+            var query = (from ur in _context.Set<UserRoleEntity>()
+                join r in _context.Set<SecurityRoleEntity>()
+                    on ur.RoleID equals r.Id
+                select new
+                {
+                    ID = r.Id,
+                    RoleName = r.RoleName,
+                    RoleDesc = r.RoleDesc,
+                    Items = GetRolePermissions(r.Id)
+                });
+
+            return query.ToList();
+        }
+
         public Task<UserEntity> FindByIdAsync(object userId, CancellationToken cancellationToken)
         {
+            //var roles = GetUserRoles(userId);
+            
             return _context
                 .Users
                 .Include(u => u.RefreshTokens)

@@ -4,7 +4,7 @@ using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.Utilities;
 using Warehouse.API.Services;
-using Warehouse.API.Services.Security.Attributes;
+using Warehouse.API.Services.Authorization.Attributes;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Management.Commands;
 using Warehouse.Core.UseCases.Management.Queries;
@@ -75,7 +75,7 @@ namespace Warehouse.API.Controllers.API
             string fileExtension = Path.GetExtension(request.File.FileName);
             if (fileExtension != ".xls" && fileExtension != ".xlsx") return Content("File Not Selected");
 
-            var ie = new ImportExportService();
+            var ie = new ExcelService();
 
             byte[] data;
             await using (var ms = new MemoryStream())
