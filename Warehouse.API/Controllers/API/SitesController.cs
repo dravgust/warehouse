@@ -10,12 +10,11 @@ using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Management.Commands;
 using Warehouse.Core.UseCases.Management.Queries;
 using Warehouse.Core.UseCases.Management.Specifications;
-using Warehouse.API.Extensions;
-using Warehouse.Core.Services.Session;
 
 namespace Warehouse.API.Controllers.API
 {
     [Authorize]
+    [IdentityContext]
     [Route("api/[controller]")]
     [ApiController]
     public class SitesController : ControllerBase
@@ -36,8 +35,6 @@ namespace Warehouse.API.Controllers.API
         [HttpGet("")]
         public async Task<dynamic> Get(int page, int size, string searchTerm = null, CancellationToken token = default)
         {
-            var identityData = HttpContext.Session.Get<SessionContext>(nameof(SessionContext));
-
             var spec = new WarehouseSiteSpec(page, size, searchTerm);
             var query = new SpecificationQuery<WarehouseSiteSpec, IPagedEnumerable<WarehouseSiteEntity>>(spec);
 
@@ -67,7 +64,6 @@ namespace Warehouse.API.Controllers.API
         }
 
         [HttpPost("set")]
-        [SessionContext]
         public async Task<IActionResult> Post([FromBody] SetWarehouseSite command, CancellationToken token)
         {
             await _commandBus.Send(command, token);

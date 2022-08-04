@@ -2,7 +2,6 @@
 using Warehouse.API.Extensions;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services;
-using Warehouse.Core.Services.Session;
 using Warehouse.Core.UseCases.Administration.Models;
 
 namespace Warehouse.API.Services.Security
@@ -26,27 +25,26 @@ namespace Warehouse.API.Services.Security
             if (token != null)
             {
                 var cancellationToken = context.RequestAborted;
-                var userId = jwtUtils.ValidateJwtToken(token);
-                if (userId != null)
+                var identityContext = jwtUtils.ValidateJwtToken(token);
+                if (identityContext?.UserId != null)
                 {
-                    SessionContext sessionContext;
-                    if (!context.Session.Keys.Contains(nameof(SessionContext)))
+                    if (!context.Session.Keys.Contains(nameof(IdentityContext)))
                     {
                         //var claimsIdentity = (ClaimsIdentity)context.HttpContext.User.Identity;
-                        var user = (UserEntity)await userService.GetByIdAsync(userId.Value, cancellationToken);
-                        sessionContext = new SessionContext 
+                        var user = (UserEntity)await userService.GetByIdAsync(identityContext.UserId.Value, cancellationToken);
+                        identityContext = new IdentityContext 
                         {
                             UserId = user.Id,
                             ProviderId = user.ProviderId
                         };
-                        await context.Session.SetAsync(nameof(SessionContext), sessionContext);
+                        await context.Session.SetAsync(nameof(IdentityContext), identityContext);
                     }
                     else
                     {
-                        sessionContext = await context.Session.GetAsync<SessionContext>(nameof(SessionContext));
+                        identityContext = await context.Session.GetAsync<IdentityContext>(nameof(IdentityContext));
                     }
                     // attach user to context on successful jwt validation
-                    context.Items[nameof(SessionContext)] = sessionContext;
+                    context.Items[nameof(IdentityContext)] = identityContext;
                 }
             }
 

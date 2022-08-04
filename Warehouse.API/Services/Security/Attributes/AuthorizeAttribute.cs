@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Warehouse.Core.Entities.Models;
+using Warehouse.Core.UseCases.Administration.Models;
 
 namespace Warehouse.API.Services.Security.Attributes
 {
@@ -13,7 +13,7 @@ namespace Warehouse.API.Services.Security.Attributes
             if (SkipAuthorization(context))
                 return;
 
-            if (context.HttpContext.Items["User"] is not IIdentityUser user)
+            if (context.HttpContext.Items[nameof(IdentityContext)] is not IdentityContext identity)
             {
                 context.Result = new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };
             }

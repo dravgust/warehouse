@@ -4,7 +4,7 @@ using Vayosoft.Core.Commands;
 using Vayosoft.Core.SharedKernel;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Persistence;
-using Warehouse.Core.Services.Session;
+using Warehouse.Core.UseCases.Administration.Models;
 using Warehouse.Core.UseCases.Management.Models;
 
 namespace Warehouse.Core.UseCases.Management.Commands
@@ -24,13 +24,13 @@ namespace Warehouse.Core.UseCases.Management.Commands
     {
         private readonly WarehouseStore _store;
         private readonly IMapper _mapper;
-        private readonly ISessionProvider _session;
+        private readonly IdentityContext _context;
 
-        public HandleSetWarehouseSite(WarehouseStore store, IMapper mapper, ISessionProvider session)
+        public HandleSetWarehouseSite(WarehouseStore store, IMapper mapper, IdentityContext context)
         {
             _store = store;
             _mapper = mapper;
-            _session = session;
+            _context = context;
         }
 
         public async Task<Unit> Handle(SetWarehouseSite request, CancellationToken cancellationToken)
@@ -48,8 +48,7 @@ namespace Warehouse.Core.UseCases.Management.Commands
             else
             {
                 var entity = _mapper.Map<WarehouseSiteEntity>(request);
-                var sessionContext = await _session.GetAsync<SessionContext>(nameof(SessionContext));
-                entity.ProviderId = sessionContext?.ProviderId ?? 0;
+                entity.ProviderId = _context.ProviderId ?? 0;
                 await _store.AddAsync(entity, cancellationToken: cancellationToken);
             }
 

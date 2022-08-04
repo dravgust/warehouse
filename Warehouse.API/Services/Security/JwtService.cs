@@ -24,9 +24,17 @@ namespace Warehouse.API.Services.Security
             // generate token that is valid for 15 minutes
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString() ?? throw new InvalidOperationException("The User has no ID")),
+                new Claim(nameof(IIdentityUser.Id), $"{user.Id}"),
+                new Claim(nameof(IProviderable.ProviderId), $"{((IProviderable)user)?.ProviderId}")
+            };
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString() ?? throw new InvalidOperationException("The User has no ID")) }),
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddMinutes(30),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
@@ -34,7 +42,7 @@ namespace Warehouse.API.Services.Security
             return tokenHandler.WriteToken(token);
         }
 
-        public int? ValidateJwtToken(string token)
+        public IdentityContext ValidateJwtToken(string token)
         {
             if (token == null)
                 return null;
@@ -54,10 +62,15 @@ namespace Warehouse.API.Services.Security
                 }, out SecurityToken validatedToken);
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
-                var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
+                var userId = long.Parse(jwtToken.Claims.First(x => x.Type == nameof(IIdentityUser.Id)).Value);
+                var providerId = long.Parse(jwtToken.Claims.First(x => x.Type == nameof(IProviderable.ProviderId)).Value);
 
                 // return user id from JWT token if validation successful
-                return userId;
+                return new IdentityContext
+                {
+                    UserId = userId,
+                    ProviderId = providerId
+                };
             }
             catch
             {

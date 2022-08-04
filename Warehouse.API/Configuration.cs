@@ -33,7 +33,7 @@ namespace Warehouse.API
 
             services.AddHttpContextAccessor()
                 .AddScoped<ISessionProvider, SessionProvider>()
-                .AddScoped<SessionContext>();
+                .AddScoped<IdentityContext>();
 
             services.AddWarehouseDependencies(configuration);
 

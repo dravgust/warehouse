@@ -42,13 +42,13 @@ namespace Warehouse.Core.UseCases.Management
         private static IServiceCollection AddCommandHandlers(this IServiceCollection services) =>
             services
                 .AddCommandHandler<SetWarehouseSite, HandleSetWarehouseSite>()
-                .AddCommandHandler<DeleteWarehouseSite, WarehouseCommandHandler>()
-                .AddCommandHandler<SetGatewayToSite, WarehouseCommandHandler>()
-                .AddCommandHandler<RemoveGatewayFromSite, WarehouseCommandHandler>()
-                .AddCommandHandler<SetBeacon, WarehouseCommandHandler>()
-                .AddCommandHandler<SetAlert, WarehouseCommandHandler>()
-                .AddCommandHandler<DeleteAlert, WarehouseCommandHandler>()
-                .AddCommandHandler<SetProduct, ProductCommandHandler>()
-                .AddCommandHandler<DeleteProduct, ProductCommandHandler>();
+                .AddCommandHandler<DeleteWarehouseSite, HandleDeleteWarehouseSite>()
+                .AddCommandHandler<SetGatewayToSite, HandleSetGatewayToSite>()
+                .AddCommandHandler<RemoveGatewayFromSite, HandleRemoveGatewayFromSite>()
+                .AddCommandHandler<SetBeacon, HandleSetBeacon>()
+                .AddCommandHandler<SetAlert, HandleSetAlert>()
+                .AddCommandHandler<DeleteAlert, HandleDeleteAlert>()
+                .AddCommandHandler<SetProduct, HandleSetProduct>()
+                .AddCommandHandler<DeleteProduct, HandleDeleteProduct>();
     }
 }
