@@ -13,10 +13,10 @@ namespace Warehouse.Core.UseCases.Management.Commands
 
     internal class HandleSetBeacon : ICommandHandler<SetBeacon>
     {
-        private readonly WarehouseStore _store;
+        private readonly WarehouseDataStore _store;
         private readonly IMapper _mapper;
 
-        public HandleSetBeacon(WarehouseStore store, IMapper mapper)
+        public HandleSetBeacon(WarehouseDataStore store, IMapper mapper)
         {
             _store = store;
             _mapper = mapper;

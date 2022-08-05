@@ -19,11 +19,11 @@ namespace Warehouse.Core.UseCases.Management.Queries
 
     internal class HandleGetProductItems : IQueryHandler<GetProductItems, IPagedEnumerable<ProductItemDto>>
     {
-        private readonly WarehouseStore _store;
+        private readonly WarehouseDataStore _store;
         private readonly IMapper _mapper;
         private readonly IQueryBus _queryBus;
 
-        public HandleGetProductItems(WarehouseStore store, IQueryBus queryBus, IMapper mapper)
+        public HandleGetProductItems(WarehouseDataStore store, IQueryBus queryBus, IMapper mapper)
         {
             _store = store;
             _queryBus = queryBus;

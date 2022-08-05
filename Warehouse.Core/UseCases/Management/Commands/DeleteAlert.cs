@@ -20,9 +20,9 @@ namespace Warehouse.Core.UseCases.Management.Commands
 
     internal class HandleDeleteAlert : ICommandHandler<DeleteAlert>
     {
-        private readonly WarehouseStore _store;
+        private readonly WarehouseDataStore _store;
 
-        public HandleDeleteAlert(WarehouseStore store)
+        public HandleDeleteAlert(WarehouseDataStore store)
         {
             _store = store;
         }

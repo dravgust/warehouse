@@ -10,9 +10,9 @@ public class GetDashboardBySite : IQuery<IEnumerable<DashboardBySite>>
 
 public class HandleGetDashboardBySite : IQueryHandler<GetDashboardBySite, IEnumerable<DashboardBySite>>
 {
-    private readonly WarehouseStore _store;
+    private readonly WarehouseDataStore _store;
 
-    public HandleGetDashboardBySite(WarehouseStore store)
+    public HandleGetDashboardBySite(WarehouseDataStore store)
     {
         _store = store;
     }

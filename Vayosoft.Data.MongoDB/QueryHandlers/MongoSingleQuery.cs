@@ -15,7 +15,7 @@ namespace Vayosoft.Data.MongoDB.QueryHandlers
     {
         protected readonly IMongoCollection<TEntity> Collection;
 
-        public MongoSingleQueryHandler(IMongoDbContext context)
+        public MongoSingleQueryHandler(IMongoContext context)
         {
             Collection = context.Collection<TEntity>();
         }

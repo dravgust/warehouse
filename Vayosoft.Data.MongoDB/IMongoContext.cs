@@ -5,7 +5,7 @@ using Vayosoft.Core.SharedKernel.Entities;
 
 namespace Vayosoft.Data.MongoDB
 {
-    public interface IMongoDbContext
+    public interface IMongoContext
     {
         IMongoDatabase Database { get; }
         IClientSessionHandle Session { get; }

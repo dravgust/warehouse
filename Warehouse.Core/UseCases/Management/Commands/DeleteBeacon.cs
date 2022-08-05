@@ -20,9 +20,9 @@ namespace Warehouse.Core.UseCases.Management.Commands
 
     internal class HandleDeleteBeacon : ICommandHandler<DeleteBeacon>
     {
-        private readonly WarehouseStore _store;
+        private readonly WarehouseDataStore _store;
 
-        public HandleDeleteBeacon(WarehouseStore store)
+        public HandleDeleteBeacon(WarehouseDataStore store)
         {
             _store = store;
         }

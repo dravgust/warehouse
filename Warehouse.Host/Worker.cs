@@ -48,7 +48,7 @@ namespace Warehouse.Host
                 _logger.LogDebug("Worker running at: {time}", DateTimeOffset.Now);
 
                 using var scope = _serviceProvider.CreateScope();
-                var store = scope.ServiceProvider.GetRequiredService<WarehouseStore>();
+                var store = scope.ServiceProvider.GetRequiredService<WarehouseDataStore>();
                 var eventStore = scope.ServiceProvider.GetRequiredService<IEventStore>();
 
                 Dictionary<string, string[]> beaconsIn = new();
@@ -274,7 +274,7 @@ namespace Warehouse.Host
             };
         }
 
-        private static async Task<GenericSite> GetGenericSiteAsync(MongoContextBase store, WarehouseSiteEntity site, IpsSettings settings)
+        private static async Task<GenericSite> GetGenericSiteAsync(DataStore store, WarehouseSiteEntity site, IpsSettings settings)
         {
             var gSite = new GenericSite(site.Id)
             {

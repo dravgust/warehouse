@@ -10,8 +10,8 @@ namespace Warehouse.Core.UseCases.Management.Commands
 
     public class HandleSetAlert : ICommandHandler<SetAlert>
     {
-        private readonly WarehouseStore _store;
-        public HandleSetAlert(WarehouseStore store)
+        private readonly WarehouseDataStore _store;
+        public HandleSetAlert(WarehouseDataStore store)
         {
             _store = store;
         }

@@ -13,11 +13,11 @@ using Vayosoft.Core.SharedKernel.Models.Pagination;
 
 namespace Vayosoft.Data.MongoDB
 {
-    public class MongoContextBase : MongoDbContext
+    public class DataStore : MongoContext
     {
-        public MongoContextBase(IConfiguration config) : base(config) { }
-        public MongoContextBase(ConnectionSetting config) : base(config) { }
-        public MongoContextBase(string connectionString, string[] bootstrapServers)
+        public DataStore(IConfiguration config) : base(config) { }
+        public DataStore(ConnectionSetting config) : base(config) { }
+        public DataStore(string connectionString, string[] bootstrapServers)
             : base(connectionString, bootstrapServers) { }
 
         public IQueryable<T> AsQueryable<T>() where T : class, IEntity =>

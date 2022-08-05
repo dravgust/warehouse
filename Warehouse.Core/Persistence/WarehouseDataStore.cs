@@ -7,12 +7,12 @@ using Vayosoft.Data.MongoDB;
 
 namespace Warehouse.Core.Persistence
 {
-    public class WarehouseStore : MongoContextBase, IDisposable
+    public class WarehouseDataStore : DataStore, IDisposable
     {
         private readonly IMapper _mapper;
-        private readonly ILogger<WarehouseStore> _logger;
+        private readonly ILogger<WarehouseDataStore> _logger;
 
-        public WarehouseStore(IConfiguration config, IMapper mapper, ILogger<WarehouseStore> logger)
+        public WarehouseDataStore(IConfiguration config, IMapper mapper, ILogger<WarehouseDataStore> logger)
             : base(config)
         {
             _mapper = mapper;

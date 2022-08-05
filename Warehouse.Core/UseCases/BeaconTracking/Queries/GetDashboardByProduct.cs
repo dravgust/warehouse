@@ -11,9 +11,9 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 
     internal class HandleGetDashboardByProduct : IQueryHandler<GetDashboardByProduct, IEnumerable<DashboardByProduct>>
     {
-        private readonly WarehouseStore _store;
+        private readonly WarehouseDataStore _store;
 
-        public HandleGetDashboardByProduct(WarehouseStore store)
+        public HandleGetDashboardByProduct(WarehouseDataStore store)
         {
             _store = store;
         }

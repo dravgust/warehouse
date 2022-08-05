@@ -39,9 +39,9 @@ namespace Warehouse.Core.UseCases.Management.Queries
 
     internal class HandleGetProducts : IQueryHandler<GetProducts, IPagedEnumerable<ProductEntity>>
     {
-        private readonly WarehouseStore store;
+        private readonly WarehouseDataStore store;
 
-        public HandleGetProducts(WarehouseStore store)
+        public HandleGetProducts(WarehouseDataStore store)
         {
             this.store = store;
         }

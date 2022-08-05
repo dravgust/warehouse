@@ -22,11 +22,11 @@ namespace Warehouse.Core.UseCases.Management.Commands
 
     internal class HandleSetWarehouseSite : ICommandHandler<SetWarehouseSite>
     {
-        private readonly WarehouseStore _store;
+        private readonly WarehouseDataStore _store;
         private readonly IMapper _mapper;
         private readonly IdentityContext _context;
 
-        public HandleSetWarehouseSite(WarehouseStore store, IMapper mapper, IdentityContext context)
+        public HandleSetWarehouseSite(WarehouseDataStore store, IMapper mapper, IdentityContext context)
         {
             _store = store;
             _mapper = mapper;

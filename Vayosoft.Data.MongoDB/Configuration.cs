@@ -5,10 +5,10 @@ namespace Vayosoft.Data.MongoDB
 {
     public static class Configuration
     {
-        public static IServiceCollection AddMongoDbContext(this IServiceCollection services,
+        public static IServiceCollection AddMongoContext(this IServiceCollection services,
             Action configureOptions = null)
         {
-            services.AddSingleton<IMongoDbContext, MongoDbContext>();
+            services.AddSingleton<IMongoContext, MongoContext>();
             configureOptions?.Invoke();
             return services;
         }

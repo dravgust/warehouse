@@ -24,10 +24,10 @@ namespace Warehouse.Core.UseCases.Management.Commands
 
     internal class HandleDeleteWarehouseSite : ICommandHandler<DeleteWarehouseSite>
     {
-        private readonly WarehouseStore _store;
+        private readonly WarehouseDataStore _store;
         private readonly IEventBus _eventBus;
 
-        public HandleDeleteWarehouseSite(WarehouseStore store, IEventBus eventBus)
+        public HandleDeleteWarehouseSite(WarehouseDataStore store, IEventBus eventBus)
         {
             _store = store;
             _eventBus = eventBus;

@@ -23,9 +23,9 @@ namespace Warehouse.Core.UseCases.Management.Commands
 
     internal class HandleRemoveGatewayFromSite : ICommandHandler<RemoveGatewayFromSite>
     {
-        private readonly WarehouseStore _store;
+        private readonly WarehouseDataStore _store;
 
-        public HandleRemoveGatewayFromSite(WarehouseStore store)
+        public HandleRemoveGatewayFromSite(WarehouseDataStore store)
         {
             _store = store;
         }

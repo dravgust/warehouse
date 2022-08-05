@@ -13,10 +13,10 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 
     internal class HandleGetIpsStatus : IQueryHandler<GetDashboardSite, DashboardBySite>
     {
-        private readonly WarehouseStore _store;
+        private readonly WarehouseDataStore _store;
         private readonly IMapper _mapper;
 
-        public HandleGetIpsStatus(WarehouseStore store, IMapper mapper)
+        public HandleGetIpsStatus(WarehouseDataStore store, IMapper mapper)
         {
             _store = store;
             _mapper = mapper;

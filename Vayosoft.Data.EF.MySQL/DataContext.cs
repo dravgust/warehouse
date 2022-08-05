@@ -7,11 +7,11 @@ using Vayosoft.Core.Specifications;
 
 namespace Vayosoft.Data.EF.MySQL
 {
-    public class DbContextBase : DbContext, ILinqProvider, IUnitOfWork
+    public class DataContext : DbContext, ILinqProvider, IUnitOfWork
     {
         private readonly ILoggerFactory _loggerFactory;
 
-        public DbContextBase(DbContextOptions options, ILoggerFactory loggerFactory) : base(options)
+        public DataContext(DbContextOptions options, ILoggerFactory loggerFactory) : base(options)
         {
             this._loggerFactory = loggerFactory;
         }

@@ -12,7 +12,7 @@ using Vayosoft.Core.SharedKernel.Entities;
 namespace Vayosoft.Data.MongoDB
 {
     public delegate void OnTraceLine(string commandName, string command);
-    public class MongoDbContext : IMongoDbContext
+    public class MongoContext : IMongoContext
     {
         private readonly MongoClient _client;
         public IMongoDatabase Database { get; }
@@ -21,9 +21,9 @@ namespace Vayosoft.Data.MongoDB
         public event OnTraceLine TraceLine;
 
         [ActivatorUtilitiesConstructor]
-        public MongoDbContext(IConfiguration config) : this(config.GetConnectionSetting()) { }
-        public MongoDbContext(ConnectionSetting config) : this(config?.ConnectionString, config?.ReplicaSet?.BootstrapServers) { }
-        public MongoDbContext(string connectionString, string[] bootstrapServers)
+        public MongoContext(IConfiguration config) : this(config.GetConnectionSetting()) { }
+        public MongoContext(ConnectionSetting config) : this(config?.ConnectionString, config?.ReplicaSet?.BootstrapServers) { }
+        public MongoContext(string connectionString, string[] bootstrapServers)
         {
             MongoClientSettings settings;
             string databaseName = null;

@@ -7,10 +7,10 @@ namespace Warehouse.Core.Persistence
 {
     public class UserStore : IUserStore<UserEntity>, IUserRoleStore
     {
-        private readonly WarehouseDbContext _context;
+        private readonly WarehouseDataContext _context;
         public IUnitOfWork UnitOfWork => _context;
 
-        public UserStore(WarehouseDbContext context)
+        public UserStore(WarehouseDataContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }

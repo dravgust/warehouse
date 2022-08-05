@@ -20,9 +20,9 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
         IQueryHandler<GetBeaconTelemetry, BeaconTelemetryDto>,
         IQueryHandler<GetBeaconTelemetry2, BeaconTelemetry2Dto>
     {
-        private readonly WarehouseStore _store;
+        private readonly WarehouseDataStore _store;
 
-        public HandleGetBeaconTelemetry(WarehouseStore store)
+        public HandleGetBeaconTelemetry(WarehouseDataStore store)
         {
             _store = store;
         }

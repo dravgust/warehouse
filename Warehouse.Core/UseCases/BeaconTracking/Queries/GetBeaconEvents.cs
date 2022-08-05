@@ -17,10 +17,10 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 
     internal class HandleGetBeaconEvents : IQueryHandler<GetBeaconEvents, IPagedEnumerable<BeaconEventDto>>
     {
-        private readonly WarehouseStore _store;
+        private readonly WarehouseDataStore _store;
         private readonly IQueryBus _queryBus;
 
-        public HandleGetBeaconEvents(WarehouseStore store, IQueryBus queryBus)
+        public HandleGetBeaconEvents(WarehouseDataStore store, IQueryBus queryBus)
         {
             _store = store;
             _queryBus = queryBus;

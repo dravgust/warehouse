@@ -19,11 +19,11 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 
     internal class HandleDashboardByBeacon : IQueryHandler<GetDashboardByBeacon, IPagedEnumerable<DashboardByBeacon>>
     {
-        private readonly WarehouseStore _store;
+        private readonly WarehouseDataStore _store;
         private readonly IQueryBus _queryBus;
         private readonly IMapper _mapper;
 
-        public HandleDashboardByBeacon(WarehouseStore store, IQueryBus queryBus, IMapper mapper)
+        public HandleDashboardByBeacon(WarehouseDataStore store, IQueryBus queryBus, IMapper mapper)
         {
             _store = store;
             _queryBus = queryBus;

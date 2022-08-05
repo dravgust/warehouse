@@ -49,16 +49,16 @@ namespace Warehouse.Core
                 provider => provider.GetRequiredService<AutoMapperWrapper>());
 
 
-            services.AddMySqlContext<WarehouseDbContext>(configuration)
+            services.AddMySqlContext<WarehouseDataContext>(configuration)
                 .AddScoped<DbConnection>() //add dapper
-                .AddScoped<IUnitOfWork>(s => s.GetRequiredService<WarehouseDbContext>())
-                .AddScoped<ILinqProvider>(s => s.GetRequiredService<WarehouseDbContext>());
+                .AddScoped<IUnitOfWork>(s => s.GetRequiredService<WarehouseDataContext>())
+                .AddScoped<ILinqProvider>(s => s.GetRequiredService<WarehouseDataContext>());
 
-            services.AddMongoDbContext(() =>
+            services.AddMongoContext(() =>
             {
                 AutoRegistration.RegisterClassMap(Assembly.GetExecutingAssembly());
                 BsonSerializer.RegisterSerializer(typeof(MacAddress), new MacAddressSerializer());
-            }).AddScoped<WarehouseStore>()
+            }).AddScoped<WarehouseDataStore>()
                 .AddScoped(typeof(IRepository<>), typeof(WarehouseRepository<>))
                 .AddSingleton<IEventStore, MongoDbEventStore>();
 

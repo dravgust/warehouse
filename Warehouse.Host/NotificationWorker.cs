@@ -37,7 +37,7 @@ namespace Warehouse.Host
                 _logger.LogInformation("Event worker running at: {time}", DateTimeOffset.Now);
 
                 using var scope = _serviceProvider.CreateScope(); 
-                var store = scope.ServiceProvider.GetRequiredService<WarehouseStore>();
+                var store = scope.ServiceProvider.GetRequiredService<WarehouseDataStore>();
                 
                 try
                 {

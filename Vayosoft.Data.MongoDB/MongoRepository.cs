@@ -10,7 +10,7 @@ namespace Vayosoft.Data.MongoDB
     {
         protected readonly IMongoCollection<T> Collection;
 
-        public MongoRepository(IMongoDbContext context) =>
+        public MongoRepository(IMongoContext context) =>
             Collection = context.Collection<T>(CollectionName.For<T>());
 
         public Task<T> FindAsync<TId>(TId id, CancellationToken cancellationToken = default) =>
