@@ -60,7 +60,7 @@ namespace Warehouse.Core
                 BsonSerializer.RegisterSerializer(typeof(MacAddress), new MacAddressSerializer());
             }).AddScoped<WarehouseDataStore>()
                 .AddScoped(typeof(IRepository<>), typeof(WarehouseRepository<>))
-                .AddSingleton<IEventStore, MongoDbEventStore>();
+                .AddSingleton<IEventStore, MongoEventStore>();
 
             services
                 .AddDefaultProvider()

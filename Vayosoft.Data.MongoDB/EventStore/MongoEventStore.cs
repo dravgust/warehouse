@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,11 +8,10 @@ using MongoDB.Driver;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Aggregates;
 using Vayosoft.Core.SharedKernel.Events;
-using Vayosoft.Core.Utilities;
 
 namespace Vayosoft.Data.MongoDB.EventStore
 {
-    public class MongoDbEventStore : IEventStore
+    public class MongoEventStore : IEventStore
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly IMongoContext _context;
@@ -22,7 +20,7 @@ namespace Vayosoft.Data.MongoDB.EventStore
 
         private const string EventsCollection = "events";
 
-        public MongoDbEventStore(IServiceProvider serviceProvider, IMongoContext context)
+        public MongoEventStore(IServiceProvider serviceProvider, IMongoContext context)
         {
             _serviceProvider = serviceProvider;
             _context = context;
