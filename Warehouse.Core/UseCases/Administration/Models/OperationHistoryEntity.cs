@@ -2,7 +2,7 @@
 using Vayosoft.Data.MongoDB;
 using Warehouse.Core.Entities.Enums;
 
-namespace Warehouse.Core.Entities.Models
+namespace Warehouse.Core.UseCases.Administration.Models
 {
     [CollectionName("operation_history")]
     public class OperationHistoryEntity : EntityBase<string>

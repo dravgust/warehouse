@@ -3,7 +3,6 @@ using Vayosoft.AutoMapper;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Enums;
-using Warehouse.Core.UseCases.Administration.Models;
 
 namespace Warehouse.Core.Entities.Models
 {

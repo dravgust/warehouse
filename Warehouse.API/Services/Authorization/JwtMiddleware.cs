@@ -3,6 +3,7 @@ using Warehouse.API.Extensions;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services;
 using Warehouse.Core.UseCases.Administration.Models;
+using Warehouse.Core.UseCases.Administration.ValueObjects;
 
 namespace Warehouse.API.Services.Authorization
 {

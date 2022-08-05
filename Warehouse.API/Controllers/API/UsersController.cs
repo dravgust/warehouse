@@ -7,8 +7,8 @@ using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Warehouse.API.Services.Authorization.Attributes;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Administration.Specifications;
-using Warehouse.Core.UseCases.Administration.Models;
 using Warehouse.Core.Utilities;
+using Warehouse.Core.UseCases.Administration.ValueObjects;
 
 namespace Warehouse.API.Controllers.API
 {

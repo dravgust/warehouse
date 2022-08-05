@@ -4,7 +4,6 @@ using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Events;
 using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Events;
-using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services.Providers;
 using Warehouse.Core.UseCases.Administration.Models;
 

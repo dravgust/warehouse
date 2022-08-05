@@ -2,7 +2,7 @@
 using Vayosoft.Core;
 using Vayosoft.Streaming.Redis;
 using Warehouse.Core;
-using Warehouse.Core.UseCases.Administration.Models;
+using Warehouse.Core.UseCases.Administration.ValueObjects;
 
 namespace Warehouse.Host
 {

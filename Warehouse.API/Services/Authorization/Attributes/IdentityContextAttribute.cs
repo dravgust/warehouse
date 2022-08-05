@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
-using Warehouse.Core.UseCases.Administration.Models;
+using Warehouse.Core.UseCases.Administration.ValueObjects;
 
 namespace Warehouse.API.Services.Authorization.Attributes
 {
