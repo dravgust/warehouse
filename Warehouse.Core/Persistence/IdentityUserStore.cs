@@ -5,7 +5,7 @@ using Warehouse.Core.UseCases.Administration.Models;
 
 namespace Warehouse.Core.Persistence
 {
-    public class IdentityUserStore : IIdentityUserStore<UserEntity>
+    public class IdentityUserStore : IIdentityUserStore<UserEntity>, IIdentityUserRoleStore
     {
         private readonly WarehouseDbContext _context;
         public IUnitOfWork UnitOfWork => _context;
@@ -15,7 +15,7 @@ namespace Warehouse.Core.Persistence
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<List<SecurityRoleEntity>> GetRolesAsync(List<ulong> providers)
+        public async Task<List<SecurityRoleEntity>> GetRolesAsync(IEnumerable<object> providers)
         {
             var rl = await EmbeddedRolesAsync();
             var roles = await _context.Set<SecurityRoleEntity>()
