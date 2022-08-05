@@ -3,11 +3,11 @@ using Warehouse.Core.UseCases.Administration.Models;
 
 namespace Warehouse.Core.Services
 {
-    public interface IIdentityUserService
+    public interface IUserService
     {
         Task<AuthenticateResponse> AuthenticateAsync(AuthenticateRequest model, string ipAddress, CancellationToken cancellationToken);
         Task<AuthenticateResponse> RefreshTokenAsync(string token, string ipAddress, CancellationToken cancellationToken);
         Task RevokeTokenAsync(string token, string ipAddress, CancellationToken cancellationToken);
-        Task<IIdentityUser> GetByIdAsync(object id, CancellationToken cancellationToken);
+        Task<IUser> GetByIdAsync(object id, CancellationToken cancellationToken);
     }
 }

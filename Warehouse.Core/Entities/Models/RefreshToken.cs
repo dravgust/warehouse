@@ -5,7 +5,7 @@ namespace Warehouse.Core.Entities.Models
     public class RefreshToken
     {
         [JsonIgnore]
-        public virtual IIdentityUser User { get; set; }
+        public virtual IUser User { get; set; }
         [JsonIgnore]
         public long UserId { get; set; }
 

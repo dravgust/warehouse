@@ -49,8 +49,8 @@ namespace Warehouse.API
             // configure DI for application services
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IPasswordHasher, MD5PasswordHasher>();
-            services.AddScoped<IIdentityUserStore<UserEntity>, IdentityUserStore>();
-            services.AddScoped<IIdentityUserService, IdentityUserService>();
+            services.AddScoped<IUserStore<UserEntity>, UserStore>();
+            services.AddScoped<IUserService, UserService>();
 
             //builder.Services.AddAuthorization(options =>
             //{

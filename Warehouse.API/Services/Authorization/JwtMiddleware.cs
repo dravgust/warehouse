@@ -20,7 +20,7 @@ namespace Warehouse.API.Services.Authorization
             _appSettings = appSettings.Value;
         }
 
-        public async Task Invoke(HttpContext context, IIdentityUserService userService, IJwtService jwtUtils)
+        public async Task Invoke(HttpContext context, IUserService userService, IJwtService jwtUtils)
         {
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             if (token != null)

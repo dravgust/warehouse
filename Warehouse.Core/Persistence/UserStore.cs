@@ -5,12 +5,12 @@ using Warehouse.Core.UseCases.Administration.Models;
 
 namespace Warehouse.Core.Persistence
 {
-    public class IdentityUserStore : IIdentityUserStore<UserEntity>, IIdentityUserRoleStore
+    public class UserStore : IUserStore<UserEntity>, IUserRoleStore
     {
         private readonly WarehouseDbContext _context;
         public IUnitOfWork UnitOfWork => _context;
 
-        public IdentityUserStore(WarehouseDbContext context)
+        public UserStore(WarehouseDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
@@ -106,7 +106,7 @@ namespace Warehouse.Core.Persistence
                     .SingleOrDefaultAsync(u => u.Username == username, cancellationToken: cancellationToken);
         }
 
-        public async Task UpdateAsync(IIdentityUser user, CancellationToken cancellationToken)
+        public async Task UpdateAsync(IUser user, CancellationToken cancellationToken)
         {
             _context.Update(user);
             await _context.SaveChangesAsync(cancellationToken);

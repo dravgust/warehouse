@@ -6,7 +6,7 @@ using Warehouse.Core.Entities.Enums;
 
 namespace Warehouse.Core.Entities.Models
 {
-    public class UserEntity : EntityBase<long>, IIdentityUser, IProviderable<long>
+    public class UserEntity : EntityBase<long>, IUser, IProvider<long>
     {
         private UserEntity() { }
         public UserEntity(string username)
@@ -23,7 +23,7 @@ namespace Warehouse.Core.Entities.Models
         public DateTime? Deregistered { get; set; }
         public string CultureId { get; set; } = null!;
         public long ProviderId { get; set; }
-        object IProviderable.ProviderId => ProviderId;
+        object IProvider.ProviderId => ProviderId;
         public LogEventType? LogLevel { get; set; }
         public virtual List<RefreshToken> RefreshTokens { get; } = new();
     }

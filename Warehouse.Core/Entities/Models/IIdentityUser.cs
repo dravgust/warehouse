@@ -3,7 +3,7 @@ using Vayosoft.Core.SharedKernel.Entities;
 
 namespace Warehouse.Core.Entities.Models
 {
-    public interface IIdentityUser : IEntity
+    public interface IUser : IEntity
     {
         public string Username { get; }
         public string Email { get; }
@@ -15,12 +15,12 @@ namespace Warehouse.Core.Entities.Models
         public List<RefreshToken> RefreshTokens { get; }
     }
 
-    public interface IProviderable
+    public interface IProvider
     {
         object ProviderId { get; }
     }
 
-    public interface IProviderable<out TKey> : IProviderable
+    public interface IProvider<out TKey> : IProvider
     {
         new TKey ProviderId { get; }
     }

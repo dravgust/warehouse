@@ -2,7 +2,7 @@
 
 namespace Warehouse.Core.Persistence
 {
-    public interface IIdentityUserRoleStore
+    public interface IUserRoleStore
     {
         public Task<List<SecurityRoleEntity>> GetRolesAsync(IEnumerable<object> providers);
 

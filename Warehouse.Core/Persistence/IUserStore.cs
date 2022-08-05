@@ -3,7 +3,7 @@ using Warehouse.Core.Entities.Models;
 
 namespace Warehouse.Core.Persistence
 {
-    public interface IIdentityUserStore<T> where T : IIdentityUser
+    public interface IUserStore<T> where T : IUser
     {
         public IUnitOfWork UnitOfWork { get; }
 
@@ -13,6 +13,6 @@ namespace Warehouse.Core.Persistence
 
         public Task<T> FindByNameAsync(string username, CancellationToken cancellationToken = default);
 
-        public Task UpdateAsync(IIdentityUser user, CancellationToken cancellationToken);
+        public Task UpdateAsync(IUser user, CancellationToken cancellationToken);
     }
 }

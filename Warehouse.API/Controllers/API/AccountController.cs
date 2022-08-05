@@ -14,10 +14,10 @@ namespace Warehouse.API.Controllers.API
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly IIdentityUserService _userService;
+        private readonly IUserService _userService;
         private readonly IQueryBus _queryBus;
 
-        public AccountController(IIdentityUserService userService, IQueryBus queryBus)
+        public AccountController(IUserService userService, IQueryBus queryBus)
         {
             _userService = userService;
             _queryBus = queryBus;

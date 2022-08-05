@@ -20,7 +20,7 @@ namespace Warehouse.API.Services.Authorization
             _appSettings = appSettings.Value;
         }
 
-        public string GenerateJwtToken(IIdentityUser user)
+        public string GenerateJwtToken(IUser user)
         {
             // generate token that is valid for 15 minutes
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -29,8 +29,8 @@ namespace Warehouse.API.Services.Authorization
             {
                 new Claim(ClaimTypes.Name, user.Username),
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString() ?? throw new InvalidOperationException("The User has no ID")),
-                new Claim(nameof(IIdentityUser.Id), $"{user.Id}"),
-                new Claim(nameof(IProviderable.ProviderId), $"{((IProviderable)user)?.ProviderId}")
+                new Claim(nameof(IUser.Id), $"{user.Id}"),
+                new Claim(nameof(IProvider.ProviderId), $"{((IProvider)user)?.ProviderId}")
             };
 
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -63,8 +63,8 @@ namespace Warehouse.API.Services.Authorization
                 }, out SecurityToken validatedToken);
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
-                var userId = long.Parse(jwtToken.Claims.First(x => x.Type == nameof(IIdentityUser.Id)).Value);
-                var providerId = long.Parse(jwtToken.Claims.First(x => x.Type == nameof(IProviderable.ProviderId)).Value);
+                var userId = long.Parse(jwtToken.Claims.First(x => x.Type == nameof(IUser.Id)).Value);
+                var providerId = long.Parse(jwtToken.Claims.First(x => x.Type == nameof(IProvider.ProviderId)).Value);
 
                 // return user id from JWT token if validation successful
                 return new IdentityContext

@@ -5,7 +5,7 @@ namespace Warehouse.Core.Services
 {
     public interface IJwtService
     {
-        public string GenerateJwtToken(IIdentityUser user);
+        public string GenerateJwtToken(IUser user);
         public IdentityContext ValidateJwtToken(string token);
         public RefreshToken GenerateRefreshToken(string ipAddress);
     }

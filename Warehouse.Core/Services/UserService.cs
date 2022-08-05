@@ -5,29 +5,29 @@ using Warehouse.Core.UseCases.Administration.Models;
 
 namespace Warehouse.Core.Services
 {
-    public class IdentityUserService : IIdentityUserService
+    public class UserService : IUserService
     {
-        private readonly IIdentityUserStore<UserEntity> _identityUserStore;
+        private readonly IUserStore<UserEntity> _userStore;
 
         private readonly IPasswordHasher _passwordHasher;
         private readonly IJwtService _jwtUtils;
         private readonly AppSettings _appSettings;
 
-        public IdentityUserService(
+        public UserService(
             IPasswordHasher passwordHasher,
             IJwtService jwtUtils,
             IOptions<AppSettings> appSettings,
-            IIdentityUserStore<UserEntity> identityUserStore)
+            IUserStore<UserEntity> userStore)
         {
             _passwordHasher = passwordHasher;
             _jwtUtils = jwtUtils;
-            _identityUserStore = identityUserStore;
+            _userStore = userStore;
             _appSettings = appSettings.Value;
         }
 
         public async Task<AuthenticateResponse> AuthenticateAsync(AuthenticateRequest model, string ipAddress, CancellationToken cancellationToken)
         {
-            var user = await _identityUserStore.FindByNameAsync(model.Email, cancellationToken);
+            var user = await _userStore.FindByNameAsync(model.Email, cancellationToken);
             // validate
             if (user == null || !_passwordHasher.VerifyHashedPassword(user.PasswordHash, model.Password))
                 throw new ApplicationException("Username or password is incorrect");
@@ -41,14 +41,14 @@ namespace Warehouse.Core.Services
             RemoveOldRefreshTokens(user);
 
             // save changes to db
-            await _identityUserStore.UpdateAsync(user, cancellationToken);
+            await _userStore.UpdateAsync(user, cancellationToken);
 
             return new AuthenticateResponse(user, jwtToken, refreshToken.Token, refreshToken.Expires);
         }
 
         public async Task<AuthenticateResponse> RefreshTokenAsync(string token, string ipAddress, CancellationToken cancellationToken)
         {
-            var user = await _identityUserStore.FindByRefreshTokenAsync(token, cancellationToken);
+            var user = await _userStore.FindByRefreshTokenAsync(token, cancellationToken);
             if (user == null)
                 throw new ApplicationException("Invalid token");
 
@@ -58,7 +58,7 @@ namespace Warehouse.Core.Services
                 // revoke all descendant tokens in case this token has been compromised
                 RevokeDescendantRefreshTokens(refreshToken, user, ipAddress, $"Attempted reuse of revoked ancestor token: {token}");
                 // save changes to db
-                await _identityUserStore.UpdateAsync(user, cancellationToken);
+                await _userStore.UpdateAsync(user, cancellationToken);
             }
 
             if (!refreshToken.IsActive)
@@ -71,7 +71,7 @@ namespace Warehouse.Core.Services
             // remove old refresh tokens from user
             RemoveOldRefreshTokens(user);
             // save changes to db
-            await _identityUserStore.UpdateAsync(user, cancellationToken);
+            await _userStore.UpdateAsync(user, cancellationToken);
 
             // generate new jwt
             var jwtToken = _jwtUtils.GenerateJwtToken(user);
@@ -81,7 +81,7 @@ namespace Warehouse.Core.Services
 
         public async Task RevokeTokenAsync(string token, string ipAddress, CancellationToken cancellationToken)
         {
-            var user = await _identityUserStore.FindByRefreshTokenAsync(token, cancellationToken);
+            var user = await _userStore.FindByRefreshTokenAsync(token, cancellationToken);
             if (user == null)
                 throw new ApplicationException("Invalid token");
 
@@ -92,12 +92,12 @@ namespace Warehouse.Core.Services
             // revoke token and save
             RevokeRefreshToken(refreshToken, ipAddress, "Revoked without replacement");
             // save changes to db
-            await _identityUserStore.UpdateAsync(user, cancellationToken);
+            await _userStore.UpdateAsync(user, cancellationToken);
         }
 
-        public async Task<IIdentityUser> GetByIdAsync(object useId, CancellationToken cancellationToken)
+        public async Task<IUser> GetByIdAsync(object useId, CancellationToken cancellationToken)
         {
-            var user = await _identityUserStore.FindByIdAsync(useId, cancellationToken);
+            var user = await _userStore.FindByIdAsync(useId, cancellationToken);
             if (user == null)
                 throw new ApplicationException("Invalid user");
             return user;
@@ -110,7 +110,7 @@ namespace Warehouse.Core.Services
             return newRefreshToken;
         }
 
-        private void RemoveOldRefreshTokens(IIdentityUser user)
+        private void RemoveOldRefreshTokens(IUser user)
         {
             // remove old inactive refresh tokens from user based on TTL in app settings
             user.RefreshTokens.RemoveAll(x =>
@@ -118,7 +118,7 @@ namespace Warehouse.Core.Services
                 x.Created.AddDays(_appSettings.RefreshTokenTTL) <= DateTime.UtcNow);
         }
 
-        private static void RevokeDescendantRefreshTokens(RefreshToken refreshToken, IIdentityUser user, string ipAddress, string reason)
+        private static void RevokeDescendantRefreshTokens(RefreshToken refreshToken, IUser user, string ipAddress, string reason)
         {
             // recursively traverse the refresh token chain and ensure all descendants are revoked
             if (!string.IsNullOrEmpty(refreshToken.ReplacedByToken))

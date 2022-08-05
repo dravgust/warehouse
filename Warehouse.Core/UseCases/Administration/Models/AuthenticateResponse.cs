@@ -14,7 +14,7 @@ namespace Warehouse.Core.UseCases.Administration.Models
         [JsonIgnore] // refresh token is returned in http only cookie
         public string RefreshToken { get; set; }
 
-        public AuthenticateResponse(IIdentityUser user, string jwtToken, string refreshToken, DateTime expirationTime)
+        public AuthenticateResponse(IUser user, string jwtToken, string refreshToken, DateTime expirationTime)
         {
             Id = user.Id;
             Username = user.Username;
