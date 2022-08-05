@@ -123,7 +123,6 @@ try
     app.UseSession();
 
     // app.UseResponseCaching();
-    // custom jwt auth middleware
     app.UseMiddleware<JwtMiddleware>();
 
     var locOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
