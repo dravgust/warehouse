@@ -100,6 +100,5 @@ namespace Vayosoft.Data.MongoDB
 
         public Task DeleteAsync<T>(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken) where T : IEntity =>
             Collection<T>().DeleteOneAsync(criteria, cancellationToken: cancellationToken);
-
     }
 }

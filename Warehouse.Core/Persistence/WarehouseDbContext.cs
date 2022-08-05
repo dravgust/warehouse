@@ -13,8 +13,6 @@ namespace Warehouse.Core.Persistence
         {
             this._logger = loggerFactory.CreateLogger<WarehouseDbContext>();
 
-            this.ChangeTracker.LazyLoadingEnabled = false;
-
             Database.EnsureCreated();
         }
 

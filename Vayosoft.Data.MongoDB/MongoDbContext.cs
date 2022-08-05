@@ -25,24 +25,17 @@ namespace Vayosoft.Data.MongoDB
         public MongoDbContext(ConnectionSetting config) : this(config?.ConnectionString, config?.ReplicaSet?.BootstrapServers) { }
         public MongoDbContext(string connectionString, string[] bootstrapServers)
         {
+            MongoClientSettings settings;
+            string databaseName = null;
             if (!string.IsNullOrWhiteSpace(connectionString))
             {
                 var connectionUrl = new MongoUrl(connectionString);
-                var settings = MongoClientSettings.FromUrl(connectionUrl);
-                settings.ClusterConfigurator = cb =>
-                {
-                    cb.Subscribe<CommandStartedEvent>(e =>
-                    {
-                        TraceLine?.Invoke(e.CommandName, e.Command.ToJson());
-                    });
-                };
-                _client = new MongoClient(settings);
-                var databaseName = GetDatabaseName(connectionString!);
-                Database = _client.GetDatabase(databaseName);
+                settings = MongoClientSettings.FromUrl(connectionUrl);
+                databaseName = GetDatabaseName(connectionString!);
             }
             else
             {
-                var settings = new MongoClientSettings
+                settings = new MongoClientSettings
                 {
                     DirectConnection = false,
                     ReadPreference = ReadPreference.Primary
@@ -59,18 +52,18 @@ namespace Vayosoft.Data.MongoDB
                         new MongoServerAddress("localhost", 37019)
                     };
                 }
-
-                settings.ClusterConfigurator = cb =>
-                {
-                    cb.Subscribe<CommandStartedEvent>(e =>
-                    {
-                        TraceLine?.Invoke(e.CommandName, e.Command.ToJson());
-                    });
-                };
-
-                _client = new MongoClient(settings);
-                Database = _client.GetDatabase("default");
             }
+
+            settings.ClusterConfigurator = cb =>
+            {
+                cb.Subscribe<CommandStartedEvent>(e =>
+                {
+                    TraceLine?.Invoke(e.CommandName, e.Command.ToJson());
+                });
+            };
+
+            _client = new MongoClient(settings);
+            Database = _client.GetDatabase(databaseName ?? "default");
         }
 
         public async Task<IClientSessionHandle> StartSession(CancellationToken cancellationToken = default)
@@ -104,9 +97,5 @@ namespace Vayosoft.Data.MongoDB
 
             throw new ArgumentException("Unsupported DB connection string", nameof(connectionString));
         }
-
-        protected virtual void OnClassMapping()
-        { }
-
     }
 }
