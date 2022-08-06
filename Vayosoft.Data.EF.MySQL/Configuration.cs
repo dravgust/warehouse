@@ -21,8 +21,11 @@ namespace Vayosoft.Data.EF.MySQL
             services.AddDbContext<TContext>(
                 dbContextOptions => dbContextOptions
                     .UseMySql(connectionString, serverVersion)
+
                     .EnableSensitiveDataLogging() // <-- These two calls are optional but help
                     .EnableDetailedErrors()       // <-- with debugging (remove for production).
+
+                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
             );
 
             return services;

@@ -87,6 +87,7 @@ namespace Warehouse.Core.Persistence
             return _context
                 .Users
                 .Include(u => u.RefreshTokens)
+                .AsNoTrackingWithIdentityResolution()
                 .SingleOrDefaultAsync(u => u.Id.Equals(userId), cancellationToken: cancellationToken);
         }
 
@@ -95,6 +96,7 @@ namespace Warehouse.Core.Persistence
             return _context
                 .Users
                 .Include(u => u.RefreshTokens)
+                .AsTracking()
                 .SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.Token == refreshToken), cancellationToken: cancellationToken);
         }
 
@@ -103,12 +105,14 @@ namespace Warehouse.Core.Persistence
             return _context
                     .Set<UserEntity>()
                     .Include(u => u.RefreshTokens)
+                    .AsTracking()
                     .SingleOrDefaultAsync(u => u.Username == username, cancellationToken: cancellationToken);
         }
 
         public async Task UpdateAsync(IUser user, CancellationToken cancellationToken)
         {
-            _context.Update(user);
+            _context.Entry(user).State = EntityState.Modified;
+            //_context.Update(user);
             await _context.SaveChangesAsync(cancellationToken);
         }
     }

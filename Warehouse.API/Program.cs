@@ -39,7 +39,7 @@ try
     var configuration = builder.Configuration;
 
     builder.Services
-        .AddApplication(configuration)
+        .AddApplication(configuration) //builder.Environment.IsDevelopment()
         .AddIdentityService(configuration)
         .AddLocalizationService();
 
