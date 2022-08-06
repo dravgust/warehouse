@@ -18,7 +18,7 @@ namespace Vayosoft.Data.MongoDB
     {
         public static ConnectionSetting GetConnectionSetting(this IConfiguration configuration)
         {
-            return configuration.GetSection(nameof(MongoContext)).Get<ConnectionSetting>();
+            return configuration.GetSection(nameof(MongoConnection)).Get<ConnectionSetting>();
         }
     }
 }

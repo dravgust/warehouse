@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Core.Events;
@@ -11,19 +12,16 @@ using Vayosoft.Core.SharedKernel.Entities;
 
 namespace Vayosoft.Data.MongoDB
 {
-    public delegate void OnTraceLine(string commandName, string command);
-    public class MongoContext : IMongoContext
+    public class MongoConnection : IMongoConnection
     {
         private readonly MongoClient _client;
         public IMongoDatabase Database { get; }
         public IClientSessionHandle Session { get; private set; }
 
-        public event OnTraceLine TraceLine;
-
         [ActivatorUtilitiesConstructor]
-        public MongoContext(IConfiguration config) : this(config.GetConnectionSetting()) { }
-        public MongoContext(ConnectionSetting config) : this(config?.ConnectionString, config?.ReplicaSet?.BootstrapServers) { }
-        public MongoContext(string connectionString, string[] bootstrapServers)
+        public MongoConnection(IConfiguration config, ILoggerFactory loggerFactory) : this(config.GetConnectionSetting(), loggerFactory) { }
+        public MongoConnection(ConnectionSetting config, ILoggerFactory loggerFactory) : this(config?.ConnectionString, config?.ReplicaSet?.BootstrapServers, loggerFactory) { }
+        public MongoConnection(string connectionString, string[] bootstrapServers, ILoggerFactory loggerFactory)
         {
             MongoClientSettings settings;
             string databaseName = null;
@@ -54,11 +52,12 @@ namespace Vayosoft.Data.MongoDB
                 }
             }
 
+            var logger = loggerFactory.CreateLogger<MongoConnection>();
             settings.ClusterConfigurator = cb =>
             {
                 cb.Subscribe<CommandStartedEvent>(e =>
                 {
-                    TraceLine?.Invoke(e.CommandName, e.Command.ToJson());
+                    logger.LogDebug(e.CommandName, e.Command.ToJson());
                 });
             };
 

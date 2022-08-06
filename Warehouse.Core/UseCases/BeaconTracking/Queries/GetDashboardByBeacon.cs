@@ -1,4 +1,5 @@
-﻿using Vayosoft.Core.Persistence.Queries;
+﻿using Vayosoft.Core.Persistence;
+using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
@@ -19,13 +20,21 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 
     internal class HandleDashboardByBeacon : IQueryHandler<GetDashboardByBeacon, IPagedEnumerable<DashboardByBeacon>>
     {
-        private readonly WarehouseDataStore _store;
+        private readonly IReadOnlyRepository<WarehouseSiteEntity> _siteRepository;
+        private readonly IReadOnlyRepository<BeaconEntity> _beaconRepository;
+        private readonly IReadOnlyRepository<ProductEntity> _productRepository;
         private readonly IQueryBus _queryBus;
         private readonly IMapper _mapper;
 
-        public HandleDashboardByBeacon(WarehouseDataStore store, IQueryBus queryBus, IMapper mapper)
+        public HandleDashboardByBeacon(
+            IReadOnlyRepository<WarehouseSiteEntity> siteRepository,
+            IReadOnlyRepository<BeaconEntity> beaconRepository,
+            IReadOnlyRepository<ProductEntity> productRepository,
+            IQueryBus queryBus, IMapper mapper)
         {
-            _store = store;
+            _siteRepository = siteRepository;
+            _beaconRepository = beaconRepository;
+            _productRepository = productRepository;
             _queryBus = queryBus;
             _mapper = mapper;
         }
@@ -47,18 +56,18 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
                     SiteId = b.SourceId
                 };
 
-                var site = await _store.FindAsync<WarehouseSiteEntity>(b.SourceId, cancellationToken);
+                var site = await _siteRepository.FindAsync(b.SourceId, cancellationToken);
                 if (site != null)
                 {
                     asset.Site = _mapper.Map<WarehouseSiteDto>(site);
                 }
 
-                var productItem = await _store.FirstOrDefaultAsync<BeaconEntity>(q => q.Id.Equals(b.MacAddress), cancellationToken);
+                var productItem = await _beaconRepository.FirstOrDefaultAsync(q => q.Id.Equals(b.MacAddress), cancellationToken);
                 if (productItem != null)
                 {
                     if (!string.IsNullOrEmpty(productItem.ProductId))
                     {
-                        var product = await _store.FirstOrDefaultAsync<ProductEntity>(p => p.Id == productItem.ProductId, cancellationToken);
+                        var product = await _productRepository.FirstOrDefaultAsync(p => p.Id == productItem.ProductId, cancellationToken);
                         if (product != null)
                         {
                             asset.Product = _mapper.Map<ProductDto>(product);

@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using Vayosoft.Core.Commands;
+using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Persistence;
@@ -23,20 +24,20 @@ namespace Warehouse.Core.UseCases.Management.Commands
 
     internal class HandleRemoveGatewayFromSite : ICommandHandler<RemoveGatewayFromSite>
     {
-        private readonly WarehouseDataStore _store;
+        private readonly IRepository<WarehouseSiteEntity> _repository;
 
-        public HandleRemoveGatewayFromSite(WarehouseDataStore store)
+        public HandleRemoveGatewayFromSite(IRepository<WarehouseSiteEntity> repository)
         {
-            _store = store;
+            _repository = repository;
         }
 
         public async Task<Unit> Handle(RemoveGatewayFromSite request, CancellationToken cancellationToken)
         {
-            var site = await _store.GetAsync<WarehouseSiteEntity>(request.SiteId, cancellationToken);
+            var site = await _repository.GetAsync(request.SiteId, cancellationToken);
             var gw = site.Gateways.FirstOrDefault(gw =>
                 gw.MacAddress.Equals(request.MacAddress, StringComparison.InvariantCultureIgnoreCase));
             if (gw != null) site.Gateways.Remove(gw);
-            await _store.UpdateAsync(site, cancellationToken);
+            await _repository.UpdateAsync(site, cancellationToken);
 
             return Unit.Value;
         }

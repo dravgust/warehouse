@@ -14,13 +14,13 @@ namespace Vayosoft.Data.MongoDB.EventStore
     public class MongoEventStore : IEventStore
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly IMongoContext _context;
+        private readonly IMongoConnection _context;
 
         private readonly IMongoCollection<EventData> _events;
 
         private const string EventsCollection = "events";
 
-        public MongoEventStore(IServiceProvider serviceProvider, IMongoContext context)
+        public MongoEventStore(IServiceProvider serviceProvider, IMongoConnection context)
         {
             _serviceProvider = serviceProvider;
             _context = context;

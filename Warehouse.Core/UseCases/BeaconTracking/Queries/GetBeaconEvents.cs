@@ -1,8 +1,8 @@
-﻿using Vayosoft.Core.Persistence.Queries;
+﻿using Vayosoft.Core.Persistence;
+using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Persistence;
 using Warehouse.Core.UseCases.BeaconTracking.Models;
 using Warehouse.Core.UseCases.BeaconTracking.Specifications;
 
@@ -17,12 +17,17 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 
     internal class HandleGetBeaconEvents : IQueryHandler<GetBeaconEvents, IPagedEnumerable<BeaconEventDto>>
     {
-        private readonly WarehouseDataStore _store;
+        private readonly IReadOnlyRepository<WarehouseSiteEntity> _siteRepository;
+        private readonly IReadOnlyRepository<BeaconEntity> _beaconRepository;
         private readonly IQueryBus _queryBus;
 
-        public HandleGetBeaconEvents(WarehouseDataStore store, IQueryBus queryBus)
+        public HandleGetBeaconEvents(
+            IReadOnlyRepository<WarehouseSiteEntity> siteRepository,
+            IReadOnlyRepository<BeaconEntity> beaconRepository, 
+            IQueryBus queryBus)
         {
-            _store = store;
+            _siteRepository = siteRepository;
+            _beaconRepository = beaconRepository;
             _queryBus = queryBus;
         }
 
@@ -35,7 +40,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
             var list = new List<BeaconEventDto>();
             foreach (var e in data)
             {
-                var productItem = await _store.FirstOrDefaultAsync<BeaconEntity>(q => q.Id.Equals(e.MacAddress), cancellationToken);
+                var productItem = await _beaconRepository.FirstOrDefaultAsync(q => q.Id.Equals(e.MacAddress), cancellationToken);
                 var dto = new BeaconEventDto
                 {
                     Beacon = new BeaconInfo
@@ -48,7 +53,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
                 };
                 if (!string.IsNullOrEmpty(e.SourceId))
                 {
-                    var site = await _store.FindAsync<WarehouseSiteEntity>(e.SourceId, cancellationToken);
+                    var site = await _siteRepository.FindAsync(e.SourceId, cancellationToken);
                     dto.Source = new SiteInfo
                     {
                         Id = e.SourceId,
@@ -57,7 +62,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
                 }
                 if (!string.IsNullOrEmpty(e.DestinationId))
                 {
-                    var site = await _store.FindAsync<WarehouseSiteEntity>(e.DestinationId, cancellationToken);
+                    var site = await _siteRepository.FindAsync(e.DestinationId, cancellationToken);
                     dto.Destination = new SiteInfo
                     {
                         Id = e.DestinationId,

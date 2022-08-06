@@ -1,8 +1,8 @@
-﻿using Vayosoft.Core.Queries;
+﻿using Vayosoft.Core.Persistence;
+using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Persistence;
 
 namespace Warehouse.Core.UseCases.Management.Queries
 {
@@ -39,11 +39,11 @@ namespace Warehouse.Core.UseCases.Management.Queries
 
     internal class HandleGetProducts : IQueryHandler<GetProducts, IPagedEnumerable<ProductEntity>>
     {
-        private readonly WarehouseDataStore store;
+        private readonly IReadOnlyRepository<ProductEntity> _repository;
 
-        public HandleGetProducts(WarehouseDataStore store)
+        public HandleGetProducts(IReadOnlyRepository<ProductEntity> repository)
         {
-            this.store = store;
+            this._repository = repository;
         }
 
         public Task<IPagedEnumerable<ProductEntity>> Handle(GetProducts query, CancellationToken cancellationToken)
@@ -51,11 +51,11 @@ namespace Warehouse.Core.UseCases.Management.Queries
             //Expression<Func<ProductEntity, bool>> filter = entity => entity.ProviderId == query.ProviderId;
             if (!string.IsNullOrEmpty(query.FilterString))
             {
-                return store.PagedListAsync(query, e => 
+                return _repository.PagedListAsync(query, e => 
                         e.Name.ToLower().Contains(query.FilterString.ToLower()), cancellationToken);
             }
 
-            return store.PagedListAsync(query,  cancellationToken);
+            return _repository.PagedListAsync(query,  cancellationToken);
         }
     }
 }

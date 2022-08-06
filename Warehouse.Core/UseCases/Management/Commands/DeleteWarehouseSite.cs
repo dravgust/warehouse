@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
 using MediatR;
 using Vayosoft.Core.Commands;
+using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Events;
 using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Events;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Persistence;
 using Warehouse.Core.UseCases.Administration.Models;
 
 namespace Warehouse.Core.UseCases.Management.Commands
@@ -24,18 +24,18 @@ namespace Warehouse.Core.UseCases.Management.Commands
 
     internal class HandleDeleteWarehouseSite : ICommandHandler<DeleteWarehouseSite>
     {
-        private readonly WarehouseDataStore _store;
+        private readonly IRepository<WarehouseSiteEntity> _repository;
         private readonly IEventBus _eventBus;
 
-        public HandleDeleteWarehouseSite(WarehouseDataStore store, IEventBus eventBus)
+        public HandleDeleteWarehouseSite(IRepository<WarehouseSiteEntity> repository, IEventBus eventBus)
         {
-            _store = store;
+            _repository = repository;
             _eventBus = eventBus;
         }
 
         public async Task<Unit> Handle(DeleteWarehouseSite request, CancellationToken cancellationToken)
         {
-            await _store.DeleteAsync(new WarehouseSiteEntity { Id = request.Id }, cancellationToken);
+            await _repository.DeleteAsync(new WarehouseSiteEntity { Id = request.Id }, cancellationToken);
 
             var events = new IEvent[]
             {

@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using Vayosoft.Core.Commands;
+using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Models;
@@ -25,23 +26,23 @@ namespace Warehouse.Core.UseCases.Management.Commands
 
     internal class HandleSetGatewayToSite : ICommandHandler<SetGatewayToSite>
     {
-        private readonly WarehouseDataStore _store;
+        private readonly IRepository<WarehouseSiteEntity> _repository;
         private readonly IMapper _mapper;
 
-        public HandleSetGatewayToSite(WarehouseDataStore store, IMapper mapper)
+        public HandleSetGatewayToSite(IRepository<WarehouseSiteEntity> repository, IMapper mapper)
         {
-            _store = store;
+            _repository = repository;
             _mapper = mapper;
         }
 
         public async Task<Unit> Handle(SetGatewayToSite request, CancellationToken cancellationToken)
         {
-            var site = await _store.GetAsync<WarehouseSiteEntity>(request.SiteId, cancellationToken);
+            var site = await _repository.GetAsync(request.SiteId, cancellationToken);
             var gw = site.Gateways.FirstOrDefault(gw =>
                 gw.MacAddress.Equals(request.MacAddress, StringComparison.InvariantCultureIgnoreCase));
             if (gw != null) site.Gateways.Remove(gw);
             site.Gateways.Add(_mapper.Map<Gateway>(request));
-            await _store.UpdateAsync(site, cancellationToken);
+            await _repository.UpdateAsync(site, cancellationToken);
 
             return Unit.Value;
         }

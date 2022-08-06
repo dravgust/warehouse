@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
 using MediatR;
 using Vayosoft.Core.Commands;
+using Vayosoft.Core.Persistence;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Persistence;
 
 namespace Warehouse.Core.UseCases.Management.Commands
 {
@@ -20,16 +20,16 @@ namespace Warehouse.Core.UseCases.Management.Commands
 
     internal class HandleDeleteBeacon : ICommandHandler<DeleteBeacon>
     {
-        private readonly WarehouseDataStore _store;
+        private readonly IRepository<BeaconEntity> _repository;
 
-        public HandleDeleteBeacon(WarehouseDataStore store)
+        public HandleDeleteBeacon(IRepository<BeaconEntity> repository)
         {
-            _store = store;
+            _repository = repository;
         }
 
         public async Task<Unit> Handle(DeleteBeacon request, CancellationToken cancellationToken)
         {
-            await _store.DeleteAsync(new BeaconEntity { Id = request.MacAddress }, cancellationToken);
+            await _repository.DeleteAsync(new BeaconEntity { Id = request.MacAddress }, cancellationToken);
 
             return Unit.Value;
         }

@@ -1,4 +1,5 @@
-﻿using Vayosoft.Core.Queries;
+﻿using Vayosoft.Core.Persistence;
+using Vayosoft.Core.Queries;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.UseCases.BeaconTracking.Models;
@@ -10,21 +11,31 @@ public class GetDashboardBySite : IQuery<IEnumerable<DashboardBySite>>
 
 public class HandleGetDashboardBySite : IQueryHandler<GetDashboardBySite, IEnumerable<DashboardBySite>>
 {
-    private readonly WarehouseDataStore _store;
+    private readonly IReadOnlyRepository<IndoorPositionStatusEntity> _statusRepository;
+    private readonly IReadOnlyRepository<WarehouseSiteEntity> _siteRepository;
+    private readonly IReadOnlyRepository<BeaconEntity> _beaconRepository;
+    private readonly IReadOnlyRepository<ProductEntity> _productRepository;
 
-    public HandleGetDashboardBySite(WarehouseDataStore store)
+    public HandleGetDashboardBySite(
+        IReadOnlyRepository<IndoorPositionStatusEntity> statusRepository,
+        IReadOnlyRepository<WarehouseSiteEntity> siteRepository,
+        IReadOnlyRepository<BeaconEntity> beaconRepository,
+        IReadOnlyRepository<ProductEntity> productRepository)
     {
-        _store = store;
+        _statusRepository = statusRepository;
+        _siteRepository = siteRepository;
+        _beaconRepository = beaconRepository;
+        _productRepository = productRepository;
     }
 
     public async Task<IEnumerable<DashboardBySite>> Handle(GetDashboardBySite request, CancellationToken cancellationToken)
     {
-        var statusEntities = await _store.ListAsync<IndoorPositionStatusEntity>(cancellationToken);
+        var statusEntities = await _statusRepository.ListAsync(cancellationToken);
 
         var result = new List<DashboardBySite>();
         foreach (var s in statusEntities)
         {
-            var site = await _store.FindAsync<WarehouseSiteEntity>(s.Id, cancellationToken);
+            var site = await _siteRepository.FindAsync(s.Id, cancellationToken);
             if (site != null)
             {
                 var info = new DashboardBySite
@@ -52,14 +63,14 @@ public class HandleGetDashboardBySite : IQueryHandler<GetDashboardBySite, IEnume
                         }
                     };
 
-                    var productItem = await _store.FirstOrDefaultAsync<BeaconEntity>(q => q.Id.Equals(macAddress), cancellationToken);
+                    var productItem = await _beaconRepository.FirstOrDefaultAsync(q => q.Id.Equals(macAddress), cancellationToken);
                     if (productItem != null)
                     {
                         beaconPositionInfo.Beacon.Name = productItem.Name;
 
                         if (!string.IsNullOrEmpty(productItem.ProductId))
                         {
-                            var product = await _store.FirstOrDefaultAsync<ProductEntity>(p => p.Id == productItem.ProductId, cancellationToken);
+                            var product = await _productRepository.FirstOrDefaultAsync(p => p.Id == productItem.ProductId, cancellationToken);
                             if (product != null)
                             {
                                 beaconPositionInfo.Product.Id = product.Id;
@@ -85,14 +96,14 @@ public class HandleGetDashboardBySite : IQueryHandler<GetDashboardBySite, IEnume
                         }
                     };
 
-                    var productItem = await _store.FirstOrDefaultAsync<BeaconEntity>(q => q.Id.Equals(macAddress), cancellationToken);
+                    var productItem = await _beaconRepository.FirstOrDefaultAsync(q => q.Id.Equals(macAddress), cancellationToken);
                     if (productItem != null)
                     {
                         beaconPositionInfo.Beacon.Name = productItem.Name;
 
                         if (!string.IsNullOrEmpty(productItem.ProductId))
                         {
-                            var product = await _store.FirstOrDefaultAsync<ProductEntity>(p => p.Id == productItem.ProductId, cancellationToken);
+                            var product = await _productRepository.FirstOrDefaultAsync(p => p.Id == productItem.ProductId, cancellationToken);
                             if (product != null)
                             {
                                 beaconPositionInfo.Product.Id = product.Id;

@@ -1,4 +1,5 @@
 ﻿using Vayosoft.Core.Caching;
+using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel;
@@ -19,13 +20,18 @@ namespace Warehouse.Core.UseCases.Management.Queries
 
     internal class HandleGetProductItems : IQueryHandler<GetProductItems, IPagedEnumerable<ProductItemDto>>
     {
-        private readonly WarehouseDataStore _store;
+        private readonly IReadOnlyRepository<BeaconEntity> _beaconRepository;
+        private readonly IReadOnlyRepository<ProductEntity> _productRepository;
         private readonly IMapper _mapper;
         private readonly IQueryBus _queryBus;
 
-        public HandleGetProductItems(WarehouseDataStore store, IQueryBus queryBus, IMapper mapper)
+        public HandleGetProductItems(
+            IReadOnlyRepository<BeaconEntity> beaconRepository, 
+            IReadOnlyRepository<ProductEntity> productRepository,
+            IQueryBus queryBus, IMapper mapper)
         {
-            _store = store;
+            _beaconRepository = beaconRepository;
+            _productRepository = productRepository;
             _queryBus = queryBus;
             _mapper = mapper;
         }
@@ -44,12 +50,12 @@ namespace Warehouse.Core.UseCases.Management.Queries
                     MacAddress = item.MacAddress,
                 };
 
-                var productItem = await _store.FirstOrDefaultAsync<BeaconEntity>(q => q.Id.Equals(item.MacAddress), cancellationToken);
+                var productItem = await _beaconRepository.FirstOrDefaultAsync(q => q.Id.Equals(item.MacAddress), cancellationToken);
                 if (productItem != null)
                 {
                     if (!string.IsNullOrEmpty(productItem.ProductId))
                     {
-                        var product = await _store.FindAsync<ProductEntity>(productItem.ProductId, cancellationToken);
+                        var product = await _productRepository.FindAsync(productItem.ProductId, cancellationToken);
                         if (product != null)
                             dto.Product = _mapper.Map<ProductDto>(product);
                     }

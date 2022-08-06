@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using Vayosoft.Core.Commands;
+using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Persistence;
@@ -22,13 +23,13 @@ namespace Warehouse.Core.UseCases.Management.Commands
 
     internal class HandleSetWarehouseSite : ICommandHandler<SetWarehouseSite>
     {
-        private readonly WarehouseDataStore _store;
+        private readonly IRepository<WarehouseSiteEntity> _repository;
         private readonly IMapper _mapper;
         private readonly IdentityContext _context;
 
-        public HandleSetWarehouseSite(WarehouseDataStore store, IMapper mapper, IdentityContext context)
+        public HandleSetWarehouseSite(IRepository<WarehouseSiteEntity> repository, IMapper mapper, IdentityContext context)
         {
-            _store = store;
+            _repository = repository;
             _mapper = mapper;
             _context = context;
         }
@@ -37,7 +38,7 @@ namespace Warehouse.Core.UseCases.Management.Commands
         {
             if (!string.IsNullOrEmpty(request.Id))
             {
-                await _store.GetAndUpdateAsync<WarehouseSiteEntity>(request.Id, entity =>
+                await _repository.GetAndUpdateAsync(request.Id, entity =>
                 {
                     entity.Name = request.Name;
                     entity.TopLength = request.TopLength;
@@ -49,7 +50,7 @@ namespace Warehouse.Core.UseCases.Management.Commands
             {
                 var entity = _mapper.Map<WarehouseSiteEntity>(request);
                 entity.ProviderId = _context.ProviderId ?? 0;
-                await _store.AddAsync(entity, cancellationToken: cancellationToken);
+                await _repository.AddAsync(entity, cancellationToken: cancellationToken);
             }
 
             return Unit.Value;

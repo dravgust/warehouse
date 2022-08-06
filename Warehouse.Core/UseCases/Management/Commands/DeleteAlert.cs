@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
 using MediatR;
 using Vayosoft.Core.Commands;
+using Vayosoft.Core.Persistence;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Persistence;
 
 namespace Warehouse.Core.UseCases.Management.Commands
 {
@@ -20,18 +20,17 @@ namespace Warehouse.Core.UseCases.Management.Commands
 
     internal class HandleDeleteAlert : ICommandHandler<DeleteAlert>
     {
-        private readonly WarehouseDataStore _store;
+        private readonly IRepository<AlertEntity> _repository;
 
-        public HandleDeleteAlert(WarehouseDataStore store)
+        public HandleDeleteAlert(IRepository<AlertEntity> repository)
         {
-            _store = store;
+            _repository = repository;
         }
 
         public async Task<Unit> Handle(DeleteAlert request, CancellationToken cancellationToken)
         {
             //todo delete notification on delete alert event
-            await _store.DeleteAsync<NotificationEntity>(e => e.AlertId == request.Id, cancellationToken);
-            await _store.DeleteAsync(new AlertEntity { Id = request.Id }, cancellationToken);
+            await _repository.DeleteAsync(new AlertEntity { Id = request.Id }, cancellationToken);
             return Unit.Value;
         }
     }

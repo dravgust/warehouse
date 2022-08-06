@@ -7,19 +7,14 @@ using Vayosoft.Data.MongoDB;
 
 namespace Warehouse.Core.Persistence
 {
-    public class WarehouseDataStore : DataStore, IDisposable
+    public class WarehouseStore : DataStore
     {
         private readonly IMapper _mapper;
-        private readonly ILogger<WarehouseDataStore> _logger;
 
-        public WarehouseDataStore(IConfiguration config, IMapper mapper, ILogger<WarehouseDataStore> logger)
-            : base(config)
+        public WarehouseStore(IConfiguration config, ILoggerFactory loggerFactory, IMapper mapper)
+            : base(config, loggerFactory)
         {
             _mapper = mapper;
-            _logger = logger;
-#if DEBUG
-            this.TraceLine += OnTrace;
-#endif 
         }
 
         public Task<TResult> FirstOrDefaultAsync<T, TResult>(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default) where T : IEntity =>
@@ -30,17 +25,5 @@ namespace Warehouse.Core.Persistence
 
         public Task <List<TResult>> ListAsync<T, TResult>(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default) where T : IEntity =>
             ListAsync<T, TResult>(criteria, _mapper, cancellationToken);
-
-        private void OnTrace(string name, string command)
-        {
-            _logger?.LogDebug($"{name}\r\n{command}");
-        }
-
-        public void Dispose()
-        {
-#if DEBUG
-            this.TraceLine -= OnTrace;
-#endif
-        }
     }
 }

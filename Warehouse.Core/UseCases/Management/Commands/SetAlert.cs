@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Vayosoft.Core.Commands;
+using Vayosoft.Core.Persistence;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Persistence;
 
 namespace Warehouse.Core.UseCases.Management.Commands
 {
@@ -10,16 +10,15 @@ namespace Warehouse.Core.UseCases.Management.Commands
 
     public class HandleSetAlert : ICommandHandler<SetAlert>
     {
-        private readonly WarehouseDataStore _store;
-        public HandleSetAlert(WarehouseDataStore store)
+        private readonly IRepository<AlertEntity> _store;
+        public HandleSetAlert(IRepository<AlertEntity> store)
         {
             _store = store;
         }
 
         public async Task<Unit> Handle(SetAlert request, CancellationToken cancellationToken)
         {
-            AlertEntity entity;
-            if (!string.IsNullOrEmpty(request.Id) && (entity = await _store.FindAsync<AlertEntity>(request.Id, cancellationToken)) != null)
+            if (!string.IsNullOrEmpty(request.Id) && (await _store.FindAsync(request.Id, cancellationToken)) != null)
             {
                 await _store.UpdateAsync(request, cancellationToken);
             }

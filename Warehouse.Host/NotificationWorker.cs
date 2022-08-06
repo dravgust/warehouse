@@ -1,4 +1,5 @@
 using Vayosoft.Core.Caching;
+using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.SharedKernel.Events;
 using Vayosoft.Core.SharedKernel.ValueObjects;
@@ -37,16 +38,19 @@ namespace Warehouse.Host
                 _logger.LogInformation("Event worker running at: {time}", DateTimeOffset.Now);
 
                 using var scope = _serviceProvider.CreateScope(); 
-                var store = scope.ServiceProvider.GetRequiredService<WarehouseDataStore>();
+                var alertRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<AlertEntity>>();
+                var beaconReceivedRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<BeaconReceivedEntity>>();
+                var notifyReadRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<NotificationEntity>>();
+                var notificationRepository = scope.ServiceProvider.GetRequiredService<IRepository<NotificationEntity>>();
                 
                 try
                 {
                     //var registeredBeacons = await store.ListAsync<BeaconRegisteredEntity>(cancellationToken: token);
-                    var alerts = await store.ListAsync<AlertEntity>(cancellationToken: token);
+                    var alerts = await alertRepository.ListAsync(cancellationToken: token);
 
                     foreach (var alert in alerts.Where(a => a.Enabled))
                     {
-                        var result = await store.ListAsync<BeaconReceivedEntity>(b => 
+                        var result = await beaconReceivedRepository.ListAsync(b => 
                             b.ReceivedAt < DateTime.UtcNow.AddSeconds(-alert.CheckPeriod), token);
 
                         if (result.Any())
@@ -55,7 +59,7 @@ namespace Warehouse.Host
                             foreach (var beacon in result)
                             {
                                 //await eventBus.Publish(UserNotification.Create);
-                                var notified = await store.SingleOrDefaultAsync<NotificationEntity>(n => 
+                                var notified = await notifyReadRepository.SingleOrDefaultAsync(n => 
                                     n.AlertId == alert.Id && n.MacAddress == beacon.MacAddress, token);
                                 if(notified != null) continue;
 
@@ -67,7 +71,7 @@ namespace Warehouse.Host
                                     SourceId = beacon.SourceId,
                                     ReceivedAt = beacon.ReceivedAt
                                 };
-                                await store.AddAsync(notification, token);
+                                await notificationRepository.AddAsync(notification, token);
                             }
                         }
                     }

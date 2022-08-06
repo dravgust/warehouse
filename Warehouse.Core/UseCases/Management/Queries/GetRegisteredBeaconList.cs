@@ -1,9 +1,9 @@
 ﻿using Vayosoft.Core.Caching;
+using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Persistence;
 
 namespace Warehouse.Core.UseCases.Management.Queries
 {
@@ -12,12 +12,12 @@ namespace Warehouse.Core.UseCases.Management.Queries
 
     public class HandleGetRegisteredBeaconList : IQueryHandler<GetRegisteredBeaconList, IEnumerable<string>>
     {
-        private readonly WarehouseDataStore _store;
+        private readonly IReadOnlyRepository<BeaconRegisteredEntity> _repository;
         private readonly IDistributedMemoryCache _cache;
 
-        public HandleGetRegisteredBeaconList(WarehouseDataStore store, IDistributedMemoryCache cache, IMapper mapper, IQueryBus queryBus)
+        public HandleGetRegisteredBeaconList(IReadOnlyRepository<BeaconRegisteredEntity> repository, IDistributedMemoryCache cache, IMapper mapper, IQueryBus queryBus)
         {
-            _store = store;
+            _repository = repository;
             _cache = cache;
         }
 
@@ -27,7 +27,7 @@ namespace Warehouse.Core.UseCases.Management.Queries
             {
                 options.AbsoluteExpirationRelativeToNow = TimeSpans.FiveMinutes;
 
-                return (await _store.ListAsync<BeaconRegisteredEntity>(cancellationToken))
+                return (await _repository.ListAsync(cancellationToken))
                     .Select(b => b.MacAddress);
             });
 

@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Entities;
@@ -13,21 +14,18 @@ using Vayosoft.Core.SharedKernel.Models.Pagination;
 
 namespace Vayosoft.Data.MongoDB
 {
-    public class DataStore : MongoContext
+    public class DataStore : MongoConnection
     {
-        public DataStore(IConfiguration config) : base(config) { }
-        public DataStore(ConnectionSetting config) : base(config) { }
-        public DataStore(string connectionString, string[] bootstrapServers)
-            : base(connectionString, bootstrapServers) { }
+        public DataStore(IConfiguration config, ILoggerFactory loggerFactory) : base(config, loggerFactory) { }
 
         public IQueryable<T> AsQueryable<T>() where T : class, IEntity =>
             Collection<T>().AsQueryable();
 
-        public async Task<T> GetAsync<T>(string id, CancellationToken cancellationToken = default) where T : IEntity =>
-            await GetAsync<T, string>(id, cancellationToken);
+        public Task<T> GetAsync<T>(string id, CancellationToken cancellationToken = default) where T : IEntity =>
+            GetAsync<T, string>(id, cancellationToken);
 
-        public async Task<T> GetAsync<T, TId>(TId id, CancellationToken cancellationToken = default) where T : IEntity =>
-            await FindAsync<T>(id, cancellationToken) ?? throw EntityNotFoundException.For<T>(id);
+        public Task<T> GetAsync<T, TId>(TId id, CancellationToken cancellationToken = default) where T : IEntity =>
+            FindAsync<T>(id, cancellationToken) ?? throw EntityNotFoundException.For<T>(id);
 
         public async Task GetAndUpdateAsync<T>(string id, Action<T> action, CancellationToken cancellationToken = default)
             where T : class, IEntity

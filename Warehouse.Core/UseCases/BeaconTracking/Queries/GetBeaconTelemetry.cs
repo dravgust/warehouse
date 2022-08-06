@@ -1,7 +1,7 @@
 ﻿using MongoDB.Driver;
 using Vayosoft.Core.Queries;
+using Vayosoft.Data.MongoDB;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Persistence;
 using Warehouse.Core.UseCases.BeaconTracking.Models;
 
 namespace Warehouse.Core.UseCases.BeaconTracking.Queries
@@ -20,18 +20,17 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
         IQueryHandler<GetBeaconTelemetry, BeaconTelemetryDto>,
         IQueryHandler<GetBeaconTelemetry2, BeaconTelemetry2Dto>
     {
-        private readonly WarehouseDataStore _store;
+        private readonly IMongoConnection _connection;
 
-        public HandleGetBeaconTelemetry(WarehouseDataStore store)
+        public HandleGetBeaconTelemetry(IMongoConnection connection)
         {
-            _store = store;
+            _connection = connection;
         }
-
 
         public async Task<BeaconTelemetryDto> Handle(GetBeaconTelemetry request, CancellationToken cancellationToken)
         {
-            var data = _store
-                .AsQueryable<BeaconTelemetryEntity>()
+            var data = _connection.Collection<BeaconTelemetryEntity>()
+                .AsQueryable()
                 .Where(t => t.MacAddress == request.MacAddress)
                 .OrderByDescending(m => m.ReceivedAt)
                 .FirstOrDefault();
@@ -53,7 +52,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 
         public async Task<BeaconTelemetry2Dto> Handle(GetBeaconTelemetry2 request, CancellationToken cancellationToken)
         {
-            var data = _store.Collection<BeaconTelemetryEntity>().Aggregate()
+            var data = _connection.Collection<BeaconTelemetryEntity>().Aggregate()
                 .Match(t => t.MacAddress == request.MacAddress && t.ReceivedAt > DateTime.UtcNow.AddHours(-12))
                 .Group(k =>
                         new DateTime(k.ReceivedAt.Year, k.ReceivedAt.Month, k.ReceivedAt.Day,
