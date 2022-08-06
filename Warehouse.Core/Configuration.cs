@@ -55,12 +55,13 @@ namespace Warehouse.Core
                 .AddScoped<ILinqProvider>(s => s.GetRequiredService<WarehouseContext>());
 
             services.AddMongoContext(() =>
-            {
-                AutoRegistration.RegisterClassMap(Assembly.GetExecutingAssembly());
-                BsonSerializer.RegisterSerializer(typeof(MacAddress), new MacAddressSerializer());
-            })
+                {
+                    AutoRegistration.RegisterClassMap(Assembly.GetExecutingAssembly());
+                    BsonSerializer.RegisterSerializer(typeof(MacAddress), new MacAddressSerializer());
+                })
                 .AddScoped(typeof(IRepository<>), typeof(MongoRepository<>))
                 .AddScoped(typeof(IReadOnlyRepository<>), typeof(MongoRepository<>))
+                .AddScoped<WarehouseStore>()
                 .AddSingleton<IEventStore, MongoEventStore>();
 
             services

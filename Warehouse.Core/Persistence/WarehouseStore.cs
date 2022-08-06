@@ -1,112 +1,78 @@
 ﻿using System.Linq.Expressions;
+using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
+using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Entities;
-using Vayosoft.Core.SharedKernel.Exceptions;
-using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Data.MongoDB;
+using Warehouse.Core.Entities.Models;
 
 namespace Warehouse.Core.Persistence
 {
-    public class WarehouseStore
+    public class WarehouseStore : IDisposable
     {
         private readonly IMongoConnection _connection;
+        private readonly IServiceScope _scope;
         private readonly IMapper _mapper;
+        private readonly Dictionary<string, IReadOnlyRepository<IEntity>> _repositories = new();
 
-        public WarehouseStore(IMongoConnection connection, IMapper mapper)
+        public WarehouseStore(IMongoConnection connection, IServiceProvider serviceProvider, IMapper mapper)
         {
             _connection = connection;
+            _scope = serviceProvider.CreateScope();
             _mapper = mapper;
         }
 
-        public IQueryable<T> AsQueryable<T>() where T : class, IEntity =>
-            _connection.Collection<T>().AsQueryable();
-
-        public Task<T> GetAsync<T>(string id, CancellationToken cancellationToken = default) where T : IEntity =>
-            GetAsync<T, string>(id, cancellationToken);
-
-        public Task<T> GetAsync<T, TId>(TId id, CancellationToken cancellationToken = default) where T : IEntity where TId : notnull =>
-            FindAsync<T>(id, cancellationToken) ?? throw EntityNotFoundException.For<T>(id);
-
-        public async Task GetAndUpdateAsync<T>(string id, Action<T> action, CancellationToken cancellationToken = default)
-            where T : class, IEntity
+        protected IReadOnlyRepository<T> Repository<T>() where T : class, IEntity
         {
-            var entity = await GetAsync<T>(id, cancellationToken);
-            action(entity);
-            await UpdateAsync(entity, cancellationToken);
+            var key = typeof(T).Name;
+            if (_repositories.ContainsKey(key))
+                return (IReadOnlyRepository<T>) _repositories[key];
+
+            var r = _scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<T>>();
+            _repositories.Add(key, (IReadOnlyRepository<IEntity>) r);
+
+            return r;
         }
 
-        public Task<T> FirstOrDefaultAsync<T>(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default) where T : IEntity =>
-            _connection.Collection<T>().Find(criteria).FirstOrDefaultAsync(cancellationToken);
+        public IReadOnlyRepository<WarehouseSiteEntity> Sites => 
+            Repository<WarehouseSiteEntity>();
 
-        public Task<T> SingleOrDefaultAsync<T>(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default) where T : IEntity =>
-            _connection.Collection<T>().Find(criteria).SingleOrDefaultAsync(cancellationToken);
-
-        public Task<List<T>> ListAsync<T>(CancellationToken cancellationToken = default) where T : IEntity =>
-            _connection.Collection<T>().Find(Builders<T>.Filter.Empty).ToListAsync(cancellationToken);
-
-        public Task<List<T>> ListAsync<T>(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default) where T : IEntity =>
-            _connection.Collection<T>().Find(criteria).ToListAsync(cancellationToken);
-
-        public Task<IPagedEnumerable<T>> PagedListAsync<T>(IPagingModel<T, object> model, Expression<Func<T, bool>> criteria, CancellationToken cancellationToken)
-            where T : class, IEntity => _connection.Collection<T>().AggregateByPage(model, Builders<T>.Filter.Where(criteria), cancellationToken);
-
-        //public async Task<IPagedEnumerable<T>> PagedListAsync2<T>(IPagingModel<T, object> model,
-        //    Expression<Func<T, bool>> criteria, CancellationToken cancellationToken) where T : class, IEntity
-        //{
-        //    var filterDefinition = Builders<T>.Filter.Where(criteria);
-        //    var sortDefinition = model.OrderBy.SortOrder == SortOrder.Asc
-        //        ? Builders<T>.Sort.Ascending(model.OrderBy.Expression)
-        //        : Builders<T>.Sort.Descending(model.OrderBy.Expression);
-
-        //    var data = await Collection<T>().Find(filterDefinition)
-        //        .Sort(sortDefinition)
-        //        .Skip((model.Page - 1) * model.Take)
-        //        .Limit(model.Take)
-        //        .ToListAsync(cancellationToken: cancellationToken);
-
-        //    var count = await Collection<T>().CountDocumentsAsync(filterDefinition, cancellationToken: cancellationToken);
-
-        //    return new PagedEnumerable<T>(data, count);
-        //}
-
-        public Task<IPagedEnumerable<T>> PagedListAsync<T>(IPagingModel<T, object> model, CancellationToken cancellationToken) where T : class, IEntity =>
-            _connection.Collection<T>().AggregateByPage(model, Builders<T>.Filter.Empty, cancellationToken);
-
-        public Task<TResult> FirstOrDefaultAsync<T, TResult>(Expression<Func<T, bool>> criteria, IMapper mapper, CancellationToken cancellationToken = default) where T : IEntity =>
-            _connection.Collection<T>().Find(criteria).Project(x => mapper.Map<TResult>(x)).FirstOrDefaultAsync(cancellationToken);
-
-        public Task<TResult> SingleOrDefaultAsync<T, TResult>(Expression<Func<T, bool>> criteria, IMapper mapper, CancellationToken cancellationToken = default) where T : IEntity =>
-            _connection.Collection<T>().Find(criteria).Project(x => mapper.Map<TResult>(x)).SingleOrDefaultAsync(cancellationToken);
-
-        public Task<List<TResult>> ListAsync<T, TResult>(Expression<Func<T, bool>> criteria, IMapper mapper, CancellationToken cancellationToken = default) where T : IEntity =>
-            _connection.Collection<T>().Find(criteria).Project(x => mapper.Map<TResult>(x)).ToListAsync(cancellationToken);
-
-        public Task<T> FindAsync<T>(object id, CancellationToken cancellationToken = default) where T : IEntity =>
-            _connection.Collection<T>().Find(q => q.Id.Equals(id)).FirstOrDefaultAsync(cancellationToken);
-
-        public Task AddAsync<T>(T entity, CancellationToken cancellationToken = default) where T : IEntity =>
-            _connection.Collection<T>().InsertOneAsync(entity, cancellationToken: cancellationToken);
-
-        public Task UpdateAsync<T>(T entity, CancellationToken cancellationToken = default) where T : IEntity =>
-            _connection.Collection<T>().ReplaceOneAsync(e => e.Id.Equals(entity.Id), entity, cancellationToken: cancellationToken);
-
-        public Task UpdateAsync<T>(Expression<Func<T, bool>> criteria, T entity, CancellationToken cancellationToken = default) where T : IEntity =>
-            _connection.Collection<T>().ReplaceOneAsync(criteria, entity, cancellationToken: cancellationToken);
-
-        public Task DeleteAsync<T>(T entity, CancellationToken cancellationToken = default) where T : IEntity =>
-            _connection.Collection<T>().DeleteOneAsync(e => e.Id.Equals(entity.Id), cancellationToken: cancellationToken);
-
-        public Task DeleteAsync<T>(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken) where T : IEntity =>
-            _connection.Collection<T>().DeleteOneAsync(criteria, cancellationToken: cancellationToken);
+        public IQueryable<T> Set<T>() where T : class, IEntity => 
+            _connection.Collection<T>().AsQueryable();
 
         public Task<TResult> FirstOrDefaultAsync<T, TResult>(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default) where T : IEntity =>
-            FirstOrDefaultAsync<T, TResult>(criteria, _mapper, cancellationToken);
+            _connection.Collection<T>().Find(criteria).Project(x => _mapper.Map<TResult>(x)).FirstOrDefaultAsync(cancellationToken);
 
         public Task<TResult> SingleOrDefaultAsync<T, TResult>(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default) where T : IEntity =>
-            SingleOrDefaultAsync<T, TResult>(criteria, _mapper, cancellationToken);
+            _connection.Collection<T>().Find(criteria).Project(x => _mapper.Map<TResult>(x)).SingleOrDefaultAsync(cancellationToken);
 
-        public Task <List<TResult>> ListAsync<T, TResult>(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default) where T : IEntity =>
-            ListAsync<T, TResult>(criteria, _mapper, cancellationToken);
+        public Task<List<TResult>> ListAsync<T, TResult>(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default) where T : IEntity =>
+            _connection.Collection<T>().Find(criteria).Project(x => _mapper.Map<TResult>(x)).ToListAsync(cancellationToken);
+
+        public async Task<string> SetWarehouseSite(WarehouseSiteEntity entity, CancellationToken cancellationToken)
+        {
+            var collection = _connection.Collection<WarehouseSiteEntity>();
+            if (!string.IsNullOrEmpty(entity.Id))
+            {
+                var filter = Builders<WarehouseSiteEntity>.Filter.Where(e => e.Id == entity.Id);
+                var update = Builders<WarehouseSiteEntity>.Update
+                    .Set(fs => fs.Name, entity.Name)
+                    .Set(fs => fs.LeftLength, entity.LeftLength)
+                    .Set(fs => fs.TopLength, entity.TopLength)
+                    .Set(fs => fs.Error, entity.Error);
+
+                await collection.FindOneAndUpdateAsync(filter, update, cancellationToken: cancellationToken);
+            }
+            else
+                await collection.InsertOneAsync(entity, cancellationToken: cancellationToken);
+
+            return entity.Id;
+        }
+
+        public void Dispose()
+        {
+            _scope.Dispose();
+        }
     }
 }
