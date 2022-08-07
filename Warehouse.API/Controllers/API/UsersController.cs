@@ -4,11 +4,11 @@ using Vayosoft.Core.Persistence.Commands;
 using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
+using Warehouse.API.Services.Authorization;
 using Warehouse.API.Services.Authorization.Attributes;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Administration.Specifications;
 using Warehouse.Core.Utilities;
-using Warehouse.Core.Entities.ValueObjects;
 
 namespace Warehouse.API.Controllers.API
 {
@@ -31,7 +31,7 @@ namespace Warehouse.API.Controllers.API
         {
             //HttpContext.Items.TryGetValue("User", out var user3);
             //var user = HttpContext.User;
-            var identityUser = HttpContext.Items[nameof(UserContext)] as UserContext;
+            var identityUser = HttpContext.Items[nameof(UserIdentity)] as UserIdentity;
 
             var spec = new UserSpec(page, take, identityUser?.ProviderId ?? 0);
             var query = new SpecificationQuery<UserSpec, IPagedEnumerable<UserEntityDto>>(spec);

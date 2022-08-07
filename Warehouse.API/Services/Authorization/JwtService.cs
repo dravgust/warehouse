@@ -1,11 +1,13 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Security.Principal;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Entities.ValueObjects;
 using Warehouse.Core.Services;
 using Warehouse.Core.UseCases.Administration.Models;
 
@@ -25,12 +27,11 @@ namespace Warehouse.API.Services.Authorization
             // generate token that is valid for 15 minutes
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var options = new IdentityOptions();
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString() ?? throw new InvalidOperationException("The User has no ID")),
-                new Claim(nameof(IUser.Id), $"{user.Id}"),
-                new Claim(nameof(IProvider.ProviderId), $"{((IProvider)user)?.ProviderId}")
+                new Claim(nameof(IUser.Id), user.Id.ToString() ?? throw new InvalidOperationException("The User has no ID")),
+                new Claim(nameof(IProvider.ProviderId), $"{((IProvider)user)?.ProviderId}"),
             };
 
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -43,7 +44,7 @@ namespace Warehouse.API.Services.Authorization
             return tokenHandler.WriteToken(token);
         }
 
-        public UserContext ValidateJwtToken(string token)
+        public IPrincipal GetPrincipalFromJwtToken(string token)
         {
             if (token == null)
                 return null;
@@ -52,7 +53,7 @@ namespace Warehouse.API.Services.Authorization
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
             try
             {
-                tokenHandler.ValidateToken(token, new TokenValidationParameters
+                var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
@@ -62,20 +63,16 @@ namespace Warehouse.API.Services.Authorization
                     ClockSkew = TimeSpan.Zero
                 }, out SecurityToken validatedToken);
 
-                var jwtToken = (JwtSecurityToken)validatedToken;
-                var userId = long.Parse(jwtToken.Claims.First(x => x.Type == nameof(IUser.Id)).Value);
-                var providerId = long.Parse(jwtToken.Claims.First(x => x.Type == nameof(IProvider.ProviderId)).Value);
-
-                // return user id from JWT token if validation successful
-                return new UserContext
+                if (validatedToken is not JwtSecurityToken jwtSecurityToken
+                    || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    UserId = userId,
-                    ProviderId = providerId
-                };
+                    return null;
+                }
+
+                return principal;
             }
             catch
             {
-                // return null if validation fails
                 return null;
             }
         }

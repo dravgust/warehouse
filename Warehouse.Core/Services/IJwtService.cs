@@ -1,12 +1,12 @@
-﻿using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Entities.ValueObjects;
+﻿using System.Security.Principal;
+using Warehouse.Core.Entities.Models;
 
 namespace Warehouse.Core.Services
 {
     public interface IJwtService
     {
         public string GenerateJwtToken(IUser user);
-        public UserContext ValidateJwtToken(string token);
+        public IPrincipal GetPrincipalFromJwtToken(string token);
         public RefreshToken GenerateRefreshToken(string ipAddress);
     }
 }

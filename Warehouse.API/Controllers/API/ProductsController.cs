@@ -12,7 +12,6 @@ using Warehouse.Core.Utilities;
 
 namespace Warehouse.API.Controllers.API
 {
-    //v1/items/
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]

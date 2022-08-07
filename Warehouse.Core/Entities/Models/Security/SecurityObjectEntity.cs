@@ -1,6 +1,6 @@
 ﻿using Vayosoft.Core.SharedKernel.Entities;
 
-namespace Warehouse.Core.UseCases.Administration.Models
+namespace Warehouse.Core.Entities.Models.Security
 {
     public class SecurityObjectEntity : EntityBase<string>
     {

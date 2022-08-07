@@ -19,18 +19,18 @@ namespace Warehouse.Core.UseCases.Management.Commands
         private readonly IRepository<BeaconEntity> _beaconRepository;
         private readonly IRepository<BeaconRegisteredEntity> _beaconRegisteredRepository;
         private readonly IMapper _mapper;
-        private readonly UserContext _context;
+        private readonly IUserIdentity _identity;
         private readonly IReadOnlyRepository<BeaconRegisteredEntity> _beaconRegisteredReadOnly;
 
         public HandleSetBeacon(
             IRepository<BeaconEntity> beaconRepository,
             IRepository<BeaconRegisteredEntity> beaconRegisteredRepository,
-            IMapper mapper, UserContext context, IReadOnlyRepository<BeaconRegisteredEntity> beaconRegisteredReadOnly)
+            IMapper mapper, IUserIdentity identity, IReadOnlyRepository<BeaconRegisteredEntity> beaconRegisteredReadOnly)
         {
             _beaconRepository = beaconRepository;
             _beaconRegisteredRepository = beaconRegisteredRepository;
             _mapper = mapper;
-            _context = context;
+            _identity = identity;
             _beaconRegisteredReadOnly = beaconRegisteredReadOnly;
         }
 
@@ -61,7 +61,7 @@ namespace Warehouse.Core.UseCases.Management.Commands
             else
             {
                 entity = _mapper.Map<BeaconEntity>(request);
-                entity.ProviderId = _context.ProviderId ?? 0;
+                entity.ProviderId = _identity.ProviderId ?? 0;
                 await _beaconRepository.AddAsync(entity, cancellationToken);
             }
 

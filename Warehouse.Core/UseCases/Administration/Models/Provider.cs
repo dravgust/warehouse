@@ -11,10 +11,10 @@ namespace Warehouse.Core.UseCases.Administration.Models
 
         protected Provider(int id, string name) : base(id, name) { }
 
-        public static explicit operator Provider(ulong providerId) 
-            => ParseId<Provider>((int) providerId);
+        public static explicit operator Provider(long providerId) //=>  ParseId<Provider>((int) providerId);
+            => GetAll<Provider>().FirstOrDefault(p => p.Id == providerId) ?? Default;
 
-        public static explicit operator Provider(string providerName) 
-            => ParseName<Provider>(providerName);
+        public static explicit operator Provider(string providerName) //=> ParseName<Provider>(providerName);
+            => GetAll<Provider>().FirstOrDefault(p => p.Name.Equals(providerName, StringComparison.OrdinalIgnoreCase)) ?? Default;
     }
 }

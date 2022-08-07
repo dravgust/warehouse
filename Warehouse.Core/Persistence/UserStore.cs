@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Vayosoft.Core.Persistence;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.UseCases.Administration.Models;
+using Warehouse.Core.Entities.Models.Security;
 
 namespace Warehouse.Core.Persistence
 {
@@ -39,12 +39,12 @@ namespace Warehouse.Core.Persistence
             return _context.Set<SecurityObjectEntity>().ToListAsync();
         }
 
-        public dynamic GetRolePermissionsAsync(string roleId)
+        public Task<List<RolePermissionsDTO>> GetRolePermissionsAsync(string roleId)
         {
             var query = from rp in _context.Set<SecurityRolePermissionsEntity>()
                 join so in _context.Set<SecurityObjectEntity>() on rp.ObjectId equals so.Id
                 where rp.RoleId == roleId
-                select new
+                select new RolePermissionsDTO
                 {
                     Id = rp.Id,
                     RoleId = rp.RoleId,
@@ -56,12 +56,12 @@ namespace Warehouse.Core.Persistence
             return query.ToListAsync();
         }
 
-        public dynamic GetUserRolesAsync(object userId)
+        public Task<List<RoleDTO>> GetUserRolesAsync(object userId)
         {
             var query = (from ur in _context.Set<UserRoleEntity>()
                 join r in _context.Set<SecurityRoleEntity>() on ur.RoleId equals r.Id
                 where ur.UserId.Equals(userId)
-                select new
+                select new RoleDTO
                 {
                     Id = r.Id,
                     Name = r.Name,
@@ -69,7 +69,7 @@ namespace Warehouse.Core.Persistence
                     Items = (from rp in _context.Set<SecurityRolePermissionsEntity>()
                         join so in _context.Set<SecurityObjectEntity>() on rp.ObjectId equals so.Id
                         where rp.RoleId == r.Id
-                        select new
+                        select new RolePermissionsDTO
                         {
                             Id = rp.Id,
                             RoleId = rp.RoleId,

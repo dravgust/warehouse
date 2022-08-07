@@ -59,5 +59,17 @@
             }
             return BitConverter.ToDouble(data, 0);
         }
+
+        public static void SetInt64(this ISession session, string key, long value)
+        {
+            session.Set(key, BitConverter.GetBytes(value));
+        }
+
+        public static double? GetInt64(this ISession session, string key)
+        {
+            var data = session.Get(key);
+            if (data == null) return null;
+            return BitConverter.ToInt64(data, 0);
+        }
     }
 }

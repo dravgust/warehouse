@@ -34,38 +34,22 @@ namespace Warehouse.API.Services.Session
             Session?.SetAsync(key, value);
 
         public void SetBoolean( string key, bool value) =>
-            Session?.Set(key, BitConverter.GetBytes(value));
+            Session?.Set(key, value);
 
-        public bool? GetBoolean(string key)
-        {
-            var data = Session?.Get(key);
-            if (data == null) return null;
-            return BitConverter.ToBoolean(data, 0);
-        }
+        public bool? GetBoolean(string key) =>
+            Session.GetBoolean(key);
 
-        public void SetDouble(string key, double value)
-        {
-            Session?.Set(key, BitConverter.GetBytes(value));
-        }
+        public void SetDouble(string key, double value) =>
+            Session.SetDouble(key, value);
 
-        public double? GetDouble(string key)
-        {
-            var data = Session?.Get(key);
-            if (data == null) return null;
-            return BitConverter.ToDouble(data, 0);
-        }
+        public double? GetDouble(string key) =>
+            Session?.GetDouble(key);
 
-        public void SetInt64(string key, long value)
-        {
-            Session?.Set(key, BitConverter.GetBytes(value));
-        }
+        public void SetInt64(string key, long value) =>
+            Session?.SetInt64(key, value);
 
-        public double? GetInt64(string key)
-        {
-            var data = Session?.Get(key);
-            if (data == null) return null;
-            return BitConverter.ToInt64(data, 0);
-        }
+        public double? GetInt64(string key) =>
+            Session?.GetInt64(key);
 
         public byte[] ToByteArray<T>(T obj) =>
             obj == null ? null : JsonSerializer.SerializeToUtf8Bytes(obj);

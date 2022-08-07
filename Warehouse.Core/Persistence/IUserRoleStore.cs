@@ -1,4 +1,5 @@
-﻿using Warehouse.Core.UseCases.Administration.Models;
+﻿using System.Collections.ObjectModel;
+using Warehouse.Core.Entities.Models.Security;
 
 namespace Warehouse.Core.Persistence
 {
@@ -12,8 +13,8 @@ namespace Warehouse.Core.Persistence
 
         public Task<List<SecurityObjectEntity>> GetObjectsAsync();
 
-        public dynamic GetRolePermissionsAsync(string roleId);
+        public Task<List<RolePermissionsDTO>> GetRolePermissionsAsync(string roleId);
 
-        public dynamic GetUserRolesAsync(object userId);
+        public Task<List<RoleDTO>> GetUserRolesAsync(object userId);
     }
 }

@@ -24,13 +24,13 @@ namespace Warehouse.Core.UseCases.Management.Commands
     {
         private readonly IRepository<ProductEntity> _repository;
         private readonly IMapper _mapper;
-        private readonly UserContext _context;
+        private readonly IUserIdentity _identity;
 
-        public HandleSetProduct(IRepository<ProductEntity> repository, IMapper mapper, UserContext context)
+        public HandleSetProduct(IRepository<ProductEntity> repository, IMapper mapper, IUserIdentity identity)
         {
             _repository = repository;
             _mapper = mapper;
-            _context = context;
+            _identity = identity;
         }
 
         public async Task<Unit> Handle(SetProduct request, CancellationToken cancellationToken)
@@ -47,7 +47,7 @@ namespace Warehouse.Core.UseCases.Management.Commands
             else
             {
                 entity = _mapper.Map<ProductEntity>(request);
-                entity.ProviderId = _context.ProviderId ?? 0;
+                entity.ProviderId = _identity.ProviderId ?? 0;
                 await _repository.AddAsync(entity, cancellationToken);
             }
 
