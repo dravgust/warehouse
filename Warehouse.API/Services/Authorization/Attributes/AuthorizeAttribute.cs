@@ -46,13 +46,15 @@ namespace Warehouse.API.Services.Authorization.Attributes
                 {
                     context.Result = new JsonResult(new { message = "No permissions" }) { StatusCode = StatusCodes.Status401Unauthorized };
                 }
-
-                var userIdentity = context.HttpContext.RequestServices.GetService<IUserIdentity>();
-                if (userIdentity != null)
+                else
                 {
-                    userIdentity.UserId = user.Id;
-                    userIdentity.UserType = user.Kind;
-                    userIdentity.ProviderId = user.ProviderId;
+                    var userIdentity = context.HttpContext.RequestServices.GetService<IUserIdentity>();
+                    if (userIdentity != null)
+                    {
+                        userIdentity.UserId = user.Id;
+                        userIdentity.UserType = user.Kind;
+                        userIdentity.ProviderId = user.ProviderId;
+                    }
                 }
             }
             else
