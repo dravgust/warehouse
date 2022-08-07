@@ -25,13 +25,13 @@ function ProductList({
 
   const [page, setPage] = useState(1);
   //const client = useClient();
-
+  const pageSize = 3;
   const {
     isLoading,
     error,
     data: response,
     isSuccess,
-  } = useQuery([fetchProducts, page, searchTerm, refresh, reload], getProducts);
+  } = useQuery([fetchProducts, page, searchTerm, pageSize, refresh, reload], getProducts);
 
   useEffect(() => {
     if (isSuccess && response.items.length > 0) {

@@ -48,6 +48,7 @@ namespace Warehouse.Core.UseCases.Management
                 .AddCommandHandler<SetBeacon, HandleSetBeacon>()
                 .AddCommandHandler<SetAlert, HandleSetAlert>()
                 .AddCommandHandler<DeleteAlert, HandleDeleteAlert>()
+                .AddCommandHandler<DeleteBeacon, HandleDeleteBeacon>()
                 .AddCommandHandler<SetProduct, HandleSetProduct>()
                 .AddCommandHandler<DeleteProduct, HandleDeleteProduct>();
     }

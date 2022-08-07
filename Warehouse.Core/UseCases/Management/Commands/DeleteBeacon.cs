@@ -29,7 +29,7 @@ namespace Warehouse.Core.UseCases.Management.Commands
 
         public async Task<Unit> Handle(DeleteBeacon request, CancellationToken cancellationToken)
         {
-            await _repository.DeleteAsync(new BeaconEntity { Id = request.MacAddress }, cancellationToken);
+            await _repository.DeleteAsync(new BeaconEntity { MacAddress = request.MacAddress }, cancellationToken);
 
             return Unit.Value;
         }

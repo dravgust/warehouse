@@ -14,9 +14,9 @@ namespace Warehouse.Core.Persistence.Mapping
                 .SetIdGenerator(StringObjectIdGenerator.Instance);
         }
     }
-    public class BeaconReceivedEntityClassMap : MongoClassMap<BeaconRegisteredEntity>
+    public class BeaconReceivedEntityClassMap : MongoClassMap<BeaconReceivedEntity>
     {
-        public override void Map(BsonClassMap<BeaconRegisteredEntity> cm)
+        public override void Map(BsonClassMap<BeaconReceivedEntity> cm)
         {
             cm.AutoMap();
             cm.MapIdProperty(c => c.MacAddress)

@@ -34,11 +34,11 @@ namespace Warehouse.API.Controllers.API
             return Ok((await _queryBus.Send(query, token)).ToPagedResponse(query.Size));
         }
 
-        [HttpGet("delete")]
-        public async Task<IActionResult> DeleteBeaconByMac(string mac, CancellationToken token)
+        [HttpPost("delete")]
+        public async Task<IActionResult> DeleteBeaconByMac([FromBody] DeleteBeacon query, CancellationToken token)
         {
-            await _commandBus.Send(new DeleteBeacon { MacAddress = mac }, token);
-            return Ok(new { mac });
+            await _commandBus.Send(query, token);
+            return Ok(new { query.MacAddress });
         }
 
         [HttpPost("set")]

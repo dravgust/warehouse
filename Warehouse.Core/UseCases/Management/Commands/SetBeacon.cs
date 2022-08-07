@@ -1,10 +1,12 @@
 ﻿using MediatR;
+using MongoDB.Driver;
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel;
+using Vayosoft.Data.MongoDB;
 using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Persistence;
+using Warehouse.Core.Entities.ValueObjects;
 using Warehouse.Core.UseCases.Management.Models;
 
 namespace Warehouse.Core.UseCases.Management.Commands
@@ -17,20 +19,26 @@ namespace Warehouse.Core.UseCases.Management.Commands
         private readonly IRepository<BeaconEntity> _beaconRepository;
         private readonly IRepository<BeaconRegisteredEntity> _beaconRegisteredRepository;
         private readonly IMapper _mapper;
+        private readonly UserContext _context;
+        private readonly IReadOnlyRepository<BeaconRegisteredEntity> _beaconRegisteredReadOnly;
 
         public HandleSetBeacon(
             IRepository<BeaconEntity> beaconRepository,
             IRepository<BeaconRegisteredEntity> beaconRegisteredRepository,
-            IMapper mapper)
+            IMapper mapper, UserContext context, IReadOnlyRepository<BeaconRegisteredEntity> beaconRegisteredReadOnly)
         {
             _beaconRepository = beaconRepository;
             _beaconRegisteredRepository = beaconRegisteredRepository;
             _mapper = mapper;
+            _context = context;
+            _beaconRegisteredReadOnly = beaconRegisteredReadOnly;
         }
 
         public async Task<Unit> Handle(SetBeacon request, CancellationToken cancellationToken)
         {
-            var b = await _beaconRegisteredRepository.FindAsync(request.MacAddress, cancellationToken);
+            var b = await _beaconRegisteredReadOnly
+                .FirstOrDefaultAsync(r => r.MacAddress == request.MacAddress, cancellationToken);
+            //var b = await _beaconRegisteredRepository.FindAsync(request.MacAddress, cancellationToken);
             if (b == null)
             {
                 var rb = new BeaconRegisteredEntity
@@ -45,11 +53,16 @@ namespace Warehouse.Core.UseCases.Management.Commands
             BeaconEntity entity;
             if (!string.IsNullOrEmpty(request.MacAddress) && (entity = await _beaconRepository.FindAsync(request.MacAddress, cancellationToken)) != null)
             {
-                await _beaconRepository.UpdateAsync(_mapper.Map(request, entity), cancellationToken);
+                entity.Name = request.Name;
+                entity.ProductId = request.Product?.Id;
+                entity.Metadata = request.Metadata;
+                await _beaconRepository.UpdateAsync(entity, cancellationToken);
             }
             else
             {
-                await _beaconRepository.AddAsync(_mapper.Map<BeaconEntity>(request), cancellationToken);
+                entity = _mapper.Map<BeaconEntity>(request);
+                entity.ProviderId = _context.ProviderId ?? 0;
+                await _beaconRepository.AddAsync(entity, cancellationToken);
             }
 
             return Unit.Value;

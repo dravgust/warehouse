@@ -62,8 +62,8 @@ export default function BeaconForm({ onSave = () => {}, onDelete = () => {}, ite
       if (active) {
         const queryKey = ["", "1", "", "1000"];
         const res = await getProducts({ queryKey });
-        if (res.data) {
-          setOptions([{ name: "n/a", id: "" }, ...res.data]);
+        if (res.items) {
+          setOptions([{ name: "n/a", id: "" }, ...res.items]);
         }
       }
     })();

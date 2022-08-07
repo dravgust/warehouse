@@ -50,7 +50,8 @@ namespace Warehouse.API.Services.Authorization
                     // attach user to context on successful jwt validation
                     context.Items[nameof(UserContext)] = identity;
 
-                    if (services.GetRequiredService(typeof(UserContext)) is UserContext userContext)
+                    var userContext = services.GetService<UserContext>();
+                    if (userContext != null)
                     {
                         userContext.UserId = identity.UserId;
                         userContext.UserType = identity.UserType;
