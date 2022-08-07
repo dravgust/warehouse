@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
 using Warehouse.API.Extensions;
 using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Entities.ValueObjects;
 using Warehouse.Core.Services;
 using Warehouse.Core.UseCases.Administration.Models;
-using Warehouse.Core.UseCases.Administration.ValueObjects;
 
 namespace Warehouse.API.Services.Authorization
 {
@@ -20,32 +20,42 @@ namespace Warehouse.API.Services.Authorization
             _appSettings = appSettings.Value;
         }
 
-        public async Task Invoke(HttpContext context, IUserService userService, IJwtService jwtUtils)
+        public async Task Invoke(HttpContext context, IServiceProvider services, IJwtService jwtUtils)
         {
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             if (token != null)
             {
                 var cancellationToken = context.RequestAborted;
-                var identityContext = jwtUtils.ValidateJwtToken(token);
-                if (identityContext?.UserId != null)
+                var identity = jwtUtils.ValidateJwtToken(token);
+                if (identity?.UserId != null)
                 {
-                    if (!context.Session.Keys.Contains(nameof(IdentityContext)))
+                    if (!context.Session.Keys.Contains(nameof(UserContext)))
                     {
                         //var claimsIdentity = (ClaimsIdentity)context.HttpContext.User.Identity;
-                        var user = (UserEntity)await userService.GetByIdAsync(identityContext.UserId.Value, cancellationToken);
-                        identityContext = new IdentityContext 
+                        var userService = services.GetRequiredService<IUserService>();
+                        var user = (UserEntity)await userService.GetByIdAsync(identity.UserId.Value, cancellationToken);
+                        identity = new UserContext 
                         {
                             UserId = user.Id,
+                            UserType = user.Kind,
                             ProviderId = user.ProviderId
                         };
-                        await context.Session.SetAsync(nameof(IdentityContext), identityContext);
+                        await context.Session.SetAsync(nameof(UserContext), identity);
                     }
                     else
                     {
-                        identityContext = await context.Session.GetAsync<IdentityContext>(nameof(IdentityContext));
+                        identity = await context.Session.GetAsync<UserContext>(nameof(UserContext));
                     }
+
                     // attach user to context on successful jwt validation
-                    context.Items[nameof(IdentityContext)] = identityContext;
+                    context.Items[nameof(UserContext)] = identity;
+
+                    if (services.GetRequiredService(typeof(UserContext)) is UserContext userContext)
+                    {
+                        userContext.UserId = identity.UserId;
+                        userContext.UserType = identity.UserType;
+                        userContext.ProviderId = identity.ProviderId;
+                    }
                 }
             }
 

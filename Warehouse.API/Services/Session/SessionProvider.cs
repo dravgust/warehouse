@@ -6,11 +6,13 @@ namespace Warehouse.API.Services.Session
 {
     public class SessionProvider : ISessionProvider
     {
-        protected readonly ISession Session;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        protected ISession Session => _httpContextAccessor.HttpContext?.Session;
 
         public SessionProvider(IHttpContextAccessor httpContextAccessor)
         {
-            Session = httpContextAccessor.HttpContext?.Session;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public byte[] this[string key]

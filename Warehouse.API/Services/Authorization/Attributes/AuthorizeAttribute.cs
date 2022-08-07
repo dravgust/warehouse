@@ -1,19 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using StackExchange.Redis;
-using Warehouse.Core.UseCases.Administration.ValueObjects;
+using Warehouse.Core.Entities.Enums;
+using Warehouse.Core.Entities.ValueObjects;
 
 namespace Warehouse.API.Services.Authorization.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class AuthorizeAttribute : Attribute, IAuthorizationFilter
     {
-        private readonly IList<Role> _roles;
-        public AuthorizeAttribute()
+        private readonly IList<UserType> _userTypes;
+        public AuthorizeAttribute(params UserType[] userTypes)
         {
-            //params Role[] roles
-            _roles = new Role[]{};
+            _userTypes = userTypes ?? new UserType[]{};
         }
 
         public void OnAuthorization(AuthorizationFilterContext context)
@@ -21,7 +20,7 @@ namespace Warehouse.API.Services.Authorization.Attributes
             if (SkipAuthorization(context))
                 return;
 
-            if (context.HttpContext.Items[nameof(IdentityContext)] is not IdentityContext identity || (_roles.Any() && !_roles.Contains(identity.Role)))
+            if (context.HttpContext.Items[nameof(UserContext)] is not UserContext identity || (_userTypes.Any() && !_userTypes.Contains(identity.UserType)))
             {
                 context.Result = new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };
             }

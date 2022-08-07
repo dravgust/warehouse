@@ -5,9 +5,9 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Entities.ValueObjects;
 using Warehouse.Core.Services;
 using Warehouse.Core.UseCases.Administration.Models;
-using Warehouse.Core.UseCases.Administration.ValueObjects;
 
 namespace Warehouse.API.Services.Authorization
 {
@@ -43,7 +43,7 @@ namespace Warehouse.API.Services.Authorization
             return tokenHandler.WriteToken(token);
         }
 
-        public IdentityContext ValidateJwtToken(string token)
+        public UserContext ValidateJwtToken(string token)
         {
             if (token == null)
                 return null;
@@ -67,7 +67,7 @@ namespace Warehouse.API.Services.Authorization
                 var providerId = long.Parse(jwtToken.Claims.First(x => x.Type == nameof(IProvider.ProviderId)).Value);
 
                 // return user id from JWT token if validation successful
-                return new IdentityContext
+                return new UserContext
                 {
                     UserId = userId,
                     ProviderId = providerId

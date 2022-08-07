@@ -4,7 +4,7 @@ using Vayosoft.Core.Commands;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.UseCases.Administration.ValueObjects;
+using Warehouse.Core.Entities.ValueObjects;
 using Warehouse.Core.UseCases.Management.Models;
 
 namespace Warehouse.Core.UseCases.Management.Commands
@@ -24,9 +24,9 @@ namespace Warehouse.Core.UseCases.Management.Commands
     {
         private readonly IRepository<ProductEntity> _repository;
         private readonly IMapper _mapper;
-        private readonly IdentityContext _context;
+        private readonly UserContext _context;
 
-        public HandleSetProduct(IRepository<ProductEntity> repository, IMapper mapper, IdentityContext context)
+        public HandleSetProduct(IRepository<ProductEntity> repository, IMapper mapper, UserContext context)
         {
             _repository = repository;
             _mapper = mapper;

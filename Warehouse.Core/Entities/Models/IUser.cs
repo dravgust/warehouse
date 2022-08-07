@@ -14,14 +14,4 @@ namespace Warehouse.Core.Entities.Models
         [JsonIgnore]
         public List<RefreshToken> RefreshTokens { get; }
     }
-
-    public interface IProvider
-    {
-        object ProviderId { get; }
-    }
-
-    public interface IProvider<out TKey> : IProvider
-    {
-        new TKey ProviderId { get; }
-    }
 }

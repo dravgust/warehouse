@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Commands;
-using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
@@ -14,7 +13,6 @@ using Warehouse.Core.Utilities;
 namespace Warehouse.API.Controllers.API
 {
     [Authorize]
-    [IdentityContext]
     [Route("api/[controller]")]
     [ApiController]
     public class AlertsController : ControllerBase

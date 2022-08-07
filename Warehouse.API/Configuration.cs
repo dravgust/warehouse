@@ -12,11 +12,11 @@ using Warehouse.API.TagHelpers;
 using Warehouse.API.UseCases.Resources;
 using Warehouse.Core;
 using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Entities.ValueObjects;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Session;
 using Warehouse.Core.UseCases.Administration.Models;
-using Warehouse.Core.UseCases.Administration.ValueObjects;
 
 namespace Warehouse.API
 {
@@ -34,7 +34,7 @@ namespace Warehouse.API
 
             services.AddHttpContextAccessor()
                 .AddScoped<ISessionProvider, SessionProvider>()
-                .AddScoped<IdentityContext>();
+                .AddScoped<UserContext>();
 
             services.AddWarehouseDependencies(configuration);
 

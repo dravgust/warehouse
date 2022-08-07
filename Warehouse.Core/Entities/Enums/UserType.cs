@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace Warehouse.Core.Entities.Enums
+﻿namespace Warehouse.Core.Entities.Enums
 {
     public enum UserType
     {

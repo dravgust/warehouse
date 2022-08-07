@@ -57,7 +57,7 @@ namespace Vayosoft.Data.MongoDB
             {
                 cb.Subscribe<CommandStartedEvent>(e =>
                 {
-                    logger.LogDebug(e.CommandName, e.Command.ToJson());
+                    logger.LogDebug($"{e.CommandName} {e.Command.ToJson()}");
                 });
             };
 

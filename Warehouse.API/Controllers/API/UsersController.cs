@@ -8,7 +8,7 @@ using Warehouse.API.Services.Authorization.Attributes;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Administration.Specifications;
 using Warehouse.Core.Utilities;
-using Warehouse.Core.UseCases.Administration.ValueObjects;
+using Warehouse.Core.Entities.ValueObjects;
 
 namespace Warehouse.API.Controllers.API
 {
@@ -27,12 +27,11 @@ namespace Warehouse.API.Controllers.API
         }
 
         [HttpGet]
-        [IdentityContext]
         public async Task<IActionResult> Get(int page, int take, CancellationToken token)
         {
             //HttpContext.Items.TryGetValue("User", out var user3);
             //var user = HttpContext.User;
-            var identityUser = HttpContext.Items[nameof(IdentityContext)] as IdentityContext;
+            var identityUser = HttpContext.Items[nameof(UserContext)] as UserContext;
 
             var spec = new UserSpec(page, take, identityUser?.ProviderId ?? 0);
             var query = new SpecificationQuery<UserSpec, IPagedEnumerable<UserEntityDto>>(spec);

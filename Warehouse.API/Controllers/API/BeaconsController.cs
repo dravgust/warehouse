@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Commands;
-using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Queries;
 using Warehouse.API.Services.Authorization.Attributes;
-using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Management.Commands;
 using Warehouse.Core.UseCases.Management.Queries;
 using Warehouse.Core.Utilities;
@@ -11,7 +9,6 @@ using Warehouse.Core.Utilities;
 namespace Warehouse.API.Controllers.API
 {
     [Authorize]
-    [IdentityContext]
     [Route("api/[controller]")]
     [ApiController]
     public class BeaconsController : ControllerBase
