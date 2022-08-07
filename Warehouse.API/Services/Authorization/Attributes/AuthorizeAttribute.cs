@@ -8,6 +8,8 @@ using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Entities.ValueObjects;
 using Warehouse.Core.Services;
 
+//https://docs.microsoft.com/ru-ru/aspnet/core/fundamentals/app-state?cid=kerryherger&view=aspnetcore-6.0
+//https://metanit.com/sharp/aspnet5/2.26.php?ysclid=l67iov921a229435244
 namespace Warehouse.API.Services.Authorization.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
