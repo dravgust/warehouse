@@ -17,7 +17,7 @@ namespace Warehouse.API.Services.Authorization.Attributes
         private readonly IList<UserType> _userTypes;
         public AuthorizeAttribute(params UserType[] userTypes)
         {
-            _userTypes = userTypes ?? new UserType[]{};
+            _userTypes = userTypes ?? Array.Empty<UserType>();
         }
 
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
