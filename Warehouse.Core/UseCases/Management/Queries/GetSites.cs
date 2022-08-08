@@ -7,12 +7,12 @@ using Warehouse.Core.Services.Session;
 
 namespace Warehouse.Core.UseCases.Management.Queries
 {
-    public class GetProducts : PagingBase<ProductEntity, object>, IQuery<IPagedEnumerable<ProductEntity>>
+    public class GetSites : PagingBase<WarehouseSiteEntity, object>, IQuery<IPagedEnumerable<WarehouseSiteEntity>>
     {
         public long ProviderId { get; }
         public string FilterString { get; }
 
-        public GetProducts(int page, int take, long providerId, string searchTerm = null)
+        public GetSites(int page, int take, long providerId, string searchTerm = null)
         {
             Page = page;
             Take = take;
@@ -21,13 +21,13 @@ namespace Warehouse.Core.UseCases.Management.Queries
             FilterString = searchTerm;
         }
 
-        public static GetProducts Create(int pageNumber = 1, int pageSize = 20, long providerId = 0, string searchTerm = null)
+        public static GetSites Create(int pageNumber = 1, int pageSize = 20, long providerId = 0, string searchTerm = null)
         {
-            return new GetProducts(pageNumber, pageSize, providerId, searchTerm);
+            return new GetSites(pageNumber, pageSize, providerId, searchTerm);
         }
 
-        protected override Sorting<ProductEntity, object> BuildDefaultSorting() => 
-            new(p => p.Name, SortOrder.Asc);
+        protected override Sorting<WarehouseSiteEntity, object> BuildDefaultSorting() => 
+            new(p => p.Id, SortOrder.Desc);
 
         public void Deconstruct(out int pageNumber, out int pageSize, out long providerId, out string filterString)
         {
@@ -40,25 +40,25 @@ namespace Warehouse.Core.UseCases.Management.Queries
             
     }
 
-    internal class HandleGetProducts : IQueryHandler<GetProducts, IPagedEnumerable<ProductEntity>>
+    internal class HandleGetSites : IQueryHandler<GetSites, IPagedEnumerable<WarehouseSiteEntity>>
     {
-        private readonly IReadOnlyRepository<ProductEntity> _repository;
+        private readonly IReadOnlyRepository<WarehouseSiteEntity> _repository;
         private readonly ISessionProvider _session;
 
-        public HandleGetProducts(IReadOnlyRepository<ProductEntity> repository, ISessionProvider session)
+        public HandleGetSites(IReadOnlyRepository<WarehouseSiteEntity> repository, ISessionProvider session)
         {
             this._repository = repository;
             _session = session;
         }
 
-        public async Task<IPagedEnumerable<ProductEntity>> Handle(GetProducts query, CancellationToken cancellationToken)
+        public async Task<IPagedEnumerable<WarehouseSiteEntity>> Handle(GetSites query, CancellationToken cancellationToken)
         {
             var providerId = _session.GetInt64(nameof(IProvider.ProviderId));
 
             if (!string.IsNullOrEmpty(query.FilterString))
             {
-                return await _repository.PagedListAsync(query, e =>
-                    e.ProviderId == query.ProviderId && e.Name.ToLower().Contains(query.FilterString.ToLower()), cancellationToken);
+                return await _repository.PagedListAsync(query, e => 
+                        e.ProviderId == query.ProviderId && e.Name.ToLower().Contains(query.FilterString.ToLower()), cancellationToken);
             }
 
             return await _repository.PagedListAsync(query, p => p.ProviderId == query.ProviderId, cancellationToken);

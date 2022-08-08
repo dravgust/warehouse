@@ -9,7 +9,6 @@ using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Data.MongoDB.QueryHandlers;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Management.Commands;
-using Warehouse.Core.UseCases.Management.Specifications;
 
 namespace Warehouse.Core.UseCases.Management
 { 
@@ -26,16 +25,19 @@ namespace Warehouse.Core.UseCases.Management
                 .AddQueryHandler<GetProductItemMetadata, ProductMetadata, HandlerGetProductItemMetadata>()
                 .AddQueryHandler<GetRegisteredBeaconList, IEnumerable<string>, HandleGetRegisteredBeaconList>()
                 .AddQueryHandler<GetRegisteredGwList, IEnumerable<string>, GetRegisteredGwList.RegisteredGwQueryHandler>()
-                .AddQueryHandler<GetProductItems, IPagedEnumerable<ProductItemDto>, HandleGetProductItems>()
+                .AddQueryHandler<GetBeacons, IPagedEnumerable<ProductItemDto>, HandleGetProductItems>()
                 .AddQueryHandler<GetProducts, IPagedEnumerable<ProductEntity>, HandleGetProducts>()
-                .AddQueryHandler<SpecificationQuery<WarehouseSiteSpec, IPagedEnumerable<WarehouseSiteEntity>>, IPagedEnumerable<WarehouseSiteEntity>,
-                    MongoPagingQueryHandler<WarehouseSiteSpec, WarehouseSiteEntity>>()
-                .AddQueryHandler<SpecificationQuery<WarehouseProductSpec, IPagedEnumerable<BeaconRegisteredEntity>>, IPagedEnumerable<BeaconRegisteredEntity>,
-                    MongoPagingQueryHandler<WarehouseProductSpec, BeaconRegisteredEntity>>()
-                .AddQueryHandler<SpecificationQuery<ProductSpec, IPagedEnumerable<ProductEntity>>, IPagedEnumerable<ProductEntity>,
-                    MongoPagingQueryHandler<ProductSpec, ProductEntity>>()    
-                .AddQueryHandler<SpecificationQuery<WarehouseAlertSpec, IPagedEnumerable<AlertEntity>>, IPagedEnumerable<AlertEntity>,
-                    MongoPagingQueryHandler<WarehouseAlertSpec, AlertEntity>>()
+                .AddQueryHandler<GetSites, IPagedEnumerable<WarehouseSiteEntity>, HandleGetSites>()
+                .AddQueryHandler<GetAlerts, IPagedEnumerable<AlertEntity>, HandleGetAlerts>()
+                .AddQueryHandler<GetBeacons, IPagedEnumerable<ProductItemDto>, HandleGetProductItems>()
+                //.AddQueryHandler<SpecificationQuery<WarehouseProductSpec, IPagedEnumerable<BeaconRegisteredEntity>>, IPagedEnumerable<BeaconRegisteredEntity>,
+                //    MongoPagingQueryHandler<WarehouseProductSpec, BeaconRegisteredEntity>>()
+                //.AddQueryHandler<SpecificationQuery<ProductSpec, IPagedEnumerable<ProductEntity>>, IPagedEnumerable<ProductEntity>,
+                //    MongoPagingQueryHandler<ProductSpec, ProductEntity>>()
+                //.AddQueryHandler<SpecificationQuery<WarehouseAlertSpec, IPagedEnumerable<AlertEntity>>, IPagedEnumerable<AlertEntity>,
+                //    MongoPagingQueryHandler<WarehouseAlertSpec, AlertEntity>>()
+                //.AddQueryHandler<SpecificationQuery<WarehouseSiteSpec, IPagedEnumerable<WarehouseSiteEntity>>, IPagedEnumerable<WarehouseSiteEntity>,
+                //    MongoPagingQueryHandler<WarehouseSiteSpec, WarehouseSiteEntity>>()
                 .AddQueryHandler<SingleQuery<ProductEntity>, ProductEntity, MongoSingleQueryHandler<string, ProductEntity>>();
 
         

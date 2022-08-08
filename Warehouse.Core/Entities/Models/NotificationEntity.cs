@@ -10,6 +10,7 @@ namespace Warehouse.Core.Entities.Models
         public string AlertId { get; set; }
         public string MacAddress { get; set; }
         public string SourceId { get; set; }
+        public long ProviderId { get; set; }
         public DateTime ReceivedAt { get; set; }
     }
 }

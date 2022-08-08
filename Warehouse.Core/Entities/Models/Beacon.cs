@@ -37,6 +37,7 @@ namespace Warehouse.Core.Entities.Models
         public string MacAddress { get; set; }
         public DateTime ReceivedAt { get; set; }
         public string SourceId { set; get; }
+        public long ProviderId { set; get; }
         public BeaconStatus Status { get; set; }
         object IEntity.Id => Id;
         public string Id => MacAddress;

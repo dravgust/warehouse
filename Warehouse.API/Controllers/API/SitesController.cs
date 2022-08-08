@@ -1,15 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Persistence;
-using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.Queries;
-using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.Utilities;
 using Warehouse.API.Services.Authorization.Attributes;
 using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Services.Session;
 using Warehouse.Core.UseCases.Management.Commands;
 using Warehouse.Core.UseCases.Management.Queries;
-using Warehouse.Core.UseCases.Management.Specifications;
 using Warehouse.Core.Utilities;
 
 namespace Warehouse.API.Controllers.API
@@ -22,22 +20,26 @@ namespace Warehouse.API.Controllers.API
         private readonly IRepository<WarehouseSiteEntity> _siteRepository;
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
+        private readonly ISessionProvider _session;
 
         public SitesController(
             IRepository<WarehouseSiteEntity> siteRepository,
-            IQueryBus queryBus, ICommandBus commandBus)
+            IQueryBus queryBus, ICommandBus commandBus, ISessionProvider session)
         {
             _siteRepository = siteRepository;
             _queryBus = queryBus;
             _commandBus = commandBus;
+            _session = session;
         }
 
         [HttpGet("")]
         public async Task<dynamic> Get(int page, int size, string searchTerm = null, CancellationToken token = default)
         {
-            var spec = new WarehouseSiteSpec(page, size, searchTerm);
-            var query = new SpecificationQuery<WarehouseSiteSpec, IPagedEnumerable<WarehouseSiteEntity>>(spec);
+            //var spec = new WarehouseSiteSpec(page, size, searchTerm);
+            //var query = new SpecificationQuery<WarehouseSiteSpec, IPagedEnumerable<WarehouseSiteEntity>>(spec);
 
+            var providerId = _session.GetInt64(nameof(IProvider.ProviderId));
+            var query = GetSites.Create(page, size, providerId ?? 0, searchTerm);
             return Ok((await _queryBus.Send(query, token)).ToPagedResponse(size));
         }
 

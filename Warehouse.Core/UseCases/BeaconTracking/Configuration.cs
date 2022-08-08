@@ -24,15 +24,16 @@ namespace Warehouse.Core.UseCases.BeaconTracking
             services
                 .AddQueryHandler<GetDashboardByBeacon, IPagedEnumerable<DashboardByBeacon>, HandleDashboardByBeacon>()
                 .AddQueryHandler<GetBeaconEvents, IPagedEnumerable<BeaconEventDto>, HandleGetBeaconEvents>()
-                .AddQueryHandler<SpecificationQuery<NotificationSpec, IPagedEnumerable<NotificationEntity>>, IPagedEnumerable<NotificationEntity>,
-                    MongoPagingQueryHandler<NotificationSpec, NotificationEntity>>()
+                //.AddQueryHandler<SpecificationQuery<NotificationSpec, IPagedEnumerable<NotificationEntity>>, IPagedEnumerable<NotificationEntity>,
+                //    MongoPagingQueryHandler<NotificationSpec, NotificationEntity>>()
+                .AddQueryHandler<GetUserNotifications, IPagedEnumerable<NotificationEntity>, HandleGetNotifications>()
                 .AddQueryHandler<GetDashboardByProduct, IEnumerable<DashboardByProduct>, HandleGetDashboardByProduct>()
                 .AddQueryHandler<GetDashboardBySite, IEnumerable<DashboardBySite>, HandleGetDashboardBySite>()
                 .AddQueryHandler<GetDashboardSite, DashboardBySite, HandleGetIpsStatus>()
                 .AddQueryHandler<GetBeaconTelemetry2, BeaconTelemetry2Dto, HandleGetBeaconTelemetry>()
                 .AddQueryHandler<GetBeaconTelemetry, BeaconTelemetryDto, HandleGetBeaconTelemetry>()
-                .AddQueryHandler<SpecificationQuery<BeaconEventSpec, IPagedEnumerable<BeaconEventEntity>>, IPagedEnumerable<BeaconEventEntity>,
-                    MongoPagingQueryHandler<BeaconEventSpec, BeaconEventEntity>>()
+                //.AddQueryHandler<SpecificationQuery<BeaconEventSpec, IPagedEnumerable<BeaconEventEntity>>, IPagedEnumerable<BeaconEventEntity>,
+                //    MongoPagingQueryHandler<BeaconEventSpec, BeaconEventEntity>>()
                 .AddQueryHandler<SpecificationQuery<BeaconPositionSpec, IPagedEnumerable<BeaconReceivedEntity>>, IPagedEnumerable<BeaconReceivedEntity>,
                     MongoPagingQueryHandler<BeaconPositionSpec, BeaconReceivedEntity>>();
 

@@ -2,6 +2,8 @@
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Queries;
 using Warehouse.API.Services.Authorization.Attributes;
+using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Services.Session;
 using Warehouse.Core.UseCases.Management.Commands;
 using Warehouse.Core.UseCases.Management.Queries;
 using Warehouse.Core.Utilities;
@@ -15,11 +17,13 @@ namespace Warehouse.API.Controllers.API
     {
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
+        private readonly ISessionProvider _session;
 
-        public BeaconsController(IQueryBus queryBus, ICommandBus commandBus)
+        public BeaconsController(IQueryBus queryBus, ICommandBus commandBus, ISessionProvider session)
         {
             _queryBus = queryBus;
             _commandBus = commandBus;
+            _session = session;
         }
 
         [HttpGet("registered")]
@@ -29,20 +33,22 @@ namespace Warehouse.API.Controllers.API
         }
         
         [HttpGet("")]
-        public async Task<IActionResult> GetBeacons([FromQuery] GetProductItems query, CancellationToken token)
+        public async Task<IActionResult> Get(int page, int size, string searchTerm = null, CancellationToken token = default)
         {
-            return Ok((await _queryBus.Send(query, token)).ToPagedResponse(query.Size));
+            var providerId = _session.GetInt64(nameof(IProvider.ProviderId));
+            var query = GetBeacons.Create(page, size, providerId ?? 0, searchTerm);
+            return Ok((await _queryBus.Send(query, token)).ToPagedResponse(size));
         }
 
         [HttpPost("delete")]
-        public async Task<IActionResult> DeleteBeaconByMac([FromBody] DeleteBeacon query, CancellationToken token)
+        public async Task<IActionResult> Delete([FromBody] DeleteBeacon query, CancellationToken token)
         {
             await _commandBus.Send(query, token);
             return Ok(new { query.MacAddress });
         }
 
         [HttpPost("set")]
-        public async Task<IActionResult> PostBeacon([FromBody] SetBeacon command, CancellationToken token)
+        public async Task<IActionResult> Post([FromBody] SetBeacon command, CancellationToken token)
         {
             await _commandBus.Send(command, token);
             return Ok(new { });

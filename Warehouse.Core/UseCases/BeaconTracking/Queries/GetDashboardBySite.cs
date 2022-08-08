@@ -1,7 +1,7 @@
 ﻿using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Queries;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Persistence;
+using Warehouse.Core.Services.Session;
 using Warehouse.Core.UseCases.BeaconTracking.Models;
 
 namespace Warehouse.Core.UseCases.BeaconTracking.Queries;
@@ -15,23 +15,26 @@ public class HandleGetDashboardBySite : IQueryHandler<GetDashboardBySite, IEnume
     private readonly IReadOnlyRepository<WarehouseSiteEntity> _siteRepository;
     private readonly IReadOnlyRepository<BeaconEntity> _beaconRepository;
     private readonly IReadOnlyRepository<ProductEntity> _productRepository;
+    private readonly ISessionProvider _session;
 
     public HandleGetDashboardBySite(
         IReadOnlyRepository<IndoorPositionStatusEntity> statusRepository,
         IReadOnlyRepository<WarehouseSiteEntity> siteRepository,
         IReadOnlyRepository<BeaconEntity> beaconRepository,
-        IReadOnlyRepository<ProductEntity> productRepository)
+        IReadOnlyRepository<ProductEntity> productRepository,
+        ISessionProvider session)
     {
         _statusRepository = statusRepository;
         _siteRepository = siteRepository;
         _beaconRepository = beaconRepository;
         _productRepository = productRepository;
+        _session = session;
     }
 
     public async Task<IEnumerable<DashboardBySite>> Handle(GetDashboardBySite request, CancellationToken cancellationToken)
     {
         var statusEntities = await _statusRepository.ListAsync(cancellationToken);
-
+        var providerId = _session.GetInt64(nameof(IProvider.ProviderId));
         var result = new List<DashboardBySite>();
         foreach (var s in statusEntities)
         {

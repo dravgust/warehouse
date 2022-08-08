@@ -10,6 +10,7 @@ namespace Warehouse.Core.Entities.Models
         public DateTime TimeStamp { get; set; }
         public string SourceId { set; get; }
         public string DestinationId { set; get; }
+        public long ProviderId { set; get; }
         public BeaconEventType Type { set; get; }
     }
 

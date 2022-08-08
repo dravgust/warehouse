@@ -1,42 +1,82 @@
 ﻿using Vayosoft.Core.Persistence;
-using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.Queries;
+using Vayosoft.Core.SharedKernel.Models;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.BeaconTracking.Models;
-using Warehouse.Core.UseCases.BeaconTracking.Specifications;
 
 namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 {
-    public class GetBeaconEvents : IQuery<IPagedEnumerable<BeaconEventDto>>
+    public class GetBeaconEvents : PagingBase<BeaconEventEntity, object>, IQuery<IPagedEnumerable<BeaconEventDto>>
     {
-        public int Page { set; get; }
-        public int Size { set; get; }
-        public string SearchTerm { set; get; }
+        public long ProviderId { get; }
+        public string FilterString { get; }
+
+        public GetBeaconEvents(int page, int take, long providerId, string searchTerm = null)
+        {
+            Page = page;
+            Take = take;
+
+            ProviderId = providerId;
+            FilterString = searchTerm;
+        }
+
+        public static GetBeaconEvents Create(int pageNumber = 1, int pageSize = 20, long providerId = 0, string searchTerm = null)
+        {
+            return new GetBeaconEvents(pageNumber, pageSize, providerId, searchTerm);
+        }
+
+        protected override Sorting<BeaconEventEntity, object> BuildDefaultSorting() =>
+            new(p => p.Id, SortOrder.Desc);
+
+        public void Deconstruct(out int pageNumber, out int pageSize, out long providerId, out string filterString)
+        {
+            pageNumber = Page;
+            pageSize = Take;
+
+            providerId = ProviderId;
+            filterString = FilterString;
+        }
     }
 
     internal class HandleGetBeaconEvents : IQueryHandler<GetBeaconEvents, IPagedEnumerable<BeaconEventDto>>
     {
         private readonly IReadOnlyRepository<WarehouseSiteEntity> _siteRepository;
         private readonly IReadOnlyRepository<BeaconEntity> _beaconRepository;
-        private readonly IQueryBus _queryBus;
+        private readonly IReadOnlyRepository<BeaconEventEntity> _beaconEventRepository;
 
         public HandleGetBeaconEvents(
             IReadOnlyRepository<WarehouseSiteEntity> siteRepository,
             IReadOnlyRepository<BeaconEntity> beaconRepository, 
+            IReadOnlyRepository<BeaconEventEntity> beaconEventRepository, 
             IQueryBus queryBus)
         {
             _siteRepository = siteRepository;
             _beaconRepository = beaconRepository;
-            _queryBus = queryBus;
+            _beaconEventRepository = beaconEventRepository;
         }
 
-        public async Task<IPagedEnumerable<BeaconEventDto>> Handle(GetBeaconEvents request, CancellationToken cancellationToken)
+        public async Task<IPagedEnumerable<BeaconEventDto>> Handle(GetBeaconEvents query, CancellationToken cancellationToken)
         {
-            var spec = new BeaconEventSpec(request.Page, request.Size, request.SearchTerm);
-            var query = new SpecificationQuery<BeaconEventSpec, IPagedEnumerable<BeaconEventEntity>>(spec);
+            //var spec = new BeaconEventSpec(request.Page, request.Size, request.SearchTerm);
+            //var query = new SpecificationQuery<BeaconEventSpec, IPagedEnumerable<BeaconEventEntity>>(spec);
+            //var data = await _queryBus.Send(query, cancellationToken);
 
-            var data = await _queryBus.Send(query, cancellationToken);
+            IPagedEnumerable<BeaconEventEntity> data;
+            if (!string.IsNullOrEmpty(query.FilterString))
+            {
+                data = await _beaconEventRepository.PagedListAsync(query, e =>
+                    //e.ProviderId == query.ProviderId && 
+                    e.MacAddress.ToLower().Contains(query.FilterString.ToLower()), cancellationToken);
+            }
+            else
+            {
+                data = await _beaconEventRepository.PagedListAsync(query,
+                    //p => p.ProviderId == query.ProviderId,
+                    cancellationToken);
+            }
+
+
             var list = new List<BeaconEventDto>();
             foreach (var e in data)
             {

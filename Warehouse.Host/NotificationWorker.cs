@@ -69,6 +69,7 @@ namespace Warehouse.Host
                                     AlertId = alert.Id,
                                     MacAddress = beacon.Id,
                                     SourceId = beacon.SourceId,
+                                    ProviderId = alert.ProviderId,
                                     ReceivedAt = beacon.ReceivedAt
                                 };
                                 await notificationRepository.AddAsync(notification, token);
