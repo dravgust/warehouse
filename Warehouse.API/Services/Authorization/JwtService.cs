@@ -29,6 +29,8 @@ namespace Warehouse.API.Services.Authorization
             {
                 new Claim(ClaimTypes.NameIdentifier, Guard.NotEmpty(user.Id.ToString(), nameof(user.Id)), ClaimValueTypes.Integer64),
                 new Claim(ClaimTypes.Name, user.Username, ClaimValueTypes.String),
+                //new Claim(ClaimsIdentity.DefaultNameClaimType, user.Username),
+                //new Claim(ClaimsIdentity.DefaultRoleClaimType, user.),
                 new Claim(ClaimTypes.Role, "Default")
             };
 

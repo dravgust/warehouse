@@ -28,15 +28,18 @@ namespace Warehouse.API.Services.Authorization.Attributes
             var principal = context.HttpContext.User;
             if (principal.Identity is {IsAuthenticated: true})
             {
-                var claimsIdentity = (ClaimsIdentity)principal.Identity;
-                UserEntity user;
+                var identity = (ClaimsIdentity)principal.Identity;
+                IUser user;
                 if ((user = await context.HttpContext.Session.GetAsync<UserEntity>(nameof(IUser))) == null)
                 {
                     var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
-                    user = (UserEntity)await userService.GetByUserNameAsync(claimsIdentity.Name, context.HttpContext.RequestAborted);
+                    user = await userService.GetByUserNameAsync(identity.Name, context.HttpContext.RequestAborted);
 
                     await context.HttpContext.Session.SetAsync(nameof(IUser), user);
-                    context.HttpContext.Session.SetInt64(nameof(IProvider.ProviderId), user.ProviderId);
+                    if (user is IProvider provider)
+                    {
+                        context.HttpContext.Session.SetInt64(nameof(IProvider.ProviderId), (long)provider.ProviderId);
+                    }
                 }
 
                 if (_userTypes.Any() && !_userTypes.Contains(user.Kind))
