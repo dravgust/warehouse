@@ -1,14 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Commands;
-using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.Queries;
-using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Warehouse.API.Services.Authorization.Attributes;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services.Session;
 using Warehouse.Core.UseCases.Management.Commands;
 using Warehouse.Core.UseCases.Management.Queries;
-using Warehouse.Core.UseCases.Management.Specifications;
 using Warehouse.Core.Utilities;
 
 namespace Warehouse.API.Controllers.API
@@ -32,9 +29,6 @@ namespace Warehouse.API.Controllers.API
         [HttpGet("")]
         public async Task<IActionResult> Get(int page, int size, string searchTerm = null, CancellationToken token = default)
         {
-            //var spec = new WarehouseAlertSpec(request.Page, request.Size, request.SearchTerm);
-            //var query = new SpecificationQuery<WarehouseAlertSpec, IPagedEnumerable<AlertEntity>>(spec);
-
             var providerId = _session.GetInt64(nameof(IProvider.ProviderId));
             var query = GetAlerts.Create(page, size, providerId ?? 0, searchTerm);
             return Ok((await _queryBus.Send(query, token)).ToPagedResponse(size));

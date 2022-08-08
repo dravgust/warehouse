@@ -76,7 +76,6 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
                     cancellationToken);
             }
 
-
             var list = new List<BeaconEventDto>();
             foreach (var e in data)
             {

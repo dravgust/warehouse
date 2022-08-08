@@ -30,14 +30,6 @@ namespace Warehouse.Core.UseCases.Management
                 .AddQueryHandler<GetSites, IPagedEnumerable<WarehouseSiteEntity>, HandleGetSites>()
                 .AddQueryHandler<GetAlerts, IPagedEnumerable<AlertEntity>, HandleGetAlerts>()
                 .AddQueryHandler<GetBeacons, IPagedEnumerable<ProductItemDto>, HandleGetProductItems>()
-                //.AddQueryHandler<SpecificationQuery<WarehouseProductSpec, IPagedEnumerable<BeaconRegisteredEntity>>, IPagedEnumerable<BeaconRegisteredEntity>,
-                //    MongoPagingQueryHandler<WarehouseProductSpec, BeaconRegisteredEntity>>()
-                //.AddQueryHandler<SpecificationQuery<ProductSpec, IPagedEnumerable<ProductEntity>>, IPagedEnumerable<ProductEntity>,
-                //    MongoPagingQueryHandler<ProductSpec, ProductEntity>>()
-                //.AddQueryHandler<SpecificationQuery<WarehouseAlertSpec, IPagedEnumerable<AlertEntity>>, IPagedEnumerable<AlertEntity>,
-                //    MongoPagingQueryHandler<WarehouseAlertSpec, AlertEntity>>()
-                //.AddQueryHandler<SpecificationQuery<WarehouseSiteSpec, IPagedEnumerable<WarehouseSiteEntity>>, IPagedEnumerable<WarehouseSiteEntity>,
-                //    MongoPagingQueryHandler<WarehouseSiteSpec, WarehouseSiteEntity>>()
                 .AddQueryHandler<SingleQuery<ProductEntity>, ProductEntity, MongoSingleQueryHandler<string, ProductEntity>>();
 
         
