@@ -42,7 +42,7 @@ namespace Warehouse.API.Services.Authorization.Attributes
                     }
                 }
 
-                if (_userTypes.Any() && !_userTypes.Contains(user.Kind))
+                if (_userTypes.Any() && !_userTypes.Contains(user.Type))
                 {
                     context.Result = new JsonResult(new { message = "No permissions" }) { StatusCode = StatusCodes.Status401Unauthorized };
                 }

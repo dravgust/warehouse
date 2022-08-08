@@ -16,7 +16,7 @@ namespace Warehouse.Core.Persistence.Mapping
             builder.Property(t => t.Email).HasColumnName("email");
             builder.Property(t => t.PasswordHash).HasColumnName("pwdhash");
             builder.Property(t => t.Phone).HasColumnName("phone");
-            builder.Property(t => t.Kind).HasColumnName("user_type");
+            builder.Property(t => t.Type).HasColumnName("user_type");
             builder.Property(t => t.ProviderId).HasColumnName("providerid");
             builder.Property(t => t.LogLevel).HasColumnName("log_level");
             builder.Property(t => t.CultureId).HasColumnName("culture_id");

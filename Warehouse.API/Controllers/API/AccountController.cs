@@ -41,7 +41,11 @@ namespace Warehouse.API.Controllers.API
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var response = await _userService.AuthenticateAsync(model, IpAddress(), cancellationToken);
-
+            await HttpContext.Session.SetAsync(nameof(IUser), response.User);
+            if (response.User is IProvider provider)
+            {
+                HttpContext.Session.SetInt64(nameof(IProvider.ProviderId), (long)provider.ProviderId);
+            }
             SetTokenCookie(response.RefreshToken);
             return Ok(response);
         }

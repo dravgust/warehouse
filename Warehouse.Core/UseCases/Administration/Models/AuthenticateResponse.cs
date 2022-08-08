@@ -5,9 +5,7 @@ namespace Warehouse.Core.UseCases.Administration.Models
 {
     public class AuthenticateResponse
     {
-        public object Id { get; set; }
-        public string Username { get; set; }
-        public string Email { get; set; }
+        public IUser User { get; set; }
         public string Token { get; set; }
         public long TokenExpirationTime { get; set; }
 
@@ -16,9 +14,7 @@ namespace Warehouse.Core.UseCases.Administration.Models
 
         public AuthenticateResponse(IUser user, string jwtToken, string refreshToken, DateTime expirationTime)
         {
-            Id = user.Id;
-            Username = user.Username;
-            Email = user.Email;
+            User = user;
             Token = jwtToken;
             TokenExpirationTime = ((DateTimeOffset) expirationTime).ToUnixTimeSeconds();
             RefreshToken = refreshToken;

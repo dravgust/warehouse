@@ -27,11 +27,9 @@ namespace Warehouse.API.Services.Authorization
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, Guard.NotEmpty(user.Id.ToString(), nameof(user.Id)), ClaimValueTypes.Integer64),
-                new Claim(ClaimTypes.Name, user.Username, ClaimValueTypes.String),
-                //new Claim(ClaimsIdentity.DefaultNameClaimType, user.Username),
-                //new Claim(ClaimsIdentity.DefaultRoleClaimType, user.),
-                new Claim(ClaimTypes.Role, "Default")
+                new Claim(ClaimTypes.Sid, Guard.NotEmpty(user.Id.ToString(), nameof(user.Id)), ClaimValueTypes.Integer64),
+                new Claim(ClaimTypes.Name, user.Username, ClaimValueTypes.String), 
+                new Claim(ClaimTypes.Role, ((int)user.Type).ToString(), ClaimValueTypes.Integer32)
             };
 
             var tokenDescriptor = new SecurityTokenDescriptor

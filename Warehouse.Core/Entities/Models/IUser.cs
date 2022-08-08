@@ -8,10 +8,7 @@ namespace Warehouse.Core.Entities.Models
     {
         public string Username { get; }
         public string Email { get; }
-        public UserType Kind { get; set; }
-
-        [JsonIgnore]
-        public string PasswordHash { get; }
+        public UserType Type { get; set; }
 
         [JsonIgnore]
         public List<RefreshToken> RefreshTokens { get; }

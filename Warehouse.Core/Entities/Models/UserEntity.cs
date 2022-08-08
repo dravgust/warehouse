@@ -18,7 +18,7 @@ namespace Warehouse.Core.Entities.Models
         public string PasswordHash { get; set; } = null!;
         public string Phone { get; set; } = null!;
         public string Email { get; set; } = null!;
-        public UserType Kind { get; set; }
+        public UserType Type { get; set; }
         public DateTime? Registered { get; set; }
         public DateTime? Deregistered { get; set; }
         public string CultureId { get; set; } = null!;
@@ -37,7 +37,7 @@ namespace Warehouse.Core.Entities.Models
         public string Phone { get; set; }
         public string Email { get; set; }
         [JsonConverter(typeof(JsonStringEnumConverter))]
-        public UserType Kind { get; set; }
+        public UserType Type { get; set; }
         public DateTime? Registered { get; set; }
         public DateTime? Deregistered { get; set; }
         public string CultureId { get; set; }
