@@ -22,8 +22,7 @@ namespace Warehouse.API.Services.Authorization
             if (token != null)
             {
                 var principal = jwtUtils.GetPrincipalFromJwtToken(token);
-                // attach user to context on successful jwt validation
-                context.Items[nameof(ClaimsPrincipal)] = principal;
+                context.User = (ClaimsPrincipal)principal;
             }
 
             await _next(context);

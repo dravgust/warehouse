@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Warehouse.API.Extensions;
 using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Entities.ValueObjects;
 using Warehouse.Core.Services;
 
 //https://docs.microsoft.com/ru-ru/aspnet/core/fundamentals/app-state?cid=kerryherger&view=aspnetcore-6.0
@@ -26,35 +25,23 @@ namespace Warehouse.API.Services.Authorization.Attributes
             if (SkipAuthorization(context))
                 return;
 
-            var principal = context.HttpContext.Items[nameof(ClaimsPrincipal)] as ClaimsPrincipal;
-            if (principal?.Identity != null && principal.Identity.IsAuthenticated)
+            var principal = context.HttpContext.User;
+            if (principal.Identity is {IsAuthenticated: true})
             {
-                //var claimsIdentity = (ClaimsIdentity)context.HttpContext.User.Identity;
                 var claimsIdentity = (ClaimsIdentity)principal.Identity;
-                var userId = long.Parse(claimsIdentity.Claims.First(x => x.Type == nameof(IUser.Id)).Value);
-                //var providerId = long.Parse(claimsIdentity.Claims.First(x => x.Type == nameof(IProvider.ProviderId)).Value);
-
                 UserEntity user;
-                if ((user = await context.HttpContext.Session.GetAsync<UserEntity>(nameof(UserEntity))) == null)
+                if ((user = await context.HttpContext.Session.GetAsync<UserEntity>(nameof(IUser))) == null)
                 {
                     var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
-                    user = (UserEntity)await userService.GetByIdAsync(userId, context.HttpContext.RequestAborted);
-                    await context.HttpContext.Session.SetAsync(nameof(UserEntity), user);
+                    user = (UserEntity)await userService.GetByUserNameAsync(claimsIdentity.Name, context.HttpContext.RequestAborted);
+
+                    await context.HttpContext.Session.SetAsync(nameof(IUser), user);
+                    context.HttpContext.Session.SetInt64(nameof(IProvider.ProviderId), user.ProviderId);
                 }
 
                 if (_userTypes.Any() && !_userTypes.Contains(user.Kind))
                 {
                     context.Result = new JsonResult(new { message = "No permissions" }) { StatusCode = StatusCodes.Status401Unauthorized };
-                }
-                else
-                {
-                    var userIdentity = context.HttpContext.RequestServices.GetService<IUserIdentity>();
-                    if (userIdentity != null)
-                    {
-                        userIdentity.UserId = user.Id;
-                        userIdentity.UserType = user.Kind;
-                        userIdentity.ProviderId = user.ProviderId;
-                    }
                 }
             }
             else

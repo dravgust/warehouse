@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Queries;
 using Warehouse.API.Resources;
 using Warehouse.API.UseCases.Resources;
+using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services;
 using Warehouse.Core.UseCases.Administration.Models;
+using Warehouse.API.Extensions;
 
 namespace Warehouse.API.Controllers.API
 {
@@ -39,6 +41,7 @@ namespace Warehouse.API.Controllers.API
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var response = await _userService.AuthenticateAsync(model, IpAddress(), cancellationToken);
+
             SetTokenCookie(response.RefreshToken);
             return Ok(response);
         }

@@ -3,10 +3,9 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Warehouse.Core.Entities.Enums;
+using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services;
 using Warehouse.Core.UseCases.Administration.Models;
@@ -24,14 +23,13 @@ namespace Warehouse.API.Services.Authorization
 
         public string GenerateJwtToken(IUser user)
         {
-            // generate token that is valid for 15 minutes
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-            var options = new IdentityOptions();
             var claims = new[]
             {
-                new Claim(nameof(IUser.Id), user.Id.ToString() ?? throw new InvalidOperationException("The User has no ID")),
-                new Claim(nameof(IProvider.ProviderId), $"{((IProvider)user)?.ProviderId}"),
+                new Claim(ClaimTypes.NameIdentifier, Guard.NotEmpty(user.Id.ToString(), nameof(user.Id)), ClaimValueTypes.Integer64),
+                new Claim(ClaimTypes.Name, user.Username, ClaimValueTypes.String),
+                new Claim(ClaimTypes.Role, "Default")
             };
 
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -66,14 +64,14 @@ namespace Warehouse.API.Services.Authorization
                 if (validatedToken is not JwtSecurityToken jwtSecurityToken
                     || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    return null;
+                    return new ClaimsPrincipal();
                 }
 
                 return principal;
             }
             catch
             {
-                return null;
+                return new ClaimsPrincipal();
             }
         }
 
@@ -85,7 +83,6 @@ namespace Warehouse.API.Services.Authorization
             var refreshToken = new RefreshToken
             {
                 Token = GetUniqueToken(),
-                // token is valid for 7 days
                 Expires = DateTime.UtcNow.AddDays(7),
                 Created = DateTime.UtcNow,
                 CreatedByIp = ipAddress

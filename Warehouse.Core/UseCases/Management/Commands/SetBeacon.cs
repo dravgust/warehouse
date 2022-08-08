@@ -1,12 +1,10 @@
 ﻿using MediatR;
-using MongoDB.Driver;
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel;
-using Vayosoft.Data.MongoDB;
 using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Entities.ValueObjects;
+using Warehouse.Core.Services.Session;
 using Warehouse.Core.UseCases.Management.Models;
 
 namespace Warehouse.Core.UseCases.Management.Commands
@@ -19,18 +17,18 @@ namespace Warehouse.Core.UseCases.Management.Commands
         private readonly IRepository<BeaconEntity> _beaconRepository;
         private readonly IRepository<BeaconRegisteredEntity> _beaconRegisteredRepository;
         private readonly IMapper _mapper;
-        private readonly IUserIdentity _identity;
+        private readonly ISessionProvider _session;
         private readonly IReadOnlyRepository<BeaconRegisteredEntity> _beaconRegisteredReadOnly;
 
         public HandleSetBeacon(
             IRepository<BeaconEntity> beaconRepository,
             IRepository<BeaconRegisteredEntity> beaconRegisteredRepository,
-            IMapper mapper, IUserIdentity identity, IReadOnlyRepository<BeaconRegisteredEntity> beaconRegisteredReadOnly)
+            IMapper mapper, ISessionProvider session, IReadOnlyRepository<BeaconRegisteredEntity> beaconRegisteredReadOnly)
         {
             _beaconRepository = beaconRepository;
             _beaconRegisteredRepository = beaconRegisteredRepository;
             _mapper = mapper;
-            _identity = identity;
+            _session = session;
             _beaconRegisteredReadOnly = beaconRegisteredReadOnly;
         }
 
@@ -61,7 +59,8 @@ namespace Warehouse.Core.UseCases.Management.Commands
             else
             {
                 entity = _mapper.Map<BeaconEntity>(request);
-                entity.ProviderId = _identity.ProviderId ?? 0;
+                var providerId = _session.GetInt64(nameof(IProvider.ProviderId));
+                entity.ProviderId = providerId ?? 0;
                 await _beaconRepository.AddAsync(entity, cancellationToken);
             }
 

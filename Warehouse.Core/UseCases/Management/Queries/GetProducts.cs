@@ -3,7 +3,7 @@ using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Entities.ValueObjects;
+using Warehouse.Core.Services.Session;
 
 namespace Warehouse.Core.UseCases.Management.Queries
 {
@@ -41,23 +41,24 @@ namespace Warehouse.Core.UseCases.Management.Queries
     internal class HandleGetProducts : IQueryHandler<GetProducts, IPagedEnumerable<ProductEntity>>
     {
         private readonly IReadOnlyRepository<ProductEntity> _repository;
-        private readonly IUserIdentity _identity;
+        private readonly ISessionProvider _session;
 
-        public HandleGetProducts(IReadOnlyRepository<ProductEntity> repository, IUserIdentity identity)
+        public HandleGetProducts(IReadOnlyRepository<ProductEntity> repository, ISessionProvider session)
         {
             this._repository = repository;
-            _identity = identity;
+            _session = session;
         }
 
-        public Task<IPagedEnumerable<ProductEntity>> Handle(GetProducts query, CancellationToken cancellationToken)
+        public async Task<IPagedEnumerable<ProductEntity>> Handle(GetProducts query, CancellationToken cancellationToken)
         {
             if (!string.IsNullOrEmpty(query.FilterString))
             {
-                return _repository.PagedListAsync(query, e => 
+                return await _repository.PagedListAsync(query, e => 
                         e.Name.ToLower().Contains(query.FilterString.ToLower()), cancellationToken);
             }
 
-            return _repository.PagedListAsync(query, p => p.ProviderId == _identity.ProviderId, cancellationToken);
+            var providerId = _session.GetInt64(nameof(IProvider.ProviderId));
+            return await _repository.PagedListAsync(query, p => p.ProviderId == providerId, cancellationToken);
         }
     }
 }

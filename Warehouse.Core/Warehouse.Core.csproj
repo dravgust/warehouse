@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Entities\ValueObjects\" />
     <Folder Include="UseCases\Administration\ValueObjects\" />
   </ItemGroup>
 

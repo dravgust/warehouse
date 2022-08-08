@@ -1,14 +1,12 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Persistence.Commands;
 using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
-using Warehouse.API.Services.Authorization;
 using Warehouse.API.Services.Authorization.Attributes;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Entities.ValueObjects;
+using Warehouse.Core.Services.Session;
 using Warehouse.Core.UseCases.Administration.Specifications;
 using Warehouse.Core.Utilities;
 
@@ -21,13 +19,13 @@ namespace Warehouse.API.Controllers.API
     {
         private readonly ICommandBus commandBus;
         private readonly IQueryBus queryBus;
-        private readonly IUserIdentity _identity;
+        private readonly ISessionProvider _session;
 
-        public UsersController(ICommandBus commandBus, IQueryBus queryBus, IUserIdentity identity)
+        public UsersController(ICommandBus commandBus, IQueryBus queryBus, ISessionProvider session)
         {
             this.commandBus = commandBus;
             this.queryBus = queryBus;
-            _identity = identity;
+            _session = session;
         }
 
         [HttpGet]
@@ -35,8 +33,9 @@ namespace Warehouse.API.Controllers.API
         {
             //HttpContext.Items.TryGetValue("User", out var user3);
             //var user = HttpContext.User;
+            var providerId = _session.GetInt64(nameof(IProvider.ProviderId));
 
-            var spec = new UserSpec(page, take, _identity?.ProviderId ?? 0);
+            var spec = new UserSpec(page, take, providerId ?? 0);
             var query = new SpecificationQuery<UserSpec, IPagedEnumerable<UserEntityDto>>(spec);
 
             return Ok((await queryBus.Send(query, token)).ToPagedResponse(take));

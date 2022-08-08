@@ -15,17 +15,15 @@
             session.SetString(key, JsonSerializer.Serialize<T>(value));
         }
 
-        public static async Task SetAsync<T>(this ISession session, string key, T value)
+        public static async Task SetAsync<T>(this ISession session, string key, T value) where T : class
         {
-            if (!session.IsAvailable)
-                await session.LoadAsync();
+            if (!session.IsAvailable) await session.LoadAsync();
             session.SetString(key, JsonSerializer.Serialize(value));
         }
 
-        public static async Task<T> GetAsync<T>(this ISession session, string key)
+        public static async Task<T> GetAsync<T>(this ISession session, string key) where T : class
         {
-            if (!session.IsAvailable)
-                await session.LoadAsync();
+            if (!session.IsAvailable) await session.LoadAsync();
             var value = session.GetString(key);
             return value == null ? default : JsonSerializer.Deserialize<T>(value);
         }
@@ -65,7 +63,7 @@
             session.Set(key, BitConverter.GetBytes(value));
         }
 
-        public static double? GetInt64(this ISession session, string key)
+        public static long? GetInt64(this ISession session, string key)
         {
             var data = session.Get(key);
             if (data == null) return null;

@@ -8,6 +8,6 @@ namespace Warehouse.Core.Services
         Task<AuthenticateResponse> AuthenticateAsync(AuthenticateRequest model, string ipAddress, CancellationToken cancellationToken);
         Task<AuthenticateResponse> RefreshTokenAsync(string token, string ipAddress, CancellationToken cancellationToken);
         Task RevokeTokenAsync(string token, string ipAddress, CancellationToken cancellationToken);
-        Task<IUser> GetByIdAsync(object id, CancellationToken cancellationToken);
+        Task<IUser> GetByUserNameAsync(string username, CancellationToken cancellationToken);
     }
 }

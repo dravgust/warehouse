@@ -2,7 +2,7 @@
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Persistence;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Entities.ValueObjects;
+using Warehouse.Core.Services.Session;
 
 namespace Warehouse.Core.UseCases.Management.Commands
 {
@@ -12,12 +12,12 @@ namespace Warehouse.Core.UseCases.Management.Commands
     public class HandleSetAlert : ICommandHandler<SetAlert>
     {
         private readonly IRepository<AlertEntity> _store;
-        private readonly IUserIdentity _identity;
+        private readonly ISessionProvider _session;
 
-        public HandleSetAlert(IRepository<AlertEntity> store, IUserIdentity identity)
+        public HandleSetAlert(IRepository<AlertEntity> store, ISessionProvider session)
         {
             _store = store;
-            _identity = identity;
+            _session = session;
         }
 
         public async Task<Unit> Handle(SetAlert request, CancellationToken cancellationToken)
@@ -32,7 +32,8 @@ namespace Warehouse.Core.UseCases.Management.Commands
             }
             else
             {
-                request.ProviderId = _identity.ProviderId ?? 0;
+                var providerId = _session.GetInt64(nameof(IProvider.ProviderId));
+                request.ProviderId = providerId ?? 0;
                 await _store.AddAsync(request, cancellationToken);
             }
             return Unit.Value;

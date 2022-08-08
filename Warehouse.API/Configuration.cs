@@ -12,7 +12,6 @@ using Warehouse.API.TagHelpers;
 using Warehouse.API.UseCases.Resources;
 using Warehouse.Core;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Entities.ValueObjects;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Session;
@@ -33,8 +32,7 @@ namespace Warehouse.API
             //builder.Services.AddRedisCache(configuration);
 
             services.AddHttpContextAccessor()
-                .AddScoped<ISessionProvider, SessionProvider>()
-                .AddScoped<IUserIdentity, UserIdentity>();
+                .AddScoped<ISessionProvider, SessionProvider>();
 
             services.AddWarehouseDependencies(configuration);
 

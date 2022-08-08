@@ -18,7 +18,7 @@ namespace Warehouse.Core.UseCases.Administration.Models
         {
             Id = user.Id;
             Username = user.Username;
-            Username = user.Email;
+            Email = user.Email;
             Token = jwtToken;
             TokenExpirationTime = ((DateTimeOffset) expirationTime).ToUnixTimeSeconds();
             RefreshToken = refreshToken;

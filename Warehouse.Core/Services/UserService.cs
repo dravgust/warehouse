@@ -28,7 +28,6 @@ namespace Warehouse.Core.Services
         public async Task<AuthenticateResponse> AuthenticateAsync(AuthenticateRequest model, string ipAddress, CancellationToken cancellationToken)
         {
             var user = await _userStore.FindByNameAsync(model.Email, cancellationToken);
-            // validate
             if (user == null || !_passwordHasher.VerifyHashedPassword(user.PasswordHash, model.Password))
                 throw new ApplicationException("Username or password is incorrect");
 
@@ -95,9 +94,9 @@ namespace Warehouse.Core.Services
             await _userStore.UpdateAsync(user, cancellationToken);
         }
 
-        public async Task<IUser> GetByIdAsync(object useId, CancellationToken cancellationToken)
+        public async Task<IUser> GetByUserNameAsync(string username, CancellationToken cancellationToken)
         {
-            var user = await _userStore.FindByIdAsync(useId, cancellationToken);
+            var user = await _userStore.FindByNameAsync(username, cancellationToken);
             if (user == null)
                 throw new ApplicationException("Invalid user");
             return user;
