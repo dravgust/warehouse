@@ -58,10 +58,6 @@ namespace Warehouse.Core.UseCases.Management.Queries
 
         public async Task<IPagedEnumerable<ProductItemDto>> Handle(GetBeacons query, CancellationToken cancellationToken)
         {
-            //var spec = new WarehouseProductSpec(request.Page, request.Size, request.SearchTerm);
-            //var query = new SpecificationQuery<WarehouseProductSpec, IPagedEnumerable<BeaconRegisteredEntity>>(spec);
-            //var result = await _queryBus.Send(query, cancellationToken);
-
             IPagedEnumerable<BeaconRegisteredEntity> result;
             if (!string.IsNullOrEmpty(query.SearchTerm))
             {

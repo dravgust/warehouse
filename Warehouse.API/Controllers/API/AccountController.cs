@@ -1,28 +1,33 @@
 ﻿
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Vayosoft.Core.Caching;
 using Vayosoft.Core.Queries;
+using Vayosoft.Core.Utilities;
 using Warehouse.API.Resources;
 using Warehouse.API.UseCases.Resources;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services;
 using Warehouse.Core.UseCases.Administration.Models;
 using Warehouse.API.Extensions;
+using Warehouse.API.Services.Authorization.Attributes;
 
 namespace Warehouse.API.Controllers.API
 {
-    [Services.Authorization.Attributes.Authorize]
+    [PermissionAuthorization]
     [Route("api/[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
     {
         private readonly IUserService _userService;
         private readonly IQueryBus _queryBus;
+        private readonly IDistributedMemoryCache _cache;
 
-        public AccountController(IUserService userService, IQueryBus queryBus)
+        public AccountController(IUserService userService, IQueryBus queryBus, IDistributedMemoryCache cache)
         {
             _userService = userService;
             _queryBus = queryBus;
+            _cache = cache;
         }
 
         [HttpGet("bootstrap")]
@@ -40,14 +45,15 @@ namespace Warehouse.API.Controllers.API
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var response = await _userService.AuthenticateAsync(model, IpAddress(), cancellationToken);
-            await HttpContext.Session.SetAsync(nameof(IUser), response.User);
-            if (response.User is IProvider provider)
+            var data = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<AuthenticateRequest>(model.Email), async options =>
             {
-                HttpContext.Session.SetInt64(nameof(IProvider.ProviderId), (long)provider.ProviderId);
-            }
-            SetTokenCookie(response.RefreshToken);
-            return Ok(response);
+                options.AbsoluteExpirationRelativeToNow = TimeSpans.Minute;
+                var response = await _userService.AuthenticateAsync(model, IpAddress(), cancellationToken);
+                return response;
+            });
+
+            SetTokenCookie(data.RefreshToken);
+            return Ok(data);
         }
 
         [AllowAnonymous]
@@ -68,9 +74,15 @@ namespace Warehouse.API.Controllers.API
             if (string.IsNullOrEmpty(refreshToken))
                 return BadRequest(new { message = "Token is required" });
 
-            var response = await _userService.RefreshTokenAsync(refreshToken, IpAddress(), cancellationToken);
-            SetTokenCookie(response.RefreshToken);
-            return Ok(response);
+            var data = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<TokenRequest>(model.Token), async options =>
+            {
+                options.AbsoluteExpirationRelativeToNow = TimeSpans.Minute;
+                var response = await _userService.RefreshTokenAsync(refreshToken, IpAddress(), cancellationToken);
+                return response;
+            });
+
+            SetTokenCookie(data.RefreshToken);
+            return Ok(data);
         }
 
         [HttpPost("revoke-token")]

@@ -6,6 +6,7 @@ using Vayosoft.Core.SharedKernel;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services.Session;
 using Warehouse.Core.UseCases.Management.Models;
+using Warehouse.Core.Utilities;
 
 namespace Warehouse.Core.UseCases.Management.Commands
 {
@@ -48,8 +49,8 @@ namespace Warehouse.Core.UseCases.Management.Commands
             else
             {
                 var entity = _mapper.Map<WarehouseSiteEntity>(request);
-                var providerId = _session.GetInt64(nameof(IProvider.ProviderId));
-                entity.ProviderId = providerId ?? 0;
+                var providerId = _session.User.Identity.GetProviderId();
+                entity.ProviderId = providerId;
                 await _repository.AddAsync(entity, cancellationToken: cancellationToken);
             }
 

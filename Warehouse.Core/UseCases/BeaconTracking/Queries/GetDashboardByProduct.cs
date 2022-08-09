@@ -4,6 +4,7 @@ using Vayosoft.Core.Queries;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services.Session;
 using Warehouse.Core.UseCases.BeaconTracking.Models;
+using Warehouse.Core.Utilities;
 
 namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 {
@@ -35,7 +36,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
         public async Task<IEnumerable<DashboardByProduct>> Handle(GetDashboardByProduct request, CancellationToken cancellationToken)
         {
             var result = await _beaconReceivedRepository.ListAsync(cancellationToken);
-            var providerId = _session.GetInt64(nameof(IProvider.ProviderId));
+            var providerId = _session.User.Identity.GetProviderId();
             var store = new SortedDictionary<(string, string), DashboardByProduct>(Comparer<(string, string)>.Create((x, y) => y.CompareTo(x)));
 
             foreach (var b in result)

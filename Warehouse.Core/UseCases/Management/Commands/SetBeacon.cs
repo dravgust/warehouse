@@ -6,6 +6,7 @@ using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services.Session;
 using Warehouse.Core.UseCases.Management.Models;
+using Warehouse.Core.Utilities;
 
 namespace Warehouse.Core.UseCases.Management.Commands
 {
@@ -59,8 +60,8 @@ namespace Warehouse.Core.UseCases.Management.Commands
             else
             {
                 entity = _mapper.Map<BeaconEntity>(request);
-                var providerId = _session.GetInt64(nameof(IProvider.ProviderId));
-                entity.ProviderId = providerId ?? 0;
+                var providerId = _session.User.Identity.GetProviderId();
+                entity.ProviderId = providerId;
                 await _beaconRepository.AddAsync(entity, cancellationToken);
             }
 

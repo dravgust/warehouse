@@ -1,7 +1,10 @@
-﻿namespace Warehouse.Core.Services.Session
+﻿using System.Security.Principal;
+
+namespace Warehouse.Core.Services.Session
 {
     public interface ISessionProvider
     {
+        IPrincipal User { get; }
         public T Get<T>(string key) where T : class;
         public void Set<T>(string key, T value) where T : class;
         public Task<T> GetAsync<T>(string key) where T : class;

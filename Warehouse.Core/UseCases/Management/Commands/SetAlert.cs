@@ -3,6 +3,7 @@ using Vayosoft.Core.Commands;
 using Vayosoft.Core.Persistence;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services.Session;
+using Warehouse.Core.Utilities;
 
 namespace Warehouse.Core.UseCases.Management.Commands
 {
@@ -32,8 +33,8 @@ namespace Warehouse.Core.UseCases.Management.Commands
             }
             else
             {
-                var providerId = _session.GetInt64(nameof(IProvider.ProviderId));
-                request.ProviderId = providerId ?? 0;
+                var providerId = _session.User.Identity.GetProviderId();
+                request.ProviderId = providerId;
                 await _store.AddAsync(request, cancellationToken);
             }
             return Unit.Value;

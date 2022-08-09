@@ -11,7 +11,7 @@ using Warehouse.Core.Utilities;
 
 namespace Warehouse.API.Controllers.API
 {
-    [Authorize]
+    [PermissionAuthorization]
     [Route("api/[controller]")]
     [ApiController]
     public class SitesController : ControllerBase

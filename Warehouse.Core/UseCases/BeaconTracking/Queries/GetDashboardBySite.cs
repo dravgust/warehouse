@@ -3,6 +3,7 @@ using Vayosoft.Core.Queries;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services.Session;
 using Warehouse.Core.UseCases.BeaconTracking.Models;
+using Warehouse.Core.Utilities;
 
 namespace Warehouse.Core.UseCases.BeaconTracking.Queries;
 
@@ -34,7 +35,7 @@ public class HandleGetDashboardBySite : IQueryHandler<GetDashboardBySite, IEnume
     public async Task<IEnumerable<DashboardBySite>> Handle(GetDashboardBySite request, CancellationToken cancellationToken)
     {
         var statusEntities = await _statusRepository.ListAsync(cancellationToken);
-        var providerId = _session.GetInt64(nameof(IProvider.ProviderId));
+        var providerId = _session.User.Identity.GetProviderId();
         var result = new List<DashboardBySite>();
         foreach (var s in statusEntities)
         {

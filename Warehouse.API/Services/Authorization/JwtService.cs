@@ -5,7 +5,6 @@ using System.Security.Principal;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Entities.Models.Security;
@@ -41,7 +40,7 @@ namespace Warehouse.API.Services.Authorization
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddMinutes(30),
+                Expires = DateTime.UtcNow.AddMinutes(Math.Max(_appSettings.TokenExpires,  1)),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -89,7 +88,7 @@ namespace Warehouse.API.Services.Authorization
             var refreshToken = new RefreshToken
             {
                 Token = GetUniqueToken(),
-                Expires = DateTime.UtcNow.AddDays(7),
+                Expires = DateTime.UtcNow.AddDays(Math.Max(_appSettings.RefreshTokenExpires, 1)),
                 Created = DateTime.UtcNow,
                 CreatedByIp = ipAddress
             };

@@ -109,8 +109,7 @@ namespace Warehouse.Core.Persistence
 
         public async Task UpdateAsync(IUser user, CancellationToken cancellationToken)
         {
-            _context.Entry(user).State = EntityState.Modified;
-            //_context.Update(user);
+            _context.Update(user);
             await _context.SaveChangesAsync(cancellationToken);
         }
     }

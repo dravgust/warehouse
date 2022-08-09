@@ -4,6 +4,7 @@ using Vayosoft.Core.SharedKernel.Models;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services.Session;
+using Warehouse.Core.Utilities;
 
 namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 {
@@ -51,7 +52,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
         public async Task<IPagedEnumerable<NotificationEntity>> Handle(GetUserNotifications query,
             CancellationToken cancellationToken)
         {
-            var providerId = _session.GetInt64(nameof(IProvider.ProviderId));
+            var providerId = _session.User.Identity.GetProviderId();
 
             if (!string.IsNullOrEmpty(query.FilterString))
             {

@@ -6,13 +6,14 @@ using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Warehouse.API.Services.Authorization.Attributes;
 using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Entities.Models.Security;
 using Warehouse.Core.Services.Session;
 using Warehouse.Core.UseCases.Administration.Specifications;
 using Warehouse.Core.Utilities;
 
 namespace Warehouse.API.Controllers.API
 {
-    [Authorize]
+    [PermissionAuthorization("USER", SecurityPermissions.Grant)]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -33,9 +34,9 @@ namespace Warehouse.API.Controllers.API
         {
             //HttpContext.Items.TryGetValue("User", out var user3);
             //var user = HttpContext.User;
-            var providerId = _session.GetInt64(nameof(IProvider.ProviderId));
+            var providerId = _session.User.Identity.GetProviderId();
 
-            var spec = new UserSpec(page, take, providerId ?? 0);
+            var spec = new UserSpec(page, take, providerId);
             var query = new SpecificationQuery<UserSpec, IPagedEnumerable<UserEntityDto>>(spec);
 
             return Ok((await queryBus.Send(query, token)).ToPagedResponse(take));

@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Security.Principal;
+using System.Text.Json;
 using Warehouse.API.Extensions;
 using Warehouse.Core.Services.Session;
 
@@ -9,6 +10,7 @@ namespace Warehouse.API.Services.Session
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         protected ISession Session => _httpContextAccessor.HttpContext?.Session;
+        public IPrincipal User => _httpContextAccessor.HttpContext?.User;
 
         public SessionProvider(IHttpContextAccessor httpContextAccessor)
         {
