@@ -10,12 +10,15 @@
     <Compile Remove="Entities\ValueObjects\**" />
     <Compile Remove="UseCases\Administration\ValueObjects\**" />
     <Compile Remove="UseCases\BeaconTracking\Commands\**" />
+    <Compile Remove="UseCases\Management\Specifications\**" />
     <EmbeddedResource Remove="Entities\ValueObjects\**" />
     <EmbeddedResource Remove="UseCases\Administration\ValueObjects\**" />
     <EmbeddedResource Remove="UseCases\BeaconTracking\Commands\**" />
+    <EmbeddedResource Remove="UseCases\Management\Specifications\**" />
     <None Remove="Entities\ValueObjects\**" />
     <None Remove="UseCases\Administration\ValueObjects\**" />
     <None Remove="UseCases\BeaconTracking\Commands\**" />
+    <None Remove="UseCases\Management\Specifications\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,7 +37,6 @@
 
   <ItemGroup>
     <Folder Include="UseCases\BeaconTracking\Specifications\" />
-    <Folder Include="UseCases\Management\Specifications\" />
   </ItemGroup>
 
 </Project>

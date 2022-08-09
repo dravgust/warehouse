@@ -31,19 +31,11 @@ namespace Warehouse.API.Services.Authorization.Attributes
                 this._rolesSplit = SplitString(value);
             }
         }
-        public PermissionAuthorizationAttribute()
-        {
-            
-        }
-        public PermissionAuthorizationAttribute(params UserType[] userTypes)
-        {
+        public PermissionAuthorizationAttribute() { }
+        public PermissionAuthorizationAttribute(params UserType[] userTypes) =>
             _userTypes = userTypes ?? Array.Empty<UserType>();
-        }
-
-        public PermissionAuthorizationAttribute(params string[] userRoles)
-        {
+        public PermissionAuthorizationAttribute(params string[] userRoles) =>
             _rolesSplit = userRoles ?? Array.Empty<string>();
-        }
 
         public PermissionAuthorizationAttribute(string objectName, SecurityPermissions permissions)
         {
@@ -59,26 +51,17 @@ namespace Warehouse.API.Services.Authorization.Attributes
             var principal = context.HttpContext.User;
             if (principal.Identity is {IsAuthenticated: true})
             {
-
-                var session = context.HttpContext.RequestServices.GetRequiredService<ISessionProvider>();
-
-                if (!session.IsInitialized())
-                    await session.LoadAsync();
-
-                var identity = (ClaimsIdentity)principal.Identity;
-                if (_userTypes.Any() && !_userTypes.Contains(identity.GetUserType()))
+                var sessionProvider = context.HttpContext.RequestServices.GetRequiredService<ISessionProvider>();
+                if (await sessionProvider.LoadSessionAsync())
                 {
-                    context.Result = new JsonResult(new { message = "No enough permissions" }) { StatusCode = StatusCodes.Status401Unauthorized };
-                }
-                else if (_rolesSplit.Any() && !session.HasAnyRole(_rolesSplit))
-                {
-                    //TextLogger.Warning($"User: {session.User.Username} URL: {httpContext.Request.Url} rejected by role filter");
-                    context.Result = new JsonResult(new { message = "No enough permissions" }) { StatusCode = StatusCodes.Status401Unauthorized };
-                }
-                else if (!string.IsNullOrEmpty(_objectName) && !session.HasPermission(_objectName, _permissions))
-                {
-                    //TextLogger.Warning($"User: {session.User.Username} URL: {httpContext.Request.Url} rejected by permissions filter");
-                    context.Result = new JsonResult(new { message = "No enough permissions" }) { StatusCode = StatusCodes.Status401Unauthorized };
+                    var session = sessionProvider.Session;
+                    if ((_userTypes.Any() && !_userTypes.Contains(principal.Identity.GetUserType())) ||
+                        (_rolesSplit.Any() && !session.HasAnyRole(_rolesSplit)) || 
+                        (!string.IsNullOrEmpty(_objectName) && !session.HasPermission(_objectName, _permissions)))
+                    {
+                        //TextLogger.Warning($"User: {session.User.Username} URL: {httpContext.Request.Url} rejected by permissions filter");
+                        context.Result = new JsonResult(new { message = "No enough permissions" }) { StatusCode = StatusCodes.Status405MethodNotAllowed };
+                    }
                 }
             }
             else

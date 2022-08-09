@@ -48,7 +48,7 @@ namespace Warehouse.Core.UseCases.Management.Queries
             IReadOnlyRepository<BeaconEntity> beaconRepository, 
             IReadOnlyRepository<BeaconRegisteredEntity> beaconRegisteredRepository, 
             IReadOnlyRepository<ProductEntity> productRepository,
-            IQueryBus queryBus, IMapper mapper)
+            IMapper mapper)
         {
             _beaconRepository = beaconRepository;
             _beaconRegisteredRepository = beaconRegisteredRepository;
