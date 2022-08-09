@@ -32,7 +32,6 @@ namespace Warehouse.API
             //builder.Services.AddRedisCache(configuration);
 
             services.AddHttpContextAccessor()
-                .AddScoped<IUserContext, IUserContext>()
                 .AddScoped<ISessionProvider, SessionProvider>();
 
             services.AddWarehouseDependencies(configuration);
