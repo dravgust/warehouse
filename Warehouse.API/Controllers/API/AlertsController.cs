@@ -2,8 +2,6 @@
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Queries;
 using Warehouse.API.Services.Authorization.Attributes;
-using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Services.Session;
 using Warehouse.Core.UseCases.Management.Commands;
 using Warehouse.Core.UseCases.Management.Queries;
 using Warehouse.Core.Utilities;
@@ -17,20 +15,17 @@ namespace Warehouse.API.Controllers.API
     {
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
-        private readonly ISessionProvider _session;
 
-        public AlertsController(IQueryBus queryBus, ICommandBus commandBus, ISessionProvider session)
+        public AlertsController(IQueryBus queryBus, ICommandBus commandBus)
         {
             _queryBus = queryBus;
             _commandBus = commandBus;
-            _session = session;
         }
 
         [HttpGet("")]
         public async Task<IActionResult> Get(int page, int size, string searchTerm = null, CancellationToken token = default)
         {
-            var providerId = _session.GetInt64(nameof(IProvider.ProviderId));
-            var query = GetAlerts.Create(page, size, providerId ?? 0, searchTerm);
+            var query = GetAlerts.Create(page, size, searchTerm);
             return Ok((await _queryBus.Send(query, token)).ToPagedResponse(size));
         }
 

@@ -9,32 +9,29 @@ namespace Warehouse.Core.UseCases.Management.Queries
 {
     public class GetProducts : PagingBase<ProductEntity, object>, IQuery<IPagedEnumerable<ProductEntity>>
     {
-        public long ProviderId { get; }
         public string FilterString { get; }
 
-        public GetProducts(int page, int take, long providerId, string searchTerm = null)
+        public GetProducts(int page, int size, string searchTerm = null)
         {
             Page = page;
-            Take = take;
+            Size = size;
 
-            ProviderId = providerId;
             FilterString = searchTerm;
         }
 
-        public static GetProducts Create(int pageNumber = 1, int pageSize = 20, long providerId = 0, string searchTerm = null)
+        public static GetProducts Create(int pageNumber = 1, int pageSize = 20, string searchTerm = null)
         {
-            return new GetProducts(pageNumber, pageSize, providerId, searchTerm);
+            return new GetProducts(pageNumber, pageSize, searchTerm);
         }
 
         protected override Sorting<ProductEntity, object> BuildDefaultSorting() => 
             new(p => p.Name, SortOrder.Asc);
 
-        public void Deconstruct(out int pageNumber, out int pageSize, out long providerId, out string filterString)
+        public void Deconstruct(out int pageNumber, out int pageSize, out string filterString)
         {
             pageNumber = Page;
-            pageSize = Take;
+            pageSize = Size;
 
-            providerId = ProviderId;
             filterString = FilterString;
         }
             
@@ -58,10 +55,10 @@ namespace Warehouse.Core.UseCases.Management.Queries
             if (!string.IsNullOrEmpty(query.FilterString))
             {
                 return await _repository.PagedListAsync(query, e =>
-                    e.ProviderId == query.ProviderId && e.Name.ToLower().Contains(query.FilterString.ToLower()), cancellationToken);
+                    e.ProviderId == providerId && e.Name.ToLower().Contains(query.FilterString.ToLower()), cancellationToken);
             }
 
-            return await _repository.PagedListAsync(query, p => p.ProviderId == query.ProviderId, cancellationToken);
+            return await _repository.PagedListAsync(query, p => p.ProviderId == providerId, cancellationToken);
         }
     }
 }

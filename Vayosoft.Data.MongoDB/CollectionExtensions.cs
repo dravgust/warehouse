@@ -509,7 +509,7 @@ namespace Vayosoft.Data.MongoDB
                 ? Builders<T>.Sort.Ascending(model.OrderBy.Expression) 
                 : Builders<T>.Sort.Descending(model.OrderBy.Expression);
 
-            return collection.AggregateByPage(filterDefinition, sortDefinition, model.Page, model.Take, cancellationToken);
+            return collection.AggregateByPage(filterDefinition, sortDefinition, model.Page, model.Size, cancellationToken);
         }
 
         public static async Task<IPagedEnumerable<T>> AggregateByPage<T>(

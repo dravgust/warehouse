@@ -11,32 +11,29 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 {
     public class GetDashboardByBeacon : PagingBase<BeaconReceivedEntity, object>, IQuery<IPagedEnumerable<DashboardByBeacon>>
     {
-        public long ProviderId { get; }
         public string FilterString { get; }
 
-        public GetDashboardByBeacon(int page, int take, long providerId, string searchTerm = null)
+        public GetDashboardByBeacon(int page, int size, string searchTerm = null)
         {
             Page = page;
-            Take = take;
+            Size = size;
 
-            ProviderId = providerId;
             FilterString = searchTerm;
         }
 
-        public static GetDashboardByBeacon Create(int pageNumber = 1, int pageSize = 20, long providerId = 0, string searchTerm = null)
+        public static GetDashboardByBeacon Create(int pageNumber = 1, int pageSize = 20, string searchTerm = null)
         {
-            return new GetDashboardByBeacon(pageNumber, pageSize, providerId, searchTerm);
+            return new GetDashboardByBeacon(pageNumber, pageSize, searchTerm);
         }
 
         protected override Sorting<BeaconReceivedEntity, object> BuildDefaultSorting() =>
             new(p => p.Id, SortOrder.Desc);
 
-        public void Deconstruct(out int pageNumber, out int pageSize, out long providerId, out string filterString)
+        public void Deconstruct(out int pageNumber, out int pageSize, out string filterString)
         {
             pageNumber = Page;
-            pageSize = Take;
+            pageSize = Size;
 
-            providerId = ProviderId;
             filterString = FilterString;
         }
     }

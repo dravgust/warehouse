@@ -10,12 +10,12 @@ namespace Vayosoft.Core.SharedKernel.Models.Pagination
 
         private int _page;
 
-        private int _take;
+        private int _size;
 
-        protected PagingBase(int page, int take, Sorting<TEntity, TOrderKey> orderBy)
+        protected PagingBase(int page, int size, Sorting<TEntity, TOrderKey> orderBy)
         {
             Page = page;
-            Take = take;
+            Size = size;
 
             _orderBy = orderBy ?? throw new ArgumentException("OrderBy can't be null", nameof(orderBy));
         }
@@ -23,7 +23,7 @@ namespace Vayosoft.Core.SharedKernel.Models.Pagination
         protected PagingBase()
         {
             Page = 1;
-            Take = 30;
+            Size = 30;
             
             // ReSharper disable once VirtualMemberCallInConstructor
             _orderBy = BuildDefaultSorting();
@@ -49,9 +49,9 @@ namespace Vayosoft.Core.SharedKernel.Models.Pagination
             }
         }
 
-        public int Take
+        public int Size
         {
-            get => _take;
+            get => _size;
             set
             {
                 if (value <= 0)
@@ -59,7 +59,7 @@ namespace Vayosoft.Core.SharedKernel.Models.Pagination
                     throw new ArgumentException("take must be > 0", nameof(value));
                 }
 
-                _take = value;
+                _size = value;
             }
         }
 

@@ -10,8 +10,8 @@ namespace Warehouse.Core.UseCases.Administration.Specifications
         private readonly long _providerId;
         private readonly string _searchTerm;
 
-        public UserSpec(int page, int take, long providerId, string searchTerm = null)
-            : base(page, take, SortOrder.Desc)
+        public UserSpec(int page, int size, long providerId, string searchTerm = null)
+            : base(page, size, SortOrder.Desc)
         {
             _providerId = providerId;
             _searchTerm = searchTerm;

@@ -1,20 +1,19 @@
-﻿using System.Collections.ObjectModel;
-using Warehouse.Core.Entities.Models.Security;
+﻿using Warehouse.Core.Entities.Models.Security;
 
 namespace Warehouse.Core.Persistence
 {
     public interface IUserRoleStore
     {
-        public Task<List<SecurityRoleEntity>> GetRolesAsync(IEnumerable<object> providers);
+        Task<List<SecurityRoleEntity>> GetRolesAsync(IEnumerable<object> providers, CancellationToken cancellationToken = default);
 
-        public Task<List<SecurityRoleEntity>> EmbeddedRolesAsync();
+        Task<List<SecurityRoleEntity>> EmbeddedRolesAsync();
 
-        public Task<SecurityRoleEntity> GetRoleAsync(string roleId);
+        Task<SecurityRoleEntity> GetRoleAsync(string roleId);
 
-        public Task<List<SecurityObjectEntity>> GetObjectsAsync();
+        Task<List<SecurityObjectEntity>> GetObjectsAsync();
 
-        public Task<List<RolePermissionsDTO>> GetRolePermissionsAsync(string roleId);
+        Task<List<RolePermissionsDTO>> GetRolePermissionsAsync(string roleId);
 
-        public Task<List<RoleDTO>> GetUserRolesAsync(object userId);
+        Task<List<RoleDTO>> GetUserRolesAsync(object userId, CancellationToken cancellationToken = default);
     }
 }

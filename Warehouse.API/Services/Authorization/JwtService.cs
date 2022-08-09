@@ -6,7 +6,9 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Vayosoft.Core.Utilities;
+using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Entities.Models.Security;
 using Warehouse.Core.Services;
 using Warehouse.Core.UseCases.Administration.Models;
 
@@ -21,16 +23,20 @@ namespace Warehouse.API.Services.Authorization
             _appSettings = appSettings.Value;
         }
 
-        public string GenerateJwtToken(IUser user)
+        public string GenerateJwtToken(IUser user, IEnumerable<SecurityRoleEntity> roles)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-            var claims = new[]
+            var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Sid, Guard.NotEmpty(user.Id.ToString(), nameof(user.Id)), ClaimValueTypes.Integer64),
-                new Claim(ClaimTypes.Name, user.Username, ClaimValueTypes.String), 
-                new Claim(ClaimTypes.Role, ((int)user.Type).ToString(), ClaimValueTypes.Integer32)
+                new(ClaimTypes.NameIdentifier, user.Id.ToString()?? throw new InvalidOperationException("The User has no Id"), ClaimValueTypes.Integer64),
+                new(ClaimTypes.Name, user.Username, ClaimValueTypes.String), 
+                new(ClaimTypes.Email, user.Email ?? string.Empty, ClaimValueTypes.Email), 
+                new(CustomClaimTypes.UserType, user.Type.ToString(), ClaimValueTypes.String),
+                new(CustomClaimTypes.ProviderId, $"{(user as IProvider)?.ProviderId ?? 0}", ClaimValueTypes.Integer64)
             };
+
+            claims.AddRange(roles.Select(role => new Claim(ClaimsIdentity.DefaultRoleClaimType, role.Id, ClaimValueTypes.String)));
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {

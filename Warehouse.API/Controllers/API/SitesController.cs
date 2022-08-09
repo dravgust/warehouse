@@ -5,7 +5,6 @@ using Vayosoft.Core.Queries;
 using Vayosoft.Core.Utilities;
 using Warehouse.API.Services.Authorization.Attributes;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Services.Session;
 using Warehouse.Core.UseCases.Management.Commands;
 using Warehouse.Core.UseCases.Management.Queries;
 using Warehouse.Core.Utilities;
@@ -20,26 +19,20 @@ namespace Warehouse.API.Controllers.API
         private readonly IRepository<WarehouseSiteEntity> _siteRepository;
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
-        private readonly ISessionProvider _session;
 
         public SitesController(
             IRepository<WarehouseSiteEntity> siteRepository,
-            IQueryBus queryBus, ICommandBus commandBus, ISessionProvider session)
+            IQueryBus queryBus, ICommandBus commandBus)
         {
             _siteRepository = siteRepository;
             _queryBus = queryBus;
             _commandBus = commandBus;
-            _session = session;
         }
 
         [HttpGet("")]
         public async Task<dynamic> Get(int page, int size, string searchTerm = null, CancellationToken token = default)
         {
-            //var spec = new WarehouseSiteSpec(page, size, searchTerm);
-            //var query = new SpecificationQuery<WarehouseSiteSpec, IPagedEnumerable<WarehouseSiteEntity>>(spec);
-
-            var providerId = _session.GetInt64(nameof(IProvider.ProviderId));
-            var query = GetSites.Create(page, size, providerId ?? 0, searchTerm);
+            var query = GetSites.Create(page, size, searchTerm);
             return Ok((await _queryBus.Send(query, token)).ToPagedResponse(size));
         }
 
@@ -54,6 +47,7 @@ namespace Warehouse.API.Controllers.API
         [HttpGet("{id}/delete")]
         public async Task<IActionResult> DeleteById(string id, CancellationToken token)
         {
+            Guard.NotEmpty(id, nameof(id));
             await _commandBus.Send(new DeleteWarehouseSite{ Id = id }, token);
             return Ok(new { id });
         }
@@ -75,6 +69,8 @@ namespace Warehouse.API.Controllers.API
         [HttpGet("{id}/delete-gw/{mac}")]
         public async Task<IActionResult> DeleteGw(string id, string mac,  CancellationToken token)
         {
+            Guard.NotEmpty(id, nameof(id));
+            Guard.NotEmpty(mac, nameof(mac));
             await _commandBus.Send(new RemoveGatewayFromSite { SiteId = id, MacAddress = mac }, token);
             return Ok(new { id });
         }

@@ -6,7 +6,6 @@ using Vayosoft.Core.Utilities;
 using Warehouse.API.Services;
 using Warehouse.API.Services.Authorization.Attributes;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Services.Session;
 using Warehouse.Core.UseCases.Management.Commands;
 using Warehouse.Core.UseCases.Management.Queries;
 using Warehouse.Core.Utilities;
@@ -20,13 +19,11 @@ namespace Warehouse.API.Controllers.API
     {
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
-        private readonly ISessionProvider _session;
 
-        public ProductsController(IQueryBus queryBus, ICommandBus commandBus, ISessionProvider session)
+        public ProductsController(IQueryBus queryBus, ICommandBus commandBus)
         {
             _queryBus = queryBus;
             _commandBus = commandBus;
-            _session = session;
         }
 
         [HttpGet("metadata")]
@@ -42,11 +39,7 @@ namespace Warehouse.API.Controllers.API
         [HttpGet("")]
         public async Task<IActionResult> Get(int page, int size, string searchTerm = null, CancellationToken token = default)
         {
-            //var spec = new ProductSpec(page, size, searchTerm);
-            //var query = new SpecificationQuery<ProductSpec, IPagedEnumerable<ProductEntity>>(spec);
-
-            var providerId = _session.GetInt64(nameof(IProvider.ProviderId));
-            var query = GetProducts.Create(page, size, providerId ?? 0, searchTerm);
+            var query = GetProducts.Create(page, size, searchTerm);
             return Ok((await _queryBus.Send(query, token)).ToPagedResponse(size));
         }
 

@@ -4,6 +4,7 @@ using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Services.Session;
 
 namespace Warehouse.Core.UseCases.Management.Queries
 {
@@ -12,12 +13,14 @@ namespace Warehouse.Core.UseCases.Management.Queries
         public class RegisteredGwQueryHandler : IQueryHandler<GetRegisteredGwList, IEnumerable<string>>
         {
             private readonly IDistributedMemoryCache _cache;
+            private readonly ISessionProvider _session;
             private readonly ILinqProvider _linqProvider;
 
-            public RegisteredGwQueryHandler(ILinqProvider linqProvider, IDistributedMemoryCache cache)
+            public RegisteredGwQueryHandler(ILinqProvider linqProvider, IDistributedMemoryCache cache, ISessionProvider session)
             {
                 _linqProvider = linqProvider;
                 _cache = cache;
+                _session = session;
             }
 
             public async Task<IEnumerable<string>> Handle(GetRegisteredGwList request, CancellationToken cancellationToken)

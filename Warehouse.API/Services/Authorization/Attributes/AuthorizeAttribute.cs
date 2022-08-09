@@ -6,6 +6,7 @@ using Warehouse.API.Extensions;
 using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services;
+using Warehouse.Core.Utilities;
 
 //https://docs.microsoft.com/ru-ru/aspnet/core/fundamentals/app-state?cid=kerryherger&view=aspnetcore-6.0
 //https://metanit.com/sharp/aspnet5/2.26.php?ysclid=l67iov921a229435244
@@ -29,11 +30,10 @@ namespace Warehouse.API.Services.Authorization.Attributes
             if (principal.Identity is {IsAuthenticated: true})
             {
                 var identity = (ClaimsIdentity)principal.Identity;
-                IUser user;
-                if ((user = await context.HttpContext.Session.GetAsync<UserEntity>(nameof(IUser))) == null)
+                if (await context.HttpContext.Session.GetAsync<UserEntity>(nameof(IUser)) == null)
                 {
                     var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
-                    user = await userService.GetByUserNameAsync(identity.Name, context.HttpContext.RequestAborted);
+                    var user = await userService.GetByUserNameAsync(identity.Name, context.HttpContext.RequestAborted);
 
                     await context.HttpContext.Session.SetAsync(nameof(IUser), user);
                     if (user is IProvider provider)
@@ -42,7 +42,11 @@ namespace Warehouse.API.Services.Authorization.Attributes
                     }
                 }
 
-                if (_userTypes.Any() && !_userTypes.Contains(user.Type))
+                //var id = identity.GetUserId();
+                //var providerId = identity.GetProviderId();
+                //var isInRole = principal.IsInRole("f6694d71d26e40f5a2abb357177c9bdz");
+
+                if (_userTypes.Any() && !_userTypes.Contains(identity.GetUserType()))
                 {
                     context.Result = new JsonResult(new { message = "No permissions" }) { StatusCode = StatusCodes.Status401Unauthorized };
                 }

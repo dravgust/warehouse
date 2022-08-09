@@ -10,33 +10,29 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
     public class GetUserNotifications : PagingBase<NotificationEntity, object>,
         IQuery<IPagedEnumerable<NotificationEntity>>
     {
-        public long ProviderId { get; }
         public string FilterString { get; }
 
-        public GetUserNotifications(int page, int take, long providerId, string searchTerm = null)
+        public GetUserNotifications(int page, int size, string searchTerm = null)
         {
             Page = page;
-            Take = take;
+            Size = size;
 
-            ProviderId = providerId;
             FilterString = searchTerm;
         }
 
-        public static GetUserNotifications Create(int pageNumber = 1, int pageSize = 20, long providerId = 0,
-            string searchTerm = null)
+        public static GetUserNotifications Create(int pageNumber = 1, int pageSize = 20, string searchTerm = null)
         {
-            return new GetUserNotifications(pageNumber, pageSize, providerId, searchTerm);
+            return new GetUserNotifications(pageNumber, pageSize, searchTerm);
         }
 
         protected override Sorting<NotificationEntity, object> BuildDefaultSorting() =>
             new(p => p.Id, SortOrder.Desc);
 
-        public void Deconstruct(out int pageNumber, out int pageSize, out long providerId, out string filterString)
+        public void Deconstruct(out int pageNumber, out int pageSize, out string filterString)
         {
             pageNumber = Page;
-            pageSize = Take;
+            pageSize = Size;
 
-            providerId = ProviderId;
             filterString = FilterString;
         }
     }

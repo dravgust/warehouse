@@ -32,7 +32,8 @@ namespace Warehouse.Core.Services
                 throw new ApplicationException("Username or password is incorrect");
 
             // authentication successful so generate jwt and refresh tokens
-            var jwtToken = _jwtUtils.GenerateJwtToken(user);
+            var roles = await ((IUserRoleStore) _userStore).GetUserRolesAsync(user.Id, cancellationToken);
+            var jwtToken = _jwtUtils.GenerateJwtToken(user, roles);
             var refreshToken = _jwtUtils.GenerateRefreshToken(ipAddress);
             user.RefreshTokens.Add(refreshToken);
 
@@ -73,7 +74,8 @@ namespace Warehouse.Core.Services
             await _userStore.UpdateAsync(user, cancellationToken);
 
             // generate new jwt
-            var jwtToken = _jwtUtils.GenerateJwtToken(user);
+            var roles = await ((IUserRoleStore)_userStore).GetUserRolesAsync(user.Id, cancellationToken);
+            var jwtToken = _jwtUtils.GenerateJwtToken(user, roles);
 
             return new AuthenticateResponse(user, jwtToken, newRefreshToken.Token, newRefreshToken.Expires);
         }

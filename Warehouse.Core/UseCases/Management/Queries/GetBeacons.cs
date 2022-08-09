@@ -10,33 +10,30 @@ namespace Warehouse.Core.UseCases.Management.Queries
 {
     public class GetBeacons : PagingBase<BeaconRegisteredEntity, object>, IQuery<IPagedEnumerable<ProductItemDto>>
     {
-        public long ProviderId { get; }
-        public string FilterString { get; }
+        public string SearchTerm { get; }
 
-        public GetBeacons(int page, int take, long providerId, string searchTerm = null)
+        public GetBeacons(int page, int size, string searchTerm = null)
         {
             Page = page;
-            Take = take;
+            Size = size;
 
-            ProviderId = providerId;
-            FilterString = searchTerm;
+            SearchTerm = searchTerm;
         }
 
-        public static GetBeacons Create(int pageNumber = 1, int pageSize = 20, long providerId = 0, string searchTerm = null)
+        public static GetBeacons Create(int pageNumber = 1, int pageSize = 20, string searchTerm = null)
         {
-            return new GetBeacons(pageNumber, pageSize, providerId, searchTerm);
+            return new GetBeacons(pageNumber, pageSize, searchTerm);
         }
 
         protected override Sorting<BeaconRegisteredEntity, object> BuildDefaultSorting() =>
             new(p => p.Id, SortOrder.Desc);
 
-        public void Deconstruct(out int pageNumber, out int pageSize, out long providerId, out string filterString)
+        public void Deconstruct(out int pageNumber, out int pageSize, out string searchTerm)
         {
             pageNumber = Page;
-            pageSize = Take;
+            pageSize = Size;
 
-            providerId = ProviderId;
-            filterString = FilterString;
+            searchTerm = SearchTerm;
         }
     }
 
@@ -66,10 +63,10 @@ namespace Warehouse.Core.UseCases.Management.Queries
             //var result = await _queryBus.Send(query, cancellationToken);
 
             IPagedEnumerable<BeaconRegisteredEntity> result;
-            if (!string.IsNullOrEmpty(query.FilterString))
+            if (!string.IsNullOrEmpty(query.SearchTerm))
             {
                 result = await _beaconRegisteredRepository.PagedListAsync(query, e =>
-                    e.MacAddress.ToLower().Contains(query.FilterString.ToLower()), cancellationToken);
+                    e.MacAddress.ToLower().Contains(query.SearchTerm.ToLower()), cancellationToken);
             }
             else
             {

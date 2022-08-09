@@ -9,33 +9,30 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 {
     public class GetBeaconEvents : PagingBase<BeaconEventEntity, object>, IQuery<IPagedEnumerable<BeaconEventDto>>
     {
-        public long ProviderId { get; }
-        public string FilterString { get; }
+        public string SearchTerm { get; }
 
-        public GetBeaconEvents(int page, int take, long providerId, string searchTerm = null)
+        public GetBeaconEvents(int page, int size, string searchTerm = null)
         {
             Page = page;
-            Take = take;
+            Size = size;
 
-            ProviderId = providerId;
-            FilterString = searchTerm;
+            SearchTerm = searchTerm;
         }
 
-        public static GetBeaconEvents Create(int pageNumber = 1, int pageSize = 20, long providerId = 0, string searchTerm = null)
+        public static GetBeaconEvents Create(int pageNumber = 1, int pageSize = 20, string searchTerm = null)
         {
-            return new GetBeaconEvents(pageNumber, pageSize, providerId, searchTerm);
+            return new GetBeaconEvents(pageNumber, pageSize, searchTerm);
         }
 
         protected override Sorting<BeaconEventEntity, object> BuildDefaultSorting() =>
             new(p => p.Id, SortOrder.Desc);
 
-        public void Deconstruct(out int pageNumber, out int pageSize, out long providerId, out string filterString)
+        public void Deconstruct(out int pageNumber, out int pageSize, out string filterString)
         {
             pageNumber = Page;
-            pageSize = Take;
+            pageSize = Size;
 
-            providerId = ProviderId;
-            filterString = FilterString;
+            filterString = SearchTerm;
         }
     }
 
@@ -48,8 +45,8 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
         public HandleGetBeaconEvents(
             IReadOnlyRepository<WarehouseSiteEntity> siteRepository,
             IReadOnlyRepository<BeaconEntity> beaconRepository, 
-            IReadOnlyRepository<BeaconEventEntity> beaconEventRepository, 
-            IQueryBus queryBus)
+            IReadOnlyRepository<BeaconEventEntity> beaconEventRepository)
+
         {
             _siteRepository = siteRepository;
             _beaconRepository = beaconRepository;
@@ -58,16 +55,12 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 
         public async Task<IPagedEnumerable<BeaconEventDto>> Handle(GetBeaconEvents query, CancellationToken cancellationToken)
         {
-            //var spec = new BeaconEventSpec(request.Page, request.Size, request.SearchTerm);
-            //var query = new SpecificationQuery<BeaconEventSpec, IPagedEnumerable<BeaconEventEntity>>(spec);
-            //var data = await _queryBus.Send(query, cancellationToken);
-
             IPagedEnumerable<BeaconEventEntity> data;
-            if (!string.IsNullOrEmpty(query.FilterString))
+            if (!string.IsNullOrEmpty(query.SearchTerm))
             {
                 data = await _beaconEventRepository.PagedListAsync(query, e =>
                     //e.ProviderId == query.ProviderId && 
-                    e.MacAddress.ToLower().Contains(query.FilterString.ToLower()), cancellationToken);
+                    e.MacAddress.ToLower().Contains(query.SearchTerm.ToLower()), cancellationToken);
             }
             else
             {

@@ -9,33 +9,30 @@ namespace Warehouse.Core.UseCases.Management.Queries
 {
     public class GetAlerts : PagingBase<AlertEntity, object>, IQuery<IPagedEnumerable<AlertEntity>>
     {
-        public long ProviderId { get; }
-        public string FilterString { get; }
+        public string SearchTerm { get; }
 
-        public GetAlerts(int page, int take, long providerId, string searchTerm = null)
+        public GetAlerts(int page, int size, string searchTerm = null)
         {
             Page = page;
-            Take = take;
+            Size = size;
 
-            ProviderId = providerId;
-            FilterString = searchTerm;
+            SearchTerm = searchTerm;
         }
 
-        public static GetAlerts Create(int pageNumber = 1, int pageSize = 20, long providerId = 0, string searchTerm = null)
+        public static GetAlerts Create(int pageNumber = 1, int pageSize = 20, string searchTerm = null)
         {
-            return new GetAlerts(pageNumber, pageSize, providerId, searchTerm);
+            return new GetAlerts(pageNumber, pageSize, searchTerm);
         }
 
         protected override Sorting<AlertEntity, object> BuildDefaultSorting() =>
             new(p => p.Id, SortOrder.Desc);
 
-        public void Deconstruct(out int pageNumber, out int pageSize, out long providerId, out string filterString)
+        public void Deconstruct(out int pageNumber, out int pageSize, out string searchTerm)
         {
             pageNumber = Page;
-            pageSize = Take;
+            pageSize = Size;
 
-            providerId = ProviderId;
-            filterString = FilterString;
+            searchTerm = SearchTerm;
         }
     }
 
@@ -54,13 +51,13 @@ namespace Warehouse.Core.UseCases.Management.Queries
         {
             var providerId = _session.GetInt64(nameof(IProvider.ProviderId));
 
-            if (!string.IsNullOrEmpty(query.FilterString))
+            if (!string.IsNullOrEmpty(query.SearchTerm))
             {
                 return await _repository.PagedListAsync(query, e =>
-                    e.ProviderId == query.ProviderId && e.Name.ToLower().Contains(query.FilterString.ToLower()), cancellationToken);
+                    e.ProviderId == providerId && e.Name.ToLower().Contains(query.SearchTerm.ToLower()), cancellationToken);
             }
 
-            return await _repository.PagedListAsync(query, p => p.ProviderId == query.ProviderId, cancellationToken);
+            return await _repository.PagedListAsync(query, p => p.ProviderId == providerId, cancellationToken);
         }
     }
 }

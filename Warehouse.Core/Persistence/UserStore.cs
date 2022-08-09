@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Vayosoft.Core.Persistence;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Entities.Models.Security;
 
@@ -8,18 +7,17 @@ namespace Warehouse.Core.Persistence
     public class UserStore : IUserStore<UserEntity>, IUserRoleStore
     {
         private readonly WarehouseContext _context;
-        public IUnitOfWork UnitOfWork => _context;
 
         public UserStore(WarehouseContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<List<SecurityRoleEntity>> GetRolesAsync(IEnumerable<object> providers)
+        public async Task<List<SecurityRoleEntity>> GetRolesAsync(IEnumerable<object> providers, CancellationToken cancellationToken)
         {
             var rl = await EmbeddedRolesAsync();
             var roles = await _context.Set<SecurityRoleEntity>()
-                .Where(r => r.ProviderId != null && providers.Contains(r.ProviderId.Value)).ToListAsync();
+                .Where(r => r.ProviderId != null && providers.Contains(r.ProviderId.Value)).ToListAsync(cancellationToken: cancellationToken);
             rl.AddRange(roles);
             return rl;
         }
@@ -56,7 +54,7 @@ namespace Warehouse.Core.Persistence
             return query.ToListAsync();
         }
 
-        public Task<List<RoleDTO>> GetUserRolesAsync(object userId)
+        public Task<List<RoleDTO>> GetUserRolesAsync(object userId, CancellationToken cancellationToken = default)
         {
             var query = (from ur in _context.Set<UserRoleEntity>()
                 join r in _context.Set<SecurityRoleEntity>() on ur.RoleId equals r.Id
@@ -79,7 +77,7 @@ namespace Warehouse.Core.Persistence
                         }).ToList()
                 });
 
-            return query.ToListAsync();
+            return query.ToListAsync(cancellationToken: cancellationToken);
         }
 
         public Task<UserEntity> FindByIdAsync(object userId, CancellationToken cancellationToken)
