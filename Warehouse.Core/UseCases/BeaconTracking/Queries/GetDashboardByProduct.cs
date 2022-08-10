@@ -13,90 +13,98 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 
     internal class HandleGetDashboardByProduct : IQueryHandler<GetDashboardByProduct, IEnumerable<DashboardByProduct>>
     {
-        private readonly IReadOnlyRepository<BeaconReceivedEntity> _beaconReceivedRepository;
-        private readonly IReadOnlyRepository<WarehouseSiteEntity> _siteRepository;
-        private readonly IReadOnlyRepository<BeaconEntity> _beaconRepository;
-        private readonly IReadOnlyRepository<ProductEntity> _productRepository;
+        private readonly IReadOnlyRepository<BeaconReceivedEntity> _receivedBeacons;
+        private readonly IReadOnlyRepository<WarehouseSiteEntity> _sites;
+        private readonly IReadOnlyRepository<BeaconEntity> _beacons;
+        private readonly IReadOnlyRepository<ProductEntity> _products;
         private readonly IUserContext _userContext;
 
         public HandleGetDashboardByProduct(
-            IReadOnlyRepository<BeaconReceivedEntity> beaconReceivedRepository,
-            IReadOnlyRepository<WarehouseSiteEntity> siteRepository,
-            IReadOnlyRepository<BeaconEntity> beaconRepository,
-            IReadOnlyRepository<ProductEntity> productRepository,
+            IReadOnlyRepository<BeaconReceivedEntity> receivedBeacons,
+            IReadOnlyRepository<WarehouseSiteEntity> sites,
+            IReadOnlyRepository<BeaconEntity> beacons,
+            IReadOnlyRepository<ProductEntity> products,
             IUserContext userContext)
         {
-            _beaconReceivedRepository = beaconReceivedRepository;
-            _siteRepository = siteRepository;
-            _beaconRepository = beaconRepository;
-            _productRepository = productRepository;
+            _receivedBeacons = receivedBeacons;
+            _sites = sites;
+            _beacons = beacons;
+            _products = products;
             _userContext = userContext;
         }
 
         public async Task<IEnumerable<DashboardByProduct>> Handle(GetDashboardByProduct request, CancellationToken cancellationToken)
         {
-            var result = await _beaconReceivedRepository.ListAsync(cancellationToken);
+            var result = new List<DashboardByProduct>();
+
             var providerId = _userContext.User.Identity.GetProviderId();
-            var store = new SortedDictionary<(string, string), DashboardByProduct>(Comparer<(string, string)>.Create((x, y) => y.CompareTo(x)));
-
-            foreach (var b in result)
+            var sites = new Dictionary<string, SiteInfo>();
+            var items = new Dictionary<string, List<DashboardByProductItem>>();
+            var beacons = await _beacons.ListAsync(b => b.ProductId != null && b.ProviderId == providerId, cancellationToken);
+            foreach (var beacon in beacons)
             {
-                var productInfo = new ProductInfo
+                var item = new DashboardByProductItem
                 {
-                    Id = string.Empty
-                };
-                var siteInfo = new SiteInfo
-                {
-                    Id = b.SourceId
+                    Beacon = new BeaconInfo
+                    {
+                        MacAddress = beacon.MacAddress,
+                        Name = beacon.Name
+                    },
                 };
 
-                var productItem = await _beaconRepository.FirstOrDefaultAsync(q => q.Id.Equals(b.MacAddress), cancellationToken);
-                if (productItem != null)
+                SiteInfo siteInfo = null;
+                var receivedBeacon = await _receivedBeacons.FindAsync(beacon.MacAddress, cancellationToken);
+                if (receivedBeacon != null)
                 {
-                    if (!string.IsNullOrEmpty(productItem.ProductId))
+                    if (!string.IsNullOrEmpty(receivedBeacon.SourceId))
                     {
-                        var product = await _productRepository.FirstOrDefaultAsync(p => p.Id == productItem.ProductId, cancellationToken);
-                        if (product != null)
+                        if (!sites.TryGetValue(receivedBeacon.SourceId, out siteInfo))
                         {
-                            productInfo.Id = product.Id;
-                            productInfo.Name = product.Name;
+                            siteInfo = new SiteInfo
+                            {
+                                Id = receivedBeacon.SourceId,
+                            };
+                            var site = await _sites.FindAsync(receivedBeacon.SourceId, cancellationToken);
+                            if (site != null)
+                            {
+                                siteInfo.Name = site.Name;
+                            }
+                            sites.Add(receivedBeacon.SourceId, siteInfo);
                         }
                     }
                 }
-
-                if (!store.ContainsKey((productInfo.Id, siteInfo.Id)))
+                item.Site = siteInfo ?? new SiteInfo
                 {
-                    var site = await _siteRepository.FindAsync(b.SourceId, cancellationToken);
-                    siteInfo.Name = site?.Name;
+                    Id = string.Empty,
+                };
 
-                    var asset = new DashboardByProduct
-                    {
-                        Product = productInfo,
-                        Site = siteInfo,
-                        Beacons = new Collection<BeaconInfo>
-                       {
-                           new()
-                           {
-                               MacAddress = b.MacAddress,
-                               Name = productItem?.Name
-                           }
-                       },
-                    };
-                    store[(productInfo.Id, siteInfo.Id)] = asset;
-                }
+                if (!items.ContainsKey(beacon.ProductId))
+                    items.Add(beacon.ProductId, new List<DashboardByProductItem> { item });
                 else
                 {
-                    store[(productInfo.Id, siteInfo.Id)].Beacons.Add(new BeaconInfo
-                    {
-                        MacAddress = b.MacAddress,
-                        Name = productItem?.Name
-                    });
+                    items[beacon.ProductId].Add(item);
                 }
-
             }
 
+            var products = await _products.ListAsync(p => p.ProviderId == providerId, cancellationToken);
+            foreach (var product in products)
+            {
+                var dashboardByProduct = new DashboardByProduct
+                {
+                    Product = new ProductInfo
+                    {
+                        Id = product.Id,
+                        Name = product.Name,
+                    },
+                    Beacons = !items.ContainsKey(product.Id)
+                        ? new List<DashboardByProductItem>()
+                        : items[product.Id]
+                };
 
-            return store.Values;
+                result.Add(dashboardByProduct);
+            }
+
+            return result;
         }
     }
 }

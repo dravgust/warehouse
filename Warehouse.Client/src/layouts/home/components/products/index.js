@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Card } from "@mui/material";
+import { Card, Icon, IconButton, Tooltip } from "@mui/material";
 import SuiBox from "components/SuiBox";
 import { useState } from "react";
 import { useQuery } from "react-query";
@@ -14,8 +14,8 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import { FixedSizeList } from "react-window";
 import ListItemButton from "@mui/material/ListItemButton";
-import QrCode2SharpIcon from "@mui/icons-material/QrCode2Sharp";
 import SensorsOutlinedIcon from "@mui/icons-material/SensorsOutlined";
+import QrCode2SharpIcon from "@mui/icons-material/QrCode2Sharp";
 import SuiInput from "components/SuiInput";
 import { fetchAssetsInfo } from "utils/query-keys";
 import { getAssetsInfo } from "services/warehouse-service";
@@ -48,7 +48,7 @@ const AccordionSummary = styled((props) => (
     transform: "rotate(90deg)",
   },
   "& .MuiAccordionSummary-content": {
-    marginLeft: theme.spacing(0),
+    //marginLeft: theme.spacing(1),
   },
 }));
 
@@ -66,11 +66,7 @@ function Product({ product, count }) {
         <QrCode2SharpIcon fontSize="large" />
       </SuiBox>
       <SuiBox display="flex" flexDirection="column">
-        <SuiTypography
-          variant="button"
-          fontWeight="medium"
-          color={product.name ? "primary" : "secondary"}
-        >
+        <SuiTypography variant="button" fontWeight="medium" color={"primary"}>
           {product.name || "Undefined"}
         </SuiTypography>
         <SuiTypography variant="caption" color="secondary">
@@ -81,17 +77,8 @@ function Product({ product, count }) {
   );
 }
 
-function Site({ site }) {
-  return (
-    <SuiBox display="flex" alignItems="center" px={2}>
-      <SuiTypography variant="h6" color="info">
-        {site.name || "n/a"}
-      </SuiTypography>
-    </SuiBox>
-  );
-}
-
 export default function ProductsTreeView({
+  searchTerm = "",
   selectedProduct = { beacons: [] },
   onProductSelect = () => {},
   selectedBeacon = "",
@@ -99,14 +86,15 @@ export default function ProductsTreeView({
 }) {
   const [pattern, setPattern] = useState("");
   const onSearchProduct = (productItem) => setPattern(productItem);
-  const [controller] = useSoftUIController();
+  const [controller, dispatch] = useSoftUIController();
   const { direction } = controller;
 
-  let beacons =
+  let assets =
     (selectedProduct &&
       selectedProduct.beacons.filter((b) => {
         return Boolean(
-          !pattern || b.macAddress.toLocaleUpperCase().indexOf(pattern.toLocaleUpperCase()) > -1
+          !pattern ||
+            b.beacon.macAddress.toLocaleUpperCase().indexOf(pattern.toLocaleUpperCase()) > -1
         );
       })) ||
     [];
@@ -117,20 +105,30 @@ export default function ProductsTreeView({
       style={style}
       component="div"
       disablePadding
-      onClick={() => onBeaconSelect(beacons[index])}
+      onClick={() => onBeaconSelect(assets[index].beacon)}
       sx={{
         borderBottom: ({ borders: { borderWidth, borderColor } }) =>
           `${borderWidth[1]} solid ${borderColor}`,
       }}
-      selected={beacons[index].macAddress === selectedBeacon.macAddress}
+      selected={assets[index].beacon.macAddress === selectedBeacon.macAddress}
+      secondaryAction={
+        <SuiTypography
+          variant="h6"
+          fontWeight="medium"
+          color={assets[index].site.name ? "info" : "secondary"}
+          mx={2}
+        >
+          {assets[index].site.name || "n/a"}
+        </SuiTypography>
+      }
     >
       <ListItemButton dir={direction}>
         <ListItemIcon>
           <SensorsOutlinedIcon />
         </ListItemIcon>
         <ListItemText
-          primaryTypographyProps={{ color: beacons[index].name ? "dark" : "secondary" }}
-          primary={beacons[index].name || "n/a"}
+          primaryTypographyProps={{ color: assets[index].beacon.name ? "dark" : "secondary" }}
+          primary={assets[index].beacon.name || "n/a"}
           secondary={
             <React.Fragment>
               <SuiTypography
@@ -139,7 +137,7 @@ export default function ProductsTreeView({
                 variant="caption"
                 color="secondary"
               >
-                {beacons[index].macAddress}
+                {assets[index].beacon.macAddress}
               </SuiTypography>
             </React.Fragment>
           }
@@ -147,16 +145,20 @@ export default function ProductsTreeView({
       </ListItemButton>
     </ListItem>
   );
-
+  const [reload, updateReloadState] = useState(null);
+  const forceUpdate = () => {
+    setExpanded("");
+    onBeaconSelect("");
+    onProductSelect(null);
+    updateReloadState(Date.now());
+  };
   const {
     isLoading,
     error,
     data: response,
     isSuccess,
-  } = useQuery([fetchAssetsInfo], getAssetsInfo);
-
+  } = useQuery([fetchAssetsInfo, reload], getAssetsInfo);
   const [expanded, setExpanded] = React.useState("");
-
   const handleChange = (panel, row) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
     setPattern("");
@@ -172,6 +174,13 @@ export default function ProductsTreeView({
             Products
           </SuiTypography>
         </SuiBox>
+        <SuiBox display="flex" alignItems="center" mt={{ xs: 2, sm: 0 }} ml={{ xs: -1.5, sm: 0 }}>
+          <IconButton size="xl" color="inherit" onClick={forceUpdate}>
+            <Tooltip title="Reload">
+              <Icon>sync</Icon>
+            </Tooltip>
+          </IconButton>
+        </SuiBox>
       </SuiBox>
       <SuiBox pb={3}>
         {isSuccess &&
@@ -179,7 +188,7 @@ export default function ProductsTreeView({
             <Accordion
               expanded={expanded === `panel_${index}`}
               onChange={handleChange(`panel_${index}`, item)}
-              key={`product_${index}`}
+              key={`site_${index}`}
               TransitionProps={{ unmountOnExit: true }}
             >
               <AccordionSummary
@@ -193,8 +202,7 @@ export default function ProductsTreeView({
                   alignItems="center"
                   style={{ width: "100%" }}
                 >
-                  <Product product={item.product} count={item.beacons.length} />
-                  <Site site={item.site}></Site>
+                  <Product product={item.product} count={item.beacons.length}></Product>
                 </SuiBox>
               </AccordionSummary>
               <AccordionDetails>
@@ -220,7 +228,7 @@ export default function ProductsTreeView({
                   <FixedSizeList
                     className="List"
                     height={350}
-                    itemCount={beacons.length}
+                    itemCount={assets.length}
                     itemSize={65}
                   >
                     {Row}

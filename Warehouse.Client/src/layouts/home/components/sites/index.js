@@ -79,7 +79,7 @@ function Site({ site, count }) {
 
 export default function SiteInfo({
   searchTerm = "",
-  selectedSite = { beacons: [] },
+  selectedSite = { in: [] },
   onSiteSelect = () => {},
   selectedBeacon = "",
   onBeaconSelect = () => {},

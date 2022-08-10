@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using Warehouse.Core.UseCases.Management.Models;
+﻿using Warehouse.Core.UseCases.Management.Models;
 
 namespace Warehouse.Core.UseCases.BeaconTracking.Models
 {
@@ -16,8 +15,13 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Models
     public class DashboardByProduct
     {
         public ProductInfo Product { set; get; }
+        public ICollection<DashboardByProductItem> Beacons { set; get; }
+    }
+
+    public class DashboardByProductItem
+    {
         public SiteInfo Site { set; get; }
-        public Collection<BeaconInfo> Beacons { set; get; }
+        public BeaconInfo Beacon { set; get; }
     }
 
     public class ProductInfo
