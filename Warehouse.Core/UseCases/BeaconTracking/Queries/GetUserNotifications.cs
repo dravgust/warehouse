@@ -3,7 +3,7 @@ using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Services.Session;
+using Warehouse.Core.Services;
 using Warehouse.Core.Utilities;
 
 namespace Warehouse.Core.UseCases.BeaconTracking.Queries
@@ -11,14 +11,14 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
     public class GetUserNotifications : PagingBase<NotificationEntity, object>,
         IQuery<IPagedEnumerable<NotificationEntity>>
     {
-        public string FilterString { get; }
+        public string SearchTerm { get; }
 
         public GetUserNotifications(int page, int size, string searchTerm = null)
         {
             Page = page;
             Size = size;
 
-            FilterString = searchTerm;
+            SearchTerm = searchTerm;
         }
 
         public static GetUserNotifications Create(int pageNumber = 1, int pageSize = 20, string searchTerm = null)
@@ -29,36 +29,36 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
         protected override Sorting<NotificationEntity, object> BuildDefaultSorting() =>
             new(p => p.Id, SortOrder.Desc);
 
-        public void Deconstruct(out int pageNumber, out int pageSize, out string filterString)
+        public void Deconstruct(out int pageNumber, out int pageSize, out string searchTerm)
         {
             pageNumber = Page;
             pageSize = Size;
 
-            filterString = FilterString;
+            searchTerm = SearchTerm;
         }
     }
 
     internal class HandleGetNotifications : IQueryHandler<GetUserNotifications, IPagedEnumerable<NotificationEntity>>
     {
         private readonly IReadOnlyRepository<NotificationEntity> _repository;
-        private readonly ISessionProvider _session;
+        private readonly IUserContext _userContext;
 
-        public HandleGetNotifications(IReadOnlyRepository<NotificationEntity> repository, ISessionProvider session)
+        public HandleGetNotifications(IReadOnlyRepository<NotificationEntity> repository, IUserContext userContext)
         {
             this._repository = repository;
-            _session = session;
+            _userContext = userContext;
         }
 
         public async Task<IPagedEnumerable<NotificationEntity>> Handle(GetUserNotifications query,
             CancellationToken cancellationToken)
         {
-            var providerId = _session.User.Identity.GetProviderId();
+            var providerId = _userContext.User.Identity.GetProviderId();
 
-            if (!string.IsNullOrEmpty(query.FilterString))
+            if (!string.IsNullOrEmpty(query.SearchTerm))
             {
                 return await _repository.PagedListAsync(query, e =>
                         //e.ProviderId == query.ProviderId &&
-                        e.MacAddress.ToLower().Contains(query.FilterString.ToLower()),
+                        e.MacAddress.ToLower().Contains(query.SearchTerm.ToLower()),
                     cancellationToken);
             }
 

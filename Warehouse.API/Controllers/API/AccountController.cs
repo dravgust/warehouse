@@ -6,11 +6,10 @@ using Vayosoft.Core.Queries;
 using Vayosoft.Core.Utilities;
 using Warehouse.API.Resources;
 using Warehouse.API.UseCases.Resources;
-using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services;
 using Warehouse.Core.UseCases.Administration.Models;
-using Warehouse.API.Extensions;
 using Warehouse.API.Services.Authorization.Attributes;
+using Warehouse.API.Extensions;
 
 namespace Warehouse.API.Controllers.API
 {
@@ -45,15 +44,10 @@ namespace Warehouse.API.Controllers.API
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var data = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<AuthenticateRequest>(model.Email), async options =>
-            {
-                options.AbsoluteExpirationRelativeToNow = TimeSpans.Minute;
-                var response = await _userService.AuthenticateAsync(model, IpAddress(), cancellationToken);
-                return response;
-            });
-
-            SetTokenCookie(data.RefreshToken);
-            return Ok(data);
+            var response = await _userService.AuthenticateAsync(model, IpAddress(), cancellationToken);
+            await HttpContext.Session.SetAsync("_roles", response.Roles);
+            SetTokenCookie(response.RefreshToken);
+            return Ok(response);
         }
 
         [AllowAnonymous]

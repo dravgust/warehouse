@@ -2,7 +2,7 @@
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Queries;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Services.Session;
+using Warehouse.Core.Services;
 using Warehouse.Core.UseCases.BeaconTracking.Models;
 using Warehouse.Core.Utilities;
 
@@ -17,26 +17,26 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
         private readonly IReadOnlyRepository<WarehouseSiteEntity> _siteRepository;
         private readonly IReadOnlyRepository<BeaconEntity> _beaconRepository;
         private readonly IReadOnlyRepository<ProductEntity> _productRepository;
-        private readonly ISessionProvider _session;
+        private readonly IUserContext _userContext;
 
         public HandleGetDashboardByProduct(
             IReadOnlyRepository<BeaconReceivedEntity> beaconReceivedRepository,
             IReadOnlyRepository<WarehouseSiteEntity> siteRepository,
             IReadOnlyRepository<BeaconEntity> beaconRepository,
             IReadOnlyRepository<ProductEntity> productRepository,
-            ISessionProvider session)
+            IUserContext userContext)
         {
             _beaconReceivedRepository = beaconReceivedRepository;
             _siteRepository = siteRepository;
             _beaconRepository = beaconRepository;
             _productRepository = productRepository;
-            _session = session;
+            _userContext = userContext;
         }
 
         public async Task<IEnumerable<DashboardByProduct>> Handle(GetDashboardByProduct request, CancellationToken cancellationToken)
         {
             var result = await _beaconReceivedRepository.ListAsync(cancellationToken);
-            var providerId = _session.User.Identity.GetProviderId();
+            var providerId = _userContext.User.Identity.GetProviderId();
             var store = new SortedDictionary<(string, string), DashboardByProduct>(Comparer<(string, string)>.Create((x, y) => y.CompareTo(x)));
 
             foreach (var b in result)

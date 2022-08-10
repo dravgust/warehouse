@@ -2,7 +2,7 @@
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Queries;
 using Warehouse.API.Services.Authorization.Attributes;
-using Warehouse.Core.Services.Session;
+using Warehouse.Core.Services;
 using Warehouse.Core.UseCases.Management.Commands;
 using Warehouse.Core.UseCases.Management.Queries;
 using Warehouse.Core.Utilities;
@@ -17,7 +17,7 @@ namespace Warehouse.API.Controllers.API
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
 
-        public BeaconsController(IQueryBus queryBus, ICommandBus commandBus, ISessionProvider session)
+        public BeaconsController(IQueryBus queryBus, ICommandBus commandBus, IUserContext session)
         {
             _queryBus = queryBus;
             _commandBus = commandBus;

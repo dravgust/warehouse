@@ -4,7 +4,7 @@ using Vayosoft.Core.Commands;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Services.Session;
+using Warehouse.Core.Services;
 using Warehouse.Core.UseCases.Management.Models;
 using Warehouse.Core.Utilities;
 
@@ -25,13 +25,13 @@ namespace Warehouse.Core.UseCases.Management.Commands
     {
         private readonly IRepository<ProductEntity> _repository;
         private readonly IMapper _mapper;
-        private readonly ISessionProvider _session;
+        private readonly IUserContext _userContext;
 
-        public HandleSetProduct(IRepository<ProductEntity> repository, IMapper mapper, ISessionProvider session)
+        public HandleSetProduct(IRepository<ProductEntity> repository, IMapper mapper, IUserContext userContext)
         {
             _repository = repository;
             _mapper = mapper;
-            _session = session;
+            _userContext = userContext;
         }
 
         public async Task<Unit> Handle(SetProduct request, CancellationToken cancellationToken)
@@ -48,7 +48,7 @@ namespace Warehouse.Core.UseCases.Management.Commands
             else
             {
                 entity = _mapper.Map<ProductEntity>(request);
-                var providerId = _session.User.Identity.GetProviderId();
+                var providerId = _userContext.User.Identity.GetProviderId();
                 entity.ProviderId = providerId;
                 await _repository.AddAsync(entity, cancellationToken);
             }

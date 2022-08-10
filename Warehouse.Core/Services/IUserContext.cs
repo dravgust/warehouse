@@ -1,13 +1,16 @@
 ﻿using System.Security.Principal;
+using Warehouse.Core.Entities.Models.Security;
 
-namespace Warehouse.Core.Services.Session
+namespace Warehouse.Core.Services
 {
-    public interface ISessionProvider
+    public interface IUserContext
     {
         IPrincipal User { get; }
-        IUserSession Session { get; }
-
         Task<bool> LoadSessionAsync();
+
+        bool HasRole(string role);
+        bool HasAnyRole(IEnumerable<string> roles);
+        bool HasPermission(string objName, SecurityPermissions requiredPermissions);
 
         public T Get<T>(string key) where T : class;
         public void Set<T>(string key, T value) where T : class;

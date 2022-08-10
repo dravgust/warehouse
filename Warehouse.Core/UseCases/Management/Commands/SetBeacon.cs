@@ -4,7 +4,7 @@ using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel;
 using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Services.Session;
+using Warehouse.Core.Services;
 using Warehouse.Core.UseCases.Management.Models;
 using Warehouse.Core.Utilities;
 
@@ -18,18 +18,18 @@ namespace Warehouse.Core.UseCases.Management.Commands
         private readonly IRepository<BeaconEntity> _beaconRepository;
         private readonly IRepository<BeaconRegisteredEntity> _beaconRegisteredRepository;
         private readonly IMapper _mapper;
-        private readonly ISessionProvider _session;
+        private readonly IUserContext _userContext;
         private readonly IReadOnlyRepository<BeaconRegisteredEntity> _beaconRegisteredReadOnly;
 
         public HandleSetBeacon(
             IRepository<BeaconEntity> beaconRepository,
             IRepository<BeaconRegisteredEntity> beaconRegisteredRepository,
-            IMapper mapper, ISessionProvider session, IReadOnlyRepository<BeaconRegisteredEntity> beaconRegisteredReadOnly)
+            IMapper mapper, IUserContext userContext, IReadOnlyRepository<BeaconRegisteredEntity> beaconRegisteredReadOnly)
         {
             _beaconRepository = beaconRepository;
             _beaconRegisteredRepository = beaconRegisteredRepository;
             _mapper = mapper;
-            _session = session;
+            _userContext = userContext;
             _beaconRegisteredReadOnly = beaconRegisteredReadOnly;
         }
 
@@ -60,7 +60,7 @@ namespace Warehouse.Core.UseCases.Management.Commands
             else
             {
                 entity = _mapper.Map<BeaconEntity>(request);
-                var providerId = _session.User.Identity.GetProviderId();
+                var providerId = _userContext.User.Identity.GetProviderId();
                 entity.ProviderId = providerId;
                 await _beaconRepository.AddAsync(entity, cancellationToken);
             }

@@ -43,7 +43,7 @@ namespace Warehouse.Core.Services
             // save changes to db
             await _userStore.UpdateAsync(user, cancellationToken);
 
-            return new AuthenticateResponse(user, jwtToken, refreshToken.Token, refreshToken.Expires);
+            return new AuthenticateResponse(user, roles, jwtToken, refreshToken.Token, refreshToken.Expires);
         }
 
         public async Task<AuthenticateResponse> RefreshTokenAsync(string token, string ipAddress, CancellationToken cancellationToken)
@@ -77,7 +77,7 @@ namespace Warehouse.Core.Services
             var roles = await ((IUserRoleStore)_userStore).GetUserRolesAsync(user.Id, cancellationToken);
             var jwtToken = _jwtUtils.GenerateJwtToken(user, roles);
 
-            return new AuthenticateResponse(user, jwtToken, newRefreshToken.Token, newRefreshToken.Expires);
+            return new AuthenticateResponse(user, roles, jwtToken, newRefreshToken.Token, newRefreshToken.Expires);
         }
 
         public async Task RevokeTokenAsync(string token, string ipAddress, CancellationToken cancellationToken)

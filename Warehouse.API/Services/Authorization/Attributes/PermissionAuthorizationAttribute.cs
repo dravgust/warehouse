@@ -1,11 +1,12 @@
-﻿using System.Security.Claims;
+﻿using System.Security.Principal;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Vayosoft.Core.Utilities;
+using Warehouse.API.Services.ExceptionHandling;
 using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Models.Security;
-using Warehouse.Core.Services.Session;
+using Warehouse.Core.Services;
 using Warehouse.Core.Utilities;
 
 //https://docs.microsoft.com/ru-ru/aspnet/core/fundamentals/app-state?cid=kerryherger&view=aspnetcore-6.0
@@ -45,29 +46,67 @@ namespace Warehouse.API.Services.Authorization.Attributes
 
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            if (SkipAuthorization(context))
-                return;
-
-            var principal = context.HttpContext.User;
-            if (principal.Identity is {IsAuthenticated: true})
+            try
             {
-                var sessionProvider = context.HttpContext.RequestServices.GetRequiredService<ISessionProvider>();
-                if (await sessionProvider.LoadSessionAsync())
+                if (SkipAuthorization(context))
+                    return;
+
+                var principal = context.HttpContext.User;
+                if (principal.Identity is { IsAuthenticated: true })
                 {
-                    var session = sessionProvider.Session;
-                    if ((_userTypes.Any() && !_userTypes.Contains(principal.Identity.GetUserType())) ||
-                        (_rolesSplit.Any() && !session.HasAnyRole(_rolesSplit)) || 
-                        (!string.IsNullOrEmpty(_objectName) && !session.HasPermission(_objectName, _permissions)))
+                    if (_userTypes.Any() && !_userTypes.Contains(principal.Identity.GetUserType()))
                     {
-                        //TextLogger.Warning($"User: {session.User.Username} URL: {httpContext.Request.Url} rejected by permissions filter");
-                        context.Result = new JsonResult(new { message = "No enough permissions" }) { StatusCode = StatusCodes.Status405MethodNotAllowed };
+                        HandleReject(context, principal.Identity); return;
+                    }
+
+                    if (_rolesSplit.Any())
+                    {
+                        var session = context.HttpContext.RequestServices.GetRequiredService<IUserContext>();
+                        if (!await session.LoadSessionAsync() || !session.HasAnyRole(_rolesSplit))
+                        {
+                            HandleReject(context, principal.Identity); return;
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(_objectName))
+                    {
+                        var session = context.HttpContext.RequestServices.GetRequiredService<IUserContext>();
+                        if (!await session.LoadSessionAsync() || !session.HasPermission(_objectName, _permissions))
+                        {
+                            HandleReject(context, principal.Identity); return;
+                        }
                     }
                 }
+                else
+                {
+                    HandleUnauthorized(context);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                context.Result = new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };
+                HandleException(context, ex);
             }
+        }
+
+        private static void HandleException(AuthorizationFilterContext context, Exception exception)
+        {
+            var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<PermissionAuthorizationAttribute>>();
+            logger.LogError(exception, exception.Message);
+
+            var codeInfo = ExceptionToHttpStatusMapper.Map(exception);
+            context.Result = new JsonResult(new { message = "Authorization error" }) { StatusCode = (int)codeInfo.Code };
+        }
+
+        private static void HandleReject(AuthorizationFilterContext context, IIdentity identity)
+        {
+            var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<PermissionAuthorizationAttribute>>();
+            logger.LogWarning($"User: {identity.Name} URL: {context.HttpContext.Request.QueryString} rejected by permissions filter");
+            context.Result = new JsonResult(new { message = "No enough permissions" }) { StatusCode = StatusCodes.Status401Unauthorized };
+        }
+
+        private static void HandleUnauthorized(AuthorizationFilterContext context)
+        {
+            context.Result = new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };
         }
 
         protected static bool SkipAuthorization(AuthorizationFilterContext context)

@@ -5,16 +5,15 @@ using Vayosoft.Core;
 using Vayosoft.Core.Queries;
 using Vayosoft.Data.Redis;
 using Vayosoft.Streaming.Redis;
+using Warehouse.API.Services;
 using Warehouse.API.Services.Authorization;
 using Warehouse.API.Services.Localization;
-using Warehouse.API.Services.Session;
 using Warehouse.API.TagHelpers;
 using Warehouse.API.UseCases.Resources;
 using Warehouse.Core;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
-using Warehouse.Core.Services.Session;
 using Warehouse.Core.UseCases.Administration.Models;
 
 namespace Warehouse.API
@@ -32,7 +31,7 @@ namespace Warehouse.API
             //builder.Services.AddRedisCache(configuration);
 
             services.AddHttpContextAccessor()
-                .AddScoped<ISessionProvider, SessionProvider>();
+                .AddScoped<IUserContext, UserContext>();
 
             services.AddWarehouseDependencies(configuration);
 

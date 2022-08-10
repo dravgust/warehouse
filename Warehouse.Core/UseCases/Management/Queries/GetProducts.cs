@@ -3,7 +3,7 @@ using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Services.Session;
+using Warehouse.Core.Services;
 using Warehouse.Core.Utilities;
 
 namespace Warehouse.Core.UseCases.Management.Queries
@@ -41,17 +41,17 @@ namespace Warehouse.Core.UseCases.Management.Queries
     internal class HandleGetProducts : IQueryHandler<GetProducts, IPagedEnumerable<ProductEntity>>
     {
         private readonly IReadOnlyRepository<ProductEntity> _repository;
-        private readonly ISessionProvider _session;
+        private readonly IUserContext _userContext;
 
-        public HandleGetProducts(IReadOnlyRepository<ProductEntity> repository, ISessionProvider session)
+        public HandleGetProducts(IReadOnlyRepository<ProductEntity> repository, IUserContext userContext)
         {
             this._repository = repository;
-            _session = session;
+            _userContext = userContext;
         }
 
         public async Task<IPagedEnumerable<ProductEntity>> Handle(GetProducts query, CancellationToken cancellationToken)
         {
-            var providerId = _session.User.Identity.GetProviderId();
+            var providerId = _userContext.User.Identity.GetProviderId();
 
             if (!string.IsNullOrEmpty(query.FilterString))
             {
