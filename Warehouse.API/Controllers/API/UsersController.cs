@@ -12,7 +12,6 @@ using Warehouse.Core.Utilities;
 
 namespace Warehouse.API.Controllers.API
 {
-    [PermissionAuthorization("USER", SecurityPermissions.Grant)]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -27,6 +26,7 @@ namespace Warehouse.API.Controllers.API
         }
 
         [HttpGet]
+        [PermissionAuthorization("USER", SecurityPermissions.View)]
         public async Task<IActionResult> Get(int page, int take, CancellationToken token)
         {
             var providerId = HttpContext.User.Identity?.GetProviderId() ?? 0;
@@ -37,6 +37,7 @@ namespace Warehouse.API.Controllers.API
         }
 
         [HttpGet("{id}")]
+        [PermissionAuthorization("USER", SecurityPermissions.View)]
         public async Task<IActionResult> Get(ulong id, CancellationToken token)
         {
             var query = new SingleQuery<UserEntityDto>(id);
@@ -44,6 +45,7 @@ namespace Warehouse.API.Controllers.API
         } 
         
         [HttpPost("set")]
+        [PermissionAuthorization("USER", SecurityPermissions.Add | SecurityPermissions.Edit)]
         public async Task<IActionResult> Post(UserEntityDto dto, CancellationToken token)
         {
             var command = new CreateOrUpdateCommand<UserEntityDto>(dto);

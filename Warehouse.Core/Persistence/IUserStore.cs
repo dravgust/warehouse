@@ -1,5 +1,4 @@
 ﻿using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Entities.Models.Security;
 
 namespace Warehouse.Core.Persistence
 {
