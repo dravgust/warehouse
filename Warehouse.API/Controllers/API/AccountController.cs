@@ -94,6 +94,7 @@ namespace Warehouse.API.Controllers.API
 
         private void SetTokenCookie(string token)
         {
+            //todo: set HTTPS policy in production
             // append cookie with refresh token to the http response
             var cookieOptions = new CookieOptions
             {
@@ -101,19 +102,21 @@ namespace Warehouse.API.Controllers.API
 
                 // Set the secure flag, which Chrome's changes will require for SameSite none.
                 // Note this will also require you to be running on HTTPS.
-                Secure = true,
+                Secure = false,
+                //Secure = true,
 
                 // Set the cookie to HTTP only which is good practice unless you really do need
                 // to access it client side in scripts.
                 HttpOnly = true,
 
                 // Add the SameSite attribute, this will emit the attribute with a value of none.
-                SameSite = SameSiteMode.None
+                SameSite = SameSiteMode.Strict
+                //SameSite = SameSiteMode.None
 
                 // The client should follow its default cookie policy.
                 // SameSite = SameSiteMode.Unspecified
             };
-            Response.Cookies.Append("refreshToken", token, cookieOptions);
+            Response.Cookies.Append(".refreshToken", token, cookieOptions);
         }
 
         private string IpAddress()
