@@ -31,7 +31,7 @@ namespace Warehouse.API.Controllers.API
 
 
         [HttpGet("info")]
-        public async Task<IActionResult> GetInfo(CancellationToken token = default) {
+        public async Task<IActionResult> GetProducts(CancellationToken token = default) {
             return Ok(await _queryBus.Send(new GetDashboardByProduct(), token));
         }
 
