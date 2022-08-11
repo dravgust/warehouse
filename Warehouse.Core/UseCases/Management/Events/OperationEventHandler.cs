@@ -49,7 +49,8 @@ namespace Warehouse.Core.UseCases.Management.Events
                 ProviderId = user.GetProviderId(),
                 Type = (int)eventType,
                 Name = eventType.ToString(),
-                Info = @event.Message,
+                Info = @event.Info,
+                Error = @event.Error,
                 Timestamp = eventTime,
                 Status = @event.Status
             };

@@ -3,11 +3,9 @@ using MediatR;
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Events;
-using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Events;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services;
-using Warehouse.Core.UseCases.Administration.Models;
 
 namespace Warehouse.Core.UseCases.Management.Commands
 {
@@ -38,11 +36,10 @@ namespace Warehouse.Core.UseCases.Management.Commands
 
         public async Task<Unit> Handle(DeleteWarehouseSite request, CancellationToken cancellationToken)
         {
-            await _repository.DeleteAsync(new WarehouseSiteEntity { Id = request.Id }, cancellationToken);
+            var entity = new WarehouseSiteEntity {Id = request.Id};
+            await _repository.DeleteAsync(entity, cancellationToken);
 
-            var operation = UserOperation.Create(nameof(WarehouseSiteEntity), OperationType.Delete,
-                _userContext.User, OperationStatus.Complete, request.Id);
-            await _eventBus.Publish(operation);
+            await _eventBus.Publish(UserOperation.Delete(request, _userContext.User));
             return Unit.Value;
         }
     }
