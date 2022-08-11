@@ -43,7 +43,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Threading", "Vayos
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.IPS", "Vayosoft.IPS\Vayosoft.IPS.csproj", "{3907445A-378A-438B-9C70-B74120EF4F28}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warehouse.Host", "Warehouse.Host\Warehouse.Host.csproj", "{16977389-744D-42E4-914C-EC3DD4789371}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse.Host", "Warehouse.Host\Warehouse.Host.csproj", "{16977389-744D-42E4-914C-EC3DD4789371}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{BCD4A670-3183-4DAB-A553-D39CA897910F}"
+	ProjectSection(SolutionItems) = preProject
+		docker\.env = docker\.env
+		docker\docker-compose.yml = docker\docker-compose.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
