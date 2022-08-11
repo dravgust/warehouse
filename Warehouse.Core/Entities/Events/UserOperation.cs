@@ -36,8 +36,9 @@ namespace Warehouse.Core.Entities.Events
             };
         }
 
-        public static UserOperation Delete<T>(T request, IPrincipal user, OperationStatus status = OperationStatus.Complete) where T : class, IRequest {
-            return Create(nameof(T), OperationType.Delete, user, status, request.ToJson());
+        public static UserOperation Delete<T>(T request, IPrincipal user,
+            OperationStatus status = OperationStatus.Complete, Exception error = null) where T : class, IRequest {
+            return Create(nameof(T), OperationType.Delete, user, status, request.ToJson(), error?.Message);
         }
     }
 }
