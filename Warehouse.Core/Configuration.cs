@@ -70,7 +70,7 @@ namespace Warehouse.Core
                 .AddWarehouseManagementServices()
                 .AddWarehouseAdministrationServices();
 
-            services.AddScoped<INotificationHandler<OperationEvent>, OperationEventHandler>();
+            services.AddScoped<INotificationHandler<UserOperation>, OperationEventHandler>();
 
             services
                 //.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<SetProduct.CertificateRequestValidator>())

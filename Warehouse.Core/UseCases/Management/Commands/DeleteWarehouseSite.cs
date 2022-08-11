@@ -6,6 +6,7 @@ using Vayosoft.Core.SharedKernel.Events;
 using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Events;
 using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Services;
 using Warehouse.Core.UseCases.Administration.Models;
 
 namespace Warehouse.Core.UseCases.Management.Commands
@@ -25,23 +26,23 @@ namespace Warehouse.Core.UseCases.Management.Commands
     internal class HandleDeleteWarehouseSite : ICommandHandler<DeleteWarehouseSite>
     {
         private readonly IRepository<WarehouseSiteEntity> _repository;
+        private readonly IUserContext _userContext;
         private readonly IEventBus _eventBus;
 
-        public HandleDeleteWarehouseSite(IRepository<WarehouseSiteEntity> repository, IEventBus eventBus)
+        public HandleDeleteWarehouseSite(IRepository<WarehouseSiteEntity> repository, IEventBus eventBus, IUserContext userContext)
         {
             _repository = repository;
             _eventBus = eventBus;
+            _userContext = userContext;
         }
 
         public async Task<Unit> Handle(DeleteWarehouseSite request, CancellationToken cancellationToken)
         {
             await _repository.DeleteAsync(new WarehouseSiteEntity { Id = request.Id }, cancellationToken);
 
-            var events = new IEvent[]
-            {
-                OperationEvent.Create(nameof(HandleSetAlert), OperationType.Delete, DateTime.UtcNow, Provider.Default.ToString())
-            };
-            await _eventBus.Publish(events);
+            var operation = UserOperation.Create(nameof(WarehouseSiteEntity), OperationType.Delete,
+                _userContext.User, OperationStatus.Complete, request.Id);
+            await _eventBus.Publish(operation);
             return Unit.Value;
         }
     }
