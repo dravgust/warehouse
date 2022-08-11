@@ -15,27 +15,29 @@ namespace Warehouse.Core.UseCases.Management.Commands
 
     internal class HandleSetBeacon : ICommandHandler<SetBeacon>
     {
-        private readonly IRepository<BeaconEntity> _beaconRepository;
-        private readonly IRepository<BeaconRegisteredEntity> _beaconRegisteredRepository;
-        private readonly IMapper _mapper;
+        private readonly IReadOnlyRepository<BeaconRegisteredEntity> _beaconsRegisteredR;
+        private readonly IRepository<BeaconRegisteredEntity> _beaconsRegistered;
+        private readonly IRepository<BeaconEntity> _beacons;
         private readonly IUserContext _userContext;
-        private readonly IReadOnlyRepository<BeaconRegisteredEntity> _beaconRegisteredReadOnly;
+        private readonly IMapper _mapper;
 
         public HandleSetBeacon(
-            IRepository<BeaconEntity> beaconRepository,
-            IRepository<BeaconRegisteredEntity> beaconRegisteredRepository,
-            IMapper mapper, IUserContext userContext, IReadOnlyRepository<BeaconRegisteredEntity> beaconRegisteredReadOnly)
+            IRepository<BeaconEntity> beacons,
+            IRepository<BeaconRegisteredEntity> beaconsRegistered,
+            IReadOnlyRepository<BeaconRegisteredEntity> beaconsRegisteredR,
+            IMapper mapper, IUserContext userContext)
         {
-            _beaconRepository = beaconRepository;
-            _beaconRegisteredRepository = beaconRegisteredRepository;
+            _beacons = beacons;
+            _beaconsRegistered = beaconsRegistered;
             _mapper = mapper;
             _userContext = userContext;
-            _beaconRegisteredReadOnly = beaconRegisteredReadOnly;
+            _beaconsRegisteredR = beaconsRegisteredR;
         }
 
         public async Task<Unit> Handle(SetBeacon request, CancellationToken cancellationToken)
         {
-            var b = await _beaconRegisteredReadOnly
+            var providerId = _userContext.User.Identity.GetProviderId();
+            var b = await _beaconsRegisteredR
                 .FirstOrDefaultAsync(r => r.MacAddress == request.MacAddress, cancellationToken);
             //var b = await _beaconRegisteredRepository.FindAsync(request.MacAddress, cancellationToken);
             if (b == null)
@@ -44,25 +46,25 @@ namespace Warehouse.Core.UseCases.Management.Commands
                 {
                     MacAddress = request.MacAddress,
                     ReceivedAt = DateTime.UtcNow,
-                    BeaconType = BeaconType.Registered
+                    BeaconType = BeaconType.Registered,
+                    ProviderId = providerId
                 };
-                await _beaconRegisteredRepository.AddAsync(rb, cancellationToken: cancellationToken);
+                await _beaconsRegistered.AddAsync(rb, cancellationToken: cancellationToken);
             }
 
             BeaconEntity entity;
-            if (!string.IsNullOrEmpty(request.MacAddress) && (entity = await _beaconRepository.FindAsync(request.MacAddress, cancellationToken)) != null)
+            if (!string.IsNullOrEmpty(request.MacAddress) && (entity = await _beacons.FindAsync(request.MacAddress, cancellationToken)) != null)
             {
                 entity.Name = request.Name;
                 entity.ProductId = request.Product?.Id;
                 entity.Metadata = request.Metadata;
-                await _beaconRepository.UpdateAsync(entity, cancellationToken);
+                await _beacons.UpdateAsync(entity, cancellationToken);
             }
             else
             {
                 entity = _mapper.Map<BeaconEntity>(request);
-                var providerId = _userContext.User.Identity.GetProviderId();
                 entity.ProviderId = providerId;
-                await _beaconRepository.AddAsync(entity, cancellationToken);
+                await _beacons.AddAsync(entity, cancellationToken);
             }
 
             return Unit.Value;

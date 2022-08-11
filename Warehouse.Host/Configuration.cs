@@ -2,6 +2,7 @@
 using Vayosoft.Core;
 using Vayosoft.Streaming.Redis;
 using Warehouse.Core;
+using Warehouse.Core.Services;
 
 namespace Warehouse.Host
 {
@@ -13,7 +14,9 @@ namespace Warehouse.Host
                 .AddCoreServices()
                 .AddRedisProducerAndConsumer()
                 .AddCaching(configuration);
-            
+
+            services.AddScoped<IUserContext, ServiceContext>();
+
             services.AddWarehouseDependencies(configuration);
 
             services.AddHostedService<Worker>();

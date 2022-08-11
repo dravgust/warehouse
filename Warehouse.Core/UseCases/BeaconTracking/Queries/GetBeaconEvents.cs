@@ -3,7 +3,10 @@ using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Services;
 using Warehouse.Core.UseCases.BeaconTracking.Models;
+using Warehouse.Core.Services;
+using Warehouse.Core.Utilities;
 
 namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 {
@@ -38,41 +41,45 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 
     internal class HandleGetBeaconEvents : IQueryHandler<GetBeaconEvents, IPagedEnumerable<BeaconEventDto>>
     {
-        private readonly IReadOnlyRepository<WarehouseSiteEntity> _siteRepository;
-        private readonly IReadOnlyRepository<BeaconEntity> _beaconRepository;
-        private readonly IReadOnlyRepository<BeaconEventEntity> _beaconEventRepository;
+        private readonly IReadOnlyRepository<WarehouseSiteEntity> _sites;
+        private readonly IReadOnlyRepository<BeaconEntity> _beacons;
+        private readonly IReadOnlyRepository<BeaconEventEntity> _events;
+        private readonly IUserContext _userContext;
 
         public HandleGetBeaconEvents(
-            IReadOnlyRepository<WarehouseSiteEntity> siteRepository,
-            IReadOnlyRepository<BeaconEntity> beaconRepository, 
-            IReadOnlyRepository<BeaconEventEntity> beaconEventRepository)
+            IReadOnlyRepository<WarehouseSiteEntity> sites,
+            IReadOnlyRepository<BeaconEntity> beacons, 
+            IReadOnlyRepository<BeaconEventEntity> events,
+            IUserContext userContext)
 
         {
-            _siteRepository = siteRepository;
-            _beaconRepository = beaconRepository;
-            _beaconEventRepository = beaconEventRepository;
+            _sites = sites;
+            _beacons = beacons;
+            _events = events;
+            _userContext = userContext;
         }
 
         public async Task<IPagedEnumerable<BeaconEventDto>> Handle(GetBeaconEvents query, CancellationToken cancellationToken)
         {
+            var providerId = _userContext.User.Identity.GetProviderId();
             IPagedEnumerable<BeaconEventEntity> data;
             if (!string.IsNullOrEmpty(query.SearchTerm))
             {
-                data = await _beaconEventRepository.PagedListAsync(query, e =>
-                    //e.ProviderId == query.ProviderId && 
+                data = await _events.PagedListAsync(query, e =>
+                    e.ProviderId == providerId && 
                     e.MacAddress.ToLower().Contains(query.SearchTerm.ToLower()), cancellationToken);
             }
             else
             {
-                data = await _beaconEventRepository.PagedListAsync(query,
-                    //p => p.ProviderId == query.ProviderId,
+                data = await _events.PagedListAsync(query, 
+                    p => p.ProviderId == providerId,
                     cancellationToken);
             }
 
             var list = new List<BeaconEventDto>();
             foreach (var e in data)
             {
-                var productItem = await _beaconRepository.FirstOrDefaultAsync(q => q.Id.Equals(e.MacAddress), cancellationToken);
+                var productItem = await _beacons.FirstOrDefaultAsync(q => q.Id.Equals(e.MacAddress), cancellationToken);
                 var dto = new BeaconEventDto
                 {
                     Beacon = new BeaconInfo
@@ -85,7 +92,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
                 };
                 if (!string.IsNullOrEmpty(e.SourceId))
                 {
-                    var site = await _siteRepository.FindAsync(e.SourceId, cancellationToken);
+                    var site = await _sites.FindAsync(e.SourceId, cancellationToken);
                     dto.Source = new SiteInfo
                     {
                         Id = e.SourceId,
@@ -94,7 +101,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
                 }
                 if (!string.IsNullOrEmpty(e.DestinationId))
                 {
-                    var site = await _siteRepository.FindAsync(e.DestinationId, cancellationToken);
+                    var site = await _sites.FindAsync(e.DestinationId, cancellationToken);
                     dto.Destination = new SiteInfo
                     {
                         Id = e.DestinationId,
