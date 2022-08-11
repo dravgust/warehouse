@@ -43,12 +43,6 @@ namespace Warehouse.API.Controllers.API
             return Ok((await _queryBus.Send(query, token)).ToPagedResponse(size));
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(string id, CancellationToken token) {
-            Guard.NotEmpty(id, nameof(id));
-            return Ok(await _queryBus.Send(new SingleQuery<ProductEntity>(id), token));
-        }
-
         [HttpPost("delete")]
         public async Task<IActionResult> Delete([FromBody] DeleteProduct command, CancellationToken token)
         {

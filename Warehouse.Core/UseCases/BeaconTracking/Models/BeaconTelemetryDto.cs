@@ -14,7 +14,7 @@
         public double? Z0 { get; set; }
     }
 
-    public class BeaconTelemetry2Dto
+    public class BeaconCharts
     {
         public string MacAddress { get; set; }
         public Dictionary<DateTime, double> Temperature { get; set; }

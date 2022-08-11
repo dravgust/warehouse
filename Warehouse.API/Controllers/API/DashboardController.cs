@@ -15,41 +15,33 @@ namespace Warehouse.API.Controllers.API
 
         public DashboardController(IQueryBus queryBus)
         {
-            this._queryBus = queryBus;
+            _queryBus = queryBus;
         }
 
-        [HttpGet("")]
-        public async Task<IActionResult> Get(int page, int size, string searchTerm = null, CancellationToken token = default) {
+        [HttpGet("sites")]
+        public async Task<IActionResult> GetSites(CancellationToken token) {
+            return Ok(await _queryBus.Send(new GetDashboardBySite(), token));
+        }
+
+        [HttpGet("products")]
+        public async Task<IActionResult> GetProducts(CancellationToken token) {
+            return Ok(await _queryBus.Send(new GetDashboardByProduct(), token));
+        }
+
+        [HttpGet("beacons")]
+        public async Task<IActionResult> GetBeacons(int page, int size, string searchTerm = null, CancellationToken token = default) {
             var query = GetDashboardByBeacon.Create(page, size, searchTerm);
             return Ok((await _queryBus.Send(query, token)).ToPagedResponse(size));
         }
 
-        [HttpGet("sites")]
-        public async Task<IActionResult> GetSites([FromQuery] GetDashboardBySite query, CancellationToken token = default) {
-            return Ok(await _queryBus.Send(query, token));
+        [HttpGet("beacon/{id}")]
+        public async Task<IActionResult> GetBeacon(string id, CancellationToken token) {
+            return Ok(await _queryBus.Send(new GetBeaconTelemetry(id), token));
         }
 
-
-        [HttpGet("info")]
-        public async Task<IActionResult> GetProducts(CancellationToken token = default) {
-            return Ok(await _queryBus.Send(new GetDashboardByProduct(), token));
-        }
-
-
-        [HttpGet("status")]
-        public async Task<IActionResult> GetStatus([FromQuery] GetDashboardSite query, CancellationToken token = default) {
-            return Ok(await _queryBus.Send(query, token));
-        }
-            
-
-        [HttpGet("beacon")]
-        public async Task<IActionResult> GetBeacon([FromQuery] GetBeaconTelemetry query, CancellationToken token = default) {
-            return Ok(await _queryBus.Send(query, token));
-        }
-
-        [HttpGet("beacon-telemetry")]
-        public async Task<IActionResult> GetBeaconTelemetry([FromQuery] GetBeaconTelemetry2 query, CancellationToken token = default) {
-            return Ok(await _queryBus.Send(query, token));
+        [HttpGet("beacon/charts/{id}")]
+        public async Task<IActionResult> GetBeaconTelemetry(string id, CancellationToken token) {
+            return Ok(await _queryBus.Send(new GetBeaconCharts(id), token));
         }
     }
 }

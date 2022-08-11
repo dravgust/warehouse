@@ -25,7 +25,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking
                 .AddQueryHandler<GetDashboardByProduct, IEnumerable<DashboardByProduct>, HandleGetDashboardByProduct>()
                 .AddQueryHandler<GetDashboardBySite, IEnumerable<DashboardBySite>, HandleGetDashboardBySite>()
                 .AddQueryHandler<GetDashboardSite, DashboardBySite, HandleGetIpsStatus>()
-                .AddQueryHandler<GetBeaconTelemetry2, BeaconTelemetry2Dto, HandleGetBeaconTelemetry>()
+                .AddQueryHandler<GetBeaconCharts, BeaconCharts, HandleGetBeaconCharts>()
                 .AddQueryHandler<GetBeaconTelemetry, BeaconTelemetryDto, HandleGetBeaconTelemetry>()
                 .AddQueryHandler<GetDashboardByBeacon, IPagedEnumerable<DashboardByBeacon>, HandleDashboardByBeacon>();
 

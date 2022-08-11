@@ -5,8 +5,6 @@ using Warehouse.Core.UseCases.Management.Models;
 using Warehouse.Core.UseCases.Management.Queries;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.Commands;
-using Vayosoft.Core.Persistence.Queries;
-using Vayosoft.Data.MongoDB.QueryHandlers;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Management.Commands;
 
@@ -29,8 +27,7 @@ namespace Warehouse.Core.UseCases.Management
                 .AddQueryHandler<GetProducts, IPagedEnumerable<ProductEntity>, HandleGetProducts>()
                 .AddQueryHandler<GetSites, IPagedEnumerable<WarehouseSiteEntity>, HandleGetSites>()
                 .AddQueryHandler<GetAlerts, IPagedEnumerable<AlertEntity>, HandleGetAlerts>()
-                .AddQueryHandler<GetBeacons, IPagedEnumerable<ProductItemDto>, HandleGetProductItems>()
-                .AddQueryHandler<SingleQuery<ProductEntity>, ProductEntity, MongoSingleQueryHandler<string, ProductEntity>>();
+                .AddQueryHandler<GetBeacons, IPagedEnumerable<ProductItemDto>, HandleGetProductItems>();
 
         
         private static IServiceCollection AddCommandHandlers(this IServiceCollection services) =>
