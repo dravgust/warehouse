@@ -18,9 +18,17 @@ public class EventListener : IEventBus
         this.eventsLog = eventsLog;
     }
 
-    public async Task Publish(params IEvent[] events)
+    public async Task Publish(IEvent @event, CancellationToken cancellationToken = default)
     {
-        eventsLog.PublishedEvents.Add(events);
-        await eventBus.Publish(events);
+        eventsLog.PublishedEvents.Add(@event);
+        await eventBus.Publish(@event, cancellationToken);
+    }
+
+    public async Task Publish(IEvent[] events, CancellationToken cancellationToken = default)
+    {
+        foreach(var @event in events)
+        {
+            await Publish(@event, cancellationToken);
+        }
     }
 }
