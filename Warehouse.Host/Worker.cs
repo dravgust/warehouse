@@ -165,12 +165,11 @@ namespace Warehouse.Host
                             }
 
                             //******************* events
-                            //var trackedItem = new TrackedItem(macAddress);
+                            //var trackedItem = new TrackedItem();
                             if (site[0] == null)
                             {
                                 //macAddress in to beacon.Value[1]
-                                //trackedItem.Enter(site[1]);
-                                //await eventStore.SaveAsync(trackedItem, token);
+                                //trackedItem.EnterTo(site[1]);
                                 await eventRepository.AddAsync(new BeaconEventEntity
                                 {
                                     MacAddress = macAddress,
@@ -183,8 +182,7 @@ namespace Warehouse.Host
                             else if (site[1] == null)
                             {
                                 //macAddress out from beacon.Value[0]
-                                //trackedItem.GetOut(site[0]);
-                                //await eventStore.SaveAsync(trackedItem, token);
+                                //trackedItem.GetOutFrom(site[0]);
                                 await eventRepository.AddAsync(new BeaconEventEntity
                                 {
                                     MacAddress = macAddress,
@@ -197,8 +195,7 @@ namespace Warehouse.Host
                             else if (site[0] != site[1])
                             {
                                 //macAddress moved from beacon.Value[0] to beacon.Value[1]
-                                //trackedItem.Move(site[0], site[1]);
-                                //await eventStore.SaveAsync(trackedItem, token);
+                                //trackedItem.MoveFromTo(site[0], site[1]);
                                 await eventRepository.AddAsync(new BeaconEventEntity
                                 {
                                     MacAddress = macAddress,
