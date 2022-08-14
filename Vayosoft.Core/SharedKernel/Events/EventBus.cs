@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Vayosoft.Core.SharedKernel.Events.External;
@@ -18,14 +19,19 @@ namespace Vayosoft.Core.SharedKernel.Events
             this.externalEventProducer = externalEventProducer;
         }
 
-        public async Task Publish(params IEvent[] events)
+        public async Task Publish(IEvent @event, CancellationToken cancellationToken = default)
+        {
+            await mediator.Publish(@event, cancellationToken);
+
+            if (@event is IExternalEvent externalEvent)
+                await externalEventProducer.Publish(externalEvent);
+        }
+
+        public async Task Publish(IEvent[] events, CancellationToken cancellationToken = default)
         {
             foreach (var @event in events)
             {
-                await mediator.Publish(@event);
-
-                if (@event is IExternalEvent externalEvent)
-                    await externalEventProducer.Publish(externalEvent);
+                await Publish(@event, cancellationToken);
             }
         }
     }

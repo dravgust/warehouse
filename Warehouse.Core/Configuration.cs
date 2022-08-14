@@ -12,7 +12,6 @@ using Vayosoft.Core.SharedKernel.ValueObjects;
 using Vayosoft.Data.Dapper.MySQL;
 using Vayosoft.Data.EF.MySQL;
 using Vayosoft.Data.MongoDB;
-using Vayosoft.Data.MongoDB.EventStore;
 using Warehouse.Core.Entities.Events;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
@@ -61,8 +60,7 @@ namespace Warehouse.Core
                 })
                 .AddScoped(typeof(IRepository<>), typeof(MongoRepository<>))
                 .AddScoped(typeof(IReadOnlyRepository<>), typeof(MongoRepository<>))
-                .AddScoped<WarehouseStore>()
-                .AddSingleton<IEventStore, MongoEventStore>();
+                .AddScoped<WarehouseStore>();
 
             services
                 .AddDefaultProvider()

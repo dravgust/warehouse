@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Vayosoft.Core.SharedKernel.Aggregates;
-using Vayosoft.Core.SharedKernel.Events;
 
 namespace Vayosoft.Core.Persistence
 {
-    public interface IEventStore
+    public interface IEventStore<TKey> where TKey : notnull
     {
-        Task SaveAsync(IAggregate aggregate, CancellationToken cancellationToken = default);
-        Task<IEnumerable<IEvent>> Get(
-            Guid aggregateId,
-            int fromVersion,
-            CancellationToken cancellationToken = default);
+        Task SaveAsync(IAggregate<TKey> aggregate, CancellationToken cancellationToken = default);
+        Task<IAggregate<TKey>> Get(TKey aggregateId, CancellationToken cancellationToken = default);
     }
 }

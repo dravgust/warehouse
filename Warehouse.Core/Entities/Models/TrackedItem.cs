@@ -5,7 +5,7 @@ using Warehouse.Core.Entities.Events;
 
 namespace Warehouse.Core.Entities.Models
 {
-    public class TrackedItem : Aggregate<MacAddress>
+    public class TrackedItem : Aggregate<string>
     {
         public string SourceId { get; private set; } = null!;
         public string DestinationId { get; private set; } = null!;
@@ -27,29 +27,29 @@ namespace Warehouse.Core.Entities.Models
             Apply(@event);
         }
 
-        public void Enter(string siteId)
+        public void EnterTo(string destinationId)
         {
             if (Status != BeaconStatus.OUT)
                 throw new InvalidOperationException($"'{Status}' status is not allowed.");
 
-            var @event = TrackedItemEntered.Create(Id, DateTime.UtcNow, siteId);
+            var @event = TrackedItemEntered.Create(Id, DateTime.UtcNow, destinationId);
 
             Enqueue(@event);
             Apply(@event);
         }
 
-        public void GetOut(string siteId)
+        public void GetOutFrom(string sourceId)
         {
             if (Status != BeaconStatus.IN)
                 throw new InvalidOperationException($"'{Status}' status is not allowed.");
 
-            var @event = TrackedItemGotOut.Create(Id, DateTime.UtcNow, siteId);
+            var @event = TrackedItemGotOut.Create(Id, DateTime.UtcNow, sourceId);
 
             Enqueue(@event);
             Apply(@event);
         }
 
-        public void Move(string sourceId, string destinationId)
+        public void MoveFromTo(string sourceId, string destinationId)
         {
             if (Status != BeaconStatus.IN)
                 throw new InvalidOperationException($"'{Status}' status is not allowed.");

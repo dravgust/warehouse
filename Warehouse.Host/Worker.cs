@@ -1,6 +1,6 @@
-using System.Reactive;
 using Vayosoft.Core.Caching;
 using Vayosoft.Core.Persistence;
+using Vayosoft.Core.SharedKernel.Aggregates;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.Utilities;
 using Vayosoft.Data.MongoDB;
@@ -12,7 +12,6 @@ using Vayosoft.IPS.Methods;
 using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Entities.Models.Payloads;
-using Warehouse.Core.Persistence;
 using LocationAnchor = Vayosoft.IPS.Domain.LocationAnchor;
 
 namespace Warehouse.Host
@@ -57,7 +56,6 @@ namespace Warehouse.Host
                 var telemetryRepository = scope.ServiceProvider.GetRequiredService<IRepository<BeaconTelemetryEntity>>();
                 var beaconReceivedRepository = scope.ServiceProvider.GetRequiredService<IRepository<BeaconReceivedEntity>>();
                 var eventRepository = scope.ServiceProvider.GetRequiredService<IRepository<BeaconEventEntity>>();
-                var eventStore = scope.ServiceProvider.GetRequiredService<IEventStore>();
 
                 try
                 {
@@ -171,7 +169,7 @@ namespace Warehouse.Host
                             if (site[0] == null)
                             {
                                 //macAddress in to beacon.Value[1]
-                                //trackedItem.Enter(site[1]);
+                                //trackedItem.EnterTo(site[1]);
                                 await eventRepository.AddAsync(new BeaconEventEntity
                                 {
                                     MacAddress = macAddress,
@@ -184,7 +182,7 @@ namespace Warehouse.Host
                             else if (site[1] == null)
                             {
                                 //macAddress out from beacon.Value[0]
-                                //trackedItem.GetOut(site[0]);
+                                //trackedItem.GetOutFrom(site[0]);
                                 await eventRepository.AddAsync(new BeaconEventEntity
                                 {
                                     MacAddress = macAddress,
@@ -197,7 +195,7 @@ namespace Warehouse.Host
                             else if (site[0] != site[1])
                             {
                                 //macAddress moved from beacon.Value[0] to beacon.Value[1]
-                                //trackedItem.Move(site[0], site[1]);
+                                //trackedItem.MoveFromTo(site[0], site[1]);
                                 await eventRepository.AddAsync(new BeaconEventEntity
                                 {
                                     MacAddress = macAddress,
@@ -212,8 +210,6 @@ namespace Warehouse.Host
                             {
                                 //state not changed
                             }
-
-                            //await eventStore.SaveAsync(trackedItem, token);
                         }
 
                         //*************** received beacons OUT
