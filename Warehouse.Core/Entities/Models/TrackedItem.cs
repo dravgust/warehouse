@@ -1,11 +1,13 @@
 ﻿using Vayosoft.Core.SharedKernel.Aggregates;
 using Vayosoft.Core.SharedKernel.ValueObjects;
+using Vayosoft.Data.MongoDB;
 using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Events;
 
 namespace Warehouse.Core.Entities.Models
 {
-    public class TrackedItem : Aggregate<MacAddress>
+    [CollectionName("dolav_beacons_events")]
+    public class TrackedItem : Aggregate<string>
     {
         public string SourceId { get; private set; } = null!;
         public string DestinationId { get; private set; } = null!;
@@ -19,7 +21,7 @@ namespace Warehouse.Core.Entities.Models
 
         public TrackedItem() { }
 
-        private TrackedItem(MacAddress id)
+        public TrackedItem(MacAddress id)
         {
             var @event = TrackedItemRegistered.Create(id, DateTime.UtcNow);
 
@@ -29,8 +31,8 @@ namespace Warehouse.Core.Entities.Models
 
         public void Enter(string siteId)
         {
-            if (Status != BeaconStatus.OUT)
-                throw new InvalidOperationException($"'{Status}' status is not allowed.");
+            //if (Status != BeaconStatus.OUT)
+            //    throw new InvalidOperationException($"'{Status}' status is not allowed.");
 
             var @event = TrackedItemEntered.Create(Id, DateTime.UtcNow, siteId);
 
@@ -40,8 +42,8 @@ namespace Warehouse.Core.Entities.Models
 
         public void GetOut(string siteId)
         {
-            if (Status != BeaconStatus.IN)
-                throw new InvalidOperationException($"'{Status}' status is not allowed.");
+            //if (Status != BeaconStatus.IN)
+            //    throw new InvalidOperationException($"'{Status}' status is not allowed.");
 
             var @event = TrackedItemGotOut.Create(Id, DateTime.UtcNow, siteId);
 
@@ -51,8 +53,8 @@ namespace Warehouse.Core.Entities.Models
 
         public void Move(string sourceId, string destinationId)
         {
-            if (Status != BeaconStatus.IN)
-                throw new InvalidOperationException($"'{Status}' status is not allowed.");
+            //if (Status != BeaconStatus.IN)
+            //    throw new InvalidOperationException($"'{Status}' status is not allowed.");
 
             var @event = TrackedItemMoved.Create(Id, DateTime.UtcNow, sourceId, destinationId);
 

@@ -43,7 +43,7 @@ namespace Warehouse.Core.UseCases.Management.Commands
         {
             await _repository.DeleteAsync(new ProductEntity { Id = request.Id }, cancellationToken);
 
-            await _eventBus.Publish(UserOperation.Delete(request, _userContext.User));
+            await _eventBus.Publish(UserOperation.Delete(request, _userContext.User), cancellationToken);
             return Unit.Value;
         }
     }
