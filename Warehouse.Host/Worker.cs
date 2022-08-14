@@ -56,6 +56,7 @@ namespace Warehouse.Host
                 var telemetryRepository = scope.ServiceProvider.GetRequiredService<IRepository<BeaconTelemetryEntity>>();
                 var beaconReceivedRepository = scope.ServiceProvider.GetRequiredService<IRepository<BeaconReceivedEntity>>();
                 var eventRepository = scope.ServiceProvider.GetRequiredService<IRepository<BeaconEventEntity>>();
+                var trackedItems = scope.ServiceProvider.GetRequiredService<IRepository<TrackedItem>>();
 
                 try
                 {
@@ -165,9 +166,11 @@ namespace Warehouse.Host
                             }
 
                             //******************* events
+                            var trackedItem = await trackedItems.FindAsync(macAddress, token);
                             if (site[0] == null)
                             {
                                 //macAddress in to beacon.Value[1]
+                                trackedItem?.EnterTo(site[1]);
                                 await eventRepository.AddAsync(new BeaconEventEntity
                                 {
                                     MacAddress = macAddress,
@@ -180,6 +183,7 @@ namespace Warehouse.Host
                             else if (site[1] == null)
                             {
                                 //macAddress out from beacon.Value[0]
+                                trackedItem?.GetOutFrom(site[0]);
                                 await eventRepository.AddAsync(new BeaconEventEntity
                                 {
                                     MacAddress = macAddress,
@@ -192,6 +196,7 @@ namespace Warehouse.Host
                             else if (site[0] != site[1])
                             {
                                 //macAddress moved from beacon.Value[0] to beacon.Value[1]
+                                trackedItem?.MoveFromTo(site[0], site[1]);
                                 await eventRepository.AddAsync(new BeaconEventEntity
                                 {
                                     MacAddress = macAddress,
@@ -205,7 +210,10 @@ namespace Warehouse.Host
                             else
                             {
                                 //state not changed
+                                continue;
                             }
+
+                            await trackedItems.UpdateAsync(trackedItem, token);
                         }
 
                         //*************** received beacons OUT
