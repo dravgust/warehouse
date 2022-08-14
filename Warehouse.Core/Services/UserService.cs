@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Entities.Models.Security;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.UseCases.Administration.Models;
 
@@ -32,7 +33,11 @@ namespace Warehouse.Core.Services
                 throw new ApplicationException("Username or password is incorrect");
 
             // authentication successful so generate jwt and refresh tokens
-            var roles = await ((IUserRoleStore) _userStore).GetUserRolesAsync(user.Id, cancellationToken);
+            var roles = new List<RoleDTO>();
+            if (_userStore is IUserRoleStore roleStore)
+            {
+                roles.AddRange(await roleStore.GetUserRolesAsync(user.Id, cancellationToken));
+            }
             var jwtToken = _jwtUtils.GenerateJwtToken(user, roles);
             var refreshToken = _jwtUtils.GenerateRefreshToken(ipAddress);
             user.RefreshTokens.Add(refreshToken);
@@ -74,7 +79,11 @@ namespace Warehouse.Core.Services
             await _userStore.UpdateAsync(user, cancellationToken);
 
             // generate new jwt
-            var roles = await ((IUserRoleStore)_userStore).GetUserRolesAsync(user.Id, cancellationToken);
+            var roles = new List<RoleDTO>();
+            if (_userStore is IUserRoleStore roleStore)
+            {
+                roles.AddRange(await roleStore.GetUserRolesAsync(user.Id, cancellationToken));
+            }
             var jwtToken = _jwtUtils.GenerateJwtToken(user, roles);
 
             return new AuthenticateResponse(user, roles, jwtToken, newRefreshToken.Token, newRefreshToken.Expires);
