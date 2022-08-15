@@ -1,7 +1,9 @@
 
 using System.Diagnostics;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Options;
 using Serilog;
 using Warehouse.API;
@@ -43,7 +45,6 @@ try
         .AddIdentityService(configuration)
         .AddLocalizationService();
 
-    builder.Services.AddSwaggerService();
     builder.Services
         .AddHealthChecks()
         .AddRedis(configuration["ConnectionStrings:RedisConnectionString"], tags: new[] { "infrastructure" })
@@ -73,6 +74,23 @@ try
         resOptions.DataAnnotationLocalizerProvider = (type, factory) =>
             factory.Create(typeof(SharedResources));
     });
+
+    //https://christian-schou.dk/how-to-use-api-versioning-in-net-core-web-api/
+    builder.Services.AddApiVersioning(opt =>
+    {
+        opt.DefaultApiVersion = new ApiVersion(1, 0);
+        opt.AssumeDefaultVersionWhenUnspecified = true;
+        opt.ReportApiVersions = true;
+        opt.ApiVersionReader = ApiVersionReader.Combine(new UrlSegmentApiVersionReader(),
+            new HeaderApiVersionReader("x-api-version"),
+            new MediaTypeApiVersionReader("x-api-version"));
+    });
+    builder.Services.AddVersionedApiExplorer(setup =>
+    {
+        setup.GroupNameFormat = "'v'VVV";
+        setup.SubstituteApiVersionInUrl = true;
+    });
+    builder.Services.AddSwaggerService();
 
     //builder.Services.AddMemoryCache();
     //builder.Services.AddDistributedMemoryCache();

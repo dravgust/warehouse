@@ -12,8 +12,10 @@ using Warehouse.Core.Utilities;
 
 namespace Warehouse.API.Controllers.API
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
     public class UsersController : ControllerBase
     {
         private readonly ICommandBus commandBus;
@@ -25,6 +27,7 @@ namespace Warehouse.API.Controllers.API
             this.queryBus = queryBus;
         }
 
+        //[MapToApiVersion("1.0")]
         [HttpGet]
         [PermissionAuthorization("USER", SecurityPermissions.View)]
         public async Task<IActionResult> Get(int page, int take, CancellationToken token)
