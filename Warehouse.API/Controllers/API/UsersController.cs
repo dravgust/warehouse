@@ -8,6 +8,7 @@ using Warehouse.API.Services.Authorization.Attributes;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Entities.Models.Security;
 using Warehouse.Core.UseCases.Administration.Specifications;
+using Warehouse.Core.UseCases.Management.Models;
 using Warehouse.Core.Utilities;
 
 namespace Warehouse.API.Controllers.API
@@ -29,6 +30,7 @@ namespace Warehouse.API.Controllers.API
 
         //[MapToApiVersion("1.0")]
         [HttpGet]
+        [ProducesResponseType(typeof(PagedListResponse<UserEntityDto>), StatusCodes.Status200OK)]
         [PermissionAuthorization("USER", SecurityPermissions.View)]
         public async Task<IActionResult> Get(int page, int take, CancellationToken token)
         {
@@ -40,6 +42,7 @@ namespace Warehouse.API.Controllers.API
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(UserEntityDto), StatusCodes.Status200OK)]
         [PermissionAuthorization("USER", SecurityPermissions.View)]
         public async Task<IActionResult> Get(ulong id, CancellationToken token)
         {
@@ -49,6 +52,7 @@ namespace Warehouse.API.Controllers.API
         
         [HttpPost("set")]
         [PermissionAuthorization("USER", SecurityPermissions.Add | SecurityPermissions.Edit)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Post(UserEntityDto dto, CancellationToken token)
         {
             var command = new CreateOrUpdateCommand<UserEntityDto>(dto);
