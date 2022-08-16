@@ -5,6 +5,7 @@ using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Warehouse.API.Services.Authorization.Attributes;
+using Warehouse.API.Services.ExceptionHandling.Models;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Entities.Models.Security;
 using Warehouse.Core.UseCases.Administration.Specifications;
@@ -14,8 +15,10 @@ using Warehouse.Core.Utilities;
 namespace Warehouse.API.Controllers.API
 {
     [ApiController]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(HttpExceptionWrapper), StatusCodes.Status401Unauthorized)]
+    [ProducesErrorResponseType(typeof(void))]
+    //[Route("api/v{version:apiVersion}/[controller]")]
     [Route("api/[controller]")]
     [ApiVersion("1.0")]
     public class UsersController : ControllerBase
@@ -60,7 +63,6 @@ namespace Warehouse.API.Controllers.API
         [HttpPost("set")]
         [ProducesResponseType( StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesErrorResponseType(typeof(void))]
         [PermissionAuthorization("USER", SecurityPermissions.Add | SecurityPermissions.Edit)]
         public async Task<IActionResult> Post(UserEntityDto dto, CancellationToken token)
         {
