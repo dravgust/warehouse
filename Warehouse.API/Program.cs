@@ -9,6 +9,7 @@ using Warehouse.API.Resources;
 using Warehouse.API.Services.Authorization;
 using Warehouse.API.Services.ExceptionHandling;
 using Warehouse.API.Services.Monitoring;
+using Warehouse.API.Services.Swagger;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Debug()
@@ -39,17 +40,16 @@ try
     var configuration = builder.Configuration;
 
     builder.Services
-        .AddApplication(configuration) //builder.Environment.IsDevelopment()
-        .AddIdentityService(configuration)
+        .AddWarehouseApplication(configuration) //builder.Environment.IsDevelopment()
+        .AddUserService(configuration)
         .AddLocalizationService();
 
-    builder.Services.AddSwaggerService();
     builder.Services
         .AddHealthChecks()
         .AddRedis(configuration["ConnectionStrings:RedisConnectionString"], tags: new[] { "infrastructure" })
         .AddMySql(configuration["ConnectionStrings:DefaultConnection"], tags: new[] { "infrastructure" })
         .AddMongoDb(configuration["MongoDbContext:ConnectionString"], tags: new[] { "infrastructure" });
-    //services.AddAppMetricsCollectors();
+    //builder.Services.AddAppMetricsCollectors();
 
     builder.Services.AddCors(options =>
     {
@@ -73,6 +73,9 @@ try
         resOptions.DataAnnotationLocalizerProvider = (type, factory) =>
             factory.Create(typeof(SharedResources));
     });
+
+    builder.Services.AddApiVersioningService();
+    builder.Services.AddSwaggerService();
 
     //builder.Services.AddMemoryCache();
     //builder.Services.AddDistributedMemoryCache();
