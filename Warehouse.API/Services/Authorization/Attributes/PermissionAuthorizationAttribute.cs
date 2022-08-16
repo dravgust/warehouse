@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Vayosoft.Core.Utilities;
 using Warehouse.API.Services.ExceptionHandling;
+using Warehouse.API.Services.ExceptionHandling.Models;
 using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Models.Security;
 using Warehouse.Core.Services;
@@ -94,19 +95,22 @@ namespace Warehouse.API.Services.Authorization.Attributes
             logger.LogError(exception, exception.Message);
 
             var codeInfo = ExceptionToHttpStatusMapper.Map(exception);
-            context.Result = new JsonResult(new { message = "Authorization error" }) { StatusCode = (int)codeInfo.Code };
+            context.Result = new JsonResult(new HttpExceptionWrapper((int)codeInfo.Code, "Authorization error"))
+                { StatusCode = (int)codeInfo.Code };
         }
 
         private static void HandleReject(AuthorizationFilterContext context, IIdentity identity)
         {
             var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<PermissionAuthorizationAttribute>>();
             logger.LogWarning($"User: {identity.Name} URL: {context.HttpContext.Request.QueryString} rejected by permissions filter");
-            context.Result = new JsonResult(new { message = "No enough permissions" }) { StatusCode = StatusCodes.Status401Unauthorized };
+            context.Result = new JsonResult(new HttpExceptionWrapper(StatusCodes.Status401Unauthorized, "No enough permissions"))
+                { StatusCode = StatusCodes.Status401Unauthorized };
         }
 
         private static void HandleUnauthorized(AuthorizationFilterContext context)
         {
-            context.Result = new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };
+            context.Result = new JsonResult(new HttpExceptionWrapper(StatusCodes.Status401Unauthorized, "Unauthorized"))
+                { StatusCode = StatusCodes.Status401Unauthorized };
         }
 
         protected static bool SkipAuthorization(AuthorizationFilterContext context)
