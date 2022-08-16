@@ -51,7 +51,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{BCD4A6
 		docker\docker-compose.yml = docker\docker-compose.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warehouse.Core.Tests", "Warehouse.Core.Tests\Warehouse.Core.Tests.csproj", "{9B606ADA-1833-47E4-AF28-8A01AAE8FF7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse.Core.Tests", "Warehouse.Core.Tests\Warehouse.Core.Tests.csproj", "{9B606ADA-1833-47E4-AF28-8A01AAE8FF7B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sql", "sql", "{9E94F147-FBD4-499A-906E-434AFA6DE319}"
+	ProjectSection(SolutionItems) = preProject
+		initial.sql = initial.sql
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Core.Testing", "Vayosoft.Core.Testing\Vayosoft.Core.Testing.csproj", "{B336C548-CE83-4B1C-B2E6-595C3CAC13A0}"
 EndProject

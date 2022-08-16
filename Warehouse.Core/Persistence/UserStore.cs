@@ -15,29 +15,33 @@ namespace Warehouse.Core.Persistence
 
         public async Task<List<SecurityRoleEntity>> GetRolesAsync(IEnumerable<object> providers, CancellationToken cancellationToken)
         {
-            var rl = await EmbeddedRolesAsync();
+            var rl = await EmbeddedRolesAsync(cancellationToken);
             var roles = await _context.Set<SecurityRoleEntity>()
-                .Where(r => r.ProviderId != null && providers.Contains(r.ProviderId.Value)).ToListAsync(cancellationToken: cancellationToken);
+                .Where(r => r.ProviderId != null && providers.Contains(r.ProviderId.Value))
+                .ToListAsync(cancellationToken: cancellationToken);
             rl.AddRange(roles);
             return rl;
         }
 
-        public Task<List<SecurityRoleEntity>> EmbeddedRolesAsync()
+        public Task<List<SecurityRoleEntity>> EmbeddedRolesAsync(CancellationToken cancellationToken)
         {
-            return _context.Set<SecurityRoleEntity>().Where(r => r.ProviderId == null).ToListAsync();
+            return _context.Set<SecurityRoleEntity>().Where(r => r.ProviderId == null)
+                .ToListAsync(cancellationToken: cancellationToken);
         }
 
-        public Task<SecurityRoleEntity> GetRoleAsync(string roleId)
+        public Task<SecurityRoleEntity> GetRoleAsync(string roleId, CancellationToken cancellationToken)
         {
-            return _context.Set<SecurityRoleEntity>().FirstOrDefaultAsync(r => r.Id == roleId);
+            return _context.Set<SecurityRoleEntity>().
+                FirstOrDefaultAsync(r => r.Id == roleId, cancellationToken: cancellationToken);
         }
 
-        public Task<List<SecurityObjectEntity>> GetObjectsAsync()
+        public Task<List<SecurityObjectEntity>> GetObjectsAsync(CancellationToken cancellationToken)
         {
-            return _context.Set<SecurityObjectEntity>().ToListAsync();
+            return _context.Set<SecurityObjectEntity>()
+                .ToListAsync(cancellationToken: cancellationToken);
         }
 
-        public Task<List<RolePermissionsDTO>> GetRolePermissionsAsync(string roleId)
+        public Task<List<RolePermissionsDTO>> GetRolePermissionsAsync(string roleId, CancellationToken cancellationToken)
         {
             var query = from rp in _context.Set<SecurityRolePermissionsEntity>()
                 join so in _context.Set<SecurityObjectEntity>() on rp.ObjectId equals so.Id
@@ -51,7 +55,7 @@ namespace Warehouse.Core.Persistence
                     Permissions = rp.Permissions
                 };
 
-            return query.ToListAsync();
+            return query.ToListAsync(cancellationToken: cancellationToken);
         }
 
         public Task<List<RoleDTO>> GetUserRolesAsync(object userId, CancellationToken cancellationToken = default)
