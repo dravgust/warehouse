@@ -14,6 +14,7 @@ using Warehouse.Core.Utilities;
 namespace Warehouse.API.Controllers.API
 {
     [ApiController]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [Route("api/v{version:apiVersion}/[controller]")]
     [Route("api/[controller]")]
     [ApiVersion("1.0")]
@@ -43,18 +44,28 @@ namespace Warehouse.API.Controllers.API
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(UserEntityDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [PermissionAuthorization("USER", SecurityPermissions.View)]
-        public async Task<IActionResult> Get(ulong id, CancellationToken token)
+        public async Task<IActionResult> GetById(ulong id, CancellationToken token)
         {
             var query = new SingleQuery<UserEntityDto>(id);
-            return Ok(await queryBus.Send(query, token));
+            UserEntityDto result;
+            if ((result = await queryBus.Send(query, token)) == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
         } 
         
         [HttpPost("set")]
-        [PermissionAuthorization("USER", SecurityPermissions.Add | SecurityPermissions.Edit)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesErrorResponseType(typeof(void))]
+        [PermissionAuthorization("USER", SecurityPermissions.Add | SecurityPermissions.Edit)]
         public async Task<IActionResult> Post(UserEntityDto dto, CancellationToken token)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             var command = new CreateOrUpdateCommand<UserEntityDto>(dto);
             await commandBus.Send(command, token);
             return Ok();
