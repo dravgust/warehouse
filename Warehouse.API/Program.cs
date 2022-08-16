@@ -1,9 +1,7 @@
 
 using System.Diagnostics;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Options;
 using Serilog;
 using Warehouse.API;
@@ -11,6 +9,7 @@ using Warehouse.API.Resources;
 using Warehouse.API.Services.Authorization;
 using Warehouse.API.Services.ExceptionHandling;
 using Warehouse.API.Services.Monitoring;
+using Warehouse.API.Services.Swagger;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Debug()
@@ -75,21 +74,7 @@ try
             factory.Create(typeof(SharedResources));
     });
 
-    //https://christian-schou.dk/how-to-use-api-versioning-in-net-core-web-api/
-    builder.Services.AddApiVersioning(opt =>
-    {
-        opt.DefaultApiVersion = new ApiVersion(1, 0);
-        opt.AssumeDefaultVersionWhenUnspecified = true;
-        opt.ReportApiVersions = true;
-        opt.ApiVersionReader = ApiVersionReader.Combine(new UrlSegmentApiVersionReader(),
-            new HeaderApiVersionReader("x-api-version"),
-            new MediaTypeApiVersionReader("x-api-version"));
-    });
-    builder.Services.AddVersionedApiExplorer(setup =>
-    {
-        setup.GroupNameFormat = "'v'VVV";
-        setup.SubstituteApiVersionInUrl = true;
-    });
+    builder.Services.AddApiVersioningService();
     builder.Services.AddSwaggerService();
 
     //builder.Services.AddMemoryCache();

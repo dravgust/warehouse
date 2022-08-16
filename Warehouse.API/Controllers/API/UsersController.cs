@@ -5,6 +5,7 @@ using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Warehouse.API.Services.Authorization.Attributes;
+using Warehouse.API.Services.ExceptionHandling.Models;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Entities.Models.Security;
 using Warehouse.Core.UseCases.Administration.Specifications;
@@ -58,7 +59,7 @@ namespace Warehouse.API.Controllers.API
         } 
         
         [HttpPost("set")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType( StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesErrorResponseType(typeof(void))]
         [PermissionAuthorization("USER", SecurityPermissions.Add | SecurityPermissions.Edit)]
