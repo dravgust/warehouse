@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Utilities;
+using Warehouse.API.Services.Authorization.Attributes;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Entities.Models.Security;
 using Warehouse.Core.Persistence;
@@ -8,7 +9,7 @@ using Warehouse.Core.Utilities;
 namespace Warehouse.API.Controllers.API
 {
     [Route("api/[controller]")]
-    //[PermissionAuthorization("USER", SecurityPermissions.Grant)]
+    [PermissionAuthorization("USER", SecurityPermissions.Grant)]
     [ApiController]
     public class SecurityController : ControllerBase
     {
