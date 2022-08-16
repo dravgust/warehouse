@@ -43,7 +43,7 @@ namespace Warehouse.API
             return services;
         }
 
-        public static IServiceCollection AddApplication(this IServiceCollection services,
+        public static IServiceCollection AddWarehouseApplication(this IServiceCollection services,
             IConfiguration configuration)
         {
             services
@@ -61,7 +61,7 @@ namespace Warehouse.API
             return services;
         }
 
-        public static IServiceCollection AddIdentityService(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddUserService(this IServiceCollection services, IConfiguration configuration)
         {
             // configure strongly typed settings object
             services.Configure<AppSettings>(configuration.GetSection("AppSettings"));

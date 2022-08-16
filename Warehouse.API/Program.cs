@@ -40,8 +40,8 @@ try
     var configuration = builder.Configuration;
 
     builder.Services
-        .AddApplication(configuration) //builder.Environment.IsDevelopment()
-        .AddIdentityService(configuration)
+        .AddWarehouseApplication(configuration) //builder.Environment.IsDevelopment()
+        .AddUserService(configuration)
         .AddLocalizationService();
 
     builder.Services
@@ -49,7 +49,7 @@ try
         .AddRedis(configuration["ConnectionStrings:RedisConnectionString"], tags: new[] { "infrastructure" })
         .AddMySql(configuration["ConnectionStrings:DefaultConnection"], tags: new[] { "infrastructure" })
         .AddMongoDb(configuration["MongoDbContext:ConnectionString"], tags: new[] { "infrastructure" });
-    //services.AddAppMetricsCollectors();
+    //builder.Services.AddAppMetricsCollectors();
 
     builder.Services.AddCors(options =>
     {
