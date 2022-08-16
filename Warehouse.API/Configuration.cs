@@ -1,5 +1,7 @@
 ﻿using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Caching;
 using Vayosoft.Core;
 using Vayosoft.Core.Queries;
@@ -20,7 +22,28 @@ namespace Warehouse.API
 {
     public static class Configuration
     {
-        public static IServiceCollection AddApplication(this IServiceCollection services,
+        public static IServiceCollection AddApiVersioningService(this IServiceCollection services)
+        {
+
+            //https://christian-schou.dk/how-to-use-api-versioning-in-net-core-web-api/
+            services.AddApiVersioning(opt =>
+            {
+                opt.DefaultApiVersion = new ApiVersion(1, 0);
+                opt.AssumeDefaultVersionWhenUnspecified = true;
+                opt.ReportApiVersions = true;
+                opt.ApiVersionReader = ApiVersionReader.Combine(new UrlSegmentApiVersionReader(),
+                    new HeaderApiVersionReader("x-api-version"),
+                    new MediaTypeApiVersionReader("x-api-version"));
+            });
+            services.AddVersionedApiExplorer(setup =>
+            {
+                setup.GroupNameFormat = "'v'VVV";
+                setup.SubstituteApiVersionInUrl = true;
+            });
+            return services;
+        }
+
+        public static IServiceCollection AddWarehouseApplication(this IServiceCollection services,
             IConfiguration configuration)
         {
             services
@@ -38,7 +61,7 @@ namespace Warehouse.API
             return services;
         }
 
-        public static IServiceCollection AddIdentityService(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddUserService(this IServiceCollection services, IConfiguration configuration)
         {
             // configure strongly typed settings object
             services.Configure<AppSettings>(configuration.GetSection("AppSettings"));

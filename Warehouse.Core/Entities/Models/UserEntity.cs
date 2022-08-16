@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using Vayosoft.AutoMapper;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.Utilities;
@@ -33,6 +34,7 @@ namespace Warehouse.Core.Entities.Models
     {
         object IEntity.Id => Id;
         public long Id { get; set; }
+        [Required]
         public string Username { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }

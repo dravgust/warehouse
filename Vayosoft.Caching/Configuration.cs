@@ -5,7 +5,7 @@ using Vayosoft.Core.Caching;
 
 namespace Vayosoft.Caching
 {
-    public static class Config
+    public static class Configuration
     {
         public static IServiceCollection AddCaching(this IServiceCollection services, IConfiguration configuration)
         {
