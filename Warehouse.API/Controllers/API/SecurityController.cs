@@ -3,7 +3,9 @@ using Vayosoft.Core.Utilities;
 using Warehouse.API.Services.Authorization.Attributes;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Entities.Models.Security;
+using Warehouse.Core.Exceptions;
 using Warehouse.Core.Persistence;
+using Warehouse.Core.Services;
 using Warehouse.Core.Utilities;
 
 namespace Warehouse.API.Controllers.API
@@ -14,10 +16,17 @@ namespace Warehouse.API.Controllers.API
     public class SecurityController : ControllerBase
     {
         private readonly IUserStore<UserEntity> _userStore;
+        private readonly IUserContext _userContext;
+        private readonly ILogger<SecurityController> _logger;
 
-        public SecurityController(IUserStore<UserEntity> userStore)
+        public SecurityController(
+            IUserStore<UserEntity> userStore,
+            IUserContext userContext, 
+            ILogger<SecurityController> logger)
         {
             _userStore = userStore;
+            _userContext = userContext;
+            _logger = logger;
         }
 
         [HttpGet("user-roles")]
@@ -26,7 +35,7 @@ namespace Warehouse.API.Controllers.API
             var items = new List<RoleDTO>();
             if (_userStore is IUserRoleStore store)
             {
-                var userId = HttpContext.User.Identity?.GetUserId();
+                var userId = HttpContext.User.Identity!.GetUserId();
                 items.AddRange(await store.GetUserRolesAsync(userId, token));
             }
 
@@ -90,104 +99,106 @@ namespace Warehouse.API.Controllers.API
             return Ok(new { role, permissions });
         }
 
-        //public ActionResult SaveRole(SecurityRoleEntity role)
-        //{
-        //    var res = false;
-        //    try
-        //    {
-        //        if (!SessionBE.IsAdministrator)
-        //            throw new NotEnoughPermissionsException();
+        [HttpPost("roles/save")]
+        public async Task<IActionResult> SaveRole(SecurityRoleEntity role, CancellationToken token)
+        {
+            if (_userStore is IUserRoleStore store)
+            {
+                try
+                {
+                    await _userContext.LoadSessionAsync();
 
-        //        if (!SessionBE.IsSupervisor)
-        //            role.ProviderID = SessionBE.Provider.ID;
+                    if (!_userContext.IsAdministrator)
+                        throw new NotEnoughPermissionsException();
 
-        //        using (var dao = ViotFactory.DAO)
-        //        {
-        //            if (role.HasID)
-        //            {
-        //                var old = dao.Get<SecurityRoleEntity>(role.ID);
-        //                if (old == null)
-        //                    throw new ArgumentException("Role not found by ID");
+                    if (!_userContext.IsSupervisor)
+                        role.ProviderId = _userContext.User.Identity?.GetProviderId();
 
-        //                if (!old.RoleName.Equals(old.RoleName) || !string.Equals(old.RoleDesc, role.RoleDesc))
-        //                    dao.UpdateAndFlush(role);
-        //            }
-        //            else
-        //            {
-        //                dao.AddAndFlush(role);
-        //            }
-        //        }
+                    if (!string.IsNullOrEmpty(role.Id))
+                    {
+                        var old = await store.GetRoleAsync(role.Id, token);
+                        if (old == null)
+                            throw new ArgumentException("Role not found by Id");
 
+                        if (!old.Name.Equals(old.Name) || !string.Equals(old.Description, role.Description))
+                            ; //dao.UpdateAndFlush(role);
+                    }
+                    else
+                    {
+                        //dao.AddAndFlush(role);
+                    }
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError($"{e.Message}\r\n{e.StackTrace}");
+                }
+            }
 
-        //        res = true;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        ViotLogger.Error(e);
-        //    }
-        //    return Json(new { Status = res }, JsonRequestBehavior.AllowGet);
-        //}
+            return Ok();
+        }
 
-        //public ActionResult SavePermissions(List<RolePermissionsDTO> permissions)
-        //{
-        //    var count = 0;
-        //    try
-        //    {
-        //        var roles = new List<SecurityRoleEntity>();
+        [HttpPost("permissions/save")]
+        public async Task<IActionResult> SavePermissions(List<RolePermissionsDTO> permissions, CancellationToken token)
+        {
+            var count = 0;
+            try
+            {
+                var roles = new List<SecurityRoleEntity>();
 
-        //        using (var dao = ViotFactory.DAO)
-        //        {
-        //            foreach (var p in permissions)
-        //            {
-        //                var role = roles.FirstOrDefault(r => r.ID == p.RoleID);
-        //                if (role == null)
-        //                {
-        //                    role = dao.Get<SecurityRoleEntity>(p.RoleID);
-        //                    if (role == null)
-        //                    {
-        //                        ViotLogger.Error(SessionBE.User.Username, $"SavePermissions: Role not found [{p.RoleID}]");
-        //                        continue;
-        //                    }
+                if (_userStore is IUserRoleStore store)
+                {
+                    foreach (var p in permissions)
+                    {
+                        var role = roles.FirstOrDefault(r => r.Id == p.RoleId);
+                        if (role == null)
+                        {
+                            role = await store.GetRoleAsync(p.RoleId, token);
+                            if (role == null)
+                            {
+                                _logger.LogError(_userContext.User.Identity?.Name, $"SavePermissions: Role not found [{p.RoleId}]");
+                                continue;
+                            }
 
-        //                    roles.Add(role);
-        //                }
+                            roles.Add(role);
+                        }
 
-        //                if (!SessionBE.IsSupervisor && role.ProviderID == null)
-        //                {
-        //                    ViotLogger.Error(SessionBE.User.Username, $"SavePermissions: User without supervisor rights try edit embedded role [{role.RoleName}]");
-        //                    continue;
-        //                }
+                        await _userContext.LoadSessionAsync();
+                        if (!_userContext.IsSupervisor && role.ProviderId == null)
+                        {
+                            _logger.LogError(_userContext.User.Identity?.Name, $"SavePermissions: User without supervisor rights try edit embedded role [{role.Name}]");
+                            continue;
+                        }
 
-        //                SecurityRolePermissionsEntity rp = null;
-        //                if (p.HasID)
-        //                    rp = dao.Get<SecurityRolePermissionsEntity>(p.ID);
+                        SecurityRolePermissionsEntity rp = null;
+                        if (!string.IsNullOrEmpty(p.Id))
+                            ;//rp = store.Get<SecurityRolePermissionsEntity>(p.Id);
 
-        //                if (rp != null)
-        //                {
-        //                    rp.Permissions = p.Permissions;
-        //                    dao.UpdateAndFlush(rp);
-        //                }
-        //                else
-        //                {
-        //                    rp = new SecurityRolePermissionsEntity
-        //                    {
-        //                        ID = Utils.CreateUID(),
-        //                        ObjID = p.ObjID,
-        //                        RoleID = p.RoleID,
-        //                        Permissions = p.Permissions
-        //                    };
-        //                    dao.AddAndFlush(rp);
-        //                }
+                        if (rp != null)
+                        {
+                            rp.Permissions = p.Permissions;
+                            //dao.UpdateAndFlush(rp);
+                        }
+                        else
+                        {
+                            rp = new SecurityRolePermissionsEntity
+                            {
+                                //Id = Utils.CreateUID(),
+                                ObjectId = p.ObjectId,
+                                RoleId = p.RoleId,
+                                Permissions = p.Permissions
+                            };
+                            //dao.AddAndFlush(rp);
+                        }
 
-        //                count++;
-        //            }
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        ViotLogger.Error(e);
-        //    }
-        //    return Json(new { Status = (count > 0) }, JsonRequestBehavior.AllowGet);
-        //}
+                        count++;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"{e.Message}\r\n{e.StackTrace}");
+            }
+            return Ok();
+        }
     }
 }
