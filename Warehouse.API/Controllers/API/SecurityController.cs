@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Warehouse.API.Services.Authorization.Attributes;
+using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Entities.Models.Security;
 using Warehouse.Core.Persistence;
+using Warehouse.Core.Utilities;
 
 namespace Warehouse.API.Controllers.API
 {
     [Route("api/[controller]")]
-    [PermissionAuthorization("USER", SecurityPermissions.Grant)]
+    //[PermissionAuthorization("USER", SecurityPermissions.Grant)]
     [ApiController]
     public class SecurityController : ControllerBase
     {
@@ -18,59 +19,75 @@ namespace Warehouse.API.Controllers.API
             _userStore = userStore;
         }
 
-        [HttpGet("roles")]
-        public IActionResult GetRoles()
+        [HttpGet("user-roles")]
+        public async Task<IActionResult> GetUserRoles(CancellationToken token)
         {
-            return Ok(new { });
+            var items = new List<RoleDTO>();
+            if (_userStore is IUserRoleStore store)
+            {
+                var userId = HttpContext.User.Identity?.GetUserId();
+                items.AddRange(await store.GetUserRolesAsync(userId, token));
+            }
+
+            return Ok(new { items, Total = items.Count });
         }
 
-        //public ActionResult GetAllowedRoles()
-        //{
-        //    //UserType
-        //    throw new NotImplementedException();
-        //    //return Json(Roles.Where(r => r.LID <= (ulong)SessionBE.User.Kind).ToList(), JsonRequestBehavior.AllowGet);
-        //}
+        [HttpGet("roles")]
+        public async Task<IActionResult> GetRoles(CancellationToken token)
+        {
+            var items = new List<SecurityRoleEntity>();
+            if (_userStore is IUserRoleStore store)
+            {
+                var providerId = HttpContext.User.Identity?.GetProviderId() ?? 0;
+                items.AddRange(await store.GetRolesAsync(new object[] { providerId }, token)!);
+            }
 
-        //public ActionResult Roles()
-        //{
-        //    var rl = ViotFactory.DAO.Using(dao => dao.GetAll<SecurityRoleEntity>());
-        //    return Json(new { Items = rl, Total = rl.Count }, JsonRequestBehavior.AllowGet);
-        //}
+            return Ok(new { items, Total = items.Count });
+        }
 
-        //public ActionResult Objs()
-        //{
-        //    var ol = ViotFactory.DAO.Using(dao => dao.GetAll<SecurityObjectEntity>()).OrderBy(o => o.ObjName).ToList();
-        //    return Json(new { Items = ol, Total = ol.Count }, JsonRequestBehavior.AllowGet);
-        //}
+        [HttpGet("objects")]
+        public async Task<IActionResult> GetObjects(CancellationToken token)
+        {
+            var items = new List<SecurityObjectEntity>();
+            if (_userStore is IUserRoleStore store)
+            {
+                items.AddRange(await store.GetObjectsAsync(token));
+            }
 
-        //public ActionResult GetRolePermissions(string roleid)
-        //{
-        //    using (var dao = ViotFactory.DAO)
-        //    {
-        //        var role = dao.Get<SecurityRoleEntity>(roleid);
-        //        if (role == null)
-        //            throw new ArgumentException($"Role [{roleid}] not found");
+            return Ok(new { items, Total = items.Count });
+        }
 
-        //        var res = dao.Security.GetRolePermissions(roleid);
-        //        var objs = dao.Security.GetObjects();
-        //        foreach (var obj in objs)
-        //        {
-        //            if (!res.Any(p => p.ObjID == obj.ID))
-        //                res.Add(new RolePermissionsDTO
-        //                {
-        //                    ID = null,
-        //                    RoleID = roleid,
-        //                    ObjID = obj.ID,
-        //                    ObjName = obj.ObjName,
-        //                    Permissions = ViotPermissions.None
-        //                });
-        //        }
+        [HttpGet("permissions/{roleId}")]
+        public async Task<IActionResult> GetRolePermissions(string roleId, CancellationToken token)
+        {
+            Guard.NotEmpty(roleId, nameof(roleId));
 
-        //        return Json(new { Role = role, Permissions = res }, JsonRequestBehavior.AllowGet);
-        //    }
+            SecurityRoleEntity role = null;
+            var permissions = new List<RolePermissionsDTO>();
+            if (_userStore is IUserRoleStore store)
+            {
+                role = await store.GetRoleAsync(roleId, token);
+                if (role == null)
+                    return NotFound(roleId);
 
+                permissions = await store.GetRolePermissionsAsync(roleId, token);
+                var objects = await store.GetObjectsAsync(token);
+                foreach (var obj in objects)
+                {
+                    if (permissions.All(p => p.ObjectId != obj.Id))
+                        permissions.Add(new RolePermissionsDTO
+                        {
+                            Id = null,
+                            RoleId = roleId,
+                            ObjectId = obj.Id,
+                            ObjectName = obj.Name,
+                            Permissions = SecurityPermissions.None
+                        });
+                }
+            }
 
-        //}
+            return Ok(new { role, permissions });
+        }
 
         //public ActionResult SaveRole(SecurityRoleEntity role)
         //{

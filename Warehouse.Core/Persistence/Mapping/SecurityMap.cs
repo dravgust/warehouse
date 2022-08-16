@@ -22,7 +22,7 @@ namespace Warehouse.Core.Persistence.Mapping
         {
             builder.ToTable("sec_roles").HasKey(t => t.Id);
             builder.Property(t => t.Id).HasColumnName("roleid").ValueGeneratedOnAdd();
-            builder.Property(t => t.ProviderId).HasColumnName("providerid").IsRequired();
+            builder.Property(t => t.ProviderId).HasColumnName("providerid");
             builder.Property(t => t.Name).HasColumnName("role_name").IsRequired();
             builder.Property(t => t.Description).HasColumnName("role_desc");
         }

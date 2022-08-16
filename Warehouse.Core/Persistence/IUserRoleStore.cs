@@ -6,13 +6,13 @@ namespace Warehouse.Core.Persistence
     {
         Task<List<SecurityRoleEntity>> GetRolesAsync(IEnumerable<object> providers, CancellationToken cancellationToken = default);
 
-        Task<List<SecurityRoleEntity>> EmbeddedRolesAsync();
+        Task<List<SecurityRoleEntity>> EmbeddedRolesAsync(CancellationToken cancellationToken = default);
 
-        Task<SecurityRoleEntity> GetRoleAsync(string roleId);
+        Task<SecurityRoleEntity> GetRoleAsync(string roleId, CancellationToken cancellationToken = default);
 
-        Task<List<SecurityObjectEntity>> GetObjectsAsync();
+        Task<List<SecurityObjectEntity>> GetObjectsAsync(CancellationToken cancellationToken = default);
 
-        Task<List<RolePermissionsDTO>> GetRolePermissionsAsync(string roleId);
+        Task<List<RolePermissionsDTO>> GetRolePermissionsAsync(string roleId, CancellationToken cancellationToken = default);
 
         Task<List<RoleDTO>> GetUserRolesAsync(object userId, CancellationToken cancellationToken = default);
     }
