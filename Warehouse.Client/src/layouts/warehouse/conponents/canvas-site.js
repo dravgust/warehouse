@@ -61,10 +61,16 @@ const CanvasSite = ({ width, height, site, selectedSite }) => {
 
     items.map((star) => {
       elements.push(
-        <Group x={star.x * 121 + 60 * (star.y % 2)} y={star.y * 105} draggable>
+        <Group
+          key={star.id}
+          id={star.id}
+          x={star.x * 121 + 60 * (star.y % 2)}
+          y={star.y * 105}
+          draggable
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+        >
           <RegularPolygon
-            key={star.id}
-            id={star.id}
             radius={70}
             sides={6}
             width={100}
@@ -80,8 +86,6 @@ const CanvasSite = ({ width, height, site, selectedSite }) => {
             shadowOffsetY={star.isDragging ? 10 : 5}
             scaleX={star.isDragging ? 1.2 : 1}
             scaleY={star.isDragging ? 1.2 : 1}
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
           />
           <Text text={`${star.id}\n\n${star.name}`}></Text>
         </Group>
