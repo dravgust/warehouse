@@ -112,6 +112,11 @@ export const setSiteGw = async (item) => {
   return res?.data;
 };
 
+export const deleteSiteGw = async (item) => {
+  const res = await axios.get(`sites/${item.siteId}/delete-gw/${item.macAddress}`);
+  return res?.data;
+};
+
 export const setSite = async (item) => {
   const res = await axios.post(`sites/set`, item);
   return res?.data;

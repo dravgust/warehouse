@@ -4,11 +4,8 @@ import SuiButton from "components/SuiButton";
 import { ButtonGroup, Card, Icon } from "@mui/material";
 import Table from "examples/Tables/Table";
 import DeletePromt from "../delete-promt";
-
-// Images
 import routerIcon from "assets/images/internet-router.png";
 import SuiAvatar from "components/SuiAvatar";
-
 import * as auth from "services/auth-provider";
 import { client } from "utils/api-client";
 import React from "react";

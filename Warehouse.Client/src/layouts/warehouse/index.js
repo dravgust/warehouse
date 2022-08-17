@@ -4,9 +4,15 @@ import SuiTypography from "components/SuiTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import CanvasDemo from "./conponents/canvas-demo";
+import WarehouseCanvas from "./conponents/warehouse-canvas";
+import { useStoreController } from "../../context/store.context";
+import { useAuth } from "../../context/auth.context";
 
 const Warehouse = () => {
+  const [controller] = useStoreController();
+  const { user } = useAuth();
+  console.log("store", controller);
+  console.log("user", user);
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -26,7 +32,7 @@ const Warehouse = () => {
                 },
               }}
             >
-              <CanvasDemo />
+              <WarehouseCanvas />
             </SuiBox>
           </Card>
         </SuiBox>

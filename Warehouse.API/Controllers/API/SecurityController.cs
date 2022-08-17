@@ -120,12 +120,12 @@ namespace Warehouse.API.Controllers.API
                         if (old == null)
                             throw new ArgumentException("Role not found by Id");
 
-                        if (!old.Name.Equals(old.Name) || !string.Equals(old.Description, role.Description))
-                            ; //dao.UpdateAndFlush(role);
+                        if (!old.Name.Equals(role.Name) || !string.Equals(old.Description, role.Description))
+                            await store.UpdateAsync(role, token);
                     }
                     else
                     {
-                        //dao.AddAndFlush(role);
+                        await store.UpdateAsync(role, token);
                     }
                 }
                 catch (Exception e)
@@ -140,7 +140,6 @@ namespace Warehouse.API.Controllers.API
         [HttpPost("permissions/save")]
         public async Task<IActionResult> SavePermissions(List<RolePermissionsDTO> permissions, CancellationToken token)
         {
-            var count = 0;
             try
             {
                 var roles = new List<SecurityRoleEntity>();
@@ -155,7 +154,7 @@ namespace Warehouse.API.Controllers.API
                             role = await store.GetRoleAsync(p.RoleId, token);
                             if (role == null)
                             {
-                                _logger.LogError(_userContext.User.Identity?.Name, $"SavePermissions: Role not found [{p.RoleId}]");
+                                _logger.LogError($"SavePermissions: Role not found [{p.RoleId}] for User: {_userContext.User.Identity?.Name}");
                                 continue;
                             }
 
@@ -165,32 +164,31 @@ namespace Warehouse.API.Controllers.API
                         await _userContext.LoadSessionAsync();
                         if (!_userContext.IsSupervisor && role.ProviderId == null)
                         {
-                            _logger.LogError(_userContext.User.Identity?.Name, $"SavePermissions: User without supervisor rights try edit embedded role [{role.Name}]");
+                            _logger.LogError( $"SavePermissions: User: {_userContext.User.Identity?.Name}" +
+                                              $" without supervisor rights try edit embedded role [{role.Name}]");
                             continue;
                         }
 
                         SecurityRolePermissionsEntity rp = null;
                         if (!string.IsNullOrEmpty(p.Id))
-                            ;//rp = store.Get<SecurityRolePermissionsEntity>(p.Id);
+                            rp = await store.GetRolePermissionAsync(p.Id, token);
 
                         if (rp != null)
                         {
                             rp.Permissions = p.Permissions;
-                            //dao.UpdateAndFlush(rp);
+                            await store.UpdateAsync(rp, token);
                         }
                         else
                         {
                             rp = new SecurityRolePermissionsEntity
                             {
-                                //Id = Utils.CreateUID(),
+                                Id = GuidGenerator.New().ToString("N"),
                                 ObjectId = p.ObjectId,
                                 RoleId = p.RoleId,
                                 Permissions = p.Permissions
                             };
-                            //dao.AddAndFlush(rp);
+                            await store.UpdateAsync(rp, token);
                         }
-
-                        count++;
                     }
                 }
             }

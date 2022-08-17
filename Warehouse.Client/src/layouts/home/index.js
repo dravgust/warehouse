@@ -19,6 +19,7 @@ import QrCode2SharpIcon from "@mui/icons-material/QrCode2Sharp";
 import SensorsOutlinedIcon from "@mui/icons-material/SensorsOutlined";
 import TabOutlinedIcon from "@mui/icons-material/TabOutlined";
 import UserNotifications from "./components/notifications";
+import { useStoreController, setSite } from "../../context/store.context";
 
 function Dashboard() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -28,6 +29,12 @@ function Dashboard() {
   const [selectedSite, setSelectSite] = useState(null);
   const [selectedBeacon, setSelectBeacon] = useState(null);
   const [selectedView, setSelectView] = useState(0);
+
+  const [, dispatch] = useStoreController();
+  const onSiteSelect = (item) => {
+    setSite(dispatch, item);
+    setSelectSite(item);
+  };
 
   const handleChange = (event, value) => {
     setSelectProduct(null);
@@ -74,7 +81,7 @@ function Dashboard() {
               {selectedView === 0 && (
                 <SiteInfo
                   selectedSite={selectedSite}
-                  onSiteSelect={setSelectSite}
+                  onSiteSelect={onSiteSelect}
                   selectedBeacon={selectedBeacon}
                   onBeaconSelect={setSelectBeacon}
                 />

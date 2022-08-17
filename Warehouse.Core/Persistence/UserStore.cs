@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MySqlX.XDevAPI.Common;
+using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Entities.Models.Security;
 
@@ -31,14 +33,22 @@ namespace Warehouse.Core.Persistence
 
         public Task<SecurityRoleEntity> GetRoleAsync(string roleId, CancellationToken cancellationToken)
         {
-            return _context.Set<SecurityRoleEntity>().
-                FirstOrDefaultAsync(r => r.Id == roleId, cancellationToken: cancellationToken);
+            return _context.Set<SecurityRoleEntity>()
+                .AsTracking()
+                .FirstOrDefaultAsync(r => r.Id == roleId, cancellationToken: cancellationToken);
         }
 
         public Task<List<SecurityObjectEntity>> GetObjectsAsync(CancellationToken cancellationToken)
         {
             return _context.Set<SecurityObjectEntity>()
                 .ToListAsync(cancellationToken: cancellationToken);
+        }
+
+        public Task<SecurityRolePermissionsEntity> GetRolePermissionAsync(string roleId, CancellationToken cancellationToken)
+        {
+            return _context.Set<SecurityRolePermissionsEntity>()
+                .AsTracking()
+                .FirstOrDefaultAsync(r => r.Id == roleId, cancellationToken: cancellationToken);
         }
 
         public Task<List<RolePermissionsDTO>> GetRolePermissionsAsync(string roleId, CancellationToken cancellationToken)
@@ -114,6 +124,18 @@ namespace Warehouse.Core.Persistence
         public async Task UpdateAsync(IUser user, CancellationToken cancellationToken)
         {
             //_context.Update(user);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task UpdateAsync(SecurityRoleEntity entity, CancellationToken cancellationToken)
+        {
+            //_context.Update(entity);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task UpdateAsync(SecurityRolePermissionsEntity entity, CancellationToken cancellationToken)
+        {
+            //_context.Update(entity);
             await _context.SaveChangesAsync(cancellationToken);
         }
     }
