@@ -127,7 +127,9 @@ const Warehouse = () => {
       <SuiBox py={3} mb={3}>
         <Card>
           <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-            <SuiTypography variant="h6">Warehouse</SuiTypography>
+            <SuiTypography variant="h6" color={"info"}>
+              {selectedSite.site.name}
+            </SuiTypography>
           </SuiBox>
           <SuiBox>
             <SuiBox ref={cardRef} sx={{ width: "auto", height: "60vh" }}>

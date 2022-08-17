@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-import { Stage, Layer, RegularPolygon, Rect, Text, Group } from "react-konva";
+import { useState, useEffect } from "react";
+import { Stage, Layer, RegularPolygon, Rect, Text, Group, Image } from "react-konva";
+import routerIcon from "../../../assets/images/internet-router.png";
+import beaconIcon from "../../../assets/images/hotspot-tower.png";
 
 const CANVAS_WIDTH = 1680;
 const CANVAS_HEIGHT = 780;
@@ -23,6 +25,14 @@ const CanvasSite = ({ width, height, site, selectedSite }) => {
   const [stageScale, setStageScale] = useState(1);
   const [stageX, setStageX] = useState(0);
   const [stageY, setStageY] = useState(0);
+
+  const [beaconImage, setBeaconImage] = useState(new window.Image());
+
+  useEffect(() => {
+    const img = new window.Image();
+    img.src = beaconIcon;
+    setBeaconImage(img);
+  }, []);
 
   const initialState = selectedSite.in.map((e, i) => ({
     id: e.beacon.macAddress,
@@ -87,7 +97,8 @@ const CanvasSite = ({ width, height, site, selectedSite }) => {
             scaleX={star.isDragging ? 1.2 : 1}
             scaleY={star.isDragging ? 1.2 : 1}
           />
-          <Text text={`${star.id}\n\n${star.name}`}></Text>
+          <Image x={-35} y={-25} width={70} height={50} image={beaconImage} />
+          <Text x={-38} y={68} text={`${star.id}\n${star.name}`}></Text>
         </Group>
       );
     });
