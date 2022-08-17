@@ -12,6 +12,8 @@ function generateShapes() {
 }
 
 const INITIAL_STATE = generateShapes();
+const CANVAS_VIRTUAL_WIDTH = 700;
+const CANVAS_VIRTUAL_HEIGHT = 700;
 
 const WarehouseCanvas = () => {
   const [stars, setStars] = useState(INITIAL_STATE);
@@ -45,8 +47,13 @@ const WarehouseCanvas = () => {
     );
   };
 
+  const scale = Math.min(
+    window.innerWidth / CANVAS_VIRTUAL_WIDTH,
+    window.innerHeight / CANVAS_VIRTUAL_HEIGHT
+  );
+
   return (
-    <Stage width={window.innerWidth} height={(window.innerHeight * 70) / 100}>
+    <Stage width={window.innerWidth} height={window.innerHeight} scaleX={scale} scaleY={scale}>
       <Layer>
         {stars.map((star) => (
           <RegularPolygon
@@ -73,7 +80,15 @@ const WarehouseCanvas = () => {
             onDragEnd={handleDragEnd}
           />
         ))}
-        <Rect key={"site1"} id={"site1"} x={0} y={0} width={100} height={100} stroke={"black"} />
+        <Rect
+          key={"site1"}
+          id={"site1"}
+          x={0}
+          y={0}
+          width={(window.innerWidth * 50) / 100}
+          height={(window.innerHeight * 50) / 100}
+          stroke={"#344767"}
+        />
         {/* <Image x={50} y={50} width={50} height={50} image={image} />*/}
       </Layer>
     </Stage>

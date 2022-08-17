@@ -131,3 +131,8 @@ export const deleteBeacon = async (item) => {
   const res = await axios.post(`beacons/delete`, item);
   return res?.data;
 };
+
+/*export const bootstrap = async () => {
+  const res = await axios.get("account/bootstrap");
+  return res?.data;
+};*/
