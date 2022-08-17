@@ -2,20 +2,20 @@ import { useState, useEffect } from "react";
 import { Stage, Layer, Circle, RegularPolygon, Image, Rect } from "react-konva";
 import routerIcon from "assets/images/internet-router.png";
 
-function generateShapes() {
+function generateShapes(width, height) {
   return [...Array(10)].map((_, i) => ({
     id: i.toString(),
-    x: Math.random() * window.innerWidth,
-    y: Math.random() * window.innerHeight,
+    x: Math.random() * width,
+    y: Math.random() * height,
     isDragging: false,
   }));
 }
 
-const INITIAL_STATE = generateShapes();
-const CANVAS_VIRTUAL_WIDTH = 700;
-const CANVAS_VIRTUAL_HEIGHT = 700;
+const CANVAS_VIRTUAL_WIDTH = 1000;
+const CANVAS_VIRTUAL_HEIGHT = 1000;
 
-const WarehouseCanvas = () => {
+const WarehouseCanvas = ({ width, height }) => {
+  const INITIAL_STATE = generateShapes(width, height);
   const [stars, setStars] = useState(INITIAL_STATE);
   const [image, setImage] = useState(new window.Image());
 
@@ -47,14 +47,21 @@ const WarehouseCanvas = () => {
     );
   };
 
-  const scale = Math.min(
-    window.innerWidth / CANVAS_VIRTUAL_WIDTH,
-    window.innerHeight / CANVAS_VIRTUAL_HEIGHT
-  );
-
+  const scale = Math.min(width / CANVAS_VIRTUAL_WIDTH, height / CANVAS_VIRTUAL_HEIGHT);
+  console.log("scale", scale);
   return (
-    <Stage width={window.innerWidth} height={window.innerHeight} scaleX={scale} scaleY={scale}>
+    <Stage width={width} height={height} scaleX={scale} scaleY={scale}>
       <Layer>
+        <Rect
+          key={"site1"}
+          id={"site1"}
+          x={0}
+          y={0}
+          width={width / scale}
+          height={height / scale}
+          stroke={"rgba(0, 0, 0, 0.2)"}
+        />
+        {/* <Image x={50} y={50} width={50} height={50} image={image} />*/}
         {stars.map((star) => (
           <RegularPolygon
             key={star.id}
@@ -80,16 +87,6 @@ const WarehouseCanvas = () => {
             onDragEnd={handleDragEnd}
           />
         ))}
-        <Rect
-          key={"site1"}
-          id={"site1"}
-          x={0}
-          y={0}
-          width={(window.innerWidth * 50) / 100}
-          height={(window.innerHeight * 50) / 100}
-          stroke={"#344767"}
-        />
-        {/* <Image x={50} y={50} width={50} height={50} image={image} />*/}
       </Layer>
     </Stage>
   );
