@@ -26,7 +26,7 @@ namespace Warehouse.Core.Services
             _appSettings = appSettings.Value;
         }
 
-        public async Task<AuthenticateResponse> AuthenticateAsync(AuthenticateRequest model, string ipAddress, CancellationToken cancellationToken)
+        public async Task<AuthenticateResult> AuthenticateAsync(AuthenticateRequest model, string ipAddress, CancellationToken cancellationToken)
         {
             var user = await _userStore.FindByNameAsync(model.Email, cancellationToken);
             if (user == null || !_passwordHasher.VerifyHashedPassword(user.PasswordHash, model.Password))
@@ -48,10 +48,10 @@ namespace Warehouse.Core.Services
             // save changes to db
             await _userStore.UpdateAsync(user, cancellationToken);
 
-            return new AuthenticateResponse(user, roles, jwtToken, refreshToken.Token, refreshToken.Expires);
+            return new AuthenticateResult(user, roles, jwtToken, refreshToken.Token, refreshToken.Expires);
         }
 
-        public async Task<AuthenticateResponse> RefreshTokenAsync(string token, string ipAddress, CancellationToken cancellationToken)
+        public async Task<AuthenticateResult> RefreshTokenAsync(string token, string ipAddress, CancellationToken cancellationToken)
         {
             var user = await _userStore.FindByRefreshTokenAsync(token, cancellationToken);
             if (user == null)
@@ -86,7 +86,7 @@ namespace Warehouse.Core.Services
             }
             var jwtToken = _jwtUtils.GenerateJwtToken(user, roles);
 
-            return new AuthenticateResponse(user, roles, jwtToken, newRefreshToken.Token, newRefreshToken.Expires);
+            return new AuthenticateResult(user, roles, jwtToken, newRefreshToken.Token, newRefreshToken.Expires);
         }
 
         public async Task RevokeTokenAsync(string token, string ipAddress, CancellationToken cancellationToken)

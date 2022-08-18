@@ -14,12 +14,12 @@ using Warehouse.Core.Utilities;
 
 namespace Warehouse.API.Controllers.API
 {
-    [ApiController]
     [Produces("application/json")]
     [ProducesResponseType(typeof(HttpExceptionWrapper), StatusCodes.Status401Unauthorized)]
     [ProducesErrorResponseType(typeof(void))]
     //[Route("api/v{version:apiVersion}/[controller]")]
     [Route("api/[controller]")]
+    [ApiController]
     [ApiVersion("1.0")]
     public class UsersController : ControllerBase
     {
