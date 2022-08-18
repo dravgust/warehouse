@@ -18,7 +18,7 @@ const Site = ({ x, y, topW, leftH }) => {
   );
 };
 
-const CanvasSite = ({ width = 1680, height = 780, selectedSite }) => {
+const CanvasSite = ({ width = 1680, height = 780, site, selectedSite }) => {
   const [stageScale, setStageScale] = useState(1);
   const [stageX, setStageX] = useState(0);
   const [stageY, setStageY] = useState(0);
@@ -34,7 +34,6 @@ const CanvasSite = ({ width = 1680, height = 780, selectedSite }) => {
   const initialState = selectedSite.in.map((e, i) => ({
     id: e.beacon.macAddress,
     name: e.beacon.name,
-    product: e.product,
     x: Math.random() * 12,
     y: Math.random() * 3,
     isDragging: false,
@@ -65,9 +64,7 @@ const CanvasSite = ({ width = 1680, height = 780, selectedSite }) => {
 
   function renderSite() {
     const elements = [];
-    elements.push(
-      <Site key={`site_${selectedSite.site.id}`} x={0} y={0} topW={width} leftH={height} />
-    );
+    elements.push(<Site key={`site_${site.id}`} x={0} y={0} topW={width} leftH={height} />);
 
     items.map((star) => {
       elements.push(
@@ -98,10 +95,7 @@ const CanvasSite = ({ width = 1680, height = 780, selectedSite }) => {
             scaleY={star.isDragging ? 1.2 : 1}
           />
           <Image x={-35} y={-25} width={70} height={50} image={beaconImage} />
-
-          <Text x={-38} y={65} fill={"#cb0c9f"} text={`${star.product.name}`}></Text>
-          <Text x={-38} y={82} fill={"#8392ab"} text={`${star.id}`}></Text>
-          <Text x={-38} y={95} text={`${star.name}`}></Text>
+          <Text x={-38} y={68} text={`${star.id}\n${star.name}`}></Text>
         </Group>
       );
     });

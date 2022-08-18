@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Card, Icon, IconButton, Tooltip } from "@mui/material";
 import SuiBox from "components/SuiBox";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import SuiTypography from "components/SuiTypography";
 import { styled } from "@mui/material/styles";
@@ -165,6 +165,14 @@ export default function SiteInfo({
     onBeaconSelect("");
     onSiteSelect(row);
   };
+
+  useEffect(() => {
+    const element = document.querySelector("#panel_0_header");
+    console.log(element);
+    if (element) {
+      element.click();
+    }
+  }, [isSuccess]);
 
   return (
     <Card>
