@@ -1,81 +1,21 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 import { Card, Icon, IconButton, Tooltip } from "@mui/material";
 import SuiBox from "components/SuiBox";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import SuiTypography from "components/SuiTypography";
-import { styled } from "@mui/material/styles";
-import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
-import MuiAccordion from "@mui/material/Accordion";
-import MuiAccordionSummary from "@mui/material/AccordionSummary";
-import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import { FixedSizeList } from "react-window";
 import ListItemButton from "@mui/material/ListItemButton";
 import SensorsOutlinedIcon from "@mui/icons-material/SensorsOutlined";
-import QrCode2SharpIcon from "@mui/icons-material/QrCode2Sharp";
 import SuiInput from "components/SuiInput";
 import { fetchAssetsInfo } from "utils/query-keys";
 import { getAssetsInfo } from "services/warehouse-service";
 import { useSoftUIController } from "../../../../context";
-
-const Accordion = styled((props) => (
-  <MuiAccordion disableGutters elevation={0} square {...props} />
-))(({ theme }) => ({
-  borderTop: `1px solid ${theme.borders.borderColor}`,
-  "&:not(:last-child)": {
-    borderBottom: 0,
-  },
-  "&:first-of-type": {
-    borderTop: 0,
-  },
-  "&:before": {
-    display: "none",
-  },
-}));
-
-const AccordionSummary = styled((props) => (
-  <MuiAccordionSummary
-    expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: "0.9rem" }} />}
-    {...props}
-  />
-))(({ theme }) => ({
-  backgroundColor: "transparent",
-  //flexDirection: 'row-reverse',
-  "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
-    transform: "rotate(90deg)",
-  },
-  "& .MuiAccordionSummary-content": {
-    //marginLeft: theme.spacing(1),
-  },
-}));
-
-const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
-  padding: theme.spacing(2),
-  borderTop: "1px solid rgba(0, 0, 0, .125)",
-  backgroundColor: "aliceblue",
-  // backgroundColor: '#f8f9fa'
-}));
-
-function Product({ product, count }) {
-  return (
-    <SuiBox display="flex" alignItems="center" px={1} py={0.5}>
-      <SuiBox mr={2}>
-        <QrCode2SharpIcon fontSize="large" />
-      </SuiBox>
-      <SuiBox display="flex" flexDirection="column">
-        <SuiTypography variant="button" fontWeight="medium" color={"primary"}>
-          {product.name || "Undefined"}
-        </SuiTypography>
-        <SuiTypography variant="caption" color="secondary">
-          {count}&nbsp;items
-        </SuiTypography>
-      </SuiBox>
-    </SuiBox>
-  );
-}
+import { Accordion, AccordionSummary, AccordionDetails } from "../sites/components/accordion";
+import Product from "./components/product";
 
 export default function ProductsTreeView({
   searchTerm = "",
@@ -85,10 +25,25 @@ export default function ProductsTreeView({
   onBeaconSelect = () => {},
 }) {
   const [pattern, setPattern] = useState("");
-  const onSearchProduct = (productItem) => setPattern(productItem);
+  const [reload, updateReloadState] = useState(null);
   const [controller, dispatch] = useSoftUIController();
+  const [expanded, setExpanded] = React.useState("");
   const { direction } = controller;
+  const onSearchProduct = (productItem) => setPattern(productItem);
 
+  const {
+    isLoading,
+    error,
+    data: response,
+    isSuccess,
+  } = useQuery([fetchAssetsInfo, reload], getAssetsInfo);
+
+  const handleChange = (panel, row) => (event, newExpanded) => {
+    setExpanded(newExpanded ? panel : false);
+    setPattern("");
+    onBeaconSelect("");
+    onProductSelect(row);
+  };
   let assets =
     (selectedProduct &&
       selectedProduct.beacons.filter((b) => {
@@ -98,6 +53,18 @@ export default function ProductsTreeView({
         );
       })) ||
     [];
+
+  const forceUpdate = () => {
+    setExpanded("");
+    onBeaconSelect("");
+    onProductSelect(null);
+    updateReloadState(Date.now());
+  };
+
+  useEffect(() => {
+    console.log(selectedProduct);
+    selectedProduct && setExpanded(`panel_${selectedProduct.product.id}`);
+  }, [isSuccess]);
 
   const Row = ({ index, style }) => (
     <ListItem
@@ -145,26 +112,6 @@ export default function ProductsTreeView({
       </ListItemButton>
     </ListItem>
   );
-  const [reload, updateReloadState] = useState(null);
-  const forceUpdate = () => {
-    setExpanded("");
-    onBeaconSelect("");
-    onProductSelect(null);
-    updateReloadState(Date.now());
-  };
-  const {
-    isLoading,
-    error,
-    data: response,
-    isSuccess,
-  } = useQuery([fetchAssetsInfo, reload], getAssetsInfo);
-  const [expanded, setExpanded] = React.useState("");
-  const handleChange = (panel, row) => (event, newExpanded) => {
-    setExpanded(newExpanded ? panel : false);
-    setPattern("");
-    onBeaconSelect("");
-    onProductSelect(row);
-  };
 
   return (
     <Card>
@@ -186,14 +133,14 @@ export default function ProductsTreeView({
         {isSuccess &&
           response.map((item, index) => (
             <Accordion
-              expanded={expanded === `panel_${index}`}
-              onChange={handleChange(`panel_${index}`, item)}
-              key={`site_${index}`}
+              expanded={expanded === `panel_${item.product.id}`}
+              onChange={handleChange(`panel_${item.product.id}`, item)}
+              key={`product_${index}`}
               TransitionProps={{ unmountOnExit: true }}
             >
               <AccordionSummary
-                aria-controls={`panel_${index}_content`}
-                id={`panel_${index}_header`}
+                aria-controls={`panel_${item.product.id}_content`}
+                id={`panel_${item.product.id}_header`}
                 sx={{ "& .MuiAccordionSummary-content": { margin: "7px 0" } }}
               >
                 <SuiBox

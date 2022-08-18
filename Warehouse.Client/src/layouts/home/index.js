@@ -19,26 +19,24 @@ import QrCode2SharpIcon from "@mui/icons-material/QrCode2Sharp";
 import SensorsOutlinedIcon from "@mui/icons-material/SensorsOutlined";
 import TabOutlinedIcon from "@mui/icons-material/TabOutlined";
 import UserNotifications from "./components/notifications";
-import { useStoreController, setSite } from "../../context/store.context";
+import { useStoreController, setSite, setProduct } from "../../context/store.context";
 
 function Dashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const onSearch = (value) => setSearchTerm(value);
 
-  const [selectedProduct, setSelectProduct] = useState(null);
-  const [selectedSite, setSelectSite] = useState(null);
-  const [selectedBeacon, setSelectBeacon] = useState(null);
-  const [selectedView, setSelectView] = useState(0);
-
-  const [, dispatch] = useStoreController();
-  const onSiteSelect = (item) => {
-    setSite(dispatch, item);
-    setSelectSite(item);
-  };
+  const [controller, dispatch] = useStoreController();
+  const { site: selectedSite, product: selectedProduct } = controller;
+  const [selectedBeacon, setSelectBeacon] = useState("");
+  const [selectedView, setSelectView] = useState(selectedProduct ? 1 : 0);
+  const onSiteSelect = (item) => setSite(dispatch, item);
+  const onProductSelect = (item) => setProduct(dispatch, item);
 
   const handleChange = (event, value) => {
-    setSelectProduct(null);
-    setSelectBeacon(null);
+    onSiteSelect(null);
+    onProductSelect(null);
+    setSelectBeacon("");
+
     setSelectView(value);
   };
 
@@ -61,7 +59,7 @@ function Dashboard() {
               {selectedView === 1 && (
                 <ProductsTreeView
                   selectedProduct={selectedProduct}
-                  onProductSelect={setSelectProduct}
+                  onProductSelect={onProductSelect}
                   selectedBeacon={selectedBeacon}
                   onBeaconSelect={setSelectBeacon}
                 />

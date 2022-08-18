@@ -7,6 +7,7 @@ Store.displayName = "StoreContext";
 const actionMap = {
   RESOURCES: (state, action) => ({ ...state, resources: action.value }),
   SITE: (state, action) => ({ ...state, site: action.value }),
+  PRODUCT: (state, action) => ({ ...state, product: action.value }),
 };
 
 function reducer(state, action) {
@@ -18,6 +19,7 @@ function StoreControllerProvider({ children }) {
   const initialState = {
     resources: [],
     site: null,
+    product: null,
   };
   const [controller, dispatch] = useReducer(reducer, initialState);
   const value = useMemo(() => [controller, dispatch], [controller, dispatch]);
@@ -38,5 +40,6 @@ StoreControllerProvider.propTypes = {
 
 const setResources = (dispatch, value) => dispatch({ type: "RESOURCES", value });
 const setSite = (dispatch, value) => dispatch({ type: "SITE", value });
+const setProduct = (dispatch, value) => dispatch({ type: "PRODUCT", value });
 
-export { StoreControllerProvider, useStoreController, setResources, setSite };
+export { StoreControllerProvider, useStoreController, setResources, setSite, setProduct };
