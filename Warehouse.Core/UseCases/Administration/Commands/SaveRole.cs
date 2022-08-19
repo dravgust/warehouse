@@ -41,16 +41,16 @@ namespace Warehouse.Core.UseCases.Administration.Commands
 
                     if (!string.IsNullOrEmpty(command.Id))
                     {
-                        var old = await store.GetRoleAsync(command.Id, cancellationToken);
+                        var old = await store.FindRoleByIdAsync(command.Id, cancellationToken);
                         if (old == null)
                             throw new ArgumentException("Role not found by Id");
 
                         if (!old.Name.Equals(command.Name) || !string.Equals(old.Description, command.Description))
-                            await store.UpdateAsync(command, cancellationToken);
+                            await store.UpdateRoleAsync(command, cancellationToken);
                     }
                     else
                     {
-                        await store.UpdateAsync(command, cancellationToken);
+                        await store.UpdateRoleAsync(command, cancellationToken);
                     }
                 }
                 catch (Exception e)
