@@ -32,7 +32,7 @@ namespace Warehouse.Core.UseCases.Administration.Queries
             var permissions = new List<RolePermissionsDTO>();
             if (_userStore is IUserRoleStore store)
             {
-                role = await store.GetRoleAsync(query.RoleId, cancellationToken);
+                role = await store.FindRoleByIdAsync(query.RoleId, cancellationToken);
                 if (role == null)
                     return null;
 

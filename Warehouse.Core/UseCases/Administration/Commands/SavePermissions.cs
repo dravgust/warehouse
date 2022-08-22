@@ -37,7 +37,7 @@ namespace Warehouse.Core.UseCases.Administration.Commands
                         var role = roles.FirstOrDefault(r => r.Id == p.RoleId);
                         if (role == null)
                         {
-                            role = await store.GetRoleAsync(p.RoleId, cancellationToken);
+                            role = await store.FindRoleByIdAsync(p.RoleId, cancellationToken);
                             if (role == null)
                             {
                                 _logger.LogError($"SavePermissions: Role not found [{p.RoleId}] for User: {_userContext.User.Identity?.Name}");
@@ -56,12 +56,12 @@ namespace Warehouse.Core.UseCases.Administration.Commands
 
                         SecurityRolePermissionsEntity rp = null;
                         if (!string.IsNullOrEmpty(p.Id))
-                            rp = await store.GetRolePermissionAsync(p.Id, cancellationToken);
+                            rp = await store.FindRolePermissionsByIdAsync(p.Id, cancellationToken);
 
                         if (rp != null)
                         {
                             rp.Permissions = p.Permissions;
-                            await store.UpdateAsync(rp, cancellationToken);
+                            await store.UpdateRolePermissionsAsync(rp, cancellationToken);
                         }
                         else
                         {
@@ -72,7 +72,7 @@ namespace Warehouse.Core.UseCases.Administration.Commands
                                 RoleId = p.RoleId,
                                 Permissions = p.Permissions
                             };
-                            await store.UpdateAsync(rp, cancellationToken);
+                            await store.UpdateRolePermissionsAsync(rp, cancellationToken);
                         }
                     }
                 }
