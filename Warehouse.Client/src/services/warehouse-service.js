@@ -70,6 +70,11 @@ export const getSites = async ({ queryKey }) => {
   return res?.data;
 };
 
+export const getSiteById = async (id) => {
+  const res = await axios.get(`sites/${id}`);
+  return res?.data;
+};
+
 export const getBeaconTelemetry = async ({ queryKey }) => {
   const [_key, id] = queryKey;
   const res = await axios.get(`dashboard/beacon/${id}`);

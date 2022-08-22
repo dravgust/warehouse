@@ -8,6 +8,10 @@ import Footer from "examples/Footer";
 import CanvasSite from "./conponents/canvas-site";
 import { useStoreController } from "../../context/store.context";
 import { useAuth } from "../../context/auth.context";
+import { useQuery } from "react-query";
+import { fetchSiteById } from "../../utils/query-keys";
+import { getSiteById } from "../../services/warehouse-service";
+import suiBox from "components/SuiBox";
 
 const Warehouse = () => {
   const [controller] = useStoreController();
@@ -15,6 +19,7 @@ const Warehouse = () => {
   const cardRef = useRef();
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
+  const { site: currentSite } = controller;
 
   const resize = () => {
     if (!cardRef.current) return;
@@ -31,6 +36,14 @@ const Warehouse = () => {
 
   console.log("store", controller);
   console.log("user", user);
+  const {
+    isLoading,
+    error,
+    data: response,
+    isSuccess,
+  } = useQuery([fetchSiteById], () => getSiteById(currentSite.site.id), {
+    enabled: Boolean(currentSite),
+  });
 
   return (
     <DashboardLayout>
@@ -39,13 +52,13 @@ const Warehouse = () => {
         <Card>
           <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
             <SuiTypography variant="h6" color={"info"}>
-              {controller.site ? controller.site.site.name : ""}
+              {currentSite ? currentSite.site.name : ""}
             </SuiTypography>
           </SuiBox>
           <SuiBox>
             <SuiBox ref={cardRef} sx={{ width: "auto", height: "60vh" }}>
-              {controller.site && cardRef.current && (
-                <CanvasSite width={width} height={height} selectedSite={controller.site} />
+              {cardRef.current && isSuccess && (
+                <CanvasSite width={width} height={height} site={response} />
               )}
             </SuiBox>
           </SuiBox>
