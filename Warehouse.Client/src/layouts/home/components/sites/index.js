@@ -9,7 +9,7 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import { FixedSizeList } from "react-window";
 import ListItemButton from "@mui/material/ListItemButton";
-import SensorsOutlinedIcon from "@mui/icons-material/SensorsOutlined";
+import QrCode2SharpIcon from "@mui/icons-material/QrCode2Sharp";
 import SuiInput from "components/SuiInput";
 import { fetchSitesInfo } from "utils/query-keys";
 import { getSitesInfo } from "services/warehouse-service";
@@ -21,8 +21,8 @@ export default function SiteInfo({
   searchTerm = "",
   selectedSite = { in: [] },
   onSiteSelect = () => {},
-  selectedBeacon = "",
-  onBeaconSelect = () => {},
+  selectedProduct = "",
+  onProductSelect = () => {},
 }) {
   const [pattern, setPattern] = useState("");
   const [controller] = useSoftUIController();
@@ -34,14 +34,14 @@ export default function SiteInfo({
   const onSearchProduct = (productItem) => setPattern(productItem);
   const forceUpdate = () => {
     setExpanded("");
-    onBeaconSelect("");
+    onProductSelect(null);
     onSiteSelect(null);
     updateReloadState(Date.now());
   };
   const handleChange = (panel, row) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
     setPattern("");
-    onBeaconSelect("");
+    onProductSelect(null);
     onSiteSelect(row);
   };
 
@@ -53,15 +53,14 @@ export default function SiteInfo({
   } = useQuery([fetchSitesInfo, reload], getSitesInfo);
 
   useEffect(() => {
-    selectedSite && setExpanded(`panel_${selectedSite.site.id}`);
+    selectedSite && setExpanded(`panel_${selectedSite.id}`);
   }, [isSuccess]);
 
   let assets =
     (selectedSite &&
-      selectedSite.in.filter((b) => {
+      selectedSite.products.filter((b) => {
         return Boolean(
-          !pattern ||
-            b.beacon.macAddress.toLocaleUpperCase().indexOf(pattern.toLocaleUpperCase()) > -1
+          !pattern || b.name.toLocaleUpperCase().indexOf(pattern.toLocaleUpperCase()) > -1
         );
       })) ||
     [];
@@ -72,42 +71,23 @@ export default function SiteInfo({
       style={style}
       component="div"
       disablePadding
-      onClick={() => onBeaconSelect(assets[index].beacon)}
+      onClick={() => onProductSelect(assets[index])}
       sx={{
         borderBottom: ({ borders: { borderWidth, borderColor } }) =>
           `${borderWidth[1]} solid ${borderColor}`,
       }}
-      selected={assets[index].beacon.macAddress === selectedBeacon.macAddress}
-      secondaryAction={
-        <SuiTypography
-          variant="h6"
-          fontWeight="medium"
-          color={assets[index].product.name ? "primary" : "secondary"}
-          mx={2}
-        >
-          {assets[index].product.name || "n/a"}
-        </SuiTypography>
-      }
+      selected={selectedProduct && assets[index].id === selectedProduct.id}
+      //secondaryAction={ }
     >
       <ListItemButton dir={direction}>
         <ListItemIcon>
-          <SensorsOutlinedIcon />
+          <QrCode2SharpIcon fontSize="large" />
         </ListItemIcon>
         <ListItemText
-          primaryTypographyProps={{ color: assets[index].beacon.name ? "dark" : "secondary" }}
-          primary={assets[index].beacon.name || "n/a"}
-          secondary={
-            <React.Fragment>
-              <SuiTypography
-                sx={{ display: "inline" }}
-                component="span"
-                variant="caption"
-                color="secondary"
-              >
-                {assets[index].beacon.macAddress}
-              </SuiTypography>
-            </React.Fragment>
-          }
+          primaryTypographyProps={{ color: "#cb0c9f", fontSize: "0.875rem" }}
+          primary={assets[index].name}
+          secondaryTypographyProps={{ color: "#82d616", fontSize: "0.75rem" }}
+          secondary={`${assets[index].beacons.length} items`}
         />
       </ListItemButton>
     </ListItem>
@@ -133,14 +113,14 @@ export default function SiteInfo({
         {isSuccess &&
           response.map((item, index) => (
             <Accordion
-              expanded={expanded === `panel_${item.site.id}`}
-              onChange={handleChange(`panel_${item.site.id}`, item)}
+              expanded={expanded === `panel_${item.id}`}
+              onChange={handleChange(`panel_${item.id}`, item)}
               key={`site_${index}`}
               TransitionProps={{ unmountOnExit: true }}
             >
               <AccordionSummary
-                aria-controls={`panel_${item.site.id}_content`}
-                id={`panel_${item.site.id}_header`}
+                aria-controls={`panel_${item.id}_content`}
+                id={`panel_${item.id}_header`}
                 sx={{ "& .MuiAccordionSummary-content": { margin: "7px 0" } }}
               >
                 <SuiBox
@@ -149,7 +129,7 @@ export default function SiteInfo({
                   alignItems="center"
                   style={{ width: "100%" }}
                 >
-                  <Site site={item.site} count={item.in.length}></Site>
+                  <Site {...item}></Site>
                 </SuiBox>
               </AccordionSummary>
               <AccordionDetails>

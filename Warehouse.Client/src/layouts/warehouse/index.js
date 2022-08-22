@@ -41,7 +41,7 @@ const Warehouse = () => {
     error,
     data: response,
     isSuccess,
-  } = useQuery([fetchSiteById], () => getSiteById(currentSite.site.id), {
+  } = useQuery([fetchSiteById], () => getSiteById(currentSite.id), {
     enabled: Boolean(currentSite),
   });
 
@@ -52,7 +52,7 @@ const Warehouse = () => {
         <Card>
           <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
             <SuiTypography variant="h6" color={"info"}>
-              {currentSite ? currentSite.site.name : ""}
+              {currentSite ? currentSite.name : ""}
             </SuiTypography>
           </SuiBox>
           <SuiBox>

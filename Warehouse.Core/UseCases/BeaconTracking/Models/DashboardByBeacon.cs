@@ -14,26 +14,27 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Models
 
     public class DashboardByProduct
     {
-        public ProductInfo Product { set; get; }
-        public ICollection<DashboardByProductItem> Beacons { set; get; }
+        public string Id { set; get; }
+        public string Name { set; get; }
+        public ICollection<SiteItem> Sites { set; get; }
     }
 
+    public class SiteItem
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public ICollection<BeaconItem> Beacons { set; get; }
+    }
     public class DashboardByProductItem
     {
         public SiteInfo Site { set; get; }
-        public BeaconInfo Beacon { set; get; }
+        public BeaconItem Beacon { set; get; }
     }
 
     public class ProductInfo
     {
         public string Id { get; set; }
         public string Name { get; set; }
-    }
-
-    public class BeaconInfo
-    {
-        public string MacAddress { set; get; }
-        public string Name { set; get; }
     }
 
     public class SiteInfo

@@ -9,7 +9,7 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import { FixedSizeList } from "react-window";
 import ListItemButton from "@mui/material/ListItemButton";
-import SensorsOutlinedIcon from "@mui/icons-material/SensorsOutlined";
+import TabOutlinedIcon from "@mui/icons-material/TabOutlined";
 import SuiInput from "components/SuiInput";
 import { fetchAssetsInfo } from "utils/query-keys";
 import { getAssetsInfo } from "services/warehouse-service";
@@ -21,8 +21,8 @@ export default function ProductsTreeView({
   searchTerm = "",
   selectedProduct = { beacons: [] },
   onProductSelect = () => {},
-  selectedBeacon = "",
-  onBeaconSelect = () => {},
+  selectedSite = "",
+  onSiteSelect = () => {},
 }) {
   const [pattern, setPattern] = useState("");
   const [reload, updateReloadState] = useState(null);
@@ -41,29 +41,27 @@ export default function ProductsTreeView({
   const handleChange = (panel, row) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
     setPattern("");
-    onBeaconSelect("");
+    onSiteSelect(null);
     onProductSelect(row);
   };
   let assets =
     (selectedProduct &&
-      selectedProduct.beacons.filter((b) => {
+      selectedProduct.sites.filter((b) => {
         return Boolean(
-          !pattern ||
-            b.beacon.macAddress.toLocaleUpperCase().indexOf(pattern.toLocaleUpperCase()) > -1
+          !pattern || b.name.toLocaleUpperCase().indexOf(pattern.toLocaleUpperCase()) > -1
         );
       })) ||
     [];
 
   const forceUpdate = () => {
     setExpanded("");
-    onBeaconSelect("");
+    onSiteSelect(null);
     onProductSelect(null);
     updateReloadState(Date.now());
   };
 
   useEffect(() => {
-    console.log(selectedProduct);
-    selectedProduct && setExpanded(`panel_${selectedProduct.product.id}`);
+    selectedProduct && setExpanded(`panel_${selectedProduct.id}`);
   }, [isSuccess]);
 
   const Row = ({ index, style }) => (
@@ -72,42 +70,23 @@ export default function ProductsTreeView({
       style={style}
       component="div"
       disablePadding
-      onClick={() => onBeaconSelect(assets[index].beacon)}
+      onClick={() => onSiteSelect(assets[index])}
       sx={{
         borderBottom: ({ borders: { borderWidth, borderColor } }) =>
           `${borderWidth[1]} solid ${borderColor}`,
       }}
-      selected={assets[index].beacon.macAddress === selectedBeacon.macAddress}
-      secondaryAction={
-        <SuiTypography
-          variant="h6"
-          fontWeight="medium"
-          color={assets[index].site.name ? "info" : "secondary"}
-          mx={2}
-        >
-          {assets[index].site.name || "n/a"}
-        </SuiTypography>
-      }
+      selected={selectedSite && assets[index].id === selectedSite.id}
+      //secondaryAction={ }
     >
       <ListItemButton dir={direction}>
         <ListItemIcon>
-          <SensorsOutlinedIcon />
+          <TabOutlinedIcon fontSize="large" />
         </ListItemIcon>
         <ListItemText
-          primaryTypographyProps={{ color: assets[index].beacon.name ? "dark" : "secondary" }}
-          primary={assets[index].beacon.name || "n/a"}
-          secondary={
-            <React.Fragment>
-              <SuiTypography
-                sx={{ display: "inline" }}
-                component="span"
-                variant="caption"
-                color="secondary"
-              >
-                {assets[index].beacon.macAddress}
-              </SuiTypography>
-            </React.Fragment>
-          }
+          primaryTypographyProps={{ color: "#17c1e8", fontSize: "0.875rem" }}
+          primary={assets[index].name}
+          secondaryTypographyProps={{ color: "#82d616", fontSize: "0.75rem" }}
+          secondary={`${assets[index].beacons.length} items`}
         />
       </ListItemButton>
     </ListItem>
@@ -133,14 +112,14 @@ export default function ProductsTreeView({
         {isSuccess &&
           response.map((item, index) => (
             <Accordion
-              expanded={expanded === `panel_${item.product.id}`}
-              onChange={handleChange(`panel_${item.product.id}`, item)}
+              expanded={expanded === `panel_${item.id}`}
+              onChange={handleChange(`panel_${item.id}`, item)}
               key={`product_${index}`}
               TransitionProps={{ unmountOnExit: true }}
             >
               <AccordionSummary
-                aria-controls={`panel_${item.product.id}_content`}
-                id={`panel_${item.product.id}_header`}
+                aria-controls={`panel_${item.id}_content`}
+                id={`panel_${item.id}_header`}
                 sx={{ "& .MuiAccordionSummary-content": { margin: "7px 0" } }}
               >
                 <SuiBox
@@ -149,7 +128,7 @@ export default function ProductsTreeView({
                   alignItems="center"
                   style={{ width: "100%" }}
                 >
-                  <Product product={item.product} count={item.beacons.length}></Product>
+                  <Product {...item}></Product>
                 </SuiBox>
               </AccordionSummary>
               <AccordionDetails>

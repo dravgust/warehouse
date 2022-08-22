@@ -51,7 +51,7 @@ export const deleteProduct = async (item) => {
 export const getEvents = async ({ queryKey }) => {
   const [_key, page, searchTerm] = queryKey;
   const res = await axios.get(
-    `events?page=${page}&size=${searchTerm ? "3" : "10"}&searchTerm=${searchTerm}`
+    `events?page=${page}&size=${searchTerm ? "7" : "10"}&searchTerm=${searchTerm}`
   );
   return res?.data;
 };
