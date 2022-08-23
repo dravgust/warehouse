@@ -1,28 +1,116 @@
 import { useState, useEffect } from "react";
-import { Stage, Layer, RegularPolygon, Rect, Text, Group, Image } from "react-konva";
+import {
+  Stage,
+  Layer,
+  RegularPolygon,
+  Rect,
+  Text,
+  Group,
+  Image,
+  Shape,
+  Arrow,
+  Line,
+} from "react-konva";
 import Konva from "konva";
-import routerIcon from "../../../assets/images/internet-router.png";
-import beaconIcon from "../../../assets/images/hotspot-tower.png";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import Portal from "./portal";
+import routerIcon from "assets/images/internet-router.png";
 
 const Site = ({ x, y, topW, leftH }) => {
+  const tW = topW * 72 + 2;
+  const lH = leftH * 72 + 2;
   return (
-    <Rect
-      x={x}
-      y={y}
-      width={topW}
-      height={leftH}
-      strokeWidth={1}
-      stroke={"rgb(131,146,171)"}
-      //fill={"rgba(0, 0, 0, 0.1)"}
-      //cornerRadius={20}
-    />
+    <Group x={x} y={y}>
+      <Rect
+        width={tW}
+        height={lH}
+        strokeWidth={2}
+        stroke={"rgb(131,146,171)"}
+        //fill={"rgba(0, 0, 0, 0.1)"}
+        //cornerRadius={20}
+      />
+      <Arrow
+        points={[x + 5, y - 20, tW - 4, y - 20]}
+        pointerAtBeginning="true"
+        pointerLength={30}
+        pointerWidth={15}
+        fill="black"
+        stroke="black"
+        opacity={0.2}
+        strokeWidth={2}
+      />
+      <Line
+        points={[x + 2, y, x + 2, -40]}
+        stroke="black"
+        tension={1}
+        pointerLength={10}
+        pointerWidth={12}
+        opacity={0.2}
+        strokeWidth={1}
+      />
+      <Line
+        points={[tW, y, tW, -40]}
+        stroke="black"
+        tension={1}
+        pointerLength={10}
+        pointerWidth={12}
+        opacity={0.2}
+        strokeWidth={1}
+      />
+      <Text
+        fill="red"
+        x={tW / 2 - 25}
+        y={y - 12}
+        width={50}
+        height={10}
+        align="center"
+        verticalAlign="middle"
+        text={`${topW} m`}
+        opacity={0.8}
+      />
+      <Arrow
+        points={[x - 20, y + 5, x - 20, lH - 4]}
+        pointerAtBeginning="true"
+        pointerLength={30}
+        pointerWidth={15}
+        fill="black"
+        stroke="black"
+        opacity={0.2}
+        strokeWidth={2}
+      />
+      <Line
+        points={[x, y + 2, x - 40, y + 2]}
+        stroke="black"
+        tension={1}
+        pointerLength={10}
+        pointerWidth={12}
+        opacity={0.2}
+        strokeWidth={1}
+      />
+      <Line
+        points={[x, lH, x - 40, lH]}
+        stroke="black"
+        tension={1}
+        pointerLength={10}
+        pointerWidth={12}
+        opacity={0.2}
+        strokeWidth={1}
+      />
+      <Text
+        fill="red"
+        x={x - 12}
+        y={lH / 2 + 25}
+        width={50}
+        height={10}
+        align="center"
+        verticalAlign="middle"
+        text={`${leftH} m`}
+        opacity={0.8}
+        rotation={-90}
+      />
+    </Group>
   );
 };
 
-const Rectangle = ({ x, y, onClick }) => {
+const Rectangle = ({ x, y, onRClick }) => {
   return (
     <Rect
       x={x * 72}
@@ -31,7 +119,7 @@ const Rectangle = ({ x, y, onClick }) => {
       height={70}
       stroke={"rgb(131,146,171,0.1)"}
       strokeWidth={1}
-      onContextMenu={onClick}
+      onContextMenu={onRClick}
     />
   );
 };
@@ -95,21 +183,25 @@ const CanvasSite = ({ width = 1680, height = 780, site }) => {
     e.cancelBubble = true;
   };
 
+  const handleRectClick = (e) => {
+    e.evt.preventDefault();
+    const shape = e.target;
+    const attrs = shape.getAttrs();
+    console.log("click", attrs);
+    shape.setAttrs({ fill: attrs.fill == "#e9ecef" ? "white" : "#e9ecef" });
+  };
+
   function renderSite({ id, topLength, leftLength }) {
     const elements = [];
-    elements.push(
-      <Site
-        key={`site_${id}`}
-        x={-2}
-        y={-2}
-        topW={topLength * 72 + 2}
-        leftH={leftLength * 72 + 2}
-      />
-    );
+    elements.push(<Site key={`site_${id}`} x={-2} y={-2} topW={topLength} leftH={leftLength} />);
 
+    /*elements.push(
+     
+    );
+*/
     for (let x = 0; x < topLength; x += 1) {
       for (let y = 0; y < leftLength; y += 1) {
-        elements.push(<Rectangle key={`rec-${x}-${y}`} x={x} y={y} />);
+        elements.push(<Rectangle key={`rec-${x}-${y}`} x={x} y={y} onRClick={handleRectClick} />);
       }
     }
 
@@ -142,10 +234,10 @@ const CanvasSite = ({ width = 1680, height = 780, site }) => {
             sides={6}
             width={100}
             height={100}
-            //fill="#89b717"
+            fill="white"
             stroke="#89b717"
             strokeWidth={1}
-            opacity={0.8}
+            opacity={1}
             shadowColor="black"
             shadowBlur={10}
             shadowOpacity={0.6}

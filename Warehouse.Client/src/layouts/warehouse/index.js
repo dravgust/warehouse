@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import Card from "@mui/material/Card";
+import { Card, Grid } from "@mui/material";
 import SuiBox from "components/SuiBox";
 import SuiTypography from "components/SuiTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -11,7 +11,7 @@ import { useAuth } from "../../context/auth.context";
 import { useQuery } from "react-query";
 import { fetchSiteById } from "../../utils/query-keys";
 import { getSiteById } from "../../services/warehouse-service";
-import suiBox from "components/SuiBox";
+import CanvasList from "./conponents/canvas-list";
 
 const Warehouse = () => {
   const [controller] = useStoreController();
@@ -51,16 +51,21 @@ const Warehouse = () => {
       <SuiBox py={3} mb={3}>
         <Card>
           <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-            <SuiTypography variant="h6" color={"info"}>
-              {currentSite ? currentSite.name : ""}
-            </SuiTypography>
+            <SuiTypography variant="h6" color={"info"}></SuiTypography>
           </SuiBox>
-          <SuiBox>
-            <SuiBox ref={cardRef} sx={{ width: "auto", height: "60vh" }}>
-              {cardRef.current && isSuccess && (
-                <CanvasSite width={width} height={height} site={response} />
-              )}
-            </SuiBox>
+          <SuiBox px={2}>
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={12} lg={4} xl={4}>
+                <CanvasList />
+              </Grid>
+              <Grid item xs={12} md={12} lg={8} xl={8}>
+                <SuiBox ref={cardRef} sx={{ width: "auto", height: "60vh" }}>
+                  {cardRef.current && isSuccess && (
+                    <CanvasSite width={width} height={height} site={response} />
+                  )}
+                </SuiBox>
+              </Grid>
+            </Grid>
           </SuiBox>
         </Card>
       </SuiBox>

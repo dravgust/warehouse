@@ -41,7 +41,7 @@ function Beacons({ items, selectedItem, onItemSelect = () => {} }) {
         borderBottom: ({ borders: { borderWidth, borderColor } }) =>
           `${borderWidth[1]} solid ${borderColor}`,
       }}
-      selected={selectedItem && assets[index].macAddress === selectedItem.macAddress}
+      selected={Boolean(selectedItem) && assets[index].macAddress === selectedItem.macAddress}
       //secondaryAction={ }
     >
       <ListItemButton dir={direction}>
