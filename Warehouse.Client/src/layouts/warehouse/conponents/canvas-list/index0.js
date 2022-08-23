@@ -19,9 +19,15 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import QrCode2SharpIcon from "@mui/icons-material/QrCode2Sharp";
 import ListItemText from "@mui/material/ListItemText";
-import TabOutlinedIcon from "@mui/icons-material/TabOutlined";
+import SensorsSharpIcon from "@mui/icons-material/SensorsSharp";
 
-const CanvasList = () => {
+const CanvasList = ({
+  selectedSite = { products: [] },
+  selectedProduct = "",
+  onProductSelect = () => {},
+  selectedBeacon = "",
+  onBeaconSelect = () => {},
+}) => {
   const [pattern, setPattern] = useState("");
   const [controller] = useSoftUIController();
   const [expanded, setExpanded] = React.useState("");
@@ -29,11 +35,20 @@ const CanvasList = () => {
   const { direction } = controller;
   const handleChange = (panel, row) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
+    onProductSelect(row);
   };
   const onSearch = (productItem) => setPattern(productItem);
-  const { isLoading, error, data: response, isSuccess } = useQuery([fetchSitesInfo], getSitesInfo);
-  console.log("canvas-list", response);
-  let assets = [];
+  useEffect(() => {
+    selectedProduct && setExpanded(`panel_${selectedProduct.id}`);
+  }, []);
+  let assets =
+    (selectedProduct &&
+      selectedProduct.beacons.filter((b) => {
+        return Boolean(
+          !pattern || b.macAddress.toLocaleUpperCase().indexOf(pattern.toLocaleUpperCase()) > -1
+        );
+      })) ||
+    [];
 
   const Row = ({ index, style }) => (
     <ListItem
@@ -41,31 +56,31 @@ const CanvasList = () => {
       style={style}
       component="div"
       disablePadding
-      onClick={() => {}}
+      onClick={() => onBeaconSelect(assets[index])}
       sx={{
         borderBottom: ({ borders: { borderWidth, borderColor } }) =>
           `${borderWidth[1]} solid ${borderColor}`,
       }}
-      selected={false}
+      selected={selectedBeacon && assets[index].macAddress === selectedBeacon.macAddress}
       //secondaryAction={ }
     >
       <ListItemButton dir={direction}>
         <ListItemIcon>
-          <QrCode2SharpIcon fontSize="large" />
+          <SensorsSharpIcon fontSize="large" />
         </ListItemIcon>
         <ListItemText
-          primaryTypographyProps={{ color: "#cb0c9f", fontSize: "0.875rem" }}
+          primaryTypographyProps={{ color: "#344767", fontSize: "0.875rem" }}
           primary={assets[index].name}
-          secondaryTypographyProps={{ color: "#82d616", fontSize: "0.75rem" }}
-          secondary={`${assets[index].beacons.length} items`}
+          secondaryTypographyProps={{ color: "#8392ab", fontSize: "0.75rem" }}
+          secondary={assets[index].macAddress}
         />
       </ListItemButton>
     </ListItem>
   );
   return (
     <SuiBox pb={3}>
-      {isSuccess &&
-        response[0].products.map((item, index) => (
+      {selectedSite &&
+        selectedSite.products.map((item, index) => (
           <Accordion
             expanded={expanded === `panel_${item.id}`}
             onChange={handleChange(`panel_${item.id}`, item)}
@@ -85,10 +100,10 @@ const CanvasList = () => {
               >
                 <SuiBox display="flex" alignItems="center" px={1} py={0.5}>
                   <SuiBox mr={2}>
-                    <TabOutlinedIcon fontSize="large" />
+                    <QrCode2SharpIcon fontSize="large" />
                   </SuiBox>
                   <SuiBox display="flex" flexDirection="column">
-                    <SuiTypography variant="button" fontWeight="medium" color={"info"}>
+                    <SuiTypography variant="button" fontWeight="medium" color={"primary"}>
                       {item.name}
                     </SuiTypography>
                     <SuiTypography variant="caption" color="success">
@@ -130,16 +145,6 @@ const CanvasList = () => {
             </AccordionDetails>
           </Accordion>
         ))}
-      {isLoading && (
-        <SuiTypography px={2} color="secondary">
-          Loading..
-        </SuiTypography>
-      )}
-      {error && (
-        <SuiTypography px={2} color="error">
-          Error occurred!
-        </SuiTypography>
-      )}
     </SuiBox>
   );
 };

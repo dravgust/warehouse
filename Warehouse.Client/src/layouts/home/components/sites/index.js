@@ -16,10 +16,12 @@ import { getSitesInfo } from "services/warehouse-service";
 import { useSoftUIController } from "../../../../context";
 import { Accordion, AccordionSummary, AccordionDetails } from "./components/accordion";
 import Site from "./components/site";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import { useNavigate } from "react-router-dom";
 
 export default function SiteInfo({
   searchTerm = "",
-  selectedSite = { in: [] },
+  selectedSite = { products: [] },
   onSiteSelect = () => {},
   selectedProduct = "",
   onProductSelect = () => {},
@@ -28,7 +30,7 @@ export default function SiteInfo({
   const [controller] = useSoftUIController();
   const [reload, updateReloadState] = useState(null);
   const [expanded, setExpanded] = React.useState("");
-
+  const navigate = useNavigate();
   const { direction } = controller;
 
   const onSearchProduct = (productItem) => setPattern(productItem);
@@ -77,7 +79,11 @@ export default function SiteInfo({
           `${borderWidth[1]} solid ${borderColor}`,
       }}
       selected={selectedProduct && assets[index].id === selectedProduct.id}
-      //secondaryAction={ }
+      secondaryAction={
+        <IconButton edge="start">
+          <ExitToAppIcon onClick={() => navigate("/warehouse")} />
+        </IconButton>
+      }
     >
       <ListItemButton dir={direction}>
         <ListItemIcon>

@@ -98,10 +98,10 @@ function Beacons({ items, selectedItem, onItemSelect = () => {} }) {
         display="flex"
         flexDirection="column"
         sx={{
-          height: "639px",
+          height: "525px",
         }}
       >
-        <FixedSizeList className="List" height={639} itemCount={assets.length} itemSize={65}>
+        <FixedSizeList className="List" height={525} itemCount={assets.length} itemSize={65}>
           {Row}
         </FixedSizeList>
       </SuiBox>

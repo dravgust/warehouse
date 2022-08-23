@@ -40,8 +40,10 @@ function Dashboard() {
   };
 
   const handleChange = (event, value) => {
-    onSiteSelect(null);
-    onProductSelect(null);
+    if (value < 2) {
+      onSiteSelect(null);
+      onProductSelect(null);
+    }
     setSelectView(value);
   };
 
@@ -69,18 +71,25 @@ function Dashboard() {
                   onSiteSelect={onSiteSelect}
                 />
               )}
-              {selectedView === 2 && (
-                <Assets
-                  onRowSelect={(row) =>
-                    setSelectBeacon({
-                      macAddress: row.macAddress,
-                      name: row.site ? row.site.name : null,
-                    })
-                  }
-                  searchTerm={searchTerm}
-                  selectedItem={selectedBeacon}
-                />
-              )}
+              {selectedView === 2 &&
+                (selectedSite && selectedProduct ? (
+                  <Beacons
+                    items={selectedSite.beacons ? selectedSite.beacons : selectedProduct.beacons}
+                    selectedItem={selectedBeacon}
+                    onItemSelect={setSelectBeacon}
+                  />
+                ) : (
+                  <Assets
+                    onRowSelect={(row) =>
+                      setSelectBeacon({
+                        macAddress: row.macAddress,
+                        name: row.site ? row.site.name : null,
+                      })
+                    }
+                    searchTerm={searchTerm}
+                    selectedItem={selectedBeacon}
+                  />
+                ))}
               {selectedView === 0 && (
                 <SiteInfo
                   selectedSite={selectedSite}
@@ -93,15 +102,6 @@ function Dashboard() {
           </Grid>
           <Grid item xs={12} md={12} lg={8} xl={8}>
             <Grid container spacing={3}>
-              {selectedSite && selectedProduct && (
-                <Grid item xs={6}>
-                  <Beacons
-                    items={selectedSite.beacons ? selectedSite.beacons : selectedProduct.beacons}
-                    selectedItem={selectedBeacon}
-                    onItemSelect={setSelectBeacon}
-                  />
-                </Grid>
-              )}
               {Boolean(selectedBeacon) && (
                 <Zoom in={true}>
                   <Grid item xs={12} md={6}>
@@ -109,10 +109,10 @@ function Dashboard() {
                   </Grid>
                 </Zoom>
               )}
-              <Grid item xs={12} md={12}>
+              <Grid item xs={12} md={12} md={Boolean(selectedBeacon) ? 6 : 12}>
                 <Stack
                   spacing={3}
-                  direction={{ xs: "column", xl: "row" }}
+                  direction={{ xs: "column", xl: Boolean(selectedBeacon) ? "column" : "row" }}
                   style={{ height: "100% " }}
                 >
                   <PositionEvents searchTerm={selectedBeacon ? selectedBeacon.macAddress : ""} />
