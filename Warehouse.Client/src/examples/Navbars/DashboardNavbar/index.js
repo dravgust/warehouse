@@ -46,7 +46,7 @@ import {
 import { useAuth } from "../../../context/auth.context";
 import { useNavigate } from "react-router-dom";
 
-function DashboardNavbar({ absolute, light, isMini, onSearch = (value) => {} }) {
+function DashboardNavbar({ absolute, light, isMini, onSearch }) {
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useSoftUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator } = controller;
@@ -92,16 +92,24 @@ function DashboardNavbar({ absolute, light, isMini, onSearch = (value) => {} }) 
   const handleCloseMenu = () => setOpenMenu(false);
 
   const { user } = useAuth();
-
+  function onKeyDownHandler(event) {
+    if (event.code === "Enter" || event.code === "NumpadEnter") {
+      event.preventDefault();
+      onSearch(event.target.value);
+    }
+  }
   useEffect(() => {
     //setDirection(dispatch, "ltr");
-
-    document.getElementById("search-input").addEventListener("keydown", function (event) {
-      if (event.code === "Enter" || event.code === "NumpadEnter") {
-        event.preventDefault();
-        onSearch(event.target.value);
+    if (Boolean(onSearch)) {
+      const input = document.getElementById("search-input");
+      input && input.addEventListener("keydown", onKeyDownHandler);
+    }
+    return () => {
+      if (Boolean(onSearch)) {
+        const input = document.getElementById("search-input");
+        input && input.removeEventListener("keydown", onKeyDownHandler);
       }
-    });
+    };
   }, []);
 
   // Render the notifications menu
@@ -149,14 +157,16 @@ function DashboardNavbar({ absolute, light, isMini, onSearch = (value) => {} }) 
         </SuiBox>
         {isMini ? null : (
           <SuiBox sx={(theme) => navbarRow(theme, { isMini })}>
-            <SuiBox pr={1}>
-              <SuiInput
-                id="search-input"
-                placeholder="Type here..."
-                icon={{ component: "search", direction: "left" }}
-                onBlur={(event) => onSearch(event.target.value)}
-              />
-            </SuiBox>
+            {onSearch && (
+              <SuiBox pr={1}>
+                <SuiInput
+                  id="search-input"
+                  placeholder="Type here..."
+                  icon={{ component: "search", direction: "left" }}
+                  onBlur={(event) => onSearch(event.target.value)}
+                />
+              </SuiBox>
+            )}
 
             <SuiBox color={light ? "white" : "inherit"}>
               <IconButton

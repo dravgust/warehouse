@@ -23,9 +23,6 @@ import { useStoreController, setSite, setProduct, setBeacon } from "../../contex
 import Beacons from "./components/beacons/index2";
 
 function Dashboard() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const onSearch = (value) => setSearchTerm(value);
-
   const [controller, dispatch] = useStoreController();
   const { site: selectedSite, product: selectedProduct, beacon: selectedBeacon } = controller;
   const [selectedView, setSelectView] = useState(selectedProduct && selectedProduct.sites ? 1 : 0);
@@ -52,7 +49,7 @@ function Dashboard() {
 
   return (
     <DashboardLayout>
-      <DashboardNavbar onSearch={onSearch} />
+      <DashboardNavbar />
       <SuiBox mb={3} py={3}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={12} lg={4} xl={4}>
