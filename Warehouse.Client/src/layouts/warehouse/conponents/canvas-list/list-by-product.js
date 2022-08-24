@@ -17,10 +17,10 @@ import QrCode2SharpIcon from "@mui/icons-material/QrCode2Sharp";
 import ListItemText from "@mui/material/ListItemText";
 import SensorsSharpIcon from "@mui/icons-material/SensorsSharp";
 
-const CanvasList = ({
-  selectedSite = { products: [] },
-  selectedProduct = "",
-  onProductSelect = () => {},
+const CanvasListByProduct = ({
+  selectedProduct = { products: [] },
+  selectedSite,
+  onSiteSelect = () => {},
   selectedBeacon = "",
   onBeaconSelect = () => {},
 }) => {
@@ -31,16 +31,16 @@ const CanvasList = ({
   const { direction } = controller;
   const handleChange = (panel, row) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
-    onProductSelect(row);
+    onSiteSelect(row);
   };
   const onSearch = (searchTerm) => setPattern(searchTerm);
   useEffect(() => {
-    selectedProduct && setExpanded(`panel_${selectedProduct.id}`);
+    selectedProduct && setExpanded(`panel_${selectedSite.id}`);
   }, []);
 
   let assets =
-    (selectedProduct &&
-      selectedProduct.beacons.filter((b) => {
+    (selectedSite &&
+      selectedSite.beacons.filter((b) => {
         return Boolean(
           !pattern || b.macAddress.toLocaleUpperCase().indexOf(pattern.toLocaleUpperCase()) > -1
         );
@@ -76,8 +76,8 @@ const CanvasList = ({
   );
   return (
     <SuiBox pb={3}>
-      {selectedSite &&
-        selectedSite.products.map((item, index) => (
+      {selectedProduct &&
+        selectedProduct.sites.map((item, index) => (
           <Accordion
             expanded={expanded === `panel_${item.id}`}
             onChange={handleChange(`panel_${item.id}`, item)}
@@ -100,7 +100,7 @@ const CanvasList = ({
                     <QrCode2SharpIcon fontSize="large" />
                   </SuiBox>
                   <SuiBox display="flex" flexDirection="column">
-                    <SuiTypography variant="button" fontWeight="medium" color={"primary"}>
+                    <SuiTypography variant="button" fontWeight="medium" color={"info"}>
                       {item.name}
                     </SuiTypography>
                     <SuiTypography variant="caption" color="success">
@@ -146,4 +146,4 @@ const CanvasList = ({
   );
 };
 
-export default CanvasList;
+export default CanvasListByProduct;

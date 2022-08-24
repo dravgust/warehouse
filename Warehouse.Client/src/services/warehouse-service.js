@@ -83,7 +83,7 @@ export const getBeaconTelemetry = async ({ queryKey }) => {
 
 export const getAssets = async ({ queryKey }) => {
   const [_key, page, searchTerm] = queryKey;
-  const res = await axios.get(`dashboard/beacons?page=${page}&size=6&searchTerm=${searchTerm}`);
+  const res = await axios.get(`dashboard/beacons?page=${page}&size=7&searchTerm=${searchTerm}`);
   return res?.data;
 };
 

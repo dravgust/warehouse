@@ -86,7 +86,6 @@ function Dashboard() {
                         name: row.site ? row.site.name : null,
                       })
                     }
-                    searchTerm={searchTerm}
                     selectedItem={selectedBeacon}
                   />
                 ))}

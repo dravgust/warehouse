@@ -16,7 +16,7 @@ import { getSitesInfo } from "services/warehouse-service";
 import { useSoftUIController } from "../../../../context";
 import { Accordion, AccordionSummary, AccordionDetails } from "./components/accordion";
 import Site from "./components/site";
-import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { useNavigate } from "react-router-dom";
 
 export default function SiteInfo({
@@ -81,7 +81,7 @@ export default function SiteInfo({
       selected={selectedProduct && assets[index].id === selectedProduct.id}
       secondaryAction={
         <IconButton edge="start">
-          <ExitToAppIcon onClick={() => navigate("/warehouse")} />
+          <OpenInNewIcon onClick={() => navigate("/warehouse")} />
         </IconButton>
       }
     >

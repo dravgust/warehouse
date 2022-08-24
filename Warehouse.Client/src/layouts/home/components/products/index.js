@@ -16,6 +16,8 @@ import { getAssetsInfo } from "services/warehouse-service";
 import { useSoftUIController } from "../../../../context";
 import { Accordion, AccordionSummary, AccordionDetails } from "../sites/components/accordion";
 import Product from "./components/product";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import { useNavigate } from "react-router-dom";
 
 export default function ProductsTreeView({
   searchTerm = "",
@@ -29,6 +31,7 @@ export default function ProductsTreeView({
   const [controller, dispatch] = useSoftUIController();
   const [expanded, setExpanded] = React.useState("");
   const { direction } = controller;
+  const navigate = useNavigate();
   const onSearchProduct = (productItem) => setPattern(productItem);
 
   const {
@@ -76,7 +79,11 @@ export default function ProductsTreeView({
           `${borderWidth[1]} solid ${borderColor}`,
       }}
       selected={selectedSite && assets[index].id === selectedSite.id}
-      //secondaryAction={ }
+      secondaryAction={
+        <IconButton edge="start">
+          <OpenInNewIcon onClick={() => navigate("/warehouse")} />
+        </IconButton>
+      }
     >
       <ListItemButton dir={direction}>
         <ListItemIcon>

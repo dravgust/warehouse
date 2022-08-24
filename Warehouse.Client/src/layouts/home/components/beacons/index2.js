@@ -10,12 +10,15 @@ import ListItemText from "@mui/material/ListItemText";
 import { useState, useEffect } from "react";
 import { useSoftUIController } from "context";
 import SuiTypography from "../../../../components/SuiTypography";
-import Icon from "@mui/material/Icon";
+import { Icon, IconButton } from "@mui/material";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import { useNavigate } from "react-router-dom";
 
 function Beacons({ items, selectedItem, onItemSelect = () => {} }) {
   const [pattern, setPattern] = useState("");
   const onSearchBeacon = (beacon) => setPattern(beacon);
   const [controller] = useSoftUIController();
+  const navigate = useNavigate();
   const { direction } = controller;
   let assets =
     (items &&
@@ -42,7 +45,11 @@ function Beacons({ items, selectedItem, onItemSelect = () => {} }) {
           `${borderWidth[1]} solid ${borderColor}`,
       }}
       selected={Boolean(selectedItem) && assets[index].macAddress === selectedItem.macAddress}
-      //secondaryAction={ }
+      secondaryAction={
+        <IconButton edge="start">
+          <OpenInNewIcon onClick={() => navigate("/warehouse")} />
+        </IconButton>
+      }
     >
       <ListItemButton dir={direction}>
         <ListItemIcon>
