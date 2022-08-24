@@ -17,7 +17,6 @@ import CanvasListByProduct from "./conponents/canvas-list/list-by-product";
 
 const Warehouse = () => {
   const [controller, dispatch] = useStoreController();
-  const { user } = useAuth();
   const cardRef = useRef();
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
@@ -46,14 +45,13 @@ const Warehouse = () => {
     };
   }, [cardRef]);
   const navigate = useNavigate();
-  const {
-    isLoading,
-    error,
-    data: response,
-    isSuccess,
-  } = useQuery([fetchSiteById, currentSite], () => getSiteById(currentSite.id), {
-    enabled: Boolean(currentSite),
-  });
+  const { data: response, isSuccess } = useQuery(
+    [fetchSiteById, currentSite],
+    () => getSiteById(currentSite.id),
+    {
+      enabled: Boolean(currentSite),
+    }
+  );
 
   return (
     <DashboardLayout>

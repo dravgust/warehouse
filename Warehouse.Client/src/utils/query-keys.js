@@ -15,3 +15,5 @@ export const fetchRegisteredBeacons = "FETCH_REG_BEACONS";
 export const fetchRegisteredGw = "FETCH_REG_GW";
 export const fetchProductMetadata = "PRODUCT_METADATA";
 export const fetchBeaconMetadata = "BEACON_METADATA";
+export const fetchRoles = "SEC_ROLES";
+export const fetchObjects = "SEC_OBJECTS";

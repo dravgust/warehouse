@@ -41,7 +41,7 @@ namespace Warehouse.API.Controllers.API
                 items.AddRange(await store.GetUserRolesAsync(userId, token));
             }
 
-            return Ok(new { items, Total = items.Count });
+            return Ok(new { items, TotalItems = items.Count });
         }
 
         [HttpGet("roles")]
@@ -54,7 +54,7 @@ namespace Warehouse.API.Controllers.API
                 items.AddRange(await store.GetRolesAsync(new object[] { providerId }, token)!);
             }
 
-            return Ok(new { items, Total = items.Count });
+            return Ok(new { items, TotalItems = items.Count });
         }
 
         [HttpGet("objects")]
@@ -66,7 +66,7 @@ namespace Warehouse.API.Controllers.API
                 items.AddRange(await store.GetObjectsAsync(token));
             }
 
-            return Ok(new { items, Total = items.Count });
+            return Ok(new { items, TotalItems = items.Count });
         }
 
         [HttpGet("permissions/{roleId}")]

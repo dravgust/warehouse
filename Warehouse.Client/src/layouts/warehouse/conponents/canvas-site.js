@@ -125,9 +125,6 @@ const Rectangle = ({ x, y, onRClick }) => {
 };
 
 const CanvasSite = ({ width = 1680, height = 780, site }) => {
-  const topW = site.topLength;
-  const leftH = site.leftLength;
-
   const [stageScale, setStageScale] = useState(1);
   const [stageX, setStageX] = useState(70);
   const [stageY, setStageY] = useState(70);
