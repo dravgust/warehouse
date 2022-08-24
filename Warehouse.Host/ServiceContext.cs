@@ -27,6 +27,9 @@ namespace Warehouse.Host
             throw new NotImplementedException();
         }
 
+        public bool IsSupervisor { get; }
+        public bool IsAdministrator { get; }
+
         public T Get<T>(string key) where T : class
         {
             throw new NotImplementedException();

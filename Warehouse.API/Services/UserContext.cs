@@ -49,9 +49,9 @@ namespace Warehouse.API.Services
         }
 
         public bool IsSupervisor =>
-            User.Identity.GetUserType() == UserType.Supervisor || User.IsInRole(SupervisorID);
+            User.Identity?.GetUserType() == UserType.Supervisor || User.IsInRole(SupervisorID);
         public bool IsAdministrator =>
-            IsSupervisor || User.Identity.GetUserType() == UserType.Administrator || User.IsInRole(AdministratorID);
+            IsSupervisor || User.Identity?.GetUserType() == UserType.Administrator || User.IsInRole(AdministratorID);
 
         public bool HasRole(string role)
         {

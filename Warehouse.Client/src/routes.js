@@ -60,6 +60,7 @@ import SiteConfiguration from "layouts/site-configuration";
 import Beacons from "layouts/beacons";
 import Icon from "@mui/material/Icon";
 import WarehouseAlerts from "./layouts/alerts";
+import Security from "./layouts/security";
 
 const routes = [
   {
@@ -83,7 +84,7 @@ const routes = [
     protected: true,
   },
   {
-    type: "collapse",
+    type: "route",
     name: "Warehouse",
     key: "warehouse",
     route: "/warehouse",
@@ -181,6 +182,16 @@ const routes = [
     route: "/users",
     icon: <Icon fontSize="12px">people</Icon>,
     component: <Users />,
+    noCollapse: true,
+    protected: true,
+  },
+  {
+    type: "collapse",
+    name: "Security",
+    key: "security",
+    route: "/security",
+    icon: <Icon fontSize="12px">security</Icon>,
+    component: <Security />,
     noCollapse: true,
     protected: true,
   },

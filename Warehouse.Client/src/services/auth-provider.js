@@ -5,8 +5,8 @@ async function getToken() {
   return window.localStorage.getItem(localStorageKey);
 }
 
-function handleUserResponse({ user, token }) {
-  user = { ...user, token };
+function handleUserResponse({ username, token }) {
+  const user = { username, token };
   window.localStorage.setItem(localStorageKey, token);
   return user;
 }

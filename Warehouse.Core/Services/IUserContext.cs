@@ -12,6 +12,9 @@ namespace Warehouse.Core.Services
         bool HasAnyRole(IEnumerable<string> roles);
         bool HasPermission(string objName, SecurityPermissions requiredPermissions);
 
+        bool IsSupervisor { get; }
+        bool IsAdministrator { get; }
+
         public T Get<T>(string key) where T : class;
         public void Set<T>(string key, T value) where T : class;
         public Task<T> GetAsync<T>(string key) where T : class;

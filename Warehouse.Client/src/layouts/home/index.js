@@ -19,25 +19,37 @@ import QrCode2SharpIcon from "@mui/icons-material/QrCode2Sharp";
 import SensorsOutlinedIcon from "@mui/icons-material/SensorsOutlined";
 import TabOutlinedIcon from "@mui/icons-material/TabOutlined";
 import UserNotifications from "./components/notifications";
+import { useStoreController, setSite, setProduct, setBeacon } from "../../context/store.context";
+import Beacons from "./components/beacons/index2";
 
 function Dashboard() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const onSearch = (value) => setSearchTerm(value);
-
-  const [selectedProduct, setSelectProduct] = useState(null);
-  const [selectedSite, setSelectSite] = useState(null);
-  const [selectedBeacon, setSelectBeacon] = useState(null);
-  const [selectedView, setSelectView] = useState(0);
+  const [controller, dispatch] = useStoreController();
+  const { site: selectedSite, product: selectedProduct, beacon: selectedBeacon } = controller;
+  const [selectedView, setSelectView] = useState(selectedProduct && selectedProduct.sites ? 1 : 0);
+  const onBeaconSelect = (item) => setBeacon(dispatch, item);
+  const onSiteSelect = (item) => {
+    onBeaconSelect(null);
+    setSite(dispatch, item);
+  };
+  const onProductSelect = (item) => {
+    onBeaconSelect(null);
+    setProduct(dispatch, item);
+  };
 
   const handleChange = (event, value) => {
-    setSelectProduct(null);
-    setSelectBeacon(null);
+    if (
+      (value == 0 && Boolean(selectedSite) && !Boolean(selectedSite.products)) ||
+      (value == 1 && Boolean(selectedProduct) && !Boolean(selectedProduct.sites))
+    ) {
+      onSiteSelect(null);
+      onProductSelect(null);
+    }
     setSelectView(value);
   };
 
   return (
     <DashboardLayout>
-      <DashboardNavbar onSearch={onSearch} />
+      <DashboardNavbar />
       <SuiBox mb={3} py={3}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={12} lg={4} xl={4}>
@@ -54,29 +66,35 @@ function Dashboard() {
               {selectedView === 1 && (
                 <ProductsTreeView
                   selectedProduct={selectedProduct}
-                  onProductSelect={setSelectProduct}
-                  selectedBeacon={selectedBeacon}
-                  onBeaconSelect={setSelectBeacon}
+                  onProductSelect={onProductSelect}
+                  selectedSite={selectedSite}
+                  onSiteSelect={onSiteSelect}
                 />
               )}
-              {selectedView === 2 && (
-                <Assets
-                  onRowSelect={(row) =>
-                    setSelectBeacon({
-                      macAddress: row.macAddress,
-                      name: row.site ? row.site.name : null,
-                    })
-                  }
-                  searchTerm={searchTerm}
-                  selectedItem={selectedBeacon}
-                />
-              )}
+              {selectedView === 2 &&
+                (selectedSite && selectedProduct ? (
+                  <Beacons
+                    items={selectedSite.beacons ? selectedSite.beacons : selectedProduct.beacons}
+                    selectedItem={selectedBeacon}
+                    onItemSelect={onBeaconSelect}
+                  />
+                ) : (
+                  <Assets
+                    onRowSelect={(row) =>
+                      onBeaconSelect({
+                        macAddress: row.macAddress,
+                        name: row.site ? row.site.name : null,
+                      })
+                    }
+                    selectedItem={selectedBeacon}
+                  />
+                ))}
               {selectedView === 0 && (
                 <SiteInfo
                   selectedSite={selectedSite}
-                  onSiteSelect={setSelectSite}
-                  selectedBeacon={selectedBeacon}
-                  onBeaconSelect={setSelectBeacon}
+                  onSiteSelect={onSiteSelect}
+                  selectedProduct={selectedProduct}
+                  onProductSelect={onProductSelect}
                 />
               )}
             </Stack>
@@ -90,7 +108,7 @@ function Dashboard() {
                   </Grid>
                 </Zoom>
               )}
-              <Grid item xs={12} md={Boolean(selectedBeacon) ? 6 : 12}>
+              <Grid item xs={12} md={12} md={Boolean(selectedBeacon) ? 6 : 12}>
                 <Stack
                   spacing={3}
                   direction={{ xs: "column", xl: Boolean(selectedBeacon) ? "column" : "row" }}

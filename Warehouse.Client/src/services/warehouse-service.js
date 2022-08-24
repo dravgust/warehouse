@@ -51,7 +51,7 @@ export const deleteProduct = async (item) => {
 export const getEvents = async ({ queryKey }) => {
   const [_key, page, searchTerm] = queryKey;
   const res = await axios.get(
-    `events?page=${page}&size=${searchTerm ? "3" : "10"}&searchTerm=${searchTerm}`
+    `events?page=${page}&size=${searchTerm ? "3" : "9"}&searchTerm=${searchTerm}`
   );
   return res?.data;
 };
@@ -59,7 +59,7 @@ export const getEvents = async ({ queryKey }) => {
 export const getNotifications = async ({ queryKey }) => {
   const [_key, page, searchTerm] = queryKey;
   const res = await axios.get(
-    `notifications?page=${page}&size=${searchTerm ? "3" : "10"}&searchTerm=${searchTerm}`
+    `notifications?page=${page}&size=${searchTerm ? "3" : "9"}&searchTerm=${searchTerm}`
   );
   return res?.data;
 };
@@ -70,21 +70,26 @@ export const getSites = async ({ queryKey }) => {
   return res?.data;
 };
 
+export const getSiteById = async (id) => {
+  const res = await axios.get(`sites/${id}`);
+  return res?.data;
+};
+
 export const getBeaconTelemetry = async ({ queryKey }) => {
   const [_key, id] = queryKey;
-  const res = await axios.get(`dashboard/beacon/${id}`);
+  const res = await axios.get(`dashboard/beacon/${id}?t=${new Date().getTime()}`);
   return res?.data;
 };
 
 export const getAssets = async ({ queryKey }) => {
   const [_key, page, searchTerm] = queryKey;
-  const res = await axios.get(`dashboard/beacons?page=${page}&size=6&searchTerm=${searchTerm}`);
+  const res = await axios.get(`dashboard/beacons?page=${page}&size=7&searchTerm=${searchTerm}`);
   return res?.data;
 };
 
 export const getBeaconTelemetryCharts = async ({ queryKey }) => {
   const [_key, id] = queryKey;
-  const res = await axios.get(`dashboard/beacon/charts/${id}`);
+  const res = await axios.get(`dashboard/beacon/charts/${id}?t=${new Date().getTime()}`);
   return res?.data;
 };
 
@@ -112,6 +117,11 @@ export const setSiteGw = async (item) => {
   return res?.data;
 };
 
+export const deleteSiteGw = async (item) => {
+  const res = await axios.get(`sites/${item.siteId}/delete-gw/${item.macAddress}`);
+  return res?.data;
+};
+
 export const setSite = async (item) => {
   const res = await axios.post(`sites/set`, item);
   return res?.data;
@@ -126,3 +136,8 @@ export const deleteBeacon = async (item) => {
   const res = await axios.post(`beacons/delete`, item);
   return res?.data;
 };
+
+/*export const bootstrap = async () => {
+  const res = await axios.get("account/bootstrap");
+  return res?.data;
+};*/

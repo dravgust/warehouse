@@ -2,7 +2,6 @@ import { useState } from "react";
 import Card from "@mui/material/Card";
 import SuiBox from "components/SuiBox";
 import SuiTypography from "components/SuiTypography";
-import SuiAvatar from "components/SuiAvatar";
 import SuiBadge from "components/SuiBadge";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
@@ -11,39 +10,23 @@ import Table from "examples/Tables/Table";
 import { useQuery } from "react-query";
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
-import userIcon from "assets/images/user.png";
 import { getUsers } from "../../services/administration-service";
 import { fetchUsers } from "../../utils/query-keys";
+import PersonIcon from "@mui/icons-material/Person";
+import { ProviderName } from "../../utils/providers";
 
-function ProviderName(providerId) {
-  switch (providerId) {
-    case 1:
-      return "Electra";
-    case 2:
-      return "Dolav";
-    case 3:
-      return "Meitav";
-    case 4:
-      return "Tel-Aviv University";
-    case 1000:
-      return "Vayosoft";
-    default:
-      return "Unknown";
-  }
-}
-
-function User({ image, name, email }) {
+function User({ name, email }) {
   return (
     <SuiBox display="flex" alignItems="center" px={1} py={0.5}>
       <SuiBox mr={2}>
-        <SuiAvatar src={image} alt={name} size="sm" variant="rounded" />
+        <PersonIcon fontSize="large" />
       </SuiBox>
       <SuiBox display="flex" flexDirection="column">
         <SuiTypography variant="button" fontWeight="medium">
-          {name}
+          {name || "n/a"}
         </SuiTypography>
         <SuiTypography variant="caption" color="secondary">
-          {email || ""}
+          {email || "@"}
         </SuiTypography>
       </SuiBox>
     </SuiBox>
@@ -98,8 +81,8 @@ function Users() {
                   rows={
                     isSuccess &&
                     response.items.map((item) => ({
-                      user: <User image={userIcon} name={item.username} email={item.email} />,
-                      function: <Function job={item.kind} org={ProviderName(item.providerId)} />,
+                      user: <User name={item.username} email={item.email} />,
+                      function: <Function job={item.type} org={ProviderName(item.providerId)} />,
                       status: (
                         <SuiBadge
                           variant="gradient"
@@ -111,7 +94,9 @@ function Users() {
                       ),
                       registered: (
                         <SuiTypography variant="caption" color="secondary" fontWeight="medium">
-                          {format(new Date(item.registered), "HH:mm:ss, dd MMM", { locale: he })}
+                          {item.registered
+                            ? format(new Date(item.registered), "HH:mm:ss, dd MMM", { locale: he })
+                            : "n/a"}
                         </SuiTypography>
                       ),
                       action: (

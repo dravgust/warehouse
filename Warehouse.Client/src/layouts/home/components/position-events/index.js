@@ -13,13 +13,13 @@ function renderEvent({ type, beacon, source, destination }) {
   let name = beacon.name ? beacon.name : beacon.macAddress;
   switch (type) {
     case 1:
-      return `The ${name} entered '${destination ? destination.name : "n/a"}'`;
+      return `"${name}" entered "${destination ? destination.name : "n/a"}"`;
     case 2:
-      return `The ${name} out of '${source ? source.name : "n/a"}'`;
+      return `"${name}" out of "${source ? source.name : "n/a"}"`;
     case 3:
-      return `The ${name} moved from '${source ? source.name : "n/a"}' to '${
+      return `"${name}" moved from "${source ? source.name : "n/a"}" to "${
         destination ? destination.name : "n/a"
-      }'`;
+      }"`;
     default:
       return "n/a";
   }

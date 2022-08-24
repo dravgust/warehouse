@@ -12,7 +12,7 @@ namespace Warehouse.Core.Entities.Models.Security
     {
         public virtual string Name { get; set; }
         public virtual string Description { get; set; }
-        public ulong? ProviderId { get; set; }
+        public long? ProviderId { get; set; }
     }
 
     public class SecurityRolePermissionsEntity : EntityBase<string>
@@ -24,7 +24,7 @@ namespace Warehouse.Core.Entities.Models.Security
 
     public class UserRoleEntity : EntityBase<string>
     {
-        public ulong UserId { get; set; }
+        public long UserId { get; set; }
         public string RoleId { get; set; }
     }
 }
