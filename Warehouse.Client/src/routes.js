@@ -83,7 +83,7 @@ const routes = [
     protected: true,
   },
   {
-    type: "collapse",
+    type: "route",
     name: "Warehouse",
     key: "warehouse",
     route: "/warehouse",

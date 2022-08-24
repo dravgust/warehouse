@@ -92,7 +92,7 @@ function Footer({ company, links }) {
 // Setting default values for the props of Footer
 Footer.defaultProps = {
   company: { href: "https://vayosoft.com/", name: "Vayosoft Network Technologies Ltd." },
-  links: [{ href: "https://www.creative-tim.com/presentation", name: "About Us" }],
+  links: [{ href: "https://vayosoft.com/", name: "About Us" }],
 };
 
 // Typechecking props for the Footer

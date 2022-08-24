@@ -3,7 +3,7 @@ import TabOutlinedIcon from "@mui/icons-material/TabOutlined";
 import SuiTypography from "components/SuiTypography";
 import * as React from "react";
 
-function Site({ site, count }) {
+function Site({ name, products }) {
   return (
     <SuiBox display="flex" alignItems="center" px={1} py={0.5}>
       <SuiBox mr={2}>
@@ -11,10 +11,10 @@ function Site({ site, count }) {
       </SuiBox>
       <SuiBox display="flex" flexDirection="column">
         <SuiTypography variant="button" fontWeight="medium" color={"info"}>
-          {site.name || "Undefined"}
+          {name}
         </SuiTypography>
-        <SuiTypography variant="caption" color="secondary">
-          {count}&nbsp;items
+        <SuiTypography variant="caption" color="primary">
+          {products.length}&nbsp;products
         </SuiTypography>
       </SuiBox>
     </SuiBox>

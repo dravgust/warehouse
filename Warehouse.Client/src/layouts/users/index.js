@@ -40,10 +40,10 @@ function User({ image, name, email }) {
       </SuiBox>
       <SuiBox display="flex" flexDirection="column">
         <SuiTypography variant="button" fontWeight="medium">
-          {name}
+          {name || "n/a"}
         </SuiTypography>
         <SuiTypography variant="caption" color="secondary">
-          {email || ""}
+          {email || "@"}
         </SuiTypography>
       </SuiBox>
     </SuiBox>
@@ -99,7 +99,7 @@ function Users() {
                     isSuccess &&
                     response.items.map((item) => ({
                       user: <User image={userIcon} name={item.username} email={item.email} />,
-                      function: <Function job={item.kind} org={ProviderName(item.providerId)} />,
+                      function: <Function job={item.type} org={ProviderName(item.providerId)} />,
                       status: (
                         <SuiBadge
                           variant="gradient"
@@ -111,7 +111,9 @@ function Users() {
                       ),
                       registered: (
                         <SuiTypography variant="caption" color="secondary" fontWeight="medium">
-                          {format(new Date(item.registered), "HH:mm:ss, dd MMM", { locale: he })}
+                          {item.registered
+                            ? format(new Date(item.registered), "HH:mm:ss, dd MMM", { locale: he })
+                            : "n/a"}
                         </SuiTypography>
                       ),
                       action: (

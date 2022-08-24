@@ -5,6 +5,7 @@ export const fetchAlerts = "FETCH_ALERTS";
 export const fetchEvents = "FETCH_EVENTS";
 export const fetchNotifications = "FETCH_NOTIFICATIONS";
 export const fetchSites = "FETCH_SITES";
+export const fetchSiteById = "FETCH_SITE_ID";
 export const fetchBeaconTelemetry = "FETCH_BEACON_TELEMETRY";
 export const fetchBeaconTelemetryCharts = "FETCH_BEACON_TELEMETRY_CHARTS";
 export const fetchAssetsInfo = "FETCH_ASSETS_INFO";
