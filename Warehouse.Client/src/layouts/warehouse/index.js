@@ -6,7 +6,7 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import CanvasSite from "./conponents/canvas-site";
-import { setProduct, setSite, useStoreController } from "../../context/store.context";
+import { setProduct, setSite, useStoreController, setBeacon } from "../../context/store.context";
 import { useAuth } from "../../context/auth.context";
 import { useQuery } from "react-query";
 import { fetchSiteById } from "../../utils/query-keys";
@@ -21,15 +21,15 @@ const Warehouse = () => {
   const cardRef = useRef();
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
-  const [selectedBeacon, setSelectBeacon] = useState("");
-  const { site: currentSite, product: currentProduct } = controller;
 
+  const { site: currentSite, product: currentProduct, beacon: selectedBeacon } = controller;
+  const onBeaconSelect = (item) => setBeacon(dispatch, item);
   const onProductSelect = (item) => {
-    setSelectBeacon("");
+    onBeaconSelect(null);
     setProduct(dispatch, item);
   };
   const onSiteSelect = (item) => {
-    setSelectBeacon("");
+    onBeaconSelect(null);
     setSite(dispatch, item);
   };
 
@@ -94,7 +94,7 @@ const Warehouse = () => {
                     selectedProduct={currentProduct}
                     onProductSelect={onProductSelect}
                     selectedBeacon={selectedBeacon}
-                    onBeaconSelect={setSelectBeacon}
+                    onBeaconSelect={onBeaconSelect}
                   />
                 )}
                 {currentProduct && currentProduct.sites && (
@@ -103,7 +103,7 @@ const Warehouse = () => {
                     selectedProduct={currentProduct}
                     onSiteSelect={onSiteSelect}
                     selectedBeacon={selectedBeacon}
-                    onBeaconSelect={setSelectBeacon}
+                    onBeaconSelect={onBeaconSelect}
                   />
                 )}
               </Grid>

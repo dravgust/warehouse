@@ -1,10 +1,10 @@
 import Card from "@mui/material/Card";
-//import Icon from "@mui/material/Icon";
 import SuiBox from "components/SuiBox";
 import SuiTypography from "components/SuiTypography";
 import bg from "assets/images/637499715290000000.jpg";
 import SensorsOutlinedIcon from "@mui/icons-material/SensorsOutlined";
 import PropTypes from "prop-types";
+import { format, formatDistance } from "date-fns";
 
 function Beacon({ macAddress = "n/a", name = "n/a", lastUpdate = "" }) {
   return (
@@ -39,14 +39,19 @@ function Beacon({ macAddress = "n/a", name = "n/a", lastUpdate = "" }) {
           </SuiBox>
           <SuiBox sx={{ textAlign: "center" }}>
             <SuiTypography color="white" sx={{ opacity: ".5" }}>
-              Last update
+              Updated&nbsp;
+              {formatDistance(lastUpdate ? new Date(lastUpdate) : new Date(), new Date(), {
+                addSuffix: true,
+              })}
             </SuiTypography>
             <SuiTypography
               color="white"
               fontWeight="bold"
               sx={{ fontSize: "2em", transform: "scale(1.8, 2)", opacity: ".5" }}
             >
-              {lastUpdate}
+              {lastUpdate
+                ? format(new Date(lastUpdate), "HH:mm:ss")
+                : format(new Date(), "HH:mm:ss")}
             </SuiTypography>
           </SuiBox>
           {/*<SuiTypography

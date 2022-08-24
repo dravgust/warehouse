@@ -5,7 +5,6 @@ import { getBeaconTelemetry } from "services/warehouse-service";
 import Grid from "@mui/material/Grid";
 import Beacon from "../beacon";
 import DefaultInfoCard from "examples/Cards/InfoCards/DefaultInfoCard";
-import { format } from "date-fns";
 
 const BeaconTelemetry = ({ item }) => {
   const {
@@ -23,11 +22,7 @@ const BeaconTelemetry = ({ item }) => {
         <Beacon
           macAddress={item.macAddress}
           name={item.name ? item.name : "n/a"}
-          lastUpdate={
-            response && response.receivedAt
-              ? format(new Date(response.receivedAt), "HH:mm:ss")
-              : format(new Date(), "HH:mm:ss")
-          }
+          lastUpdate={response && response.receivedAt}
         />
       </Grid>
 

@@ -19,7 +19,7 @@ import QrCode2SharpIcon from "@mui/icons-material/QrCode2Sharp";
 import SensorsOutlinedIcon from "@mui/icons-material/SensorsOutlined";
 import TabOutlinedIcon from "@mui/icons-material/TabOutlined";
 import UserNotifications from "./components/notifications";
-import { useStoreController, setSite, setProduct } from "../../context/store.context";
+import { useStoreController, setSite, setProduct, setBeacon } from "../../context/store.context";
 import Beacons from "./components/beacons/index2";
 
 function Dashboard() {
@@ -27,20 +27,23 @@ function Dashboard() {
   const onSearch = (value) => setSearchTerm(value);
 
   const [controller, dispatch] = useStoreController();
-  const { site: selectedSite, product: selectedProduct } = controller;
-  const [selectedBeacon, setSelectBeacon] = useState("");
+  const { site: selectedSite, product: selectedProduct, beacon: selectedBeacon } = controller;
   const [selectedView, setSelectView] = useState(selectedProduct && selectedProduct.sites ? 1 : 0);
+  const onBeaconSelect = (item) => setBeacon(dispatch, item);
   const onSiteSelect = (item) => {
-    setSelectBeacon("");
+    onBeaconSelect(null);
     setSite(dispatch, item);
   };
   const onProductSelect = (item) => {
-    setSelectBeacon("");
+    onBeaconSelect(null);
     setProduct(dispatch, item);
   };
 
   const handleChange = (event, value) => {
-    if (value < 2) {
+    if (
+      (value == 0 && Boolean(selectedSite) && !Boolean(selectedSite.products)) ||
+      (value == 1 && Boolean(selectedProduct) && !Boolean(selectedProduct.sites))
+    ) {
       onSiteSelect(null);
       onProductSelect(null);
     }
@@ -76,12 +79,12 @@ function Dashboard() {
                   <Beacons
                     items={selectedSite.beacons ? selectedSite.beacons : selectedProduct.beacons}
                     selectedItem={selectedBeacon}
-                    onItemSelect={setSelectBeacon}
+                    onItemSelect={onBeaconSelect}
                   />
                 ) : (
                   <Assets
                     onRowSelect={(row) =>
-                      setSelectBeacon({
+                      onBeaconSelect({
                         macAddress: row.macAddress,
                         name: row.site ? row.site.name : null,
                       })

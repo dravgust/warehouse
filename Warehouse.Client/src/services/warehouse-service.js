@@ -77,7 +77,7 @@ export const getSiteById = async (id) => {
 
 export const getBeaconTelemetry = async ({ queryKey }) => {
   const [_key, id] = queryKey;
-  const res = await axios.get(`dashboard/beacon/${id}`);
+  const res = await axios.get(`dashboard/beacon/${id}?t=${new Date().getTime()}`);
   return res?.data;
 };
 
@@ -89,7 +89,7 @@ export const getAssets = async ({ queryKey }) => {
 
 export const getBeaconTelemetryCharts = async ({ queryKey }) => {
   const [_key, id] = queryKey;
-  const res = await axios.get(`dashboard/beacon/charts/${id}`);
+  const res = await axios.get(`dashboard/beacon/charts/${id}?t=${new Date().getTime()}`);
   return res?.data;
 };
 

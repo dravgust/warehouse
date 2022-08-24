@@ -13,7 +13,7 @@ function Site({ name, products }) {
         <SuiTypography variant="button" fontWeight="medium" color={"info"}>
           {name}
         </SuiTypography>
-        <SuiTypography variant="caption" color="success">
+        <SuiTypography variant="caption" color="primary">
           {products.length}&nbsp;products
         </SuiTypography>
       </SuiBox>

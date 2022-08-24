@@ -30,7 +30,7 @@ function Beacons({ items, selectedItem, onItemSelect = () => {} }) {
     [];
 
   useEffect(() => {
-    assets.length > 0 && onItemSelect(assets[0]);
+    !Boolean(selectedItem) && assets.length > 0 && onItemSelect(assets[0]);
   }, [items]);
 
   const Row = ({ index, style }) => (
@@ -46,8 +46,8 @@ function Beacons({ items, selectedItem, onItemSelect = () => {} }) {
       }}
       selected={Boolean(selectedItem) && assets[index].macAddress === selectedItem.macAddress}
       secondaryAction={
-        <IconButton edge="start">
-          <OpenInNewIcon onClick={() => navigate("/warehouse")} />
+        <IconButton edge="start" onClick={() => navigate("/warehouse")}>
+          <OpenInNewIcon />
         </IconButton>
       }
     >

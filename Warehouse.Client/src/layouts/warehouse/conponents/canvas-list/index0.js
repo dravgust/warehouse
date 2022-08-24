@@ -103,7 +103,7 @@ const CanvasList = ({
                     <SuiTypography variant="button" fontWeight="medium" color={"primary"}>
                       {item.name}
                     </SuiTypography>
-                    <SuiTypography variant="caption" color="success">
+                    <SuiTypography variant="caption" color="secondary">
                       {item.beacons.length}&nbsp;beacons
                     </SuiTypography>
                   </SuiBox>

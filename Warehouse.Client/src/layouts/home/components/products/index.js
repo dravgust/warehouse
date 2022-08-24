@@ -80,8 +80,8 @@ export default function ProductsTreeView({
       }}
       selected={selectedSite && assets[index].id === selectedSite.id}
       secondaryAction={
-        <IconButton edge="start">
-          <OpenInNewIcon onClick={() => navigate("/warehouse")} />
+        <IconButton edge="start" onClick={() => navigate("/warehouse")}>
+          <OpenInNewIcon />
         </IconButton>
       }
     >
@@ -92,7 +92,7 @@ export default function ProductsTreeView({
         <ListItemText
           primaryTypographyProps={{ color: "#17c1e8", fontSize: "0.875rem" }}
           primary={assets[index].name}
-          secondaryTypographyProps={{ color: "#82d616", fontSize: "0.75rem" }}
+          secondaryTypographyProps={{ color: "#8392ab", fontSize: "0.75rem" }}
           secondary={`${assets[index].beacons.length} items`}
         />
       </ListItemButton>
