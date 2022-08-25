@@ -5,8 +5,19 @@ import Footer from "../../examples/Footer";
 import SecurityRoles from "./components/roles";
 import { Grid } from "@mui/material";
 import SecurityObjects from "./components/objects";
+import useSecurity from "../../services/security-provider";
+import { useEffect } from "react";
 
 const Security = () => {
+  const { fetchRoles } = useSecurity();
+  useEffect(() => {
+    async function getRoles() {
+      const roles = await fetchRoles();
+      console.log(roles);
+    }
+    getRoles();
+  }, []);
+
   return (
     <DashboardLayout>
       <DashboardNavbar />

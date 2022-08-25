@@ -7,7 +7,6 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import CanvasSite from "./conponents/canvas-site";
 import { setProduct, setSite, useStoreController, setBeacon } from "../../context/store.context";
-import { useAuth } from "../../context/auth.context";
 import { useQuery } from "react-query";
 import { fetchSiteById } from "../../utils/query-keys";
 import { getSiteById } from "../../services/warehouse-service";

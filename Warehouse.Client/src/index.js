@@ -24,6 +24,7 @@ import { SoftUIControllerProvider } from "context";
 import { AuthProvider } from "context/auth.context";
 import { AppProviders } from "context/app.context";
 import { StoreControllerProvider } from "./context/store.context";
+import { SecurityControllerProvider } from "./context/security.context";
 
 const container = document.getElementById("root");
 const root = createRoot(container);
@@ -34,7 +35,9 @@ root.render(
       <StoreControllerProvider>
         <AppProviders>
           <AuthProvider>
-            <App />
+            <SecurityControllerProvider>
+              <App />
+            </SecurityControllerProvider>
           </AuthProvider>
         </AppProviders>
       </StoreControllerProvider>
