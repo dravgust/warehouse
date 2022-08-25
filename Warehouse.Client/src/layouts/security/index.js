@@ -5,32 +5,26 @@ import Footer from "../../examples/Footer";
 import SecurityRoles from "./components/roles";
 import { Grid } from "@mui/material";
 import SecurityObjects from "./components/objects";
-import useSecurity from "../../services/security-provider";
-import { useEffect } from "react";
+import useSecurity, { SecurityPermissions } from "../../services/security-provider";
 
 const Security = () => {
-  const { fetchRoles } = useSecurity();
-  useEffect(() => {
-    async function getRoles() {
-      const roles = await fetchRoles();
-      console.log(roles);
-    }
-    getRoles();
-  }, []);
+  const { hasPermissions } = useSecurity("USER", SecurityPermissions.Execute);
 
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <SuiBox py={3}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} lg={6}>
-            <SecurityRoles />
+      {hasPermissions && (
+        <SuiBox py={3}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} lg={6}>
+              <SecurityRoles />
+            </Grid>
+            <Grid item xs={12} lg={6}>
+              <SecurityObjects />
+            </Grid>
           </Grid>
-          <Grid item xs={12} lg={6}>
-            <SecurityObjects />
-          </Grid>
-        </Grid>
-      </SuiBox>
+        </SuiBox>
+      )}
       <Footer />
     </DashboardLayout>
   );

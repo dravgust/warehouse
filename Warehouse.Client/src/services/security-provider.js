@@ -1,22 +1,52 @@
 import { useSecurityController, setRoles } from "../context/security.context";
 import { useClient } from "../context/auth.context";
-//const localStorageKey = "__sec_provider_roles__";
+import { useState, useEffect } from "react";
 
-const useSecurity = () => {
-  const [, dispatch] = useSecurityController();
+export const SecurityPermissions = {
+  None: 0,
+  View: 1,
+  Add: 2,
+  Edit: 4,
+  Delete: 8,
+  Execute: 16,
+  Grant: 32,
+};
+
+const hasSecurityPermissions = (userPermissions, securityPermissions) =>
+  (userPermissions & securityPermissions) === securityPermissions;
+
+//const localStorageKey = "__sec_provider_roles__";
+let base = "security";
+const useSecurity = (objectName, permissions) => {
+  const [state, dispatch] = useSecurityController();
+  const [hasPermissions, setHasPermissions] = useState(false);
   const client = useClient();
 
-  function handleSecurityResponse({ roles }) {
-    //window.localStorage.setItem(localStorageKey, roles);
-    console.log("sec-provider", roles);
-    setRoles(dispatch, roles);
-    return roles;
-  }
+  useEffect(() => {
+    isUserHasPermissions(objectName, permissions).then(setHasPermissions);
+  }, []);
 
+  function handleSecurityResponse({ items }) {
+    //window.localStorage.setItem(localStorageKey, roles);
+    setRoles(dispatch, items);
+    return items;
+  }
   const fetchRoles = async () => {
-    return await client(`security/user-roles`, {}).then(handleSecurityResponse);
+    return await client(`${base}/user-roles`, {}).then(handleSecurityResponse);
   };
 
-  return { fetchRoles };
+  const isUserHasPermissions = async (objectName, permissions) => {
+    let roles = state.roles;
+    if (!roles) {
+      roles = await fetchRoles();
+    }
+    const result = roles.map((role) => {
+      const object = role.items.filter((r) => r.objectName === objectName)[0];
+      return object && hasSecurityPermissions(object.permissions, permissions);
+    });
+    return result.indexOf(true) > -1;
+  };
+
+  return { hasPermissions };
 };
 export default useSecurity;

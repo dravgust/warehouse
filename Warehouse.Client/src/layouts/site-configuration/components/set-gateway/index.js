@@ -21,7 +21,7 @@ import { useMutation } from "react-query";
 import * as yup from "yup";
 import * as auth from "services/auth-provider";
 import PropTypes from "prop-types";
-import { setSiteGw } from "services/warehouse-service";
+import { setSiteGw } from "api/warehouse";
 
 const locations = [
   "Unknown",

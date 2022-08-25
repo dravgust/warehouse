@@ -8,7 +8,7 @@ import { useQuery } from "react-query";
 import SuiAvatar from "components/SuiAvatar";
 import alertIcon from "assets/images/notification-alarm-buzzer-icon.png";
 import { fetchAlerts } from "utils/query-keys";
-import { getAlerts } from "services/warehouse-service";
+import { getAlerts } from "api/warehouse";
 
 const AlertList = ({
   searchTerm,

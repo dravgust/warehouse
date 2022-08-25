@@ -7,7 +7,7 @@ import { Icon, TextField, Box, FormControlLabel } from "@mui/material";
 import SuiAlert from "components/SuiAlert";
 import SuiButton from "components/SuiButton";
 import DeletePromt from "./delete-promt";
-import { deleteAlert, saveAlert } from "services/warehouse-service";
+import { deleteAlert, saveAlert } from "api/warehouse";
 import Checkbox from "@mui/material/Checkbox";
 import SuiBox from "../../../../components/SuiBox";
 import SuiTypography from "../../../../components/SuiTypography";

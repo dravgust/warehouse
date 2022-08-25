@@ -9,7 +9,7 @@ import { formatDistance } from "date-fns";
 import beaconIcon from "assets/images/hotspot-tower.png";
 import SensorsSharpIcon from "@mui/icons-material/SensorsSharp";
 import { fetchAssets } from "../../../../utils/query-keys";
-import { getAssets } from "../../../../services/warehouse-service";
+import { getAssets } from "../../../../api/warehouse";
 import SuiInput from "../../../../components/SuiInput";
 
 function Assets({ selectedItem, onRowSelect = () => {} }) {

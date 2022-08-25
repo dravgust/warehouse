@@ -9,7 +9,7 @@ import CanvasSite from "./conponents/canvas-site";
 import { setProduct, setSite, useStoreController, setBeacon } from "../../context/store.context";
 import { useQuery } from "react-query";
 import { fetchSiteById } from "../../utils/query-keys";
-import { getSiteById } from "../../services/warehouse-service";
+import { getSiteById } from "../../api/warehouse";
 import CanvasList from "./conponents/canvas-list/index0";
 import { useNavigate } from "react-router-dom";
 import CanvasListByProduct from "./conponents/canvas-list/list-by-product";

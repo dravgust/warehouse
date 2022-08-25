@@ -3,9 +3,9 @@ import SuiTypography from "components/SuiTypography";
 import Table from "examples/Tables/Table";
 import { useQuery } from "react-query";
 import { fetchRoles } from "utils/query-keys";
-import { getRoles } from "services/administration-service";
+import { getRoles } from "api/admin";
 import Card from "@mui/material/Card";
-import { ProviderName } from "utils/providers";
+import { ProviderName } from "data/providers";
 import BadgeIcon from "@mui/icons-material/Badge";
 
 const SecurityRoles = () => {

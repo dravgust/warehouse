@@ -12,7 +12,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import QrCode2SharpIcon from "@mui/icons-material/QrCode2Sharp";
 import SuiInput from "components/SuiInput";
 import { fetchSitesInfo } from "utils/query-keys";
-import { getSitesInfo } from "services/warehouse-service";
+import { getSitesInfo } from "api/warehouse";
 import { useSoftUIController } from "../../../../context";
 import { Accordion, AccordionSummary, AccordionDetails } from "./components/accordion";
 import Site from "./components/site";

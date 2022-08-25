@@ -10,10 +10,10 @@ import Table from "examples/Tables/Table";
 import { useQuery } from "react-query";
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
-import { getUsers } from "../../services/administration-service";
+import { getUsers } from "../../api/admin";
 import { fetchUsers } from "../../utils/query-keys";
 import PersonIcon from "@mui/icons-material/Person";
-import { ProviderName } from "../../utils/providers";
+import { ProviderName } from "../../data/providers";
 
 function User({ name, email }) {
   return (

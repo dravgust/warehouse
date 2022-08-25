@@ -9,7 +9,7 @@ import SuiAlert from "components/SuiAlert";
 import SuiButton from "components/SuiButton";
 import DeletePromt from "./delete-promt";
 import CircularProgress from "@mui/material/CircularProgress";
-import { getProducts, setBeacon, deleteBeacon } from "services/warehouse-service";
+import { getProducts, setBeacon, deleteBeacon } from "api/warehouse";
 
 const validationSchema = yup.object({
   macAddress: yup

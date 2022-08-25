@@ -10,7 +10,7 @@ import { client } from "utils/api-client";
 import { useQuery } from "react-query";
 import SuiAvatar from "../../../../components/SuiAvatar";
 import siteIcon from "../../../../assets/images/area-floor-size.png";
-import { getSites } from "../../../../services/warehouse-service";
+import { getSites } from "../../../../api/warehouse";
 import { fetchSites } from "../../../../utils/query-keys";
 
 export default function Sites({

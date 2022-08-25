@@ -1,4 +1,4 @@
-import axios from "../api";
+import axios from "./index";
 
 export const getBeacons = async ({ queryKey }) => {
   const [_key, page, searchTerm] = queryKey;

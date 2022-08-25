@@ -10,7 +10,7 @@ import SetSite from "./components/set-site";
 import SetGateway from "./components/set-gateway";
 import { useQuery } from "react-query";
 import { fetchRegisteredBeacons, fetchRegisteredGw } from "../../utils/query-keys";
-import { getRegisteredBeacons, getRegisteredGw } from "../../services/warehouse-service";
+import { getRegisteredBeacons, getRegisteredGw } from "../../api/warehouse";
 
 const SiteConfiguration = () => {
   const [refresh, updateRefreshState] = useState(null);

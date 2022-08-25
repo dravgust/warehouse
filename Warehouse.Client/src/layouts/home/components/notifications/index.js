@@ -7,7 +7,7 @@ import { useQuery } from "react-query";
 import { format } from "date-fns";
 import React from "react";
 import { fetchNotifications } from "utils/query-keys";
-import { getNotifications } from "services/warehouse-service";
+import { getNotifications } from "api/warehouse";
 
 function renderEvent({ macAddress, receivedAt }) {
   return `"${macAddress}" was last available at ${format(new Date(receivedAt), "dd MMM HH:mm:ss")}`;

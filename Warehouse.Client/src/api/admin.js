@@ -1,4 +1,4 @@
-import axios from "../api";
+import axios from "./index";
 
 export const getUsers = async ({ queryKey }) => {
   const [_key, page] = queryKey;

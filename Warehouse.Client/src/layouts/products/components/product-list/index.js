@@ -9,7 +9,7 @@ import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import { fetchProducts } from "utils/query-keys";
-import { getProducts } from "services/warehouse-service";
+import { getProducts } from "api/warehouse";
 import axios from "../../../../api";
 import CircularProgress from "@mui/material/CircularProgress";
 

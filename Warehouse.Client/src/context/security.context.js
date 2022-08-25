@@ -15,7 +15,7 @@ function reducer(state, action) {
 
 function SecurityControllerProvider({ children }) {
   const initialState = {
-    roles: [],
+    roles: null,
   };
   const [controller, dispatch] = useReducer(reducer, initialState);
   const value = useMemo(() => [controller, dispatch], [controller, dispatch]);

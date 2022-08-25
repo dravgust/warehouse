@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useQuery } from "react-query";
 import { fetchBeaconTelemetry } from "utils/query-keys";
-import { getBeaconTelemetry } from "services/warehouse-service";
+import { getBeaconTelemetry } from "api/warehouse";
 import Grid from "@mui/material/Grid";
 import Beacon from "../beacon";
 import DefaultInfoCard from "examples/Cards/InfoCards/DefaultInfoCard";

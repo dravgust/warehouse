@@ -3,9 +3,9 @@ import SuiTypography from "components/SuiTypography";
 import Table from "examples/Tables/Table";
 import { useQuery } from "react-query";
 import { fetchObjects } from "utils/query-keys";
-import { getObjects } from "services/administration-service";
+import { getObjects } from "api/admin";
 import Card from "@mui/material/Card";
-import { ProviderName } from "utils/providers";
+import { ProviderName } from "data/providers";
 import GppGoodIcon from "@mui/icons-material/GppGood";
 import { useState } from "react";
 

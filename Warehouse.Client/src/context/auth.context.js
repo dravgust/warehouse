@@ -3,14 +3,12 @@ import { queryClient } from "context/app.context";
 import * as auth from "services/auth-provider";
 import { client } from "utils/api-client";
 import { useAsync } from "utils/hooks";
-import { useStoreController, setResources } from "./store.context";
-//import {FullPageSpinner, FullPageErrorFallback} from 'components/lib'
+import { useResources, setResources } from "./resources.context";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 
 async function bootstrapAppData(dispatch) {
   let user = null;
-
   const token = await auth.getToken();
   if (token) {
     const data = await client("account/bootstrap", { token });
@@ -42,7 +40,7 @@ function AuthProvider(props) {
     setData,
   } = useAsync();
 
-  const [, dispatch] = useStoreController();
+  const [, dispatch] = useResources();
 
   React.useEffect(() => {
     const appDataPromise = bootstrapAppData(dispatch);
