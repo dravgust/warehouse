@@ -1,14 +1,16 @@
+import React from "react";
 import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
 import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
 import SuiBox from "../../components/SuiBox";
 import Footer from "../../examples/Footer";
-import SecurityRoles from "./components/roles";
 import { Grid } from "@mui/material";
-import SecurityObjects from "./components/objects";
 import useSecurity, { SecurityPermissions } from "../../services/security-provider";
 
+const SecurityRoles = React.lazy(() => import("./components/roles"));
+const SecurityObjects = React.lazy(() => import("./components/objects"));
+
 const Security = () => {
-  const { hasPermissions } = useSecurity("USER", SecurityPermissions.Execute);
+  const { hasPermissions } = useSecurity("USER", SecurityPermissions.Grant);
 
   return (
     <DashboardLayout>
