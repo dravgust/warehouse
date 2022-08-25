@@ -17,13 +17,13 @@ const hasSecurityPermissions = (userPermissions, securityPermissions) =>
 
 //const localStorageKey = "__sec_provider_roles__";
 let base = "security";
-const useSecurity = (objectName, permissions) => {
-  const [state, dispatch] = useSecurityController();
+const useSecurity = (objectName, permissions = 1) => {
+  const [states, dispatch] = useSecurityController();
   const [hasPermissions, setHasPermissions] = useState(false);
   const client = useClient();
 
   useEffect(() => {
-    isUserHasPermissions(objectName, permissions).then(setHasPermissions);
+    objectName && isUserHasPermissions(objectName, permissions).then(setHasPermissions);
   }, []);
 
   function handleSecurityResponse({ items }) {
@@ -31,12 +31,9 @@ const useSecurity = (objectName, permissions) => {
     setRoles(dispatch, items);
     return items;
   }
-  const fetchRoles = async () => {
-    return await client(`${base}/user-roles`, {}).then(handleSecurityResponse);
-  };
-
+  const fetchRoles = () => client(`${base}/user-roles`, {}).then(handleSecurityResponse);
   const isUserHasPermissions = async (objectName, permissions) => {
-    let roles = state.roles;
+    let roles = states.roles;
     if (!roles) {
       roles = await fetchRoles();
     }
