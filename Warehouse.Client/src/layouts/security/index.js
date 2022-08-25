@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
 import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
 import SuiBox from "../../components/SuiBox";
@@ -19,10 +19,14 @@ const Security = () => {
         <SuiBox py={3}>
           <Grid container spacing={3}>
             <Grid item xs={12} lg={6}>
-              <SecurityRoles />
+              <Suspense fallback={<p>Loading...</p>}>
+                <SecurityRoles />
+              </Suspense>
             </Grid>
             <Grid item xs={12} lg={6}>
-              <SecurityObjects />
+              <Suspense fallback={<p>Loading...</p>}>
+                <SecurityObjects />
+              </Suspense>
             </Grid>
           </Grid>
         </SuiBox>

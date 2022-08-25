@@ -4,8 +4,7 @@ import * as auth from "services/auth-provider";
 import { client } from "utils/api-client";
 import { useAsync } from "utils/hooks";
 import { useResources, setResources } from "./resources.context";
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
+import FullPageLoadingFallback from "../components/FullPageLoadingFallback";
 
 async function bootstrapAppData(dispatch) {
   let user = null;
@@ -68,11 +67,7 @@ function AuthProvider(props) {
   );
 
   if (isLoading || isIdle) {
-    return (
-      <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={true}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
-    );
+    return <FullPageLoadingFallback />;
   }
 
   if (isError) {
