@@ -7,7 +7,6 @@ import { getObjects } from "api/admin";
 import Card from "@mui/material/Card";
 import { ProviderName } from "data/providers";
 import GppGoodIcon from "@mui/icons-material/GppGood";
-import { useState } from "react";
 
 const SecurityObjects = () => {
   const { isSuccess, data: response, isLoading, error } = useQuery([fetchObjects], getObjects);

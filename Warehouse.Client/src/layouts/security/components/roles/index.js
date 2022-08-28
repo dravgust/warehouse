@@ -7,8 +7,10 @@ import { getRoles } from "api/admin";
 import Card from "@mui/material/Card";
 import { ProviderName } from "data/providers";
 import BadgeIcon from "@mui/icons-material/Badge";
+import { ButtonGroup, Icon } from "@mui/material";
+import SuiButton from "../../../../components/SuiButton";
 
-const SecurityRoles = () => {
+const SecurityRoles = ({ onEdit = () => {} }) => {
   const { isSuccess, data: response, isLoading, error } = useQuery([fetchRoles], getRoles);
   return (
     <Card>
@@ -31,6 +33,7 @@ const SecurityRoles = () => {
               { name: "name", align: "left" },
               { name: "description", align: "center" },
               { name: "provider", align: "center" },
+              { name: "", align: "center" },
             ]}
             rows={
               isSuccess &&
@@ -58,6 +61,13 @@ const SecurityRoles = () => {
                   <SuiTypography variant="caption" color="secondary">
                     {ProviderName(item.providerId)}
                   </SuiTypography>
+                ),
+                "": (
+                  <ButtonGroup variant="text" aria-label="text button group" color="text">
+                    <SuiButton variant="text" color="dark" onClick={() => onEdit(item)}>
+                      <Icon>manage_accounts</Icon>
+                    </SuiButton>
+                  </ButtonGroup>
                 ),
               }))
             }
