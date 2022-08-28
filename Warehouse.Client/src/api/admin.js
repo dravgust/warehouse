@@ -17,3 +17,9 @@ export const getObjects = async ({ queryKey }) => {
   const res = await axios.get(`security/objects`);
   return res?.data;
 };
+
+export const getPermissions = async ({ queryKey }) => {
+  const [_key, roleId] = queryKey;
+  const res = await axios.get(`security/permissions/${roleId}`);
+  return res?.data;
+};

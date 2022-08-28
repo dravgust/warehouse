@@ -7,19 +7,30 @@ import { useMutation, useQuery } from "react-query";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useEffect } from "react";
 import Checkbox from "@mui/material/Checkbox";
 import Table from "examples/Tables/Table";
-import { fetchObjects } from "utils/query-keys";
-import { getObjects } from "api/admin";
+import { fetchObjects, fetchPermissions } from "utils/query-keys";
+import { getObjects, getPermissions } from "api/admin";
 
 const RoleConfiguration = ({ item, onSave, onClose }) => {
-  const { isSuccess, data: objects, isLoading, error } = useQuery([fetchObjects], getObjects);
+  const { isSuccess: isObjSuccess, data: objects } = useQuery([fetchObjects], getObjects);
+  const { isSuccess: isPerSuccess, data: permissionsOfRole } = useQuery(
+    [fetchPermissions, item.id],
+    getPermissions
+  );
 
-  console.log("role-edit", objects);
-  const res = objects.items.map((obj, index) => {
-    return { id: obj.id };
-  });
+  console.log("role-edit", objects, permissionsOfRole);
+
+  useEffect(() => {
+    const res = [];
+    if (isPerSuccess) {
+      permissionsOfRole.permissions.map((p, i) => {
+        return p;
+      });
+    }
+    console.log(res);
+  }, [isPerSuccess]);
 
   const [state, setState] = React.useState({
     gilad: true,
@@ -176,7 +187,7 @@ const RoleConfiguration = ({ item, onSave, onClose }) => {
                   { name: "", align: "center" },
                 ]}
                 rows={
-                  isSuccess
+                  isObjSuccess
                     ? objects.items.map((item, index) => ({
                         "security objects": (
                           <SuiBox display="flex" flexDirection="column" px={1}>

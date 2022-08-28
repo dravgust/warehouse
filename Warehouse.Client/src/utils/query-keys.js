@@ -17,3 +17,4 @@ export const fetchProductMetadata = "PRODUCT_METADATA";
 export const fetchBeaconMetadata = "BEACON_METADATA";
 export const fetchRoles = "SEC_ROLES";
 export const fetchObjects = "SEC_OBJECTS";
+export const fetchPermissions = "SEC_PERMISSIONS";
