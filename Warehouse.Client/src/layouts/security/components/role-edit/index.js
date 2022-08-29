@@ -7,46 +7,45 @@ import { useMutation, useQuery } from "react-query";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import PropTypes from "prop-types";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Checkbox from "@mui/material/Checkbox";
 import Table from "examples/Tables/Table";
-import { fetchObjects, fetchPermissions } from "utils/query-keys";
-import { getObjects, getPermissions } from "api/admin";
+import { fetchPermissions } from "utils/query-keys";
+import { getPermissions } from "api/admin";
+import { SecurityPermissions } from "services/security-provider";
 
 const RoleConfiguration = ({ item, onSave, onClose }) => {
-  const { isSuccess: isObjSuccess, data: objects } = useQuery([fetchObjects], getObjects);
-  const { isSuccess: isPerSuccess, data: permissionsOfRole } = useQuery(
-    [fetchPermissions, item.id],
-    getPermissions
-  );
-
-  console.log("role-edit", objects, permissionsOfRole);
-
+  const { isSuccess, data } = useQuery([fetchPermissions, item.id], getPermissions);
+  console.log("role-edit", data);
+  const [permissions, setPermissions] = useState([]);
   useEffect(() => {
-    const res = [];
-    if (isPerSuccess) {
-      permissionsOfRole.permissions.map((p, i) => {
-        return p;
-      });
+    if (isSuccess) {
+      const result = data.permissions.map((item) => ({
+        ...item,
+        [SecurityPermissions.View]:
+          (item.permissions & SecurityPermissions.View) === SecurityPermissions.View,
+        [SecurityPermissions.Add]:
+          (item.permissions & SecurityPermissions.Add) === SecurityPermissions.Add,
+        [SecurityPermissions.Edit]:
+          (item.permissions & SecurityPermissions.Edit) === SecurityPermissions.Edit,
+        [SecurityPermissions.Delete]:
+          (item.permissions & SecurityPermissions.Delete) === SecurityPermissions.Delete,
+        [SecurityPermissions.Execute]:
+          (item.permissions & SecurityPermissions.Execute) === SecurityPermissions.Execute,
+        [SecurityPermissions.Grant]:
+          (item.permissions & SecurityPermissions.Grant) === SecurityPermissions.Grant,
+      }));
+      setPermissions(result);
     }
-    console.log(res);
-  }, [isPerSuccess]);
-
-  const [state, setState] = React.useState({
-    gilad: true,
-    jason: false,
-    antoine: false,
-  });
+  }, [isSuccess]);
 
   const handleChange = (event) => {
-    setState({
-      ...state,
-      [event.target.name]: event.target.checked,
-    });
+    const perm = event.currentTarget.getAttribute("data-per");
+    const result = permissions.map((item) =>
+      item.id === event.target.name ? { ...item, [perm]: event.target.checked } : item
+    );
+    setPermissions(result);
   };
-
-  const { gilad, jason, antoine } = state;
-  const checkedError = [gilad, jason, antoine].filter((v) => v).length !== 2;
 
   const mutation = useMutation(() => {}, {
     onSuccess: () => {
@@ -186,26 +185,76 @@ const RoleConfiguration = ({ item, onSave, onClose }) => {
                   { name: "grant", align: "center" },
                   { name: "", align: "center" },
                 ]}
-                rows={
-                  isObjSuccess
-                    ? objects.items.map((item, index) => ({
-                        "security objects": (
-                          <SuiBox display="flex" flexDirection="column" px={1}>
-                            <SuiTypography variant="button" fontWeight="medium">
-                              {item.name ? item.name : "n/a"}
-                            </SuiTypography>
-                          </SuiBox>
-                        ),
-                        view: <Checkbox name={`${item.id}_${index}`} />,
-                        add: <Checkbox />,
-                        edit: <Checkbox />,
-                        delete: <Checkbox />,
-                        execute: <Checkbox />,
-                        grant: <Checkbox />,
-                        "": "",
-                      }))
-                    : []
-                }
+                rows={permissions.map((item) => ({
+                  "security objects": (
+                    <SuiBox display="flex" flexDirection="column" px={1}>
+                      <SuiTypography variant="button" fontWeight="medium">
+                        {item.objectName ? item.objectName : "n/a"}
+                      </SuiTypography>
+                    </SuiBox>
+                  ),
+                  view: (
+                    <Checkbox
+                      name={`${item.id}`}
+                      inputProps={{
+                        "data-per": SecurityPermissions.View,
+                      }}
+                      checked={item[SecurityPermissions.View]}
+                      onChange={handleChange}
+                    />
+                  ),
+                  add: (
+                    <Checkbox
+                      name={`${item.id}`}
+                      inputProps={{
+                        "data-per": SecurityPermissions.Add,
+                      }}
+                      checked={item[SecurityPermissions.Add]}
+                      onChange={handleChange}
+                    />
+                  ),
+                  edit: (
+                    <Checkbox
+                      name={`${item.id}`}
+                      inputProps={{
+                        "data-per": SecurityPermissions.Edit,
+                      }}
+                      checked={item[SecurityPermissions.Edit]}
+                      onChange={handleChange}
+                    />
+                  ),
+                  delete: (
+                    <Checkbox
+                      name={`${item.id}`}
+                      inputProps={{
+                        "data-per": SecurityPermissions.Delete,
+                      }}
+                      checked={item[SecurityPermissions.Delete]}
+                      onChange={handleChange}
+                    />
+                  ),
+                  execute: (
+                    <Checkbox
+                      name={`${item.id}`}
+                      inputProps={{
+                        "data-per": SecurityPermissions.Execute,
+                      }}
+                      checked={item[SecurityPermissions.Execute]}
+                      onChange={handleChange}
+                    />
+                  ),
+                  grant: (
+                    <Checkbox
+                      name={`${item.id}`}
+                      inputProps={{
+                        "data-per": SecurityPermissions.Grant,
+                      }}
+                      checked={item[SecurityPermissions.Grant]}
+                      onChange={handleChange}
+                    />
+                  ),
+                  "": "",
+                }))}
               />
             </SuiBox>
 
