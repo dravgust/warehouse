@@ -25,17 +25,6 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Models
         public string Name { get; set; }
         public ICollection<BeaconItem> Beacons { set; get; }
     }
-    public class DashboardByProductItem
-    {
-        public SiteInfo Site { set; get; }
-        public BeaconItem Beacon { set; get; }
-    }
-
-    public class ProductInfo
-    {
-        public string Id { get; set; }
-        public string Name { get; set; }
-    }
 
     public class SiteInfo
     {
