@@ -23,3 +23,8 @@ export const getPermissions = async ({ queryKey }) => {
   const res = await axios.get(`security/permissions/${roleId}`);
   return res?.data;
 };
+
+export const savePermissions = async (permissions) => {
+  const res = await axios.post(`security/permissions/save`, permissions);
+  return res?.data;
+};

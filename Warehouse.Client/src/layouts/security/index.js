@@ -16,7 +16,7 @@ import RoleConfiguration from "./components/role-edit";
 const SecurityObjects = React.lazy(() => import("./components/objects"));
 
 const Security = () => {
-  const { hasPermissions } = useSecurity("USER", SecurityPermissions.Grant);
+  const { hasPermissions } = useSecurity("USER", SecurityPermissions.View);
   const [selectedView, setSelectView] = useState(0);
   const [roleEdit, setRoleEdit] = useState(null);
 

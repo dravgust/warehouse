@@ -4,6 +4,7 @@ import { Box, Card, Icon, IconButton, Stack, TextField, Tooltip } from "@mui/mat
 import SuiAlert from "components/SuiAlert";
 import SuiButton from "components/SuiButton";
 import { useMutation, useQuery } from "react-query";
+import { queryClient } from "context/app.context";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import PropTypes from "prop-types";
@@ -11,12 +12,11 @@ import React, { useEffect, useState } from "react";
 import Checkbox from "@mui/material/Checkbox";
 import Table from "examples/Tables/Table";
 import { fetchPermissions } from "utils/query-keys";
-import { getPermissions } from "api/admin";
+import { getPermissions, savePermissions } from "api/admin";
 import { SecurityPermissions } from "services/security-provider";
 
 const RoleConfiguration = ({ item, onSave, onClose }) => {
   const { isSuccess, data } = useQuery([fetchPermissions, item.id], getPermissions);
-  console.log("role-edit", data);
   const [permissions, setPermissions] = useState([]);
   useEffect(() => {
     if (isSuccess) {
@@ -37,7 +37,7 @@ const RoleConfiguration = ({ item, onSave, onClose }) => {
       }));
       setPermissions(result);
     }
-  }, [isSuccess]);
+  }, [item, isSuccess]);
 
   const handleChange = (event) => {
     const perm = event.currentTarget.getAttribute("data-per");
@@ -47,9 +47,10 @@ const RoleConfiguration = ({ item, onSave, onClose }) => {
     setPermissions(result);
   };
 
-  const mutation = useMutation(() => {}, {
+  const mutation = useMutation(savePermissions, {
     onSuccess: () => {
       formik.resetForm();
+      queryClient.resetQueries(fetchPermissions);
       return onSave();
     },
   });
@@ -59,9 +60,6 @@ const RoleConfiguration = ({ item, onSave, onClose }) => {
       .string("Enter role name")
       .min(3, "Name should be of minimum 3 characters length")
       .required("Name is required"),
-    description: yup
-      .string("Enter role description")
-      .min(3, "Description should be of minimum 3 characters length"),
   });
 
   const formik = useFormik({
@@ -73,7 +71,17 @@ const RoleConfiguration = ({ item, onSave, onClose }) => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      mutation.mutate(values);
+      const result = permissions.map((item) => {
+        const perm =
+          (item[SecurityPermissions.View] && SecurityPermissions.View) |
+          (item[SecurityPermissions.Add] && SecurityPermissions.Add) |
+          (item[SecurityPermissions.Edit] && SecurityPermissions.Edit) |
+          (item[SecurityPermissions.Delete] && SecurityPermissions.Delete) |
+          (item[SecurityPermissions.Execute] && SecurityPermissions.Execute) |
+          (item[SecurityPermissions.Grant] && SecurityPermissions.Grant);
+        return { ...item, permissions: perm };
+      });
+      mutation.mutate(result);
     },
   });
 
@@ -122,6 +130,9 @@ const RoleConfiguration = ({ item, onSave, onClose }) => {
 
             <TextField
               fullWidth
+              inputProps={{
+                readOnly: true,
+              }}
               sx={{
                 "& .MuiInputBase-input": { width: "100% !important" },
               }}
@@ -136,6 +147,9 @@ const RoleConfiguration = ({ item, onSave, onClose }) => {
 
             <TextField
               fullWidth
+              inputProps={{
+                readOnly: true,
+              }}
               sx={{
                 "& .MuiOutlinedInput-input": { width: "100%!important" },
               }}
