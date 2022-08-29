@@ -20,7 +20,7 @@ const RoleConfiguration = ({ item, onSave, onClose }) => {
   const mutation = useMutation(savePermissions, {
     onSuccess: () => {
       formik.resetForm();
-      queryClient.resetQueries(fetchPermissions);
+      queryClient.resetQueries(fetchPermissions, { exact: false });
       return onSave();
     },
   });
