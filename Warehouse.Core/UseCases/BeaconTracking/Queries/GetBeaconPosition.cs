@@ -54,9 +54,9 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
             _settings = settings;
         }
 
-        public async Task<ICollection<BeaconPosition>> Handle(GetBeaconPosition request, CancellationToken cancellationToken)
+        public async Task<ICollection<BeaconPosition>> Handle(GetBeaconPosition request,
+            CancellationToken cancellationToken)
         {
-            var result = new List<BeaconPosition>();
             var providerId = _userContext.User.Identity.GetProviderId();
             var site = await _sites.FirstOrDefaultAsync(s => s.Id == request.SiteId && s.ProviderId == providerId,
                 cancellationToken);
@@ -65,29 +65,25 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
             var settings = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<IpsSettings>(), async options =>
             {
                 options.AbsoluteExpirationRelativeToNow = TimeSpans.FiveMinutes;
-                return await _settings.SingleOrDefaultAsync(e => true, cancellationToken: cancellationToken) ?? new IpsSettings();
+                return await _settings.SingleOrDefaultAsync(e => true, cancellationToken: cancellationToken) ??
+                       new IpsSettings();
             });
 
             var gSite = await GetGenericSiteAsync(request.MacAddress, _payloads, site, settings);
             gSite.CalcBeaconsPosition();
 
-            foreach (var gw in gSite.Gateways)
-            {
-                foreach (var b in gw.Beacons)
-                {
-                    result.Add(new BeaconPosition
+            return (from gw in gSite.Gateways
+                    from b in gw.Beacons
+                    select new BeaconPosition
                     {
                         GatewayId = gw.MacAddress,
                         MAC = b.MacAddress,
                         Radius = b.Radius,
-                    });
-                }
-            }
-
-            return result;
+                    }).ToList();
         }
 
-        private static async Task<GenericSite> GetGenericSiteAsync(MacAddress macAddress, IReadOnlyRepository<GatewayPayload> repository, WarehouseSiteEntity site, IpsSettings settings)
+        private static async Task<GenericSite> GetGenericSiteAsync(MacAddress macAddress,
+            IReadOnlyRepository<GatewayPayload> repository, WarehouseSiteEntity site, IpsSettings settings)
         {
             var gSite = new GenericSite(site.Id)
             {
@@ -104,13 +100,14 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
                 var payload = await repository.SingleOrDefaultAsync(g => g.MacAddress == gateway.MacAddress);
                 if (payload == null) continue;
 
-                var pGauge = payload.Beacons.FirstOrDefault(p => p.MacAddress.Equals(gauge.MAC, StringComparison.Ordinal));
+                var pGauge =
+                    payload.Beacons.FirstOrDefault(p => p.MacAddress.Equals(gauge.MAC, StringComparison.Ordinal));
                 if (pGauge == null) continue;
 
                 var gGateway = new GenericGateway(gateway.MacAddress)
                 {
                     EnvFactor = gateway.EnvFactor,
-                    Location = (LocationAnchor)gateway.Location,
+                    Location = (LocationAnchor) gateway.Location,
                     Gauge = new TelemetryBeacon(gauge.MAC, pGauge.RSSIs, gauge.TxPower, gauge.Radius)
                     {
                         Battery = pGauge.Battery,
