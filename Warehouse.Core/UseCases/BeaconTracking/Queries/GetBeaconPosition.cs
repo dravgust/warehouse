@@ -62,28 +62,25 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
                 cancellationToken);
             if (site?.Gateways == null) return null;
 
-            foreach (var siteGateway in site.Gateways)
+            var settings = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<IpsSettings>(), async options =>
             {
-                var settings = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<IpsSettings>(), async options =>
-                {
-                    options.AbsoluteExpirationRelativeToNow = TimeSpans.FiveMinutes;
-                    return await _settings.SingleOrDefaultAsync(e => true, cancellationToken: cancellationToken) ?? new IpsSettings();
-                });
+                options.AbsoluteExpirationRelativeToNow = TimeSpans.FiveMinutes;
+                return await _settings.SingleOrDefaultAsync(e => true, cancellationToken: cancellationToken) ?? new IpsSettings();
+            });
 
-                var gSite = await GetGenericSiteAsync(request.MacAddress, _payloads, site, settings);
-                gSite.CalcBeaconsPosition();
+            var gSite = await GetGenericSiteAsync(request.MacAddress, _payloads, site, settings);
+            gSite.CalcBeaconsPosition();
 
-                foreach (var gw in gSite.Gateways)
+            foreach (var gw in gSite.Gateways)
+            {
+                foreach (var b in gw.Beacons)
                 {
-                    foreach (var b in gw.Beacons)
+                    result.Add(new BeaconPosition
                     {
-                        result.Add(new BeaconPosition
-                        {
-                            GatewayId = gw.MacAddress,
-                            MAC = b.MacAddress,
-                            Radius = b.Radius,
-                        });
-                    }
+                        GatewayId = gw.MacAddress,
+                        MAC = b.MacAddress,
+                        Radius = b.Radius,
+                    });
                 }
             }
 
