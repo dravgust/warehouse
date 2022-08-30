@@ -39,6 +39,12 @@ namespace Warehouse.API.Controllers.API
             return Ok(await _queryBus.Send(new GetBeaconTelemetry(id), token));
         }
 
+        [HttpGet("beacon/position/{id}")]
+        public async Task<IActionResult> GetBeaconPosition([FromRoute]string id, [FromQuery]string siteId, CancellationToken token)
+        {
+            return Ok(await _queryBus.Send(new GetBeaconPosition(siteId, id), token));
+        }
+
         [HttpGet("beacon/charts/{id}")]
         public async Task<IActionResult> GetBeaconTelemetry(string id, CancellationToken token) {
             return Ok(await _queryBus.Send(new GetBeaconCharts(id), token));

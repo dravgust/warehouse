@@ -4,97 +4,65 @@ import SuiBox from "components/SuiBox";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import SuiTypography from "components/SuiTypography";
-import { styled } from "@mui/material/styles";
-import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
-import MuiAccordion from "@mui/material/Accordion";
-import MuiAccordionSummary from "@mui/material/AccordionSummary";
-import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import { FixedSizeList } from "react-window";
 import ListItemButton from "@mui/material/ListItemButton";
-import SensorsOutlinedIcon from "@mui/icons-material/SensorsOutlined";
-import TabOutlinedIcon from "@mui/icons-material/TabOutlined";
+import QrCode2SharpIcon from "@mui/icons-material/QrCode2Sharp";
 import SuiInput from "components/SuiInput";
 import { fetchSitesInfo } from "utils/query-keys";
-import { getSitesInfo } from "services/warehouse-service";
+import { getSitesInfo } from "api/warehouse";
 import { useSoftUIController } from "../../../../context";
-
-const Accordion = styled((props) => (
-  <MuiAccordion disableGutters elevation={0} square {...props} />
-))(({ theme }) => ({
-  borderTop: `1px solid ${theme.borders.borderColor}`,
-  "&:not(:last-child)": {
-    borderBottom: 0,
-  },
-  "&:first-of-type": {
-    borderTop: 0,
-  },
-  "&:before": {
-    display: "none",
-  },
-}));
-
-const AccordionSummary = styled((props) => (
-  <MuiAccordionSummary
-    expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: "0.9rem" }} />}
-    {...props}
-  />
-))(({ theme }) => ({
-  backgroundColor: "transparent",
-  //flexDirection: 'row-reverse',
-  "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
-    transform: "rotate(90deg)",
-  },
-  "& .MuiAccordionSummary-content": {
-    //marginLeft: theme.spacing(1),
-  },
-}));
-
-const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
-  padding: theme.spacing(2),
-  borderTop: "1px solid rgba(0, 0, 0, .125)",
-  backgroundColor: "aliceblue",
-  // backgroundColor: '#f8f9fa'
-}));
-
-function Site({ site, count }) {
-  return (
-    <SuiBox display="flex" alignItems="center" px={1} py={0.5}>
-      <SuiBox mr={2}>
-        <TabOutlinedIcon fontSize="large" />
-      </SuiBox>
-      <SuiBox display="flex" flexDirection="column">
-        <SuiTypography variant="button" fontWeight="medium" color={"info"}>
-          {site.name || "Undefined"}
-        </SuiTypography>
-        <SuiTypography variant="caption" color="secondary">
-          {count}&nbsp;items
-        </SuiTypography>
-      </SuiBox>
-    </SuiBox>
-  );
-}
+import { Accordion, AccordionSummary, AccordionDetails } from "./components/accordion";
+import Site from "./components/site";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import { useNavigate } from "react-router-dom";
 
 export default function SiteInfo({
   searchTerm = "",
-  selectedSite = { in: [] },
+  selectedSite = { products: [] },
   onSiteSelect = () => {},
-  selectedBeacon = "",
-  onBeaconSelect = () => {},
+  selectedProduct = "",
+  onProductSelect = () => {},
 }) {
   const [pattern, setPattern] = useState("");
-  const onSearchProduct = (productItem) => setPattern(productItem);
-  const [controller, dispatch] = useSoftUIController();
+  const [controller] = useSoftUIController();
+  const [reload, updateReloadState] = useState(null);
+  const [expanded, setExpanded] = React.useState("");
+  const navigate = useNavigate();
   const { direction } = controller;
+
+  const onSearchProduct = (productItem) => setPattern(productItem);
+  const forceUpdate = () => {
+    setExpanded("");
+    onProductSelect(null);
+    onSiteSelect(null);
+    updateReloadState(Date.now());
+  };
+  const handleChange = (panel, row) => (event, newExpanded) => {
+    setExpanded(newExpanded ? panel : false);
+    setPattern("");
+    onProductSelect(null);
+    onSiteSelect(row);
+  };
+
+  const {
+    isLoading,
+    error,
+    data: response,
+    isSuccess,
+  } = useQuery([fetchSitesInfo, reload], getSitesInfo);
+
+  useEffect(() => {
+    selectedSite && setExpanded(`panel_${selectedSite.id}`);
+  }, [isSuccess]);
 
   let assets =
     (selectedSite &&
-      selectedSite.in.filter((b) => {
+      selectedSite.products.filter((b) => {
         return Boolean(
-          !pattern ||
-            b.beacon.macAddress.toLocaleUpperCase().indexOf(pattern.toLocaleUpperCase()) > -1
+          !pattern || b.name.toLocaleUpperCase().indexOf(pattern.toLocaleUpperCase()) > -1
         );
       })) ||
     [];
@@ -105,74 +73,31 @@ export default function SiteInfo({
       style={style}
       component="div"
       disablePadding
-      onClick={() => onBeaconSelect(assets[index].beacon)}
+      onClick={() => onProductSelect(assets[index])}
       sx={{
         borderBottom: ({ borders: { borderWidth, borderColor } }) =>
           `${borderWidth[1]} solid ${borderColor}`,
       }}
-      selected={assets[index].beacon.macAddress === selectedBeacon.macAddress}
+      selected={selectedProduct && assets[index].id === selectedProduct.id}
       secondaryAction={
-        <SuiTypography
-          variant="h6"
-          fontWeight="medium"
-          color={assets[index].product.name ? "primary" : "secondary"}
-          mx={2}
-        >
-          {assets[index].product.name || "n/a"}
-        </SuiTypography>
+        <IconButton edge="start" onClick={() => navigate("/warehouse")}>
+          <OpenInNewIcon />
+        </IconButton>
       }
     >
       <ListItemButton dir={direction}>
         <ListItemIcon>
-          <SensorsOutlinedIcon />
+          <QrCode2SharpIcon fontSize="large" />
         </ListItemIcon>
         <ListItemText
-          primaryTypographyProps={{ color: assets[index].beacon.name ? "dark" : "secondary" }}
-          primary={assets[index].beacon.name || "n/a"}
-          secondary={
-            <React.Fragment>
-              <SuiTypography
-                sx={{ display: "inline" }}
-                component="span"
-                variant="caption"
-                color="secondary"
-              >
-                {assets[index].beacon.macAddress}
-              </SuiTypography>
-            </React.Fragment>
-          }
+          primaryTypographyProps={{ color: "#cb0c9f", fontSize: "0.875rem" }}
+          primary={assets[index].name}
+          secondaryTypographyProps={{ color: "#8392ab", fontSize: "0.75rem" }}
+          secondary={`${assets[index].beacons.length} items`}
         />
       </ListItemButton>
     </ListItem>
   );
-  const [reload, updateReloadState] = useState(null);
-  const forceUpdate = () => {
-    setExpanded("");
-    onBeaconSelect("");
-    onSiteSelect(null);
-    updateReloadState(Date.now());
-  };
-  const {
-    isLoading,
-    error,
-    data: response,
-    isSuccess,
-  } = useQuery([fetchSitesInfo, reload], getSitesInfo);
-  const [expanded, setExpanded] = React.useState("");
-  const handleChange = (panel, row) => (event, newExpanded) => {
-    setExpanded(newExpanded ? panel : false);
-    setPattern("");
-    onBeaconSelect("");
-    onSiteSelect(row);
-  };
-
-  useEffect(() => {
-    const element = document.querySelector("#panel_0_header");
-    console.log(element);
-    if (element) {
-      element.click();
-    }
-  }, [isSuccess]);
 
   return (
     <Card>
@@ -194,14 +119,14 @@ export default function SiteInfo({
         {isSuccess &&
           response.map((item, index) => (
             <Accordion
-              expanded={expanded === `panel_${index}`}
-              onChange={handleChange(`panel_${index}`, item)}
+              expanded={expanded === `panel_${item.id}`}
+              onChange={handleChange(`panel_${item.id}`, item)}
               key={`site_${index}`}
               TransitionProps={{ unmountOnExit: true }}
             >
               <AccordionSummary
-                aria-controls={`panel_${index}_content`}
-                id={`panel_${index}_header`}
+                aria-controls={`panel_${item.id}_content`}
+                id={`panel_${item.id}_header`}
                 sx={{ "& .MuiAccordionSummary-content": { margin: "7px 0" } }}
               >
                 <SuiBox
@@ -210,7 +135,7 @@ export default function SiteInfo({
                   alignItems="center"
                   style={{ width: "100%" }}
                 >
-                  <Site site={item.site} count={item.in.length}></Site>
+                  <Site {...item}></Site>
                 </SuiBox>
               </AccordionSummary>
               <AccordionDetails>

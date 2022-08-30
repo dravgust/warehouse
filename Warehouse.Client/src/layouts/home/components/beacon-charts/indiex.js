@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "react-query";
 import { fetchBeaconTelemetryCharts } from "../../../../utils/query-keys";
-import { getBeaconTelemetryCharts } from "../../../../services/warehouse-service";
+import { getBeaconTelemetryCharts } from "../../../../api/warehouse";
 import PropTypes from "prop-types";
 import { format } from "date-fns";
 import { Card, Icon, Stack } from "@mui/material";

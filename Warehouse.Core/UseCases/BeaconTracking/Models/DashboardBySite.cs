@@ -2,13 +2,21 @@
 {
     public class DashboardBySite
     {
-        public SiteInfo Site { set; get; }
-        public ICollection<DashboardBySiteItem> In { set; get; }
-        public ICollection<DashboardBySiteItem> Out { set; get; }
+        public string Id { set; get; }
+        public string Name { set; get; }
+        public ICollection<ProductItem> Products { set; get; }
     }
-    public class DashboardBySiteItem
+
+    public class ProductItem
     {
-        public ProductInfo Product { set; get; }
-        public BeaconInfo Beacon { set; get; }
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public ICollection<BeaconItem> Beacons { set; get; }
+    }
+
+    public class BeaconItem
+    {
+        public string MacAddress { set; get; }
+        public string Name { set; get; }
     }
 }

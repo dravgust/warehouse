@@ -9,17 +9,19 @@ import { formatDistance } from "date-fns";
 import beaconIcon from "assets/images/hotspot-tower.png";
 import SensorsSharpIcon from "@mui/icons-material/SensorsSharp";
 import { fetchAssets } from "../../../../utils/query-keys";
-import { getAssets } from "../../../../services/warehouse-service";
+import { getAssets } from "../../../../api/warehouse";
+import SuiInput from "../../../../components/SuiInput";
 
-function Assets({ searchTerm = "", selectedItem, onRowSelect = () => {} }) {
+function Assets({ selectedItem, onRowSelect = () => {} }) {
   const [page, setPage] = useState(1);
+  const [pattern, setPattern] = useState("");
+  const onSearchBeacon = (beacon) => setPattern(beacon);
   const {
     isLoading,
     error,
     data: response,
     isSuccess,
-  } = useQuery([fetchAssets, page, searchTerm], getAssets);
-
+  } = useQuery([fetchAssets, page, pattern], getAssets);
   function Beacon({ name, product }) {
     return (
       <SuiBox display="flex" alignItems="center" px={1} py={0.5}>
@@ -88,6 +90,17 @@ function Assets({ searchTerm = "", selectedItem, onRowSelect = () => {} }) {
           },
         }}
       >
+        <SuiBox px={2}>
+          <SuiInput
+            className="search-products"
+            placeholder="Type here..."
+            icon={{
+              component: "search",
+              direction: "left",
+            }}
+            onChange={(event) => onSearchBeacon(event.target.value)}
+          />
+        </SuiBox>
         {isSuccess && (
           <Table
             columns={[

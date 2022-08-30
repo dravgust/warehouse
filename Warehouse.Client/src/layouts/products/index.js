@@ -9,7 +9,7 @@ import ProductList from "./components/product-list";
 import SelectedItem from "./components/selected-item";
 import { Zoom } from "@mui/material";
 import { fetchProductMetadata } from "../../utils/query-keys";
-import { getProductMetadata } from "../../services/warehouse-service";
+import { getProductMetadata } from "../../api/warehouse";
 
 function Products() {
   const [searchTerm, setSearchTerm] = useState("");

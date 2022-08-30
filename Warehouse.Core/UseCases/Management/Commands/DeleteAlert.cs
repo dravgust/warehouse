@@ -9,7 +9,7 @@ namespace Warehouse.Core.UseCases.Management.Commands
     public class DeleteAlert : ICommand
     {
         public string Id { get; set; }
-        public class AlertRequestValidator : AbstractValidator<AlertEntity>
+        public class AlertRequestValidator : AbstractValidator<DeleteAlert>
         {
             public AlertRequestValidator()
             {

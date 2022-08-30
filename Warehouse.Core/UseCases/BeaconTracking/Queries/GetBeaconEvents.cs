@@ -81,7 +81,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
                 var productItem = await _beacons.FirstOrDefaultAsync(q => q.Id.Equals(e.MacAddress), cancellationToken);
                 var dto = new BeaconEventDto
                 {
-                    Beacon = new BeaconInfo
+                    Beacon = new BeaconItem
                     {
                         MacAddress = e.MacAddress,
                         Name = productItem?.Name

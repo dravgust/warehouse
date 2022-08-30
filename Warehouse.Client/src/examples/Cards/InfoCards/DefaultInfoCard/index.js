@@ -25,7 +25,9 @@ import Icon from "@mui/material/Icon";
 import SuiBox from "components/SuiBox";
 import SuiTypography from "components/SuiTypography";
 
-function DefaultInfoCard({ color, icon, title, description, value }) {
+import { ScaleLoader } from "react-spinners";
+
+function DefaultInfoCard({ color, icon, title, description, value, isLoading }) {
   return (
     <Card>
       <SuiBox p={2} mx={3} display="flex" justifyContent="center">
@@ -59,6 +61,11 @@ function DefaultInfoCard({ color, icon, title, description, value }) {
             {value}
           </SuiTypography>
         )}
+        <ScaleLoader
+          loading={isLoading}
+          color={"#17c1e8"}
+          cssOverride={{ position: "absolute", display: "inherit", top: "78%", left: "42%" }}
+        />
       </SuiBox>
     </Card>
   );
@@ -69,6 +76,7 @@ DefaultInfoCard.defaultProps = {
   color: "info",
   value: "",
   description: "",
+  isLoading: false,
 };
 
 // Typechecking props for the DefaultInfoCard
@@ -78,6 +86,7 @@ DefaultInfoCard.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  isLoading: PropTypes.bool,
 };
 
 export default DefaultInfoCard;

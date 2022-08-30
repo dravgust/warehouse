@@ -3,14 +3,11 @@ import { queryClient } from "context/app.context";
 import * as auth from "services/auth-provider";
 import { client } from "utils/api-client";
 import { useAsync } from "utils/hooks";
-import { useStoreController, setResources } from "./store.context";
-//import {FullPageSpinner, FullPageErrorFallback} from 'components/lib'
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
+import { useResources, setResources } from "./resources.context";
+import FullPageLoadingFallback from "../components/FullPageLoadingFallback";
 
 async function bootstrapAppData(dispatch) {
   let user = null;
-
   const token = await auth.getToken();
   if (token) {
     const data = await client("account/bootstrap", { token });
@@ -42,7 +39,7 @@ function AuthProvider(props) {
     setData,
   } = useAsync();
 
-  const [, dispatch] = useStoreController();
+  const [, dispatch] = useResources();
 
   React.useEffect(() => {
     const appDataPromise = bootstrapAppData(dispatch);
@@ -70,11 +67,7 @@ function AuthProvider(props) {
   );
 
   if (isLoading || isIdle) {
-    return (
-      <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={true}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
-    );
+    return <FullPageLoadingFallback />;
   }
 
   if (isError) {

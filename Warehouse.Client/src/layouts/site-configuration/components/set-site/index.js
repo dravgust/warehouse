@@ -7,7 +7,7 @@ import SuiButton from "components/SuiButton";
 import { useMutation } from "react-query";
 import * as yup from "yup";
 import PropTypes from "prop-types";
-import { setSite } from "services/warehouse-service";
+import { setSite } from "api/warehouse";
 
 export default function SetSite({ item, onClose, onSave = () => {} }) {
   const mutation = useMutation(setSite, {

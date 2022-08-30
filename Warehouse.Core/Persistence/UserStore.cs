@@ -15,7 +15,7 @@ namespace Warehouse.Core.Persistence
 
         public async Task<List<SecurityRoleEntity>> GetRolesAsync(IEnumerable<object> providers, CancellationToken cancellationToken)
         {
-            var rl = await EmbeddedRolesAsync(cancellationToken);
+            var rl = await GetEmbeddedRolesAsync(cancellationToken);
             var roles = await _context.Set<SecurityRoleEntity>()
                 .Where(r => r.ProviderId != null && providers.Contains(r.ProviderId.Value))
                 .ToListAsync(cancellationToken: cancellationToken);
@@ -23,13 +23,13 @@ namespace Warehouse.Core.Persistence
             return rl;
         }
 
-        public Task<List<SecurityRoleEntity>> EmbeddedRolesAsync(CancellationToken cancellationToken)
+        public Task<List<SecurityRoleEntity>> GetEmbeddedRolesAsync(CancellationToken cancellationToken)
         {
             return _context.Set<SecurityRoleEntity>().Where(r => r.ProviderId == null)
                 .ToListAsync(cancellationToken: cancellationToken);
         }
 
-        public Task<SecurityRoleEntity> GetRoleAsync(string roleId, CancellationToken cancellationToken)
+        public Task<SecurityRoleEntity> FindRoleByIdAsync(string roleId, CancellationToken cancellationToken)
         {
             return _context.Set<SecurityRoleEntity>()
                 .AsTracking()
@@ -42,7 +42,7 @@ namespace Warehouse.Core.Persistence
                 .ToListAsync(cancellationToken: cancellationToken);
         }
 
-        public Task<SecurityRolePermissionsEntity> GetRolePermissionAsync(string roleId, CancellationToken cancellationToken)
+        public Task<SecurityRolePermissionsEntity> FindRolePermissionsByIdAsync(string roleId, CancellationToken cancellationToken)
         {
             return _context.Set<SecurityRolePermissionsEntity>()
                 .AsTracking()
@@ -119,19 +119,19 @@ namespace Warehouse.Core.Persistence
                     .SingleOrDefaultAsync(u => u.Username == username, cancellationToken: cancellationToken);
         }
 
-        public async Task UpdateAsync(IUser user, CancellationToken cancellationToken)
+        public async Task UpdateAsync(UserEntity user, CancellationToken cancellationToken)
         {
             //_context.Update(user);
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task UpdateAsync(SecurityRoleEntity entity, CancellationToken cancellationToken)
+        public async Task UpdateRoleAsync(SecurityRoleEntity entity, CancellationToken cancellationToken)
         {
             //_context.Update(entity);
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task UpdateAsync(SecurityRolePermissionsEntity entity, CancellationToken cancellationToken)
+        public async Task UpdateRolePermissionsAsync(SecurityRolePermissionsEntity entity, CancellationToken cancellationToken)
         {
             //_context.Update(entity);
             await _context.SaveChangesAsync(cancellationToken);

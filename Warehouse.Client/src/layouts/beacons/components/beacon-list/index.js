@@ -8,7 +8,7 @@ import { useQuery } from "react-query";
 import SuiAvatar from "components/SuiAvatar";
 import beaconIcon from "assets/images/hotspot-tower.png";
 import { fetchBeacons } from "utils/query-keys";
-import { getBeacons } from "services/warehouse-service";
+import { getBeacons } from "api/warehouse";
 
 const BeaconList = ({
   searchTerm,

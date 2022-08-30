@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Linq;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Queries;
 using Warehouse.Core.Entities.Models;
@@ -13,20 +13,20 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 
     internal class HandleGetDashboardByProduct : IQueryHandler<GetDashboardByProduct, IEnumerable<DashboardByProduct>>
     {
-        private readonly IReadOnlyRepository<BeaconReceivedEntity> _receivedBeacons;
+        private readonly IReadOnlyRepository<IndoorPositionStatusEntity> _statuses;
         private readonly IReadOnlyRepository<WarehouseSiteEntity> _sites;
         private readonly IReadOnlyRepository<BeaconEntity> _beacons;
         private readonly IReadOnlyRepository<ProductEntity> _products;
         private readonly IUserContext _userContext;
 
         public HandleGetDashboardByProduct(
-            IReadOnlyRepository<BeaconReceivedEntity> receivedBeacons,
+            IReadOnlyRepository<IndoorPositionStatusEntity> statuses,
             IReadOnlyRepository<WarehouseSiteEntity> sites,
             IReadOnlyRepository<BeaconEntity> beacons,
             IReadOnlyRepository<ProductEntity> products,
             IUserContext userContext)
         {
-            _receivedBeacons = receivedBeacons;
+            _statuses = statuses;
             _sites = sites;
             _beacons = beacons;
             _products = products;
@@ -37,71 +37,60 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
         {
             var result = new List<DashboardByProduct>();
 
+            var items = new Dictionary<(string, string), SiteItem>();
             var providerId = _userContext.User.Identity.GetProviderId();
-            var sites = new Dictionary<string, SiteInfo>();
-            var items = new Dictionary<string, List<DashboardByProductItem>>();
-            var beacons = await _beacons.ListAsync(b => b.ProductId != null && b.ProviderId == providerId, cancellationToken);
-            foreach (var beacon in beacons)
+            var sites = await _sites.ListAsync(s => s.ProviderId == providerId, cancellationToken);
+            foreach (var site in sites)
             {
-                var item = new DashboardByProductItem
+                var status = await _statuses.FindAsync(site.Id, cancellationToken);
+                if (status != null)
                 {
-                    Beacon = new BeaconInfo
+                    foreach (var macAddress in status.In)
                     {
-                        MacAddress = beacon.MacAddress,
-                        Name = beacon.Name
-                    },
-                };
-
-                SiteInfo siteInfo = null;
-                var receivedBeacon = await _receivedBeacons.FindAsync(beacon.MacAddress, cancellationToken);
-                if (receivedBeacon != null)
-                {
-                    if (!string.IsNullOrEmpty(receivedBeacon.SourceId))
-                    {
-                        if (!sites.TryGetValue(receivedBeacon.SourceId, out siteInfo))
+                        var beacon = await _beacons
+                            .FirstOrDefaultAsync(q => q.Id.Equals(macAddress), cancellationToken);
+                        if (beacon != null && !string.IsNullOrEmpty(beacon.ProductId))
                         {
-                            siteInfo = new SiteInfo
+                            if (!items.TryGetValue((beacon.ProductId, site.Id), out var item))
                             {
-                                Id = receivedBeacon.SourceId,
-                            };
-                            var site = await _sites.FindAsync(receivedBeacon.SourceId, cancellationToken);
-                            if (site != null)
-                            {
-                                siteInfo.Name = site.Name;
+                                item = new SiteItem
+                                {
+                                    Id = site.Id,
+                                    Name = site.Name,
+                                    Beacons = new List<BeaconItem>()
+                                };
+                                items.Add((beacon.ProductId, site.Id), item);
                             }
-                            sites.Add(receivedBeacon.SourceId, siteInfo);
+
+                            item.Beacons.Add(new BeaconItem
+                            {
+                                MacAddress = beacon.MacAddress,
+                                Name = beacon.Name
+                            });
                         }
                     }
                 }
-                item.Site = siteInfo ?? new SiteInfo
-                {
-                    Id = string.Empty,
-                };
-
-                if (!items.ContainsKey(beacon.ProductId))
-                    items.Add(beacon.ProductId, new List<DashboardByProductItem> { item });
-                else
-                {
-                    items[beacon.ProductId].Add(item);
-                }
             }
 
-            var products = await _products.ListAsync(p => p.ProviderId == providerId, cancellationToken);
-            foreach (var product in products)
+
+            foreach (var siteItemGroup in items.GroupBy(s => s.Key.Item1))
             {
-                var dashboardByProduct = new DashboardByProduct
+                var product = await _products.FirstOrDefaultAsync(p => p.Id == siteItemGroup.Key, cancellationToken);
+                if (product != null)
                 {
-                    Product = new ProductInfo
+                    var dashboardByProduct = new DashboardByProduct
                     {
                         Id = product.Id,
                         Name = product.Name,
-                    },
-                    Beacons = !items.ContainsKey(product.Id)
-                        ? new List<DashboardByProductItem>()
-                        : items[product.Id]
-                };
-
-                result.Add(dashboardByProduct);
+                        Sites = new List<SiteItem>()
+                    };
+                    foreach (var groupValue in siteItemGroup)
+                    {
+                        dashboardByProduct.Sites.Add(groupValue.Value);
+                    }
+                    
+                    result.Add(dashboardByProduct);
+                }
             }
 
             return result;

@@ -28,6 +28,7 @@ namespace Vayosoft.IPS.Domain
             foreach (var b in _inBound) yield return b;
             foreach (var b in _outBound) yield return b;
         }
+
         public GenericSite(string id)
         {
             if (string.IsNullOrEmpty(id))

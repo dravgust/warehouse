@@ -1,14 +1,7 @@
 using Vayosoft.Core.Caching;
 using Vayosoft.Core.Persistence;
-using Vayosoft.Core.SharedKernel.Aggregates;
-using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.Utilities;
-using Vayosoft.Data.MongoDB;
-using Vayosoft.IPS;
-using Vayosoft.IPS.Configuration;
 using Vayosoft.IPS.Domain;
-using Vayosoft.IPS.Filters;
-using Vayosoft.IPS.Methods;
 using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Entities.Models.Payloads;
@@ -333,34 +326,6 @@ namespace Warehouse.Host
             }
 
             return gSite;
-        }
-    }
-
-    [CollectionName("dolav_settings")]
-    public class IpsSettings : EntityBase<string>
-    {
-        public int CalcMethod { set; get; }
-        public int BufferLength { set; get; }
-        public SmoothAlgorithm SmoothAlgorithm { set; get; }
-        public SelectMethod SelectMethod { set; get; }
-
-        public CalculationSettings GetCalculationSettings()
-        {
-            return new CalculationSettings
-            {
-                CalcMethod = CalcMethod switch
-                {
-                    1 => new CalcMethod1(),
-                    _ => new CalcMethod2(),
-                },
-                RssiFilter = SmoothAlgorithm switch
-                {
-                    SmoothAlgorithm.Kalman => typeof(KalmanRssiFilter),
-                    SmoothAlgorithm.Feedback => typeof(FeedbackRssiFilter),
-                    SmoothAlgorithm.Custom => typeof(CustomRssiFilter),
-                    _ => typeof(CustomRssiFilter)
-                }
-            };
         }
     }
 }

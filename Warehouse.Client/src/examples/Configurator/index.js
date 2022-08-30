@@ -98,7 +98,7 @@ function Configurator() {
         px={3}
       >
         <SuiBox>
-          <SuiTypography variant="h5">Soft UI Configurator</SuiTypography>
+          <SuiTypography variant="h5">IPS UI Configurator</SuiTypography>
           <SuiTypography variant="body2" color="text">
             See our dashboard options.
           </SuiTypography>
@@ -201,7 +201,7 @@ function Configurator() {
 
         <Divider />
 
-        <SuiBox mt={3} mb={2}>
+        {/*<SuiBox mt={3} mb={2}>
           <SuiBox mb={2}>
             <SuiButton
               component={Link}
@@ -226,8 +226,8 @@ function Configurator() {
           >
             view documentation
           </SuiButton>
-        </SuiBox>
-        <SuiBox display="flex" justifyContent="center">
+        </SuiBox>*/}
+        {/*<SuiBox display="flex" justifyContent="center">
           <GitHubButton
             href="https://github.com/creativetimofficial/soft-ui-dashboard-react"
             data-icon="octicon-star"
@@ -237,8 +237,8 @@ function Configurator() {
           >
             Star
           </GitHubButton>
-        </SuiBox>
-        <SuiBox mt={3} textAlign="center">
+        </SuiBox>*/}
+        {/* <SuiBox mt={3} textAlign="center">
           <SuiBox mb={0.5}>
             <SuiTypography variant="h6">Thank you for sharing!</SuiTypography>
           </SuiBox>
@@ -267,7 +267,7 @@ function Configurator() {
               &nbsp; Share
             </SuiButton>
           </SuiBox>
-        </SuiBox>
+        </SuiBox>*/}
       </SuiBox>
     </ConfiguratorRoot>
   );

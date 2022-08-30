@@ -7,7 +7,7 @@ import { Icon, TextField, Box } from "@mui/material";
 import SuiAlert from "components/SuiAlert";
 import SuiButton from "components/SuiButton";
 import DeletePromt from "./delete-promt";
-import { deleteProduct, setProduct } from "services/warehouse-service";
+import { deleteProduct, setProduct } from "api/warehouse";
 
 const validationSchema = yup.object({
   name: yup

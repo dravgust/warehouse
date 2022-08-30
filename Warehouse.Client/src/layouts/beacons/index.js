@@ -8,7 +8,7 @@ import BeaconList from "./components/beacon-list";
 import SelectedBeacon from "./components/selected-beacon";
 import { useQuery } from "react-query";
 import { fetchBeaconMetadata } from "utils/query-keys";
-import { getBeaconMetadata } from "services/warehouse-service";
+import { getBeaconMetadata } from "api/warehouse";
 
 const Beacons = () => {
   const [searchTerm, setSearchTerm] = useState("");
