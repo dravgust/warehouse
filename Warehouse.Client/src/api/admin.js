@@ -6,6 +6,11 @@ export const getUsers = async ({ queryKey }) => {
   return res?.data;
 };
 
+export const saveUser = async ({ user }) => {
+  const res = await axios.post(`users/set`, user);
+  return res?.data;
+};
+
 export const getRoles = async ({ queryKey }) => {
   const [_key] = queryKey;
   const res = await axios.get(`security/roles`);
