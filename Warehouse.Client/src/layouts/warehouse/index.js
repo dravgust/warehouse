@@ -30,7 +30,6 @@ const Warehouse = () => {
     onBeaconSelect(null);
     setSite(dispatch, item);
   };
-
   const resize = () => {
     if (!cardRef.current) return;
     setWidth(cardRef.current.offsetWidth);
@@ -51,7 +50,6 @@ const Warehouse = () => {
       enabled: Boolean(currentSite),
     }
   );
-
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -107,7 +105,12 @@ const Warehouse = () => {
               <Grid item xs={12} md={12} lg={8} xl={8}>
                 <SuiBox ref={cardRef} sx={{ width: "auto", height: "60vh" }}>
                   {cardRef.current && isSuccess && (
-                    <CanvasSite width={width} height={height} site={response} />
+                    <CanvasSite
+                      width={width}
+                      height={height}
+                      site={response}
+                      beacon={selectedBeacon}
+                    />
                   )}
                 </SuiBox>
               </Grid>
