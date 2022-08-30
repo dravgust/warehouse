@@ -12,9 +12,44 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import { useTheme } from "@mui/material/styles";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import Chip from "@mui/material/Chip";
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+const roles = ["Support", "Administrator", "Supervisor"];
+
+function getStyles(name, userRoles, theme) {
+  return {
+    fontWeight:
+      userRoles.indexOf(name) === -1
+        ? theme.typography.fontWeightRegular
+        : theme.typography.fontWeightMedium,
+    margin: "5px",
+  };
+}
 
 const UserEdit = ({ item, onSave, onClose }) => {
-  console.log("user", item);
+  const theme = useTheme();
+  const [userRoles, setUserRoles] = React.useState([]);
+
+  const handleChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setUserRoles(typeof value === "string" ? value.split(",") : value);
+  };
+
   const mutation = useMutation(() => {}, {
     onSuccess: () => {
       formik.resetForm();
@@ -35,7 +70,9 @@ const UserEdit = ({ item, onSave, onClose }) => {
     initialValues: {
       id: item ? item.id : "",
       username: item ? item.username : "",
+      password: item ? item.password : "",
       email: item ? item.email : "",
+      phone: item ? item.phone : "",
       type: item ? item.type : "",
       providerId: item ? item.providerId : "",
     },
@@ -101,6 +138,22 @@ const UserEdit = ({ item, onSave, onClose }) => {
               error={formik.touched.username && Boolean(formik.errors.username)}
               helperText={formik.touched.username && formik.errors.username}
             />
+
+            <TextField
+              fullWidth
+              sx={{
+                "& .MuiInputBase-input": { width: "100% !important" },
+              }}
+              id="password"
+              name="password"
+              label="Password"
+              type="password"
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              error={formik.touched.password && Boolean(formik.errors.password)}
+              helperText={formik.touched.password && formik.errors.password}
+            />
+
             <TextField
               fullWidth
               sx={{
@@ -113,6 +166,21 @@ const UserEdit = ({ item, onSave, onClose }) => {
               onChange={formik.handleChange}
               error={formik.touched.email && Boolean(formik.errors.email)}
               helperText={formik.touched.email && formik.errors.email}
+            />
+
+            <TextField
+              fullWidth
+              sx={{
+                "& .MuiInputBase-input": { width: "100% !important" },
+              }}
+              id="phone"
+              name="phone"
+              label="Phone"
+              type="number"
+              value={formik.values.phone}
+              onChange={formik.handleChange}
+              error={formik.touched.phone && Boolean(formik.errors.phone)}
+              helperText={formik.touched.phone && formik.errors.phone}
             />
 
             <Stack direction="row" spacing={2} alignItems="center" p={1}>
@@ -156,6 +224,38 @@ const UserEdit = ({ item, onSave, onClose }) => {
                 </Select>
               </FormControl>
             </Stack>
+
+            <FormControl
+              fullWidth
+              sx={{
+                m: 1,
+                "& .MuiInputBase-input": { width: "100% !important", minHeight: "40px" },
+              }}
+            >
+              <InputLabel id="label_roles">User Roles</InputLabel>
+              <Select
+                labelId="label_roles"
+                id="select_roles"
+                multiple
+                value={userRoles}
+                onChange={handleChange}
+                input={<OutlinedInput id="input_roles" label="User Roles" />}
+                renderValue={(selected) => (
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, paddingTop: "5px" }}>
+                    {selected.map((value) => (
+                      <Chip key={value} label={value} />
+                    ))}
+                  </Box>
+                )}
+                MenuProps={MenuProps}
+              >
+                {roles.map((name) => (
+                  <MenuItem key={name} value={name} style={getStyles(name, userRoles, theme)}>
+                    {name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
             <Stack my={2} px={1} direction="row" spacing={1} justifyContent="end">
               <SuiButton color="success" variant="contained" type="submit">

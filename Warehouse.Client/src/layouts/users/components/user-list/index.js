@@ -13,7 +13,7 @@ import { getUsers } from "api/admin";
 import User from "./user";
 import Function from "./function";
 import { ButtonGroup, Icon } from "@mui/material";
-import SuiButton from "../../../../components/SuiButton";
+import SuiButton from "components/SuiButton";
 
 const UserList = ({ onEdit = () => {} }) => {
   const [page, setPage] = useState(1);
