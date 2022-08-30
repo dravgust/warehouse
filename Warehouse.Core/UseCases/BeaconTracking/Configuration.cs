@@ -26,6 +26,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking
                 .AddQueryHandler<GetDashboardBySite, IEnumerable<DashboardBySite>, HandleGetDashboardBySite>()
                 .AddQueryHandler<GetDashboardSite, DashboardBySite, HandleGetIpsStatus>()
                 .AddQueryHandler<GetBeaconCharts, BeaconCharts, HandleGetBeaconCharts>()
+                .AddQueryHandler<GetBeaconPosition, ICollection<BeaconPosition>, HandleGetBeaconPosition>()
                 .AddQueryHandler<GetBeaconTelemetry, BeaconTelemetryDto, HandleGetBeaconTelemetry>();
 
         private static IServiceCollection AddEventHandlers(this IServiceCollection services) =>

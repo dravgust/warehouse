@@ -7,17 +7,15 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import CanvasSite from "./conponents/canvas-site";
 import { setProduct, setSite, useStoreController, setBeacon } from "../../context/store.context";
-import { useAuth } from "../../context/auth.context";
 import { useQuery } from "react-query";
 import { fetchSiteById } from "../../utils/query-keys";
-import { getSiteById } from "../../services/warehouse-service";
+import { getSiteById } from "../../api/warehouse";
 import CanvasList from "./conponents/canvas-list/index0";
 import { useNavigate } from "react-router-dom";
 import CanvasListByProduct from "./conponents/canvas-list/list-by-product";
 
 const Warehouse = () => {
   const [controller, dispatch] = useStoreController();
-  const { user } = useAuth();
   const cardRef = useRef();
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
@@ -32,7 +30,6 @@ const Warehouse = () => {
     onBeaconSelect(null);
     setSite(dispatch, item);
   };
-
   const resize = () => {
     if (!cardRef.current) return;
     setWidth(cardRef.current.offsetWidth);
@@ -46,15 +43,13 @@ const Warehouse = () => {
     };
   }, [cardRef]);
   const navigate = useNavigate();
-  const {
-    isLoading,
-    error,
-    data: response,
-    isSuccess,
-  } = useQuery([fetchSiteById, currentSite], () => getSiteById(currentSite.id), {
-    enabled: Boolean(currentSite),
-  });
-
+  const { data: response, isSuccess } = useQuery(
+    [fetchSiteById, currentSite],
+    () => getSiteById(currentSite.id),
+    {
+      enabled: Boolean(currentSite),
+    }
+  );
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -110,7 +105,12 @@ const Warehouse = () => {
               <Grid item xs={12} md={12} lg={8} xl={8}>
                 <SuiBox ref={cardRef} sx={{ width: "auto", height: "60vh" }}>
                   {cardRef.current && isSuccess && (
-                    <CanvasSite width={width} height={height} site={response} />
+                    <CanvasSite
+                      width={width}
+                      height={height}
+                      site={response}
+                      beacon={selectedBeacon}
+                    />
                   )}
                 </SuiBox>
               </Grid>

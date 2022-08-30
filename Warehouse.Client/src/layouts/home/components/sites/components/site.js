@@ -20,4 +20,4 @@ function Site({ name, products }) {
     </SuiBox>
   );
 }
-export default Site;
+export default React.memo(Site);

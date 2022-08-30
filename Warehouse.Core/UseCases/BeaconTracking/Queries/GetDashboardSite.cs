@@ -1,4 +1,5 @@
-﻿using Vayosoft.Core.Persistence;
+﻿using FluentValidation;
+using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel;
 using Warehouse.Core.Entities.Models;
@@ -9,6 +10,13 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
     public class GetDashboardSite : IQuery<DashboardBySite>
     {
         public string SiteId { set; get; }
+        public class AlertRequestValidator : AbstractValidator<GetDashboardSite>
+        {
+            public AlertRequestValidator()
+            {
+                RuleFor(q => q.SiteId).NotEmpty();
+            }
+        }
     }
 
     internal class HandleGetIpsStatus : IQueryHandler<GetDashboardSite, DashboardBySite>

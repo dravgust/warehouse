@@ -10,9 +10,36 @@ import {
   Shape,
   Arrow,
   Line,
+  Circle,
 } from "react-konva";
 import Konva from "konva";
 import routerIcon from "assets/images/internet-router.png";
+import { useQuery } from "react-query";
+import { fetchBeaconPosition } from "utils/query-keys";
+import { getBeaconPosition } from "api/warehouse";
+
+const colors = [
+  "aqua",
+  "black",
+  "blue",
+  "fuchsia",
+  "green",
+  "cyan",
+  "lime",
+  "maroon",
+  "navy",
+  "olive",
+  "purple",
+  "red",
+  "silver",
+  "teal",
+  "yellow",
+  "azure",
+  "gold",
+  "bisque",
+  "pink",
+  "orange",
+];
 
 const Site = ({ x, y, topW, leftH }) => {
   const tW = topW * 72 + 2;
@@ -124,15 +151,20 @@ const Rectangle = ({ x, y, onRClick }) => {
   );
 };
 
-const CanvasSite = ({ width = 1680, height = 780, site }) => {
-  const topW = site.topLength;
-  const leftH = site.leftLength;
-
+const CanvasSite = ({ width = 1680, height = 780, site, beacon }) => {
   const [stageScale, setStageScale] = useState(1);
   const [stageX, setStageX] = useState(70);
   const [stageY, setStageY] = useState(70);
-
   const [routerImage, setRouterImage] = useState(new window.Image());
+
+  const { data: beacons } = useQuery([fetchBeaconPosition, site, beacon], getBeaconPosition, {
+    refetchInterval: 1000 * 10,
+    refetchIntervalInBackground: false,
+    enabled: Boolean(site && beacon),
+  });
+
+  //console.log("selected beacon", beacon);
+  //console.log("beacons", beacons);
 
   useEffect(() => {
     const img = new window.Image();
@@ -195,10 +227,6 @@ const CanvasSite = ({ width = 1680, height = 780, site }) => {
     const elements = [];
     elements.push(<Site key={`site_${id}`} x={-2} y={-2} topW={topLength} leftH={leftLength} />);
 
-    /*elements.push(
-     
-    );
-*/
     for (let x = 0; x < topLength; x += 1) {
       for (let y = 0; y < leftLength; y += 1) {
         elements.push(<Rectangle key={`rec-${x}-${y}`} x={x} y={y} onRClick={handleRectClick} />);
@@ -249,6 +277,25 @@ const CanvasSite = ({ width = 1680, height = 780, site }) => {
         </Group>
       );
     });
+
+    beacons &&
+      beacons.map((b, index) => {
+        const gw = elements.filter((e) => e.props.id === b.gatewayId);
+        gw.length > 0 &&
+          elements.push(
+            <Circle
+              key={b.mac}
+              id={b.mac}
+              x={gw[0].props.x}
+              y={gw[0].props.y}
+              radius={b.radius * 72}
+              stroke={colors[index]}
+              strokeWidth={5}
+              opacity={0.5}
+            />
+          );
+      });
+
     return elements;
   }
 

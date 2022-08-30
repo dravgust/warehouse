@@ -5,7 +5,6 @@ const Store = createContext(null);
 Store.displayName = "StoreContext";
 
 const actionMap = {
-  RESOURCES: (state, action) => ({ ...state, resources: action.value }),
   SITE: (state, action) => ({ ...state, site: action.value }),
   PRODUCT: (state, action) => ({ ...state, product: action.value }),
   BEACON: (state, action) => ({ ...state, beacon: action.value }),
@@ -18,7 +17,6 @@ function reducer(state, action) {
 
 function StoreControllerProvider({ children }) {
   const initialState = {
-    resources: [],
     site: null,
     product: null,
     beacon: null,
@@ -40,16 +38,8 @@ StoreControllerProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-const setResources = (dispatch, value) => dispatch({ type: "RESOURCES", value });
 const setSite = (dispatch, value) => dispatch({ type: "SITE", value });
 const setProduct = (dispatch, value) => dispatch({ type: "PRODUCT", value });
 const setBeacon = (dispatch, value) => dispatch({ type: "BEACON", value });
 
-export {
-  StoreControllerProvider,
-  useStoreController,
-  setResources,
-  setSite,
-  setProduct,
-  setBeacon,
-};
+export { StoreControllerProvider, useStoreController, setSite, setProduct, setBeacon };

@@ -12,7 +12,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import TabOutlinedIcon from "@mui/icons-material/TabOutlined";
 import SuiInput from "components/SuiInput";
 import { fetchAssetsInfo } from "utils/query-keys";
-import { getAssetsInfo } from "services/warehouse-service";
+import { getAssetsInfo } from "api/warehouse";
 import { useSoftUIController } from "../../../../context";
 import { Accordion, AccordionSummary, AccordionDetails } from "../sites/components/accordion";
 import Product from "./components/product";

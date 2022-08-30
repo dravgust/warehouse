@@ -1,6 +1,7 @@
 {
   "files": {
-    "main.js": "/static/js/main.62c593e4.js",
+    "main.js": "/static/js/main.2e23317b.js",
+    "static/js/388.fb109651.chunk.js": "/static/js/388.fb109651.chunk.js",
     "static/media/home-decor-3.jpg": "/static/media/home-decor-3.74d13fcbd3c631fc7908.jpg",
     "static/media/home-decor-2.jpg": "/static/media/home-decor-2.b4e5397c9846645ba275.jpg",
     "static/media/home-decor-1.jpg": "/static/media/home-decor-1.05e218fd495ccc65c99d.jpg",
@@ -11,7 +12,6 @@
     "static/media/marie.jpg": "/static/media/marie.1c6828424a074f143c2d.jpg",
     "static/media/rocket-white.png": "/static/media/rocket-white.de5786399f850a27a362.png",
     "static/media/curved-6.jpg": "/static/media/curved-6.71ee1d1cc8196ed2126b.jpg",
-    "static/media/user.png": "/static/media/user.0190eb1585b9312a63d9.png",
     "static/media/logo-ct.png": "/static/media/logo-ct.df153cddc02d9eb41d30.png",
     "static/media/ivancik.jpg": "/static/media/ivancik.442b474727c414bb3b85.jpg",
     "static/media/visa.png": "/static/media/visa.71c0d5e9e2aaee42e4c3.png",
@@ -33,9 +33,10 @@
     "static/media/logo-webdev.svg": "/static/media/logo-webdev.88aae85b5a8a994aa0009d6c389a7f77.svg",
     "static/media/israel.svg": "/static/media/israel.3c64e4c60806a94fda0be1833096925d.svg",
     "index.html": "/index.html",
-    "main.62c593e4.js.map": "/static/js/main.62c593e4.js.map"
+    "main.2e23317b.js.map": "/static/js/main.2e23317b.js.map",
+    "388.fb109651.chunk.js.map": "/static/js/388.fb109651.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.62c593e4.js"
+    "static/js/main.2e23317b.js"
   ]
 }

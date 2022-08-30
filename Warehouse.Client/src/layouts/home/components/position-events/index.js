@@ -7,7 +7,7 @@ import { useQuery } from "react-query";
 import { format } from "date-fns";
 import React from "react";
 import { fetchEvents } from "utils/query-keys";
-import { getEvents } from "services/warehouse-service";
+import { getEvents } from "api/warehouse";
 
 function renderEvent({ type, beacon, source, destination }) {
   let name = beacon.name ? beacon.name : beacon.macAddress;
