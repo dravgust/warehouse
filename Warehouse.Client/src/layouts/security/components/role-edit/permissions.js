@@ -57,6 +57,8 @@ const SetPermissions = ({ data, onChange }) => {
       sx={{
         "& .MuiTableContainer-root": {
           paddingTop: "20px",
+          boxShadow: 0,
+          border: "0.0625rem solid #d2d6da",
         },
         "& .MuiTableRow-root": {
           "& th:first-of-type, th:last-child": {
