@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Options;
 using Serilog;
+using Vayosoft.Data.MongoDB;
 using Warehouse.API;
 using Warehouse.API.Resources;
 using Warehouse.API.Services.Authorization;
@@ -46,9 +47,9 @@ try
 
     builder.Services
         .AddHealthChecks()
-        .AddRedis(configuration["ConnectionStrings:RedisConnectionString"], tags: new[] { "infrastructure" })
-        .AddMySql(configuration["ConnectionStrings:DefaultConnection"], tags: new[] { "infrastructure" })
-        .AddMongoDb(configuration["MongoDbContext:ConnectionString"], tags: new[] { "infrastructure" });
+        .AddRedis(configuration["ConnectionStrings:RedisConnectionString"], tags: new[] { "infrastructure", "cache" })
+        .AddMySql(configuration["ConnectionStrings:DefaultConnection"], tags: new[] { "infrastructure", "db" })
+        .AddMongoDb(configuration[$"{nameof(MongoConnection)}:ConnectionString"], tags: new[] { "infrastructure", "db" });
     //builder.Services.AddAppMetricsCollectors();
 
     builder.Services.AddCors(options =>
