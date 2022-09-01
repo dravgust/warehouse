@@ -8,7 +8,7 @@ using Vayosoft.Core.SharedKernel.Entities;
 
 namespace Vayosoft.Core.Persistence.Commands;
 
-public record CreateOrUpdateCommand<TEntity>(TEntity Entity) : ICommand where TEntity : IEntity;
+public record CreateOrUpdateCommand<TDto>(TDto Entity) : ICommand where TDto : IEntity;
 
 public class CreateOrUpdateHandler<TKey, TEntity, TDto> : ICommandHandler<CreateOrUpdateCommand<TDto>>
     where TEntity : class, IEntity<TKey>

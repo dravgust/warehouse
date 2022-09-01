@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Commands;
-using Vayosoft.Core.Persistence.Commands;
 using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
@@ -8,6 +7,8 @@ using Warehouse.API.Services.Authorization.Attributes;
 using Warehouse.API.Services.ExceptionHandling.Models;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Entities.Models.Security;
+using Warehouse.Core.Services;
+using Warehouse.Core.UseCases.Administration.Commands;
 using Warehouse.Core.UseCases.Administration.Specifications;
 using Warehouse.Core.UseCases.Management.Models;
 using Warehouse.Core.Utilities;
@@ -25,24 +26,29 @@ namespace Warehouse.API.Controllers.API
     {
         private readonly ICommandBus commandBus;
         private readonly IQueryBus queryBus;
+        private readonly IUserContext _userContext;
 
-        public UsersController(ICommandBus commandBus, IQueryBus queryBus)
+        public UsersController(ICommandBus commandBus, IQueryBus queryBus, IUserContext userContext)
         {
             this.commandBus = commandBus;
             this.queryBus = queryBus;
+            _userContext = userContext;
         }
 
         //[MapToApiVersion("1.0")]
         [HttpGet]
         [ProducesResponseType(typeof(PagedListResponse<UserEntityDto>), StatusCodes.Status200OK)]
         [PermissionAuthorization("USER", SecurityPermissions.View)]
-        public async Task<IActionResult> Get(int page, int take, CancellationToken token)
+        public async Task<IActionResult> Get(int page, int size, string searchTerm = null, CancellationToken token = default)
         {
-            var providerId = HttpContext.User.Identity?.GetProviderId() ?? 0;
-            var spec = new UserSpec(page, take, providerId);
+            await _userContext.LoadSessionAsync();
+            long? providerId = !_userContext.IsSupervisor 
+                ? _userContext.User.Identity?.GetProviderId() ?? 0 
+                : null;
+            var spec = new UserSpec(page, size, providerId, searchTerm);
             var query = new SpecificationQuery<UserSpec, IPagedEnumerable<UserEntityDto>>(spec);
 
-            return Ok((await queryBus.Send(query, token)).ToPagedResponse(take));
+            return Ok((await queryBus.Send(query, token)).ToPagedResponse(size));
         }
 
         [HttpGet("{id}")]
@@ -62,13 +68,8 @@ namespace Warehouse.API.Controllers.API
         
         [HttpPost("set")]
         [ProducesResponseType( StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [PermissionAuthorization("USER", SecurityPermissions.Add | SecurityPermissions.Edit)]
-        public async Task<IActionResult> Post(UserEntityDto dto, CancellationToken token)
-        {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            var command = new CreateOrUpdateCommand<UserEntityDto>(dto);
+        public async Task<IActionResult> Post([FromBody]SaveUser command, CancellationToken token) {
             await commandBus.Send(command, token);
             return Ok();
         }

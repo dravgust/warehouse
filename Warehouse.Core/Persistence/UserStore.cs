@@ -36,6 +36,13 @@ namespace Warehouse.Core.Persistence
                 .FirstOrDefaultAsync(r => r.Id == roleId, cancellationToken: cancellationToken);
         }
 
+        public Task<SecurityRoleEntity> FindRoleByNameAsync(string roleName, CancellationToken cancellationToken)
+        {
+            return _context.Set<SecurityRoleEntity>()
+                .AsTracking()
+                .FirstOrDefaultAsync(r => r.Name == roleName, cancellationToken: cancellationToken);
+        }
+
         public Task<List<SecurityObjectEntity>> GetObjectsAsync(CancellationToken cancellationToken)
         {
             return _context.Set<SecurityObjectEntity>()
@@ -97,7 +104,7 @@ namespace Warehouse.Core.Persistence
             return _context
                 .Users
                 .Include(u => u.RefreshTokens)
-                .AsNoTrackingWithIdentityResolution()
+                .AsTracking()
                 .SingleOrDefaultAsync(u => u.Id.Equals(userId), cancellationToken: cancellationToken);
         }
 
@@ -125,9 +132,17 @@ namespace Warehouse.Core.Persistence
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task UpdateRoleAsync(SecurityRoleEntity entity, CancellationToken cancellationToken)
+        public async Task UpdateSecurityRoleAsync(SecurityRoleEntity entity, CancellationToken cancellationToken)
         {
             //_context.Update(entity);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+        public async Task UpdateUserRolesAsync(object userId, IEnumerable<string> roles, CancellationToken cancellationToken)
+        {
+            var users = _context.Set<UserRoleEntity>();
+            var uRoles = users.Where(r => r.UserId.Equals(userId));
+            users.RemoveRange(uRoles);
+            users.AddRange(roles.Select(r => new UserRoleEntity { UserId = (long)userId, RoleId = r }));
             await _context.SaveChangesAsync(cancellationToken);
         }
 

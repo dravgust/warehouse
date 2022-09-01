@@ -14,14 +14,28 @@ import User from "./user";
 import Function from "./function";
 import { ButtonGroup, Icon } from "@mui/material";
 import SuiButton from "components/SuiButton";
+import { LogLevel } from "data/log-level";
 
-const UserList = ({ onEdit = () => {} }) => {
+const UserList = ({ searchTerm = "", onEdit = () => {}, onAdd = () => {}, reload }) => {
   const [page, setPage] = useState(1);
-  const { isLoading, error, data: response, isSuccess } = useQuery([fetchUsers, page], getUsers);
+  const {
+    isLoading,
+    error,
+    data: response,
+    isSuccess,
+  } = useQuery([fetchUsers, page, searchTerm, reload], getUsers);
   return (
     <Card>
       <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-        <SuiTypography variant="h6">Users</SuiTypography>
+        <SuiBox>
+          <SuiTypography variant="h6">Users</SuiTypography>
+        </SuiBox>
+        <SuiBox display="flex" alignItems="center" mt={{ xs: 2, sm: 0 }} ml={{ xs: -1.5, sm: 0 }}>
+          <SuiButton variant="gradient" color="primary" onClick={onAdd}>
+            <Icon sx={{ fontWeight: "bold" }}>add</Icon>
+            &nbsp;new
+          </SuiButton>
+        </SuiBox>
       </SuiBox>
       <SuiBox
         sx={{
@@ -38,7 +52,7 @@ const UserList = ({ onEdit = () => {} }) => {
             columns={[
               { name: "user", align: "left" },
               { name: "function", align: "left" },
-              { name: "status", align: "center" },
+              { name: "log level", align: "center" },
               { name: "registered", align: "center" },
               { name: "action", align: "center" },
             ]}
@@ -47,11 +61,11 @@ const UserList = ({ onEdit = () => {} }) => {
               response.items.map((item) => ({
                 user: <User name={item.username} email={item.email} />,
                 function: <Function job={item.type} org={ProviderName(item.providerId)} />,
-                status: (
+                "log level": (
                   <SuiBadge
                     variant="gradient"
-                    badgeContent="n/a"
-                    color="dark"
+                    badgeContent={LogLevel[item.logLevel]}
+                    color={item.logLevel === 3 || item.logLevel === 4 ? "error" : "light"}
                     size="xs"
                     container
                   />

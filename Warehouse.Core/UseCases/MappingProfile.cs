@@ -30,7 +30,7 @@ namespace Warehouse.Core.UseCases
                 .ForMember(p => p.Product, des => des.Ignore());
             CreateMap<ProductItemDto, BeaconEntity>()
                 .ForMember(p => p.Id, des => des.MapFrom(m => m.MacAddress))
-                .ForMember(m => m.ProviderId, dest => dest.Ignore()); ;
+                .ForMember(m => m.ProviderId, dest => dest.Ignore());
         }
     }
 }

@@ -2,7 +2,6 @@
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.Commands;
-using Vayosoft.Core.Persistence.Commands;
 using Vayosoft.Core.Persistence.Queries;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Administration.Commands;
@@ -22,14 +21,15 @@ namespace Warehouse.Core.UseCases.Administration
         private static IServiceCollection AddQueryHandlers(this IServiceCollection services) =>
             services
                 .AddQueryHandler<SpecificationQuery<UserSpec, IPagedEnumerable<UserEntityDto>>, IPagedEnumerable<UserEntityDto>,
-                    PagingQueryHandler<long, UserSpec, UserEntity, UserEntityDto>>()
+                    PagingQueryHandler<string, UserSpec, UserEntity, UserEntityDto>>()
                 .AddQueryHandler<SingleQuery<UserEntityDto>, UserEntityDto, SingleQueryHandler<long, UserEntity, UserEntityDto>>()
                 .AddQueryHandler<GetUserSubscription, UserSubscription, HandleGetUserSubscription>()
                 .AddQueryHandler<GetPermissions, RolePermissions, HandleGetPermissions>();
 
         private static IServiceCollection AddCommandHandlers(this IServiceCollection services) =>
             services
-                .AddCommandHandler<CreateOrUpdateCommand<UserEntityDto>, CreateOrUpdateHandler<long, UserEntity, UserEntityDto>>()
+                //.AddCommandHandler<CreateOrUpdateCommand<UserEntityDto>, CreateOrUpdateHandler<long, UserEntity, UserEntityDto>>()
+                .AddCommandHandler<SaveUser, HandleSaveUser>()
                 .AddCommandHandler<SavePermissions, HandleSavePermissions>()
                 .AddCommandHandler<SaveRole, HandleSaveRole>();
     }

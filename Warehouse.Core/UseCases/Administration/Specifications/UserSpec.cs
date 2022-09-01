@@ -5,14 +5,15 @@ using Warehouse.Core.Entities.Models;
 
 namespace Warehouse.Core.UseCases.Administration.Specifications
 {
-    public class UserSpec : SortByIdPaging<UserEntityDto>, ILinqSpecification<UserEntity>
+    public class UserSpec : PagingBase<UserEntityDto, string>, ILinqSpecification<UserEntity>
     {
-        private readonly long _providerId;
+        private readonly long? _providerId;
         private readonly string _searchTerm;
 
-        public UserSpec(int page, int size, long providerId, string searchTerm = null)
-            : base(page, size, SortOrder.Desc)
+        public UserSpec(int page, int size, long? providerId = null, string searchTerm = null)
+            : base()
         {
+            Page = page; Size = size;
             _providerId = providerId;
             _searchTerm = searchTerm;
         }
@@ -21,9 +22,17 @@ namespace Warehouse.Core.UseCases.Administration.Specifications
         {
             if (!string.IsNullOrEmpty(_searchTerm))
                 query = query
-                    .Where(u => u.Username.IndexOf(_searchTerm, StringComparison.OrdinalIgnoreCase) > -1);
+                    .Where(u => u.Username.Contains(_searchTerm));
 
-            return query.Where(u => u.ProviderId == _providerId);
+            if (_providerId != null)
+                query = query.Where(u => u.ProviderId == _providerId);
+
+            return query.Where(u => u.Email != null);
+        }
+
+        protected override Sorting<UserEntityDto, string> BuildDefaultSorting()
+        {
+            return new Sorting<UserEntityDto, string>(x => x.Username, SortOrder.Asc);
         }
     }
 }

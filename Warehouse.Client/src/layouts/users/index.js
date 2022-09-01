@@ -3,20 +3,38 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import UserList from "./components/user-list";
-import useSecurity, { SecurityPermissions } from "../../services/security-provider";
+import useSecurity, { SecurityPermissions } from "services/security-provider";
 import React, { useState } from "react";
 import { Grid, Zoom } from "@mui/material";
 import UserEdit from "./components/user-edit";
 
 function Users() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const onSearch = (value) => setSearchTerm(value);
+  const [reload, updateReloadState] = useState(0);
+  const forceUpdate = () => updateReloadState(Date.now());
   const { hasPermissions } = useSecurity("USER", SecurityPermissions.View);
   const [userEdit, setUserEdit] = useState(null);
   const resetToNull = () => setUserEdit(null);
-  const resetPage = () => resetToNull();
+  const resetPage = () => {
+    resetToNull();
+    forceUpdate();
+  };
+  const resetToDefault = () =>
+    setUserEdit({
+      id: "",
+      username: "",
+      password: "",
+      email: "",
+      phone: "",
+      type: "Guest",
+      providerId: 1000,
+      logLevel: 0,
+    });
   const onUserSave = () => resetPage();
   return (
     <DashboardLayout>
-      <DashboardNavbar />
+      <DashboardNavbar onSearch={onSearch} />
       {hasPermissions && (
         <SuiBox py={3}>
           <Grid container spacing={3}>
@@ -28,7 +46,12 @@ function Users() {
               </Grid>
             </Zoom>
             <Grid item xs={12}>
-              <UserList onEdit={setUserEdit} />
+              <UserList
+                searchTerm={searchTerm}
+                onEdit={setUserEdit}
+                onAdd={resetToDefault}
+                reload={reload}
+              />
             </Grid>
           </Grid>
         </SuiBox>

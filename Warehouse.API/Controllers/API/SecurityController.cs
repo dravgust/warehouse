@@ -32,7 +32,7 @@ namespace Warehouse.API.Controllers.API
 
         [PermissionAuthorization]
         [HttpGet("user-roles")]
-        public async Task<IActionResult> GetUserRoles(CancellationToken token)
+        public async Task<IActionResult> GetUserRoles(CancellationToken token = default)
         {
             var items = new List<RoleDTO>();
             if (_userStore is IUserRoleStore store)
@@ -44,7 +44,20 @@ namespace Warehouse.API.Controllers.API
             return Ok(new { items, TotalItems = items.Count });
         }
 
-        [PermissionAuthorization("USER", SecurityPermissions.Grant)]
+        [PermissionAuthorization("USER", SecurityPermissions.View)]
+        [HttpGet("user-roles/{id:long}")]
+        public async Task<IActionResult> GetUserRolesById(long id, CancellationToken token = default)
+        {
+            var items = new List<RoleDTO>();
+            if (_userStore is IUserRoleStore store)
+            {
+                items.AddRange(await store.GetUserRolesAsync(id, token));
+            }
+
+            return Ok(new { items, TotalItems = items.Count });
+        }
+
+        [PermissionAuthorization("USER", SecurityPermissions.View)]
         [HttpGet("roles")]
         public async Task<IActionResult> GetRoles(CancellationToken token)
         {
@@ -58,7 +71,7 @@ namespace Warehouse.API.Controllers.API
             return Ok(new { items, TotalItems = items.Count });
         }
 
-        [PermissionAuthorization("USER", SecurityPermissions.Grant)]
+        [PermissionAuthorization("USER", SecurityPermissions.View)]
         [HttpGet("objects")]
         public async Task<IActionResult> GetObjects(CancellationToken token)
         {
@@ -71,7 +84,7 @@ namespace Warehouse.API.Controllers.API
             return Ok(new { items, TotalItems = items.Count });
         }
 
-        [PermissionAuthorization("USER", SecurityPermissions.Grant)]
+        [PermissionAuthorization("USER", SecurityPermissions.View)]
         [HttpGet("permissions/{roleId}")]
         public async Task<IActionResult> GetRolePermissions(string roleId, CancellationToken token) {
             var result = await _queryBus.Send(new GetPermissions(roleId), token);
@@ -80,7 +93,7 @@ namespace Warehouse.API.Controllers.API
             return Ok(result);
         }
 
-        [PermissionAuthorization("USER", SecurityPermissions.Grant)]
+        [PermissionAuthorization("USER", SecurityPermissions.Add)]
         [HttpPost("roles/save")]
         public async Task<IActionResult> SaveRole([FromBody] SaveRole command, CancellationToken token) {
             await _commandBus.Send(command, token);
