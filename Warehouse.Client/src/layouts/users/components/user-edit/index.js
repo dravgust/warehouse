@@ -88,7 +88,7 @@ const UserEdit = ({ item, onSave, onClose }) => {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      id: item ? item.id : "",
+      id: item ? item.id : 0,
       username: item ? item.username : "",
       password: "",
       email: item ? item.email : "",

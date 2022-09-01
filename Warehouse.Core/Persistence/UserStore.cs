@@ -128,6 +128,11 @@ namespace Warehouse.Core.Persistence
 
         public async Task UpdateAsync(UserEntity user, CancellationToken cancellationToken)
         {
+            if (user.Id == 0)
+            {
+                _context.Set<UserEntity>().Add(user);
+            }
+
             //_context.Update(user);
             await _context.SaveChangesAsync(cancellationToken);
         }

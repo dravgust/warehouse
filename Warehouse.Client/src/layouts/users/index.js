@@ -22,7 +22,7 @@ function Users() {
   };
   const resetToDefault = () =>
     setUserEdit({
-      id: "",
+      id: 0,
       username: "",
       password: "",
       email: "",
