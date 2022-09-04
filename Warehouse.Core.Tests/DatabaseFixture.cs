@@ -11,29 +11,34 @@ namespace Warehouse.Core.Tests
 
         private static bool _dbInitialized;
         private static readonly object Lock = new();
-        private readonly ILoggerFactory _loggerFactory;
+        private ILoggerFactory _loggerFactory;
 
-        public DatabaseFixture(ILoggerFactory loggerFactory)
+        public void Configure(Action<DatabaseFixtureConfiguration> configure)
         {
-            _loggerFactory = loggerFactory;
-            
-            //lock (Lock)
-            //{
-            //    if (!_dbInitialized)
-            //    {
-            //        using var context = CreateContext();
+            var options = new DatabaseFixtureConfiguration();
+            configure(options);
+            _loggerFactory = options.LoggerFactory;
+        }
 
-            //        //context.Database.EnsureDeleted();
-            //        context.Database.EnsureCreated();
+        public void Initialize()
+        {
+            lock (Lock)
+            {
+                if (!_dbInitialized)
+                {
+                    using var context = CreateContext();
 
-            //        //context.AddRange(
-            //        //new Blog { },
-            //        //new Blog { });
-            //        //context.SaveChanges();
-            //    }
+                    //context.Database.EnsureDeleted();
+                    context.Database.EnsureCreated();
 
-            //    _dbInitialized = true;
-            //}
+                    //context.AddRange(
+                    //new Blog { },
+                    //new Blog { });
+                    //context.SaveChanges();
+                }
+
+                _dbInitialized = true;
+            }
         }
 
         public WarehouseContext CreateContext() =>
@@ -41,5 +46,10 @@ namespace Warehouse.Core.Tests
                 new DbContextOptionsBuilder<WarehouseContext>()
                     .UseMySql(ConnectionString, new MySqlServerVersion(new Version(8, 0, 25))).Options,
                 _loggerFactory);
+    }
+
+    public class DatabaseFixtureConfiguration
+    {
+        public ILoggerFactory LoggerFactory { get; set; }
     }
 }
