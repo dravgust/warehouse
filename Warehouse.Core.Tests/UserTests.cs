@@ -15,7 +15,9 @@ namespace Warehouse.Core.Tests
             {
                 var loggerProvider = new XUnitLoggerProvider(testOutputHelper);
                 var loggerFactory = LoggerFactory.Create(builder => builder.AddProvider(loggerProvider));
+
                 options.LoggerFactory = loggerFactory;
+                options.ConnectionString = "Server=192.168.10.11;Port=3306;Database=viot;Uid=admin;Pwd=~1q2w3e4r!;";
             });
 
             _logger = XUnitLogger.CreateLogger<UserTests>(testOutputHelper);

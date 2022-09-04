@@ -1,24 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Warehouse.Core.Persistence;
-using Xunit.Abstractions;
 
 namespace Warehouse.Core.Tests
 {
     public class DatabaseFixture
     {
-        private const string ConnectionString = "Server=192.168.10.11;Port=3306;Database=viot;Uid=admin;Pwd=~1q2w3e4r!;";
-
         private static bool _dbInitialized;
         private static readonly object Lock = new();
-        private ILoggerFactory _loggerFactory;
+        private readonly DatabaseFixtureConfiguration _options = new();
 
         public void Configure(Action<DatabaseFixtureConfiguration> configure)
-        {
-            var options = new DatabaseFixtureConfiguration();
-            configure(options);
-            _loggerFactory = options.LoggerFactory;
-        }
+            => configure(_options);
 
         public void Initialize()
         {
@@ -41,15 +34,25 @@ namespace Warehouse.Core.Tests
             }
         }
 
-        public WarehouseContext CreateContext() =>
-            new WarehouseContext(
+        public WarehouseContext CreateContext()
+        {
+            var (connectionString, loggerFactory) = _options;
+            return new WarehouseContext(
                 new DbContextOptionsBuilder<WarehouseContext>()
-                    .UseMySql(ConnectionString, new MySqlServerVersion(new Version(8, 0, 25))).Options,
-                _loggerFactory);
+                    .UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 25))).Options, loggerFactory);
+        }
+            
     }
 
     public class DatabaseFixtureConfiguration
     {
+        public string ConnectionString { get; set; }
         public ILoggerFactory LoggerFactory { get; set; }
+
+        public void Deconstruct(out string connectionString, out ILoggerFactory loggerFactory)
+        {
+            connectionString = ConnectionString;
+            loggerFactory = LoggerFactory;
+        }
     }
 }
