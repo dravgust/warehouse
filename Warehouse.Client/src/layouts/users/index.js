@@ -25,7 +25,6 @@ function Users() {
       id: 0,
       username: "",
       password: "",
-      email: "",
       phone: "",
       type: "Guest",
       providerId: 1000,

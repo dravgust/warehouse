@@ -8,14 +8,14 @@
 
         protected int? RequestedHashCode;
 
-        public TId Id { get; set; } = default!;
+        public TId Id { get; set; }
 
         public bool IsTransient()
         {
             return Id == null || Id.Equals(default(TId));
         }
 
-        object IEntity.Id => Id!;
+        object IEntity.Id => Id;
 
         public override bool Equals(object obj)
         {
@@ -35,7 +35,7 @@
         {
             if (!IsTransient())
             {
-                RequestedHashCode ??= this.Id!.GetHashCode() ^ 31;
+                RequestedHashCode ??= this.Id.GetHashCode() ^ 31;
                 // XOR for random distribution. See:
                 // https://docs.microsoft.com/archive/blogs/ericlippert/guidelines-and-rules-for-gethashcode
                 return RequestedHashCode.Value;

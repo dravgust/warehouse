@@ -2,12 +2,10 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Vayosoft.Core.Commands;
-using Vayosoft.Core.Persistence;
-using Vayosoft.Core.Persistence.Commands;
 using Vayosoft.Core.SharedKernel.Exceptions;
+using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Entities.Models.Security;
 using Warehouse.Core.Exceptions;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
@@ -20,7 +18,6 @@ public class SaveUser : ICommand
     public long Id { get; set; }
     public string Username { get; set; }
     public string Phone { get; set; }
-    public string Email { get; set; }
     public string Type { get; set; }
     public DateTime? Registered { get; set; }
     public DateTime? Deregistered { get; set; }
@@ -34,8 +31,8 @@ public class SaveUser : ICommand
     {
         public SaveUserValidator()
         {
-            RuleFor(u => u.Username).NotEmpty();
-            RuleFor(u => u.Email).NotEmpty().EmailAddress();
+            RuleFor(u => u.Username).NotEmpty().EmailAddress();
+            RuleFor(u => u.Phone).NotEmpty().PhoneNumber();
         }
     }
 }
@@ -85,10 +82,11 @@ public class HandleSaveUser : ICommandHandler<SaveUser>
                 entity = new UserEntity(command.Username)
                 {
                     PasswordHash = _passwordHasher.HashPassword(command.Password),
+                    Email = command.Username,
+                    Registered = DateTime.UtcNow,
                 };
             }
 
-            entity.Email = command.Email;
             entity.Phone = command.Phone;
 
             var userType = Enum.Parse<UserType>(command.Type);

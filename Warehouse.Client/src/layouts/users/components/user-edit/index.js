@@ -78,11 +78,14 @@ const UserEdit = ({ item, onSave, onClose }) => {
   });
 
   const validationSchema = yup.object({
-    username: yup
-      .string("Enter username")
-      .min(3, "Username should be of minimum 3 characters length")
-      .required("Username is required"),
-    email: yup.string("enter email").email(),
+    username: yup.string("Enter email").required("Username is required").email(),
+    phone: yup
+      .string("Enter phone number")
+      .required("phone is required")
+      .matches(/^05\d{8}$/, {
+        message: "Please enter valid number.",
+        excludeEmptyString: false,
+      }),
   });
 
   const formik = useFormik({
@@ -91,7 +94,6 @@ const UserEdit = ({ item, onSave, onClose }) => {
       id: item ? item.id : 0,
       username: item ? item.username : "",
       password: "",
-      email: item ? item.email : "",
       phone: item ? item.phone : "",
       type: item ? item.type : "",
       providerId: item ? item.providerId : "",
@@ -151,44 +153,15 @@ const UserEdit = ({ item, onSave, onClose }) => {
                 "& .MuiInputBase-input": { width: "100% !important" },
               }}
               autoComplete="off"
+              autoFocus="true"
               type="text"
               id="username"
               name="username"
-              label="Username"
+              label="Email"
               value={formik.values.username}
               onChange={formik.handleChange}
               error={formik.touched.username && Boolean(formik.errors.username)}
               helperText={formik.touched.username && formik.errors.username}
-            />
-
-            <TextField
-              fullWidth
-              sx={{
-                "& .MuiInputBase-input": { width: "100% !important" },
-              }}
-              autoComplete="off"
-              type="text"
-              id="password"
-              name="password"
-              label="Password"
-              value={formik.values.password || ""}
-              onChange={formik.handleChange}
-              error={formik.touched.password && Boolean(formik.errors.password)}
-              helperText={formik.touched.password && formik.errors.password}
-            />
-
-            <TextField
-              fullWidth
-              sx={{
-                "& .MuiInputBase-input": { width: "100% !important" },
-              }}
-              id="email"
-              name="email"
-              label="Email"
-              value={formik.values.email}
-              onChange={formik.handleChange}
-              error={formik.touched.email && Boolean(formik.errors.email)}
-              helperText={formik.touched.email && formik.errors.email}
             />
 
             <TextField
@@ -203,6 +176,22 @@ const UserEdit = ({ item, onSave, onClose }) => {
               onChange={formik.handleChange}
               error={formik.touched.phone && Boolean(formik.errors.phone)}
               helperText={formik.touched.phone && formik.errors.phone}
+            />
+
+            <TextField
+              fullWidth
+              sx={{
+                "& .MuiInputBase-input": { width: "100% !important" },
+              }}
+              autoComplete="off"
+              type="password"
+              id="password"
+              name="password"
+              label="Password"
+              value={formik.values.password || ""}
+              onChange={formik.handleChange}
+              error={formik.touched.password && Boolean(formik.errors.password)}
+              helperText={formik.touched.password && formik.errors.password}
             />
 
             <Grid container spacing={2}>

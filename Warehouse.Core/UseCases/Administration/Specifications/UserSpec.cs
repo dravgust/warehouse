@@ -22,7 +22,7 @@ namespace Warehouse.Core.UseCases.Administration.Specifications
         {
             if (!string.IsNullOrEmpty(_searchTerm))
                 query = query
-                    .Where(u => u.Email.Contains(_searchTerm));
+                    .Where(u => u.Username.Contains(_searchTerm));
 
             if (_providerId != null)
                 query = query.Where(u => u.ProviderId == _providerId);
@@ -32,7 +32,7 @@ namespace Warehouse.Core.UseCases.Administration.Specifications
 
         protected override Sorting<UserEntityDto, string> BuildDefaultSorting()
         {
-            return new Sorting<UserEntityDto, string>(x => x.Email);
+            return new Sorting<UserEntityDto, string>(x => x.Username);
         }
     }
 }
