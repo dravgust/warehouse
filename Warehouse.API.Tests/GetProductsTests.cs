@@ -1,11 +1,9 @@
 using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Ogooreck.API;
 using Vayosoft.Core.Testing;
-using Ogooreck.API;
 using Vayosoft.Core.Utilities;
 using Warehouse.Core.UseCases.Management.Commands;
 using Warehouse.Core.UseCases.Management.Models;
-using Xunit;
 using static Ogooreck.API.ApiSpecification;
 
 namespace Warehouse.API.Tests;
