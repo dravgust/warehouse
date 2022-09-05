@@ -79,9 +79,10 @@ export default function SiteInfo({
       prevent = false;
     }, delay);
   }
-  function handleDoubleClick(e) {
+  function handleDoubleClick(e, index) {
     clearTimeout(timer);
     prevent = true;
+    onProductSelect(assets[index]);
     navigate("/warehouse");
   }
 
@@ -92,7 +93,7 @@ export default function SiteInfo({
       component="div"
       disablePadding
       onClick={(e) => handleClick(e, index)}
-      onDoubleClick={handleDoubleClick}
+      onDoubleClick={(e) => handleDoubleClick(e, index)}
       sx={{
         borderBottom: ({ borders: { borderWidth, borderColor } }) =>
           `${borderWidth[1]} solid ${borderColor}`,
