@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Warehouse.Core.Entities.Models.Security;
 using Warehouse.Core.Persistence;
 
 namespace Warehouse.Core.Tests
@@ -21,13 +22,22 @@ namespace Warehouse.Core.Tests
                 {
                     using var context = CreateContext();
 
-                    //context.Database.EnsureDeleted();
+                    context.Database.EnsureDeleted();
                     context.Database.EnsureCreated();
 
-                    //context.AddRange(
-                    //new Blog { },
-                    //new Blog { });
-                    //context.SaveChanges();
+                    context.AddRange(
+                        new SecurityRoleEntity
+                        {
+                            Name = "Support"
+                        }, new SecurityRoleEntity
+                        {
+                            Name = "Administrator"
+                        }, new SecurityRoleEntity
+                        {
+                            Name = "Supervisor"
+                        });
+
+                    context.SaveChanges();
                 }
 
                 _dbInitialized = true;
@@ -36,22 +46,24 @@ namespace Warehouse.Core.Tests
 
         public WarehouseContext CreateContext()
         {
-            var (connectionString, loggerFactory) = _options;
+            var (connectionString, serverVersion, loggerFactory) = _options;
             return new WarehouseContext(
                 new DbContextOptionsBuilder<WarehouseContext>()
-                    .UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 25))).Options, loggerFactory);
+                    .UseMySql(connectionString, serverVersion).Options, loggerFactory);
         }
             
     }
 
     public class DatabaseFixtureConfiguration
     {
-        public string ConnectionString { get; set; }
+        public string ConnectionString { get; set; } = "Server=localhost;Port=3306;Database=warehouse;Uid=db;Pwd=1q2w3e4r;";
         public ILoggerFactory LoggerFactory { get; set; }
+        public ServerVersion Version { get; } = new MySqlServerVersion(new Version(8, 0, 26));
 
-        public void Deconstruct(out string connectionString, out ILoggerFactory loggerFactory)
+        public void Deconstruct(out string connectionString, out ServerVersion serverVersion, out ILoggerFactory loggerFactory)
         {
             connectionString = ConnectionString;
+            serverVersion = Version;
             loggerFactory = LoggerFactory;
         }
     }
