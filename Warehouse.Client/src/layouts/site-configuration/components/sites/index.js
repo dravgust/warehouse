@@ -4,7 +4,7 @@ import SuiBox from "components/SuiBox";
 import SuiButton from "components/SuiButton";
 import SuiTypography from "components/SuiTypography";
 import Table from "examples/Tables/Table";
-import DeletePromt from "../delete-promt";
+import DeletePrompt from "../delete-promt";
 import * as auth from "services/auth-provider";
 import { client } from "utils/api-client";
 import { useQuery } from "react-query";
@@ -108,9 +108,9 @@ export default function Sites({
               "": (
                 <ButtonGroup variant="text" aria-label="text button group" color="text">
                   <SuiButton variant="text" color="dark" onClick={onEdit}>
-                    <Icon>edit</Icon>
+                    <Icon>border_color</Icon>
                   </SuiButton>
-                  <DeletePromt
+                  <DeletePrompt
                     renderButton={(handleClickOpen) => (
                       <SuiButton
                         variant="text"

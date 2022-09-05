@@ -67,24 +67,14 @@ export default function SiteInfo({
       })) ||
     [];
 
-  let timer = 0;
-  let delay = 200;
-  let prevent = false;
-  function handleClick(e, index) {
-    let me = this;
-    timer = setTimeout(function () {
-      if (!prevent) {
-        onProductSelect(assets[index]);
-      }
-      prevent = false;
-    }, delay);
-  }
-  function handleDoubleClick(e, index) {
-    clearTimeout(timer);
-    prevent = true;
+  const handleClick = (e, index) => {
     onProductSelect(assets[index]);
-    navigate("/warehouse");
-  }
+    switch (e.detail) {
+      case 2:
+        navigate("/warehouse");
+        break;
+    }
+  };
 
   const Row = ({ index, style }) => (
     <ListItem
@@ -93,7 +83,7 @@ export default function SiteInfo({
       component="div"
       disablePadding
       onClick={(e) => handleClick(e, index)}
-      onDoubleClick={(e) => handleDoubleClick(e, index)}
+      onDoubleClick={(e) => handleClick(e, index)}
       sx={{
         borderBottom: ({ borders: { borderWidth, borderColor } }) =>
           `${borderWidth[1]} solid ${borderColor}`,

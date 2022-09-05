@@ -47,7 +47,7 @@ function SelectedBeacon({ onSave = () => {}, onDelete = () => {}, onClose = () =
             flexDirection={{ xs: "column", sm: "row" }}
             mb={2}
           ></SuiBox>
-          <BeaconForm item={item} onSave={onSave} onDelete={onDelete} />
+          <BeaconForm item={item} onSave={onSave} onDelete={onDelete} onClose={onClose} />
         </SuiBox>
       </SuiBox>
     </Card>

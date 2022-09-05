@@ -131,7 +131,7 @@ export default function Gateways({
                     color="dark"
                     onClick={() => onEdit({ ...item, siteId: data.id })}
                   >
-                    <Icon>edit</Icon>
+                    <Icon>border_color</Icon>
                   </SuiButton>
                   <DeletePromt
                     renderButton={(handleClickOpen) => (

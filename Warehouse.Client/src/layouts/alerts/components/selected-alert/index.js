@@ -8,7 +8,7 @@ import SuiTypography from "components/SuiTypography";
 import { Card, Icon, IconButton, Tooltip } from "@mui/material";
 import AlertForm from "./alert-form";
 
-function SelectedAlert({ onSave = () => {}, onDelete = () => {}, onClose = () => {}, item = {} }) {
+function SelectedAlert({ onSave = () => {}, onClose = () => {}, item = {} }) {
   return (
     <Card>
       <SuiBox display="flex" justifyContent="space-between" alignItems="center" pt={3} px={3}>
@@ -47,7 +47,7 @@ function SelectedAlert({ onSave = () => {}, onDelete = () => {}, onClose = () =>
             flexDirection={{ xs: "column", sm: "row" }}
             mb={2}
           ></SuiBox>
-          <AlertForm item={item} onSave={onSave} onDelete={onDelete} />
+          <AlertForm item={item} onSave={onSave} onClose={onClose} />
         </SuiBox>
       </SuiBox>
     </Card>

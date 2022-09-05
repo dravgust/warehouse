@@ -1,12 +1,22 @@
 import PropTypes from "prop-types";
-
-// Soft UI Dashboard React components
 import SuiBox from "components/SuiBox";
 import SuiTypography from "components/SuiTypography";
 import SuiAvatar from "components/SuiAvatar";
 import productIcon from "assets/images/qr-code.png";
+import { deleteProduct } from "../../../../api/warehouse";
+import { Icon, IconButton, Tooltip } from "@mui/material";
+import SuiButton from "../../../../components/SuiButton";
+import DeletePrompt from "../../../site-configuration/components/delete-promt";
 
-function ProductItem({ isSelected, item, onClick = () => {} }) {
+function ProductItem({ isSelected, item, onClick = () => {}, onDelete = () => {} }) {
+  const handleDelete = async (item) => {
+    try {
+      await deleteProduct(item);
+      return onDelete();
+    } catch (err) {
+      console.log("delete-product", err);
+    }
+  };
   return (
     <SuiBox
       component="li"
@@ -43,6 +53,24 @@ function ProductItem({ isSelected, item, onClick = () => {} }) {
             <SuiTypography variant="button" fontWeight="medium">
               {item.name}
             </SuiTypography>
+          </SuiBox>
+          <SuiBox display="flex" alignItems="center" mt={{ xs: -1, sm: 0 }}>
+            <DeletePrompt
+              renderButton={(handleClickOpen) => (
+                <SuiButton
+                  variant="text"
+                  color="error"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleClickOpen();
+                    e.preventDefault();
+                  }}
+                >
+                  <Icon>delete</Icon>&nbsp;delete
+                </SuiButton>
+              )}
+              onDelete={() => handleDelete(item)}
+            />
           </SuiBox>
         </SuiBox>
 

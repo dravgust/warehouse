@@ -6,32 +6,21 @@ import Stack from "@mui/material/Stack";
 import { Icon, TextField, Box, FormControlLabel } from "@mui/material";
 import SuiAlert from "components/SuiAlert";
 import SuiButton from "components/SuiButton";
-import DeletePromt from "./delete-promt";
-import { deleteAlert, saveAlert } from "api/warehouse";
+import { saveAlert } from "api/warehouse";
 import Checkbox from "@mui/material/Checkbox";
 import SuiBox from "../../../../components/SuiBox";
-import SuiTypography from "../../../../components/SuiTypography";
 
 const validationSchema = yup.object({
   name: yup.string("Enter alert name"),
 });
 
-export default function AlertForm({ onSave = () => {}, onDelete = () => {}, item = {} }) {
+export default function AlertForm({ onSave = () => {}, onClose = () => {}, item = {} }) {
   const mutation = useMutation((item) => saveAlert(item), {
     onSuccess: () => {
       formik.resetForm();
       return onSave();
     },
   });
-
-  const handleDelete = async (item) => {
-    try {
-      await deleteAlert(item);
-      return onDelete();
-    } catch (err) {
-      console.log("delete-item", err);
-    }
-  };
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -124,14 +113,9 @@ export default function AlertForm({ onSave = () => {}, onDelete = () => {}, item
       </SuiBox>
 
       <Stack my={2} py={2} direction="row" spacing={1} justifyContent="end">
-        <DeletePromt
-          renderButton={(handleClickOpen) => (
-            <SuiButton variant="text" color="error" onClick={handleClickOpen} disabled={!item.id}>
-              <Icon>delete</Icon>&nbsp;delete
-            </SuiButton>
-          )}
-          onDelete={() => handleDelete(item)}
-        />
+        <SuiButton color="secondary" variant="contained" onClick={onClose}>
+          cancel
+        </SuiButton>
         <SuiButton color="success" variant="contained" type="submit">
           {mutation.isLoading ? (
             "Loading..."

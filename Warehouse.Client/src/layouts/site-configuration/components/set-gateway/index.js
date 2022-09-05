@@ -263,6 +263,9 @@ export default function SetGateway({
             </Stack>
 
             <Stack my={2} px={1} direction="row" spacing={1} justifyContent="end">
+              <SuiButton color="secondary" variant="contained" onClick={onClose}>
+                cancel
+              </SuiButton>
               <SuiButton color="success" variant="contained" type="submit">
                 {mutation.isLoading ? (
                   "Loading..."

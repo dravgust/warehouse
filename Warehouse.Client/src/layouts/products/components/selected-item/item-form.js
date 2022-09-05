@@ -28,22 +28,13 @@ const validationSchema = yup.object({
   ),
 });
 
-export default function ItemForm({ onSave = () => {}, onDelete = () => {}, item = {} }) {
+export default function ItemForm({ onSave = () => {}, onClose = () => {}, item = {} }) {
   const mutation = useMutation(setProduct, {
     onSuccess: () => {
       formik.resetForm();
       return onSave();
     },
   });
-
-  const handleDelete = async (item) => {
-    try {
-      await deleteProduct(item);
-      return onDelete();
-    } catch (err) {
-      console.log("delete-product", err);
-    }
-  };
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -133,14 +124,9 @@ export default function ItemForm({ onSave = () => {}, onDelete = () => {}, item 
         ))}
 
       <Stack my={2} py={2} direction="row" spacing={1} justifyContent="end">
-        <DeletePromt
-          renderButton={(handleClickOpen) => (
-            <SuiButton variant="text" color="error" onClick={handleClickOpen} disabled={!item.id}>
-              <Icon>delete</Icon>&nbsp;delete
-            </SuiButton>
-          )}
-          onDelete={() => handleDelete(item)}
-        />
+        <SuiButton color="secondary" variant="contained" onClick={onClose}>
+          close
+        </SuiButton>
         <SuiButton color="success" variant="contained" type="submit">
           {mutation.isLoading ? (
             "Loading..."

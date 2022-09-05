@@ -62,18 +62,14 @@ const Beacons = () => {
                 selectedItem={selectedItem}
                 onRowSelect={onSelectItem}
                 onAdd={resetToDefault}
+                onDelete={handleDelete}
                 refresh={refresh}
               />
             </Grid>
             <Zoom in={Boolean(selectedItem)}>
               <Grid item xs={12} lg={7}>
                 {Boolean(selectedItem) && (
-                  <SelectedBeacon
-                    item={selectedItem}
-                    onSave={handleSave}
-                    onDelete={handleDelete}
-                    onClose={resetToNull}
-                  />
+                  <SelectedBeacon item={selectedItem} onSave={handleSave} onClose={resetToNull} />
                 )}
               </Grid>
             </Zoom>
