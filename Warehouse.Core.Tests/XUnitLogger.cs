@@ -27,8 +27,8 @@ namespace Warehouse.Core.Tests
             _categoryName = categoryName;
         }
 
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception,
-            Func<TState, Exception?, string> formatter)
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception,
+            Func<TState, Exception, string> formatter)
         {
             var sb = new StringBuilder();
             sb.Append(GetLogLevelString(logLevel))
