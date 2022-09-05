@@ -67,22 +67,44 @@ export default function ProductsTreeView({
     selectedProduct && setExpanded(`panel_${selectedProduct.id}`);
   }, [isSuccess]);
 
+  let timer = 0;
+  let delay = 200;
+  let prevent = false;
+  function handleClick(e, index) {
+    let me = this;
+    timer = setTimeout(function () {
+      if (!prevent) {
+        onSiteSelect(assets[index]);
+      }
+      prevent = false;
+    }, delay);
+  }
+  function handleDoubleClick(e) {
+    clearTimeout(timer);
+    prevent = true;
+    navigate("/warehouse");
+  }
+
   const Row = ({ index, style }) => (
     <ListItem
       key={`b_${index}`}
       style={style}
       component="div"
       disablePadding
-      onClick={() => onSiteSelect(assets[index])}
+      onClick={(e) => handleClick(e, index)}
+      onDoubleClick={handleDoubleClick}
       sx={{
         borderBottom: ({ borders: { borderWidth, borderColor } }) =>
           `${borderWidth[1]} solid ${borderColor}`,
       }}
       selected={selectedSite && assets[index].id === selectedSite.id}
       secondaryAction={
-        <IconButton edge="start" onClick={() => navigate("/warehouse")}>
-          <OpenInNewIcon />
-        </IconButton>
+        selectedSite &&
+        assets[index].id === selectedSite.id && (
+          <IconButton edge="start" onClick={() => navigate("/warehouse")}>
+            <OpenInNewIcon />
+          </IconButton>
+        )
       }
     >
       <ListItemButton dir={direction}>
@@ -115,7 +137,7 @@ export default function ProductsTreeView({
           </IconButton>
         </SuiBox>
       </SuiBox>
-      <SuiBox pb={3}>
+      <SuiBox pb={3} px={2}>
         {isSuccess &&
           response.map((item, index) => (
             <Accordion

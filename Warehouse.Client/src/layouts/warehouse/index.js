@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Card, Grid, Icon, IconButton, Tooltip } from "@mui/material";
+import { Card, Grid, Icon, IconButton, Tooltip, Zoom } from "@mui/material";
 import SuiBox from "components/SuiBox";
 import SuiTypography from "components/SuiTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -13,6 +13,8 @@ import { getSiteById } from "../../api/warehouse";
 import CanvasList from "./conponents/canvas-list/index0";
 import { useNavigate } from "react-router-dom";
 import CanvasListByProduct from "./conponents/canvas-list/list-by-product";
+import BeaconTelemetry from "./conponents/beacon-telemetry";
+import BeaconTelemetryCharts from "./conponents/beacon-charts/indiex";
 
 const Warehouse = () => {
   const [controller, dispatch] = useStoreController();
@@ -53,71 +55,100 @@ const Warehouse = () => {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <SuiBox py={3} mb={3}>
-        <Card>
-          <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-            <SuiTypography
-              variant="h6"
-              color={
-                currentSite && currentSite.products
-                  ? "info"
-                  : currentProduct && currentProduct.sites
-                  ? "primary"
-                  : "secondary"
-              }
-            >
-              {currentSite && currentSite.products
-                ? currentSite.name
-                : currentProduct && currentProduct.sites
-                ? currentProduct.name
-                : "n/a"}
-            </SuiTypography>
-            <SuiBox display="flex" alignItems="center" mt={{ xs: -1, sm: 0 }}>
-              <IconButton size="xl" color="inherit" onClick={() => navigate("/home")}>
-                <Tooltip title="Close">
-                  <Icon>close</Icon>
-                </Tooltip>
-              </IconButton>
-            </SuiBox>
-          </SuiBox>
-          <SuiBox px={2}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={12} lg={4} xl={4}>
-                {currentSite && currentSite.products && (
-                  <CanvasList
-                    selectedSite={currentSite}
-                    selectedProduct={currentProduct}
-                    onProductSelect={onProductSelect}
-                    selectedBeacon={selectedBeacon}
-                    onBeaconSelect={onBeaconSelect}
-                  />
-                )}
-                {currentProduct && currentProduct.sites && (
-                  <CanvasListByProduct
-                    selectedSite={currentSite}
-                    selectedProduct={currentProduct}
-                    onSiteSelect={onSiteSelect}
-                    selectedBeacon={selectedBeacon}
-                    onBeaconSelect={onBeaconSelect}
-                  />
-                )}
-              </Grid>
-              <Grid item xs={12} md={12} lg={8} xl={8}>
-                <SuiBox ref={cardRef} sx={{ width: "auto", height: "60vh" }}>
-                  {cardRef.current && isSuccess && (
-                    <CanvasSite
-                      width={width}
-                      height={height}
-                      site={response}
-                      beacon={selectedBeacon}
-                    />
-                  )}
+      <SuiBox py={2}>
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={4}>
+            <Card>
+              <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
+                <SuiTypography
+                  variant="h6"
+                  color={
+                    currentSite && currentSite.products
+                      ? "info"
+                      : currentProduct && currentProduct.sites
+                      ? "primary"
+                      : "secondary"
+                  }
+                >
+                  {currentSite && currentSite.products
+                    ? currentSite.name
+                    : currentProduct && currentProduct.sites
+                    ? currentProduct.name
+                    : "n/a"}
+                </SuiTypography>
+                <SuiBox display="flex" alignItems="center" mt={{ xs: -1, sm: 0 }}>
+                  <IconButton size="xl" color="inherit" onClick={() => navigate("/home")}>
+                    <Tooltip title="Back">
+                      <Icon>reply</Icon>
+                    </Tooltip>
+                  </IconButton>
                 </SuiBox>
-              </Grid>
-            </Grid>
-          </SuiBox>
-        </Card>
+              </SuiBox>
+              <SuiBox px={2}>
+                <Grid container spacing={3}>
+                  <Grid item xs={12}>
+                    {currentSite && currentSite.products && (
+                      <CanvasList
+                        selectedSite={currentSite}
+                        selectedProduct={currentProduct}
+                        onProductSelect={onProductSelect}
+                        selectedBeacon={selectedBeacon}
+                        onBeaconSelect={onBeaconSelect}
+                      />
+                    )}
+                    {currentProduct && currentProduct.sites && (
+                      <CanvasListByProduct
+                        selectedSite={currentSite}
+                        selectedProduct={currentProduct}
+                        onSiteSelect={onSiteSelect}
+                        selectedBeacon={selectedBeacon}
+                        onBeaconSelect={onBeaconSelect}
+                      />
+                    )}
+                  </Grid>
+                </Grid>
+              </SuiBox>
+            </Card>
+          </Grid>
+          <Grid item xs={12} md={8}>
+            <Card>
+              <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
+                <SuiTypography variant="h6" gutterBottom>
+                  {currentSite.name}
+                </SuiTypography>
+              </SuiBox>
+              <SuiBox px={2}>
+                <Grid container spacing={3}>
+                  <Grid item xs={12}>
+                    <SuiBox ref={cardRef} sx={{ width: "auto", height: "60vh" }}>
+                      {cardRef.current && isSuccess && (
+                        <CanvasSite
+                          width={width}
+                          height={height}
+                          site={response}
+                          beacon={selectedBeacon}
+                        />
+                      )}
+                    </SuiBox>
+                  </Grid>
+                </Grid>
+              </SuiBox>
+            </Card>
+          </Grid>
+        </Grid>
       </SuiBox>
+      {Boolean(selectedBeacon) && (
+        <SuiBox py={2}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={4}>
+              <BeaconTelemetry item={selectedBeacon} />
+            </Grid>
+            <Grid item xs={12} md={8}>
+              <BeaconTelemetryCharts item={selectedBeacon} />
+            </Grid>
+          </Grid>
+        </SuiBox>
+      )}
       <Footer />
     </DashboardLayout>
   );

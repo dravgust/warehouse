@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { ButtonGroup, Card, Icon } from "@mui/material";
 import SuiBox from "components/SuiBox";
 import SuiButton from "components/SuiButton";
@@ -37,6 +37,10 @@ export default function Sites({
       console.log("delete-item", err);
     }
   };
+
+  React.useEffect(() => {
+    isSuccess && data.items.length > 0 && onSelect(data.items[0], `row-${0}`);
+  }, [isSuccess]);
 
   return (
     <Card>

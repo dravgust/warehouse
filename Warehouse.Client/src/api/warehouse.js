@@ -50,17 +50,13 @@ export const deleteProduct = async (item) => {
 
 export const getEvents = async ({ queryKey }) => {
   const [_key, page, searchTerm] = queryKey;
-  const res = await axios.get(
-    `events?page=${page}&size=${searchTerm ? "3" : "9"}&searchTerm=${searchTerm}`
-  );
+  const res = await axios.get(`events?page=${page}&size=${3}&searchTerm=${searchTerm}`);
   return res?.data;
 };
 
 export const getNotifications = async ({ queryKey }) => {
   const [_key, page, searchTerm] = queryKey;
-  const res = await axios.get(
-    `notifications?page=${page}&size=${searchTerm ? "3" : "9"}&searchTerm=${searchTerm}`
-  );
+  const res = await axios.get(`notifications?page=${page}&size=${3}&searchTerm=${searchTerm}`);
   return res?.data;
 };
 
@@ -91,7 +87,7 @@ export const getBeaconPosition = async ({ queryKey }) => {
 
 export const getAssets = async ({ queryKey }) => {
   const [_key, page, searchTerm] = queryKey;
-  const res = await axios.get(`dashboard/beacons?page=${page}&size=7&searchTerm=${searchTerm}`);
+  const res = await axios.get(`dashboard/beacons?page=${page}&size=8&searchTerm=${searchTerm}`);
   return res?.data;
 };
 

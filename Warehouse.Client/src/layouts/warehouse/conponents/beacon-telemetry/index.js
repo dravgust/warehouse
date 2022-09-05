@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 import { fetchBeaconTelemetry } from "utils/query-keys";
 import { getBeaconTelemetry } from "api/warehouse";
 import Grid from "@mui/material/Grid";
-import Beacon from "../beacon";
+import Beacon from "../../../home/components/beacon";
 import DefaultInfoCard from "examples/Cards/InfoCards/DefaultInfoCard";
 
 const BeaconTelemetry = ({ item }) => {

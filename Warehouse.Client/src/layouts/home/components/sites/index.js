@@ -67,22 +67,44 @@ export default function SiteInfo({
       })) ||
     [];
 
+  let timer = 0;
+  let delay = 200;
+  let prevent = false;
+  function handleClick(e, index) {
+    let me = this;
+    timer = setTimeout(function () {
+      if (!prevent) {
+        onProductSelect(assets[index]);
+      }
+      prevent = false;
+    }, delay);
+  }
+  function handleDoubleClick(e) {
+    clearTimeout(timer);
+    prevent = true;
+    navigate("/warehouse");
+  }
+
   const Row = ({ index, style }) => (
     <ListItem
       key={`b_${index}`}
       style={style}
       component="div"
       disablePadding
-      onClick={() => onProductSelect(assets[index])}
+      onClick={(e) => handleClick(e, index)}
+      onDoubleClick={handleDoubleClick}
       sx={{
         borderBottom: ({ borders: { borderWidth, borderColor } }) =>
           `${borderWidth[1]} solid ${borderColor}`,
       }}
       selected={selectedProduct && assets[index].id === selectedProduct.id}
       secondaryAction={
-        <IconButton edge="start" onClick={() => navigate("/warehouse")}>
-          <OpenInNewIcon />
-        </IconButton>
+        selectedProduct &&
+        assets[index].id === selectedProduct.id && (
+          <IconButton edge="start" onClick={() => navigate("/warehouse")}>
+            <OpenInNewIcon />
+          </IconButton>
+        )
       }
     >
       <ListItemButton dir={direction}>
@@ -115,7 +137,7 @@ export default function SiteInfo({
           </IconButton>
         </SuiBox>
       </SuiBox>
-      <SuiBox pb={3}>
+      <SuiBox pb={3} px={2}>
         {isSuccess &&
           response.map((item, index) => (
             <Accordion
