@@ -19,7 +19,6 @@ import SuiAlert from "components/SuiAlert";
 import SuiButton from "components/SuiButton";
 import { useMutation } from "react-query";
 import * as yup from "yup";
-import * as auth from "services/auth-provider";
 import PropTypes from "prop-types";
 import { setSiteGw } from "api/warehouse";
 
@@ -185,7 +184,12 @@ export default function SetGateway({
                 helperText={formik.touched.envFactor && formik.errors.envFactor}
               />
 
-              <FormControl fullWidth>
+              <FormControl
+                fullWidth
+                sx={{
+                  "& .MuiInputBase-input": { width: "100% !important" },
+                }}
+              >
                 <InputLabel id="location-label">Location</InputLabel>
                 <Select
                   labelId="location-label"

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using Vayosoft.Core.Commands;
+using Vayosoft.Core.SharedKernel.Exceptions;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Entities.Models.Security;
 using Warehouse.Core.Exceptions;
@@ -17,9 +18,9 @@ namespace Warehouse.Core.UseCases.Administration.Commands
     {
         private readonly IUserStore<UserEntity> _userStore;
         private readonly IUserContext _userContext;
-        private readonly ILogger<SaveRole> _logger;
+        private readonly ILogger<HandleSaveRole> _logger;
 
-        public HandleSaveRole(IUserStore<UserEntity> userStore, IUserContext userContext, ILogger<SaveRole> logger)
+        public HandleSaveRole(IUserStore<UserEntity> userStore, IUserContext userContext, ILogger<HandleSaveRole> logger)
         {
             _userStore = userStore;
             _userContext = userContext;
@@ -43,14 +44,14 @@ namespace Warehouse.Core.UseCases.Administration.Commands
                     {
                         var old = await store.FindRoleByIdAsync(command.Id, cancellationToken);
                         if (old == null)
-                            throw new ArgumentException("Role not found by Id");
+                            throw new EntityNotFoundException(nameof(SecurityRoleEntity), command.Id);
 
                         if (!old.Name.Equals(command.Name) || !string.Equals(old.Description, command.Description))
-                            await store.UpdateRoleAsync(command, cancellationToken);
+                            await store.UpdateSecurityRoleAsync(command, cancellationToken);
                     }
                     else
                     {
-                        await store.UpdateRoleAsync(command, cancellationToken);
+                        await store.UpdateSecurityRoleAsync(command, cancellationToken);
                     }
                 }
                 catch (Exception e)

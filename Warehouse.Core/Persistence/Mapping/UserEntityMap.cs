@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Vayosoft.Data.EF.MySQL;
 using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Entities.Enums;
 
 namespace Warehouse.Core.Persistence.Mapping
 {
@@ -10,17 +11,16 @@ namespace Warehouse.Core.Persistence.Mapping
         public override void Configure(EntityTypeBuilder<UserEntity> builder)
         {
             builder.ToTable("users").HasKey(t => t.Id);
-            builder.Property(t => t.Id).HasColumnName("userid").ValueGeneratedOnAdd();
-            builder.Property(t => t.Id).HasColumnName("userid").ValueGeneratedOnAdd();
-            builder.Property(t => t.Username).HasColumnName("username");
+            builder.Property(t => t.Id).HasColumnName("userid").UseMySqlIdentityColumn();
+            builder.Property(t => t.Username).HasColumnName("username").IsRequired();
             builder.Property(t => t.Email).HasColumnName("email");
             builder.Property(t => t.PasswordHash).HasColumnName("pwdhash");
-            builder.Property(t => t.Phone).HasColumnName("phone");
+            builder.Property(t => t.Phone).HasColumnName("phone").IsRequired();
             builder.Property(t => t.Type).HasColumnName("user_type");
             builder.Property(t => t.ProviderId).HasColumnName("providerid");
-            builder.Property(t => t.LogLevel).HasColumnName("log_level");
-            builder.Property(t => t.CultureId).HasColumnName("culture_id");
-            builder.Property(t => t.Registered).HasColumnName("regdate");
+            builder.Property(t => t.LogLevel).HasColumnName("log_level").HasDefaultValue(LogEventType.Error);
+            builder.Property(t => t.CultureId).HasColumnName("culture_id").HasDefaultValue("he-IL");
+            builder.Property(t => t.Registered).HasColumnName("regdate").IsRequired();
             builder.Property(t => t.Deregistered).HasColumnName("enddate");
             builder
                 .HasMany(t => t.RefreshTokens)

@@ -57,8 +57,8 @@ const Site = ({ x, y, topW, leftH }) => {
       <Arrow
         points={[x + 5, y - 20, tW - 4, y - 20]}
         pointerAtBeginning="true"
-        pointerLength={30}
-        pointerWidth={15}
+        pointerLength={10}
+        pointerWidth={10}
         fill="black"
         stroke="black"
         opacity={0.2}
@@ -96,8 +96,8 @@ const Site = ({ x, y, topW, leftH }) => {
       <Arrow
         points={[x - 20, y + 5, x - 20, lH - 4]}
         pointerAtBeginning="true"
-        pointerLength={30}
-        pointerWidth={15}
+        pointerLength={10}
+        pointerWidth={10}
         fill="black"
         stroke="black"
         opacity={0.2}

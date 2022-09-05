@@ -14,7 +14,12 @@ namespace Vayosoft.Core.Utilities
         /// <returns>deserialized object</returns>
         public static T FromJson<T>(this string json)
         {
-            return JsonSerializer.Deserialize<T>(json);
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true
+            };
+            return JsonSerializer.Deserialize<T>(json, options);
         }
 
         /// <summary>

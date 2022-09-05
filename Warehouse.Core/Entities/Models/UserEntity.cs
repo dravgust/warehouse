@@ -45,6 +45,5 @@ namespace Warehouse.Core.Entities.Models
         public string CultureId { get; set; }
         public long ProviderId { get; set; }
         public LogEventType? LogLevel { get; set; }
-
     }
 }
