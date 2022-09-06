@@ -35,7 +35,7 @@ function Users() {
     <DashboardLayout>
       <DashboardNavbar onSearch={onSearch} />
       {hasPermissions && (
-        <SuiBox py={3}>
+        <SuiBox pb={3}>
           <Grid container spacing={3}>
             <Zoom in={Boolean(userEdit)}>
               <Grid item xs={12}>

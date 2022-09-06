@@ -54,7 +54,7 @@ function PositionEvents({ searchTerm = "" }) {
           </IconButton>
         </SuiBox>
       </SuiBox>
-      <SuiBox p={2}>
+      <SuiBox p={2} sx={{ height: "100%", display: "grid" }}>
         {isSuccess &&
           response.items.map((item, index) => (
             <TimelineItem

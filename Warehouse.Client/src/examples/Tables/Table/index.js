@@ -146,13 +146,11 @@ function Table({
         }}
         selected={rowKey === selectedKey}
         style={{ cursor: onSelect ? "pointer" : "default" }}
-        sx={
-          onSelect && {
-            "&:hover": {
-              backgroundColor: "rgba(0, 0, 0, 0.04)",
-            },
-          }
-        }
+        sx={{
+          "&:hover": {
+            backgroundColor: "rgba(0, 0, 0, 0.04)",
+          },
+        }}
       >
         {tableRow}
       </TableRow>
