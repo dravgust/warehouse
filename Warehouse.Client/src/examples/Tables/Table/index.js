@@ -159,7 +159,7 @@ function Table({
 
   return useMemo(
     () => (
-      <TableContainer>
+      <TableContainer sx={{ paddingX: 2 }}>
         <MuiTable>
           <SuiBox component="thead">
             <TableRow>{renderColumns}</TableRow>
