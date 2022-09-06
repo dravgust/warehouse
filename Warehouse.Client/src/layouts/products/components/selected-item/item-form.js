@@ -6,8 +6,7 @@ import Stack from "@mui/material/Stack";
 import { Icon, TextField, Box } from "@mui/material";
 import SuiAlert from "components/SuiAlert";
 import SuiButton from "components/SuiButton";
-import DeletePromt from "./delete-promt";
-import { deleteProduct, setProduct } from "api/warehouse";
+import { setProduct } from "api/warehouse";
 
 const validationSchema = yup.object({
   name: yup
@@ -125,7 +124,7 @@ export default function ItemForm({ onSave = () => {}, onClose = () => {}, item =
 
       <Stack my={2} py={2} direction="row" spacing={1} justifyContent="end">
         <SuiButton color="secondary" variant="contained" onClick={onClose}>
-          close
+          cancel
         </SuiButton>
         <SuiButton color="success" variant="contained" type="submit">
           {mutation.isLoading ? (

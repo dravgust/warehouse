@@ -6,25 +6,29 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-export default function DeletePromt({renderButton = ({handleClickOpen}) => {(<Button variant="outlined" onClick={handleClickOpen}>Delete</Button>)}, onDelete=()=> true}) {
+export default function DeletePrompt({
+  renderButton = ({ handleClickOpen }) => {
+    <Button variant="outlined" onClick={handleClickOpen}>
+      Delete
+    </Button>;
+  },
+  onDelete = () => true,
+}) {
   const [open, setOpen] = React.useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
+  const handleClickOpen = () => setOpen(true);
+  const handleClose = (e) => {
+    e.stopPropagation();
     setOpen(false);
   };
-
   const handleDelete = () => {
-    if(onDelete()){
-        setOpen(false);
+    if (onDelete()) {
+      setOpen(false);
     }
-  }
+  };
 
   return (
-    <div>
+    <>
       {renderButton(handleClickOpen)}
       <Dialog
         open={open}
@@ -45,6 +49,6 @@ export default function DeletePromt({renderButton = ({handleClickOpen}) => {(<Bu
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </>
   );
 }

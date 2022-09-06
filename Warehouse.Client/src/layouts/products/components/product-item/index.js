@@ -4,9 +4,9 @@ import SuiTypography from "components/SuiTypography";
 import SuiAvatar from "components/SuiAvatar";
 import productIcon from "assets/images/qr-code.png";
 import { deleteProduct } from "../../../../api/warehouse";
-import { Icon, IconButton, Tooltip } from "@mui/material";
+import { Icon } from "@mui/material";
 import SuiButton from "../../../../components/SuiButton";
-import DeletePrompt from "../../../site-configuration/components/delete-promt";
+import DeletePrompt from "components/DeletePrompt";
 
 function ProductItem({ isSelected, item, onClick = () => {}, onDelete = () => {} }) {
   const handleDelete = async (item) => {

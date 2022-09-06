@@ -29,23 +29,14 @@ function Beacons({ items, selectedItem, onItemSelect = () => {} }) {
       })) ||
     [];
 
-  let timer = 0;
-  let delay = 200;
-  let prevent = false;
-  function handleClick(e, index) {
-    let me = this;
-    timer = setTimeout(function () {
-      if (!prevent) {
-        onItemSelect(assets[index]);
-      }
-      prevent = false;
-    }, delay);
-  }
-  function handleDoubleClick(e) {
-    clearTimeout(timer);
-    prevent = true;
-    navigate("/warehouse");
-  }
+  const handleClick = (e, index) => {
+    onItemSelect(assets[index]);
+    switch (e.detail) {
+      case 2:
+        navigate("/warehouse");
+        break;
+    }
+  };
 
   const Row = ({ index, style }) => (
     <ListItem
@@ -54,7 +45,7 @@ function Beacons({ items, selectedItem, onItemSelect = () => {} }) {
       component="div"
       disablePadding
       onClick={(e) => handleClick(e, index)}
-      onDoubleClick={handleDoubleClick}
+      onDoubleClick={(e) => handleClick(e, index)}
       sx={{
         borderBottom: ({ borders: { borderWidth, borderColor } }) =>
           `${borderWidth[1]} solid ${borderColor}`,

@@ -68,6 +68,9 @@ const Warehouse = () => {
   useEffect(() => {
     !Boolean(currentSite) && navigate("/home");
   }, []);
+  useEffect(() => {
+    selectedBeacon && setSelectView(1);
+  }, []);
   return (
     <DashboardLayout>
       <DashboardNavbar />

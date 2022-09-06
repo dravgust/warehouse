@@ -172,9 +172,9 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Security",
-    key: "security",
-    route: "/security",
+    name: "Permissions",
+    key: "permissions",
+    route: "/permissions",
     icon: <Icon fontSize="12px">security</Icon>,
     component: <Security />,
     noCollapse: true,
