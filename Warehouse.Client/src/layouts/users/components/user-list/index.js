@@ -80,7 +80,7 @@ const UserList = ({ searchTerm = "", onEdit = () => {}, onAdd = () => {}, reload
                 action: (
                   <ButtonGroup variant="text" aria-label="text button group" color="text">
                     <SuiButton variant="text" color="dark" onClick={() => onEdit(item)}>
-                      <Icon>edit</Icon>
+                      <Icon>border_color</Icon>
                     </SuiButton>
                   </ButtonGroup>
                 ),

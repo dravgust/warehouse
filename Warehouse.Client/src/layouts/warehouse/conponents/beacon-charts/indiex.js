@@ -68,14 +68,14 @@ const BeaconTelemetryCharts = ({ item }) => {
   }, [isSuccess, item]);
 
   return (
-    <Stack spacing={3}>
+    <Stack spacing={2}>
       <Card>
-        <SuiBox p={2}>
+        <SuiBox px={2} py={2}>
           <SuiBox mb={1} display="flex" alignItems="center">
             <Icon>thermostat</Icon>
             <SuiTypography variant="h6">&nbsp;Temperature Overview</SuiTypography>
           </SuiBox>
-          <SuiBox mb={2}>
+          <SuiBox mb={3}>
             <SuiTypography component="div" variant="button" fontWeight="regular" color="text">
               {/*<SuiBox display="flex" alignItems="center">
                 <SuiBox fontSize={size.lg} color="success" mb={0.3} mr={0.5} lineHeight={0}>
@@ -102,8 +102,8 @@ const BeaconTelemetryCharts = ({ item }) => {
       </Card>
 
       <Card>
-        <SuiBox p={2}>
-          <SuiBox mb={1} display="flex" alignItems="center">
+        <SuiBox px={2} py={3}>
+          <SuiBox mb={2} display="flex" alignItems="center">
             <Icon>waves</Icon>
             <SuiTypography variant="h6">&nbsp;Humidity Overview</SuiTypography>
           </SuiBox>

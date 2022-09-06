@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 import { fetchBeaconTelemetry } from "utils/query-keys";
 import { getBeaconTelemetry } from "api/warehouse";
 import Grid from "@mui/material/Grid";
-import Beacon from "../../../home/components/beacon";
+import Beacon from "../beacon";
 import DefaultInfoCard from "examples/Cards/InfoCards/DefaultInfoCard";
 
 const BeaconTelemetry = ({ item }) => {
@@ -17,7 +17,7 @@ const BeaconTelemetry = ({ item }) => {
     refetchIntervalInBackground: false,
   });
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={2}>
       <Grid item xs={12}>
         <Beacon
           macAddress={item.macAddress}
@@ -30,7 +30,7 @@ const BeaconTelemetry = ({ item }) => {
         <DefaultInfoCard
           icon="thermostat"
           title="Temperature"
-          description="Ambient Temperature"
+          //description="Ambient Temperature"
           value={isSuccess && response.temperature ? `${response.temperature.toFixed()}C°` : "--"}
           isLoading={isLoading}
         />
@@ -39,7 +39,7 @@ const BeaconTelemetry = ({ item }) => {
         <DefaultInfoCard
           icon="waves"
           title="Humidity"
-          description="Absolute Humidity"
+          //description="Absolute Humidity"
           value={isSuccess && response.humidity ? `${response.humidity.toFixed()}%` : "--"}
           isLoading={isLoading}
         />
@@ -48,7 +48,7 @@ const BeaconTelemetry = ({ item }) => {
         <DefaultInfoCard
           icon="battery_full"
           title="Battery"
-          description="Battery Level"
+          //description="Battery Level"
           value={isSuccess && response.battery ? `${response.battery}mV` : "--"}
           isLoading={isLoading}
         />
@@ -57,7 +57,7 @@ const BeaconTelemetry = ({ item }) => {
         <DefaultInfoCard
           icon="360"
           title="Acceleration"
-          description="Acceleration Value"
+          //description="Acceleration Value"
           value={
             isSuccess && response.x0 ? `:${response.x0} :${response.y0} :${response.z0}` : "--"
           }

@@ -45,7 +45,8 @@ export default function LanguageBar() {
   return (
     <SuiBox>
       <SidenavCollapse
-        name={direction === "ltr" ? "English" : "Hebrew"}
+        //name={direction === "ltr" ? "English" : "Hebrew"}
+        name={"Language"}
         onClick={handleOpenMenu}
         icon={<Icon fontSize="12px">language</Icon>}
       />
