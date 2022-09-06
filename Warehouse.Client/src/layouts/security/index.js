@@ -37,7 +37,7 @@ const Security = () => {
               <Card>
                 <SuiBox p={3}>
                   <Tabs value={selectedView} onChange={handleChange} aria-label="navigation">
-                    <Tab icon={<SecurityIcon />} iconPosition="start" label="Roles" />
+                    <Tab icon={<SecurityIcon />} iconPosition="start" label="Security Roles" />
                     <Tab icon={<GppGoodIcon />} iconPosition="start" label="Security Objects" />
                   </Tabs>
                 </SuiBox>

@@ -81,7 +81,7 @@ export default function SetGateway({
       name: item ? item.name : "",
       circumscribedRadius: item ? item.circumscribedRadius : 0,
       location: item ? item.location : 0,
-      envFactor: item ? item.envFactor : 0,
+      envFactor: item ? item.envFactor : 1,
       macG: item && item.gauge ? item.gauge.mac : "",
       radiusG: item && item.gauge ? item.gauge.radius : 0,
       txPowerG: item && item.gauge ? item.gauge.txPower : 0,

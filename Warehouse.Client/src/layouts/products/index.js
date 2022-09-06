@@ -88,17 +88,13 @@ function Products() {
               selectItem={onSelectItem}
               resetToDefault={resetToDefault}
               refresh={refresh}
+              onDelete={handleDelete}
             />
           </Grid>
           <Zoom in={Boolean(selectedItem)}>
             <Grid item xs={12} lg={7}>
               {selectedItem && (
-                <SelectedItem
-                  item={selectedItem}
-                  onSave={handleSave}
-                  onDelete={handleDelete}
-                  onClose={resetToNull}
-                />
+                <SelectedItem item={selectedItem} onSave={handleSave} onClose={resetToNull} />
               )}
             </Grid>
           </Zoom>

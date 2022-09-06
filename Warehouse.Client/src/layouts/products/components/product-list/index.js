@@ -18,6 +18,7 @@ function ProductList({
   selectedItem,
   selectItem = () => {},
   resetToDefault = () => {},
+  onDelete = () => {},
   refresh,
 }) {
   const [reload, updateReloadState] = useState(null);
@@ -161,6 +162,7 @@ function ProductList({
                 onClick={() => {
                   selectItem(item);
                 }}
+                onDelete={onDelete}
               />
             ))}
           {isLoading && <SuiTypography color="secondary">Loading..</SuiTypography>}

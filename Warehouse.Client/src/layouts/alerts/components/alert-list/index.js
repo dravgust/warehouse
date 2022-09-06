@@ -9,7 +9,7 @@ import SuiAvatar from "components/SuiAvatar";
 import alertIcon from "assets/images/notification-alarm-buzzer-icon.png";
 import { fetchAlerts } from "utils/query-keys";
 import { deleteAlert, getAlerts } from "api/warehouse";
-import DeletePrompt from "../../../site-configuration/components/delete-promt";
+import DeletePrompt from "components/DeletePrompt";
 
 const AlertList = ({
   searchTerm,

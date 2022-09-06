@@ -67,6 +67,9 @@ export default function ItemForm({ onSave = () => {}, onClose = () => {}, item =
 
       <TextField
         fullWidth
+        sx={{
+          "& .MuiInputBase-input": { width: "100% !important" },
+        }}
         id="name"
         name="name"
         label="Name"

@@ -47,7 +47,7 @@ const SiteConfiguration = () => {
       name: "",
       circumscribedRadius: 0,
       location: 0,
-      envFactor: 0,
+      envFactor: 1,
     });
   const onSiteSave = () => resetPage();
   const resetPage = () => {
