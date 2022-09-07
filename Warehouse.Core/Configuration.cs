@@ -65,8 +65,7 @@ namespace Warehouse.Core
             services
                 .AddDefaultProvider()
                 .AddWarehouseTrackingServices()
-                .AddWarehouseManagementServices()
-                .AddWarehouseAdministrationServices();
+                .AddWarehouseManagementServices();
 
             services.AddScoped<INotificationHandler<UserOperation>, OperationEventHandler>();
 

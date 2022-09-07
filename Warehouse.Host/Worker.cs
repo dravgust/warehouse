@@ -1,5 +1,7 @@
+using System.Reactive.Joins;
 using Vayosoft.Core.Caching;
 using Vayosoft.Core.Persistence;
+using Vayosoft.Core.SharedKernel.ValueObjects;
 using Vayosoft.Core.Utilities;
 using Vayosoft.IPS.Domain;
 using Warehouse.Core.Entities.Enums;
@@ -35,7 +37,7 @@ namespace Warehouse.Host
             string[] args = Environment.GetCommandLineArgs();
             _logger.LogInformation("command line args: {args}", string.Join(" ", args));
 
-            var providers = new List<long>{2, 1000};
+            var providers = new List<long>{ 2, 1000 };
 
             while (!token.IsCancellationRequested)
             {
@@ -206,7 +208,8 @@ namespace Warehouse.Host
                                 continue;
                             }
 
-                            await trackedItems.UpdateAsync(trackedItem, token);
+                            if(trackedItem != null)
+                                await trackedItems.UpdateAsync(trackedItem, token);
                         }
 
                         //*************** received beacons OUT
@@ -300,13 +303,16 @@ namespace Warehouse.Host
                 if (payload == null) continue;
 
                 var pGauge = payload.Beacons.FirstOrDefault(p => p.MacAddress.Equals(gauge.MAC, StringComparison.Ordinal));
-                if (pGauge == null) continue;
-
-                var gGateway = new GenericGateway(gateway.MacAddress)
+                IBeacon beacon;
+                if (pGauge == null)
                 {
-                    EnvFactor = gateway.EnvFactor,
-                    Location = (LocationAnchor)gateway.Location,
-                    Gauge = new TelemetryBeacon(gauge.MAC, pGauge.RSSIs, gauge.TxPower, gauge.Radius)
+                    if (gauge.TxPower >= 0) continue;
+
+                    beacon = new TelemetryBeacon(MacAddress.Empty, new List<double>(), gauge.TxPower, gauge.Radius);
+                }
+                else
+                {
+                    beacon = new TelemetryBeacon(gauge.MAC, pGauge.RSSIs, gauge.TxPower, gauge.Radius)
                     {
                         Battery = pGauge.Battery,
                         Temperature = pGauge.Temperature,
@@ -314,7 +320,14 @@ namespace Warehouse.Host
                         X0 = pGauge.X0,
                         Y0 = pGauge.Y0,
                         Z0 = pGauge.Z0,
-                    }
+                    };
+                }
+
+                var gGateway = new GenericGateway(gateway.MacAddress)
+                {
+                    EnvFactor = gateway.EnvFactor,
+                    Location = (LocationAnchor)gateway.Location,
+                    Gauge = beacon
                 };
 
                 foreach (var b in payload.Beacons.Where(b => !b.MacAddress.Equals(gauge.MAC, StringComparison.Ordinal)))

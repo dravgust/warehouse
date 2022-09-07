@@ -8,6 +8,12 @@ namespace Vayosoft.Core.SharedKernel.ValueObjects
         private static readonly Regex Pattern = new (@"^([0-9A-Fa-f]{2}[:-]?){5}([0-9A-Fa-f]{2})$");
         public string InputValue { get; init; }
         public string Value { get; init; }
+
+        private MacAddress()
+        {
+            Value = "000000000000";
+        }
+
         private MacAddress(string value)
         {
             if (!Pattern.IsMatch(value))
@@ -22,6 +28,7 @@ namespace Vayosoft.Core.SharedKernel.ValueObjects
         }
 
         public static MacAddress Create(string value) => new(value);
+        public static MacAddress Empty => new();
         public override string ToString() => InputValue;
 
         public static implicit operator string(MacAddress mac) => mac.Value;

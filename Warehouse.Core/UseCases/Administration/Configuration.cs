@@ -11,7 +11,7 @@ using Warehouse.Core.UseCases.Administration.Specifications;
 
 namespace Warehouse.Core.UseCases.Administration
 { 
-    internal static class Configuration
+    public static class Configuration
     {
         public static IServiceCollection AddWarehouseAdministrationServices(this IServiceCollection services) =>
             services

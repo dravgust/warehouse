@@ -16,6 +16,7 @@ using Warehouse.Core;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
+using Warehouse.Core.UseCases.Administration;
 using Warehouse.Core.UseCases.Administration.Models;
 
 namespace Warehouse.API
@@ -59,6 +60,8 @@ namespace Warehouse.API
                 .AddScoped<IUserContext, UserContext>();
 
             services.AddWarehouseDependencies(configuration);
+
+            services.AddWarehouseAdministrationServices();
 
             return services;
         }

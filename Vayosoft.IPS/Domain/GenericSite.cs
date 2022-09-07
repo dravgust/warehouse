@@ -1,4 +1,5 @@
-﻿using Vayosoft.IPS.Configuration;
+﻿using Vayosoft.Core.SharedKernel.ValueObjects;
+using Vayosoft.IPS.Configuration;
 
 namespace Vayosoft.IPS.Domain
 {
@@ -57,7 +58,8 @@ namespace Vayosoft.IPS.Domain
                 ipsGateway.CalcBeaconsDistance(Settings);
 
                 var radius = ipsGateway.CircumscribedRadius - Error;
-                CheckInboundStatus(ipsGateway.Gauge, radius, _outBound, _inBound);
+                if(ipsGateway.Gauge.MacAddress != MacAddress.Empty)
+                    CheckInboundStatus(ipsGateway.Gauge, radius, _outBound, _inBound);
                 foreach (var gwBeacon in ipsGateway.Beacons)
                 {
                     CheckInboundStatus(gwBeacon, radius, _outBound, _inBound);
