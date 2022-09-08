@@ -2,7 +2,7 @@ using Microsoft.Extensions.Logging;
 using Warehouse.Core.Entities.Models;
 using Xunit.Abstractions;
 
-namespace Warehouse.Infrastructure.Tests
+namespace Warehouse.IntegrationTests
 {
     public class UserTests : IClassFixture<DatabaseFixture>
     {

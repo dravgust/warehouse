@@ -6,7 +6,7 @@ using Warehouse.Core.UseCases.Management.Commands;
 using Warehouse.Core.UseCases.Management.Models;
 using static Ogooreck.API.ApiSpecification;
 
-namespace Warehouse.API.Tests;
+namespace Warehouse.FunctionalTests;
 
 public class GetProductsTests : IClassFixture<GetProductsFixture>
 {

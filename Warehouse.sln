@@ -49,22 +49,22 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{BCD4A6
 		docker\docker-compose.yml = docker\docker-compose.yml
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse.Core.Tests", "Warehouse.Core.Tests\Warehouse.Core.Tests.csproj", "{9B606ADA-1833-47E4-AF28-8A01AAE8FF7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse.UnitTests", "Warehouse.UnitTests\Warehouse.UnitTests.csproj", "{9B606ADA-1833-47E4-AF28-8A01AAE8FF7B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "data", "data", "{9E94F147-FBD4-499A-906E-434AFA6DE319}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9E94F147-FBD4-499A-906E-434AFA6DE319}"
 	ProjectSection(SolutionItems) = preProject
 		initial.sql = initial.sql
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Core.Testing", "Vayosoft.Core.Testing\Vayosoft.Core.Testing.csproj", "{B336C548-CE83-4B1C-B2E6-595C3CAC13A0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse.API.Tests", "Warehouse.API.Tests\Warehouse.API.Tests.csproj", "{12662D88-6CF0-497D-AF5C-9A6D9FB2DFB2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse.FunctionalTests", "Warehouse.FunctionalTests\Warehouse.FunctionalTests.csproj", "{12662D88-6CF0-497D-AF5C-9A6D9FB2DFB2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warehouse.Infrastructure", "Warehouse.Infrastructure\Warehouse.Infrastructure.csproj", "{95A9FF25-93B1-455B-A6E6-104E19A5D5BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse.Infrastructure", "Warehouse.Infrastructure\Warehouse.Infrastructure.csproj", "{95A9FF25-93B1-455B-A6E6-104E19A5D5BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warehouse.Infrastructure.Tests", "Warehouse.Infrastructure.Tests\Warehouse.Infrastructure.Tests.csproj", "{C27E9B81-EB7F-4045-9E93-73E42E795B01}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse.IntegrationTests", "Warehouse.IntegrationTests\Warehouse.IntegrationTests.csproj", "{C27E9B81-EB7F-4045-9E93-73E42E795B01}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{A0789A2C-1DB3-4DA7-8770-2BD7EDD50FCC}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{A0789A2C-1DB3-4DA7-8770-2BD7EDD50FCC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

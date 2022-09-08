@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 
-namespace Warehouse.Infrastructure.Tests
+namespace Warehouse.IntegrationTests
 {
     internal sealed class XUnitLoggerProvider : ILoggerProvider
     {

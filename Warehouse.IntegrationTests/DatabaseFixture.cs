@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Warehouse.Core.Entities.Models.Security;
-using Warehouse.Core.Persistence;
 using Warehouse.Infrastructure.Persistence;
 
-namespace Warehouse.Infrastructure.Tests
+namespace Warehouse.IntegrationTests
 {
     public class DatabaseFixture
     {
