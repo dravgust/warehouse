@@ -75,7 +75,7 @@ const Warehouse = () => {
     <DashboardLayout>
       <DashboardNavbar />
       <SuiBox py={2}>
-        <Grid container spacing={3}>
+        <Grid container spacing={2}>
           <Grid item xs={12} md={4}>
             <Card>
               <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
@@ -104,7 +104,7 @@ const Warehouse = () => {
                 </SuiBox>
               </SuiBox>
               <SuiBox px={2}>
-                <Grid container spacing={3}>
+                <Grid container spacing={2}>
                   <Grid item xs={12}>
                     {currentSite && currentSite.products && (
                       <CanvasList
@@ -178,7 +178,7 @@ const Warehouse = () => {
                   </Card>
                 )}
                 {selectedView == 1 && Boolean(selectedBeacon) && (
-                  <Grid container spacing={3}>
+                  <Grid container spacing={2}>
                     <Grid item xs={12} md={6}>
                       <BeaconTelemetry item={selectedBeacon} />
                     </Grid>

@@ -9,7 +9,7 @@ import { format, formatDistance } from "date-fns";
 function Beacon({ macAddress = "n/a", name = "n/a", lastUpdate = "" }) {
   return (
     <Card sx={{ height: "100%" }}>
-      <SuiBox position="relative" height="100%" p={2} minHeight="275px">
+      <SuiBox position="relative" height="100%" p={2} minHeight="280px">
         <SuiBox
           display="flex"
           flexDirection="column"

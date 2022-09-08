@@ -1,4 +1,4 @@
-using System.Reactive.Joins;
+using System.Text.Json;
 using Vayosoft.Core.Caching;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.ValueObjects;
@@ -41,7 +41,7 @@ namespace Warehouse.Host
 
             while (!token.IsCancellationRequested)
             {
-                _logger.LogDebug("Worker running at: {time}", DateTimeOffset.Now);
+                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
 
                 using var scope = _serviceProvider.CreateScope();
                 var siteRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<WarehouseSiteEntity>>();
@@ -71,8 +71,21 @@ namespace Warehouse.Host
                             var gSite = await GetGenericSiteAsync(gwRepository, site, settings);
                             gSite.CalcBeaconsPosition();
 
+                            _logger.LogInformation("\r\n*************** CalcBeacons Position ***************\r\nProviderId: {0} SiteId:{1}:\r\n{2}\r\n******************************",
+                                providerId, gSite.Id, JsonSerializer.Serialize(gSite.Gateways.Select(g =>
+                                    new {
+                                        mac = g.MacAddress.Value,
+                                        gauge = new { mac = g.Gauge.MacAddress.Value, txPower = g.Gauge.TxPower, rssi = g.Gauge.Rssi, radius = g.Gauge.Radius },
+                                        beacons = g.Beacons.Select(b => new { mac = b.MacAddress.Value, rssi = b.Rssi, radius = b.Radius })
+                                    })));
+
                             var prevStatus = await statusRepository.FindAsync(gSite.Id, token);
                             var currentStatus = GetIndoorPositionStatus(gSite, prevStatus);
+
+                            _logger.LogInformation("\r\n*************** Site Status ***************\r\nProviderId: {0} SiteId:{1}:\r\n{2}\r\n******************************",
+                                providerId, gSite.Id,
+                                new { @in = currentStatus.In, @out = currentStatus.Out }.ToJson());
+
                             if (!string.IsNullOrEmpty(currentStatus.Id))
                                 await statusRepository.UpdateAsync(currentStatus, token);
                             else
@@ -140,6 +153,10 @@ namespace Warehouse.Host
                                 }
                             }
                         }
+
+                        _logger.LogInformation("\r\n*************** Warehouse Status ***************\r\nProviderId: {0}\r\n{1}\r\n******************************",
+                            providerId,
+                            new { @in = beaconsIn, @out = beaconsOut }.ToJson());
 
                         foreach (var (macAddress, site) in beaconsIn)
                         {

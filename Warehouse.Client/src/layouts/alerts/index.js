@@ -36,7 +36,7 @@ function WarehouseAlerts() {
     <DashboardLayout>
       <DashboardNavbar onSearch={onSearch} />
       <SuiBox mb={3} py={3}>
-        <Grid container spacing={3}>
+        <Grid container spacing={2}>
           <Grid item xs={12} lg={selectedItem ? 6 : 12}>
             <AlertList
               searchTerm={searchTerm}

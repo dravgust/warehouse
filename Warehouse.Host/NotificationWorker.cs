@@ -1,13 +1,6 @@
 using Vayosoft.Core.Caching;
 using Vayosoft.Core.Persistence;
-using Vayosoft.Core.SharedKernel.Entities;
-using Vayosoft.Core.SharedKernel.Events;
-using Vayosoft.Core.SharedKernel.ValueObjects;
-using Vayosoft.Core.Utilities;
-using Vayosoft.Data.MongoDB;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Persistence;
-using Warehouse.Core.UseCases.BeaconTracking.Events;
 
 namespace Warehouse.Host
 {
@@ -35,13 +28,14 @@ namespace Warehouse.Host
         {
             while (!token.IsCancellationRequested)
             {
-                _logger.LogInformation("Event worker running at: {time}", DateTimeOffset.Now);
+                _logger.LogDebug("Event worker running at: {time}", DateTimeOffset.Now);
 
                 using var scope = _serviceProvider.CreateScope(); 
                 var alertRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<AlertEntity>>();
                 var beaconReceivedRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<BeaconReceivedEntity>>();
                 var notifyReadRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<NotificationEntity>>();
                 var notificationRepository = scope.ServiceProvider.GetRequiredService<IRepository<NotificationEntity>>();
+                var beaconItemRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<BeaconEntity>>();
                 
                 try
                 {
@@ -51,13 +45,17 @@ namespace Warehouse.Host
                     foreach (var alert in alerts.Where(a => a.Enabled))
                     {
                         var result = await beaconReceivedRepository.ListAsync(b => 
-                            b.ReceivedAt < DateTime.UtcNow.AddSeconds(-alert.CheckPeriod), token);
+                            b.ReceivedAt < DateTime.UtcNow.AddSeconds(-alert.CheckPeriod) && b.ProviderId == alert.ProviderId, token);
 
                         if (result.Any())
                         {
                             //var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
                             foreach (var beacon in result)
                             {
+                                var beaconItem = await beaconItemRepository
+                                    .FirstOrDefaultAsync(q => q.Id.Equals(beacon.MacAddress), token);
+                                if(beaconItem == null) continue;
+
                                 //await eventBus.Publish(UserNotification.Create);
                                 var notified = await notifyReadRepository.SingleOrDefaultAsync(n => 
                                     n.AlertId == alert.Id && n.MacAddress == beacon.MacAddress, token);

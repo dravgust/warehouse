@@ -51,9 +51,9 @@ function Dashboard() {
     <DashboardLayout>
       <DashboardNavbar />
       <SuiBox mb={3} py={3}>
-        <Grid container spacing={3}>
+        <Grid container spacing={2}>
           <Grid item xs={12} md={12} lg={4} xl={4}>
-            <Stack spacing={3}>
+            <Stack spacing={2}>
               <Card>
                 <SuiBox p={3}>
                   <Tabs value={selectedView} onChange={handleChange} aria-label="navigation">
@@ -100,7 +100,7 @@ function Dashboard() {
             )}
           </Grid>
           <Grid item xs={12} md={12} lg={4} xl={4}>
-            <Stack spacing={3} direction={{ xs: "column" }} style={{ height: "100% " }}>
+            <Stack spacing={2} direction={{ xs: "column" }} style={{ height: "100% " }}>
               <PositionEvents searchTerm={selectedBeacon ? selectedBeacon.macAddress : ""} />
               <UserNotifications searchTerm={selectedBeacon ? selectedBeacon.macAddress : ""} />
             </Stack>
