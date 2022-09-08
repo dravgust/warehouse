@@ -9,37 +9,37 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{D93C441B-2A4
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1C76B171-C55B-49F6-B269-16B8CF027FF2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Data.MongoDB", "Vayosoft.Data.MongoDB\Vayosoft.Data.MongoDB.csproj", "{DD340776-3399-4E35-9544-199098A658E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Data.MongoDB", "lib\Vayosoft.Data.MongoDB\Vayosoft.Data.MongoDB.csproj", "{DD340776-3399-4E35-9544-199098A658E4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Data.EF.MySQL", "Vayosoft.Data.EF.MySQL\Vayosoft.Data.EF.MySQL.csproj", "{20C6708C-51F1-4B87-B2AF-9B93243690E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Data.EF.MySQL", "lib\Vayosoft.Data.EF.MySQL\Vayosoft.Data.EF.MySQL.csproj", "{20C6708C-51F1-4B87-B2AF-9B93243690E6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Core", "Vayosoft.Core\Vayosoft.Core.csproj", "{C7115E9F-5F26-4AFD-9175-224F10AC8FDA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Core", "lib\Vayosoft.Core\Vayosoft.Core.csproj", "{C7115E9F-5F26-4AFD-9175-224F10AC8FDA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse.Core", "Warehouse.Core\Warehouse.Core.csproj", "{5E4A111D-80E8-470F-B900-B037ACEF6B52}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.AutoMapper", "Vayosoft.AutoMapper\Vayosoft.AutoMapper.csproj", "{AB8D60A4-1D10-4677-8998-772BB46B78E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.AutoMapper", "lib\Vayosoft.AutoMapper\Vayosoft.AutoMapper.csproj", "{AB8D60A4-1D10-4677-8998-772BB46B78E2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Data.Redis", "Vayosoft.Data.Redis\Vayosoft.Data.Redis.csproj", "{6BFEDA15-CA11-4464-9D4B-3D04F7036EB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Data.Redis", "lib\Vayosoft.Data.Redis\Vayosoft.Data.Redis.csproj", "{6BFEDA15-CA11-4464-9D4B-3D04F7036EB9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Caching", "Vayosoft.Caching\Vayosoft.Caching.csproj", "{4994F452-9E0E-4F6F-A71E-2B16CE0E4164}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Caching", "lib\Vayosoft.Caching\Vayosoft.Caching.csproj", "{4994F452-9E0E-4F6F-A71E-2B16CE0E4164}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Data.Dapper.MySQL", "Vayosoft.Data.Dapper.MySQL\Vayosoft.Data.Dapper.MySQL.csproj", "{7C374C51-AECF-460E-B3CD-00F9AFE31F64}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Data.Dapper.MySQL", "lib\Vayosoft.Data.Dapper.MySQL\Vayosoft.Data.Dapper.MySQL.csproj", "{7C374C51-AECF-460E-B3CD-00F9AFE31F64}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.RestClient", "Vayosoft.RestClient\Vayosoft.RestClient.csproj", "{BD29A8C2-9BFB-4A35-B710-DF74D7013EF9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.RestClient", "lib\Vayosoft.RestClient\Vayosoft.RestClient.csproj", "{BD29A8C2-9BFB-4A35-B710-DF74D7013EF9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Http", "Vayosoft.Http\Vayosoft.Http.csproj", "{8BE1EF10-DDFD-4BB8-900B-4F0B52450025}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Http", "lib\Vayosoft.Http\Vayosoft.Http.csproj", "{8BE1EF10-DDFD-4BB8-900B-4F0B52450025}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Email", "Vayosoft.Email\Vayosoft.Email.csproj", "{E94FFD0C-263E-4621-8C48-9628EE745AF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Email", "lib\Vayosoft.Email\Vayosoft.Email.csproj", "{E94FFD0C-263E-4621-8C48-9628EE745AF7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.PushMessage", "Vayosoft.PushMessage\Vayosoft.PushMessage.csproj", "{07656B60-5547-4378-B283-81F49BD1C8B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.PushMessage", "lib\Vayosoft.PushMessage\Vayosoft.PushMessage.csproj", "{07656B60-5547-4378-B283-81F49BD1C8B1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Streaming", "Vayosoft.Streaming\Vayosoft.Streaming.csproj", "{F00C6D6E-DF95-48AE-84CA-B7727CF4A1B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Streaming", "lib\Vayosoft.Streaming\Vayosoft.Streaming.csproj", "{F00C6D6E-DF95-48AE-84CA-B7727CF4A1B0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Streaming.Redis", "Vayosoft.Streaming.Redis\Vayosoft.Streaming.Redis.csproj", "{39B1B412-256B-4F80-8481-0A995C9096BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Streaming.Redis", "lib\Vayosoft.Streaming.Redis\Vayosoft.Streaming.Redis.csproj", "{39B1B412-256B-4F80-8481-0A995C9096BD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Threading", "Vayosoft.Threading\Vayosoft.Threading.csproj", "{86F57A1C-370E-4A6E-967E-01718FF33B6D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Threading", "lib\Vayosoft.Threading\Vayosoft.Threading.csproj", "{86F57A1C-370E-4A6E-967E-01718FF33B6D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.IPS", "Vayosoft.IPS\Vayosoft.IPS.csproj", "{3907445A-378A-438B-9C70-B74120EF4F28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.IPS", "lib\Vayosoft.IPS\Vayosoft.IPS.csproj", "{3907445A-378A-438B-9C70-B74120EF4F28}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse.Host", "Warehouse.Host\Warehouse.Host.csproj", "{16977389-744D-42E4-914C-EC3DD4789371}"
 EndProject
@@ -56,7 +56,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		initial.sql = initial.sql
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Core.Testing", "Vayosoft.Core.Testing\Vayosoft.Core.Testing.csproj", "{B336C548-CE83-4B1C-B2E6-595C3CAC13A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Core.Testing", "lib\Vayosoft.Core.Testing\Vayosoft.Core.Testing.csproj", "{B336C548-CE83-4B1C-B2E6-595C3CAC13A0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse.FunctionalTests", "tests\Warehouse.FunctionalTests\Warehouse.FunctionalTests.csproj", "{12662D88-6CF0-497D-AF5C-9A6D9FB2DFB2}"
 EndProject
