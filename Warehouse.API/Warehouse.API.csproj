@@ -35,6 +35,7 @@
     <ProjectReference Include="..\Vayosoft.Caching\Vayosoft.Caching.csproj" />
     <ProjectReference Include="..\Vayosoft.Streaming.Redis\Vayosoft.Streaming.Redis.csproj" />
     <ProjectReference Include="..\Warehouse.Core\Warehouse.Core.csproj" />
+    <ProjectReference Include="..\Warehouse.Infrastructure\Warehouse.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

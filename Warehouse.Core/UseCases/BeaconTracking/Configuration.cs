@@ -10,7 +10,7 @@ using Warehouse.Core.UseCases.BeaconTracking.Queries;
 
 namespace Warehouse.Core.UseCases.BeaconTracking
 {
-    internal static class Configuration
+    public static class Configuration
     {
         public static IServiceCollection AddWarehouseTrackingServices(this IServiceCollection services) =>
             services

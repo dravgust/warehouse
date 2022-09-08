@@ -24,13 +24,12 @@
   <ItemGroup>
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.2.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.8" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Vayosoft.AutoMapper\Vayosoft.AutoMapper.csproj" />
     <ProjectReference Include="..\Vayosoft.Core\Vayosoft.Core.csproj" />
-    <ProjectReference Include="..\Vayosoft.Data.Dapper.MySQL\Vayosoft.Data.Dapper.MySQL.csproj" />
-    <ProjectReference Include="..\Vayosoft.Data.EF.MySQL\Vayosoft.Data.EF.MySQL.csproj" />
     <ProjectReference Include="..\Vayosoft.Data.MongoDB\Vayosoft.Data.MongoDB.csproj" />
     <ProjectReference Include="..\Vayosoft.Data.Redis\Vayosoft.Data.Redis.csproj" />
     <ProjectReference Include="..\Vayosoft.IPS\Vayosoft.IPS.csproj" />

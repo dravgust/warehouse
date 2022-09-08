@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Warehouse.Core.UseCases.Management.Models;
 using Warehouse.Core.UseCases.Management.Queries;
@@ -10,7 +9,7 @@ using Warehouse.Core.UseCases.Management.Commands;
 
 namespace Warehouse.Core.UseCases.Management
 { 
-    internal static class Configuration
+    public static class Configuration
     {
         public static IServiceCollection AddWarehouseManagementServices(this IServiceCollection services) =>
             services

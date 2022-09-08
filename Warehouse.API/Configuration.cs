@@ -12,12 +12,15 @@ using Warehouse.API.Services.Authorization;
 using Warehouse.API.Services.Localization;
 using Warehouse.API.TagHelpers;
 using Warehouse.API.UseCases.Resources;
-using Warehouse.Core;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
 using Warehouse.Core.UseCases.Administration;
 using Warehouse.Core.UseCases.Administration.Models;
+using Warehouse.Core.UseCases.BeaconTracking;
+using Warehouse.Core.UseCases.Management;
+using Warehouse.Infrastructure;
+using Warehouse.Infrastructure.Persistence;
 
 namespace Warehouse.API
 {
@@ -61,7 +64,10 @@ namespace Warehouse.API
 
             services.AddWarehouseDependencies(configuration);
 
-            services.AddWarehouseAdministrationServices();
+            services
+                .AddWarehouseAdministrationServices()
+                .AddWarehouseTrackingServices()
+                .AddWarehouseManagementServices();
 
             return services;
         }

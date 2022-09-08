@@ -1,8 +1,8 @@
 ﻿using Vayosoft.Caching;
 using Vayosoft.Core;
 using Vayosoft.Streaming.Redis;
-using Warehouse.Core;
 using Warehouse.Core.Services;
+using Warehouse.Infrastructure;
 
 namespace Warehouse.Host
 {
