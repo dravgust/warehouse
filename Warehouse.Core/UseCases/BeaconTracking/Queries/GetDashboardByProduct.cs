@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Vayosoft.Core.Persistence;
+﻿using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Queries;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services;
@@ -73,9 +72,9 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
             }
 
 
-            foreach (var siteItemGroup in items.GroupBy(s => s.Key.Item1))
+            foreach (var productGroup in items.GroupBy(s => s.Key.Item1))
             {
-                var product = await _products.FirstOrDefaultAsync(p => p.Id == siteItemGroup.Key, cancellationToken);
+                var product = await _products.FirstOrDefaultAsync(p => p.Id == productGroup.Key, cancellationToken);
                 if (product != null)
                 {
                     var dashboardByProduct = new DashboardByProduct
@@ -84,7 +83,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
                         Name = product.Name,
                         Sites = new List<SiteItem>()
                     };
-                    foreach (var groupValue in siteItemGroup)
+                    foreach (var groupValue in productGroup)
                     {
                         dashboardByProduct.Sites.Add(groupValue.Value);
                     }
@@ -93,7 +92,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
                 }
             }
 
-            return result;
+            return result.OrderBy(s => s.Name);
         }
     }
 }

@@ -40,6 +40,12 @@ public class HandleGetDashboardBySite : IQueryHandler<GetDashboardBySite, IEnume
         var sites = await _sites.ListAsync(s => s.ProviderId == providerId, cancellationToken);
         foreach (var site in sites)
         {
+            var dashboardBySite = new DashboardBySite
+            {
+                Id = site.Id,
+                Name = site.Name,
+                Products = new List<ProductItem>(),
+            };
             var status = await _statuses.FindAsync(site.Id, cancellationToken);
             if (status != null)
             {
@@ -74,20 +80,14 @@ public class HandleGetDashboardBySite : IQueryHandler<GetDashboardBySite, IEnume
                     }
                 }
 
-                var dashboardBySite = new DashboardBySite
-                {
-                    Id = site.Id,
-                    Name = site.Name,
-                    Products = new List<ProductItem>(),
-                };
                 foreach (var item in items)
                 {
                     dashboardBySite.Products.Add(item.Value);
                 }
-                result.Add(dashboardBySite);
             }
-            
+
+            result.Add(dashboardBySite);
         }
-        return result;
+        return result.OrderBy(s => s.Name);
     }
 }
