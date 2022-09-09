@@ -12,9 +12,9 @@ namespace Warehouse.Core.UseCases.Management.Queries
     internal class HandleGetProductMetadata : IQueryHandler<GetProductMetadata, ProductMetadata>
     {
         private readonly IDistributedMemoryCache _cache;
-        private readonly IRepository<FileEntity> _fileRepository;
+        private readonly IRepositoryBase<FileEntity> _fileRepository;
 
-        public HandleGetProductMetadata(IRepository<FileEntity> fileRepository, IDistributedMemoryCache cache)
+        public HandleGetProductMetadata(IRepositoryBase<FileEntity> fileRepository, IDistributedMemoryCache cache)
         {
             _fileRepository = fileRepository;
             _cache = cache;

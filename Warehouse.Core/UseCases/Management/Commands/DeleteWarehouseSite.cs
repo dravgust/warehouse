@@ -23,11 +23,11 @@ namespace Warehouse.Core.UseCases.Management.Commands
 
     internal class HandleDeleteWarehouseSite : ICommandHandler<DeleteWarehouseSite>
     {
-        private readonly IRepository<WarehouseSiteEntity> _repository;
+        private readonly IRepositoryBase<WarehouseSiteEntity> _repository;
         private readonly IUserContext _userContext;
         private readonly IEventBus _eventBus;
 
-        public HandleDeleteWarehouseSite(IRepository<WarehouseSiteEntity> repository, IEventBus eventBus, IUserContext userContext)
+        public HandleDeleteWarehouseSite(IRepositoryBase<WarehouseSiteEntity> repository, IEventBus eventBus, IUserContext userContext)
         {
             _repository = repository;
             _eventBus = eventBus;

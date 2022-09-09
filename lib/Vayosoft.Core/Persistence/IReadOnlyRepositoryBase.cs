@@ -8,15 +8,13 @@ using Vayosoft.Core.SharedKernel.Models.Pagination;
 
 namespace Vayosoft.Core.Persistence
 {
-    public interface IReadOnlyRepository<T> where T : class
+    public interface IReadOnlyRepositoryBase<T> where T : class
     {
         public IQueryable<T> AsQueryable();
 
         Task<T> FindAsync<TId>(TId id, CancellationToken cancellationToken = default) where TId : notnull;
-        Task<T> GetAsync<TId>(TId id, CancellationToken cancellationToken = default) where TId : notnull;
 
         Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default);
-
         Task<T> SingleOrDefaultAsync(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default);
 
         Task<List<T>> ListAsync(CancellationToken cancellationToken = default);

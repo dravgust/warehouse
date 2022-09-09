@@ -40,10 +40,10 @@ namespace Warehouse.Core.UseCases.Management.Queries
 
     internal class HandleGetProducts : IQueryHandler<GetProducts, IPagedEnumerable<ProductEntity>>
     {
-        private readonly IReadOnlyRepository<ProductEntity> _repository;
+        private readonly IReadOnlyRepositoryBase<ProductEntity> _repository;
         private readonly IUserContext _userContext;
 
-        public HandleGetProducts(IReadOnlyRepository<ProductEntity> repository, IUserContext userContext)
+        public HandleGetProducts(IReadOnlyRepositoryBase<ProductEntity> repository, IUserContext userContext)
         {
             this._repository = repository;
             _userContext = userContext;

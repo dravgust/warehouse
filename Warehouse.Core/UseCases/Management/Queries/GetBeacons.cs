@@ -31,16 +31,16 @@ namespace Warehouse.Core.UseCases.Management.Queries
 
     internal class HandleGetProductItems : IQueryHandler<GetBeacons, IPagedEnumerable<ProductItemDto>>
     {
-        private readonly IReadOnlyRepository<BeaconRegisteredEntity> _beaconsRegistered;
-        private readonly IReadOnlyRepository<BeaconEntity> _beacons;
-        private readonly IReadOnlyRepository<ProductEntity> _products;
+        private readonly IReadOnlyRepositoryBase<BeaconRegisteredEntity> _beaconsRegistered;
+        private readonly IReadOnlyRepositoryBase<BeaconEntity> _beacons;
+        private readonly IReadOnlyRepositoryBase<ProductEntity> _products;
         private readonly IUserContext _userContext;
         private readonly IMapper _mapper;
 
         public HandleGetProductItems(
-            IReadOnlyRepository<BeaconRegisteredEntity> beaconsRegistered,
-            IReadOnlyRepository<BeaconEntity> beacons,
-            IReadOnlyRepository<ProductEntity> products,
+            IReadOnlyRepositoryBase<BeaconRegisteredEntity> beaconsRegistered,
+            IReadOnlyRepositoryBase<BeaconEntity> beacons,
+            IReadOnlyRepositoryBase<ProductEntity> products,
             IMapper mapper, IUserContext userContext)
         {
             _beacons = beacons;

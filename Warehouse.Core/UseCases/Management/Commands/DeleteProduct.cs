@@ -24,12 +24,12 @@ namespace Warehouse.Core.UseCases.Management.Commands
 
     public class HandleDeleteProduct : ICommandHandler<DeleteProduct>
     {
-        private readonly IRepository<ProductEntity> _repository;
+        private readonly IRepositoryBase<ProductEntity> _repository;
         private readonly IUserContext _userContext;
         private readonly IEventBus _eventBus;
 
         public HandleDeleteProduct(
-            IRepository<ProductEntity> repository,
+            IRepositoryBase<ProductEntity> repository,
             IUserContext userContext,
             IEventBus eventBus)
         {

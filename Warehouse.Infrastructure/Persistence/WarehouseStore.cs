@@ -14,7 +14,7 @@ namespace Warehouse.Infrastructure.Persistence
         private readonly IMongoConnection _connection;
         private readonly IServiceScope _scope;
         private readonly IMapper _mapper;
-        private readonly Dictionary<string, IReadOnlyRepository<IEntity>> _repositories = new();
+        private readonly Dictionary<string, IReadOnlyRepositoryBase<IEntity>> _repositories = new();
 
         public WarehouseStore(IMongoConnection connection, IServiceProvider serviceProvider, IMapper mapper)
         {
@@ -23,19 +23,19 @@ namespace Warehouse.Infrastructure.Persistence
             _mapper = mapper;
         }
 
-        protected IReadOnlyRepository<T> Repository<T>() where T : class, IEntity
+        protected IReadOnlyRepositoryBase<T> Repository<T>() where T : class, IEntity
         {
             var key = typeof(T).Name;
             if (_repositories.ContainsKey(key))
-                return (IReadOnlyRepository<T>) _repositories[key];
+                return (IReadOnlyRepositoryBase<T>) _repositories[key];
 
-            var r = _scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<T>>();
-            _repositories.Add(key, (IReadOnlyRepository<IEntity>) r);
+            var r = _scope.ServiceProvider.GetRequiredService<IReadOnlyRepositoryBase<T>>();
+            _repositories.Add(key, (IReadOnlyRepositoryBase<IEntity>) r);
 
             return r;
         }
 
-        public IReadOnlyRepository<WarehouseSiteEntity> Sites => 
+        public IReadOnlyRepositoryBase<WarehouseSiteEntity> Sites => 
             Repository<WarehouseSiteEntity>();
 
         public IQueryable<T> Set<T>() where T : class, IEntity => 

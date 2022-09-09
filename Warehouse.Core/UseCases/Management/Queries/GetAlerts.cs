@@ -39,10 +39,10 @@ namespace Warehouse.Core.UseCases.Management.Queries
 
     internal class HandleGetAlerts : IQueryHandler<GetAlerts, IPagedEnumerable<AlertEntity>>
     {
-        private readonly IReadOnlyRepository<AlertEntity> _repository;
+        private readonly IReadOnlyRepositoryBase<AlertEntity> _repository;
         private readonly IUserContext _userContext;
 
-        public HandleGetAlerts(IReadOnlyRepository<AlertEntity> repository, IUserContext userContext)
+        public HandleGetAlerts(IReadOnlyRepositoryBase<AlertEntity> repository, IUserContext userContext)
         {
             this._repository = repository;
             _userContext = userContext;

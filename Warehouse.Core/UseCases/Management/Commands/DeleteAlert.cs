@@ -20,9 +20,9 @@ namespace Warehouse.Core.UseCases.Management.Commands
 
     internal class HandleDeleteAlert : ICommandHandler<DeleteAlert>
     {
-        private readonly IRepository<AlertEntity> _repository;
+        private readonly IRepositoryBase<AlertEntity> _repository;
 
-        public HandleDeleteAlert(IRepository<AlertEntity> repository)
+        public HandleDeleteAlert(IRepositoryBase<AlertEntity> repository)
         {
             _repository = repository;
         }

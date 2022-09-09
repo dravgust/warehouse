@@ -26,10 +26,10 @@ namespace Warehouse.Core.UseCases.Management.Commands
 
     internal class HandleSetGatewayToSite : ICommandHandler<SetGatewayToSite>
     {
-        private readonly IRepository<WarehouseSiteEntity> _repository;
+        private readonly IRepositoryBase<WarehouseSiteEntity> _repository;
         private readonly IMapper _mapper;
 
-        public HandleSetGatewayToSite(IRepository<WarehouseSiteEntity> repository, IMapper mapper)
+        public HandleSetGatewayToSite(IRepositoryBase<WarehouseSiteEntity> repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;

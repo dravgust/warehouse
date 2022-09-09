@@ -12,17 +12,17 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 
     internal class HandleGetDashboardByProduct : IQueryHandler<GetDashboardByProduct, IEnumerable<DashboardByProduct>>
     {
-        private readonly IReadOnlyRepository<IndoorPositionStatusEntity> _statuses;
-        private readonly IReadOnlyRepository<WarehouseSiteEntity> _sites;
-        private readonly IReadOnlyRepository<BeaconEntity> _beacons;
-        private readonly IReadOnlyRepository<ProductEntity> _products;
+        private readonly IReadOnlyRepositoryBase<IndoorPositionStatusEntity> _statuses;
+        private readonly IReadOnlyRepositoryBase<WarehouseSiteEntity> _sites;
+        private readonly IReadOnlyRepositoryBase<BeaconEntity> _beacons;
+        private readonly IReadOnlyRepositoryBase<ProductEntity> _products;
         private readonly IUserContext _userContext;
 
         public HandleGetDashboardByProduct(
-            IReadOnlyRepository<IndoorPositionStatusEntity> statuses,
-            IReadOnlyRepository<WarehouseSiteEntity> sites,
-            IReadOnlyRepository<BeaconEntity> beacons,
-            IReadOnlyRepository<ProductEntity> products,
+            IReadOnlyRepositoryBase<IndoorPositionStatusEntity> statuses,
+            IReadOnlyRepositoryBase<WarehouseSiteEntity> sites,
+            IReadOnlyRepositoryBase<BeaconEntity> beacons,
+            IReadOnlyRepositoryBase<ProductEntity> products,
             IUserContext userContext)
         {
             _statuses = statuses;

@@ -35,17 +35,17 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 
     public class HandleGetBeaconPosition : IQueryHandler<GetBeaconPosition, ICollection<BeaconPosition>>
     {
-        private readonly IReadOnlyRepository<WarehouseSiteEntity> _sites;
-        private readonly IReadOnlyRepository<GatewayPayload> _payloads;
-        private readonly IReadOnlyRepository<IpsSettings> _settings;
+        private readonly IReadOnlyRepositoryBase<WarehouseSiteEntity> _sites;
+        private readonly IReadOnlyRepositoryBase<GatewayPayload> _payloads;
+        private readonly IReadOnlyRepositoryBase<IpsSettings> _settings;
         private readonly IUserContext _userContext;
         private readonly IDistributedMemoryCache _cache;
 
         public HandleGetBeaconPosition(
-            IReadOnlyRepository<WarehouseSiteEntity> sites,
-            IReadOnlyRepository<GatewayPayload> payloads,
+            IReadOnlyRepositoryBase<WarehouseSiteEntity> sites,
+            IReadOnlyRepositoryBase<GatewayPayload> payloads,
             IUserContext userContext, IDistributedMemoryCache cache,
-            IReadOnlyRepository<IpsSettings> settings)
+            IReadOnlyRepositoryBase<IpsSettings> settings)
         {
             _sites = sites;
             _payloads = payloads;
@@ -83,7 +83,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
         }
 
         private static async Task<GenericSite> GetGenericSiteAsync(MacAddress macAddress,
-            IReadOnlyRepository<GatewayPayload> repository, WarehouseSiteEntity site, IpsSettings settings)
+            IReadOnlyRepositoryBase<GatewayPayload> repository, WarehouseSiteEntity site, IpsSettings settings)
         {
             var gSite = new GenericSite(site.Id)
             {

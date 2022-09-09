@@ -11,10 +11,10 @@ namespace Warehouse.Core.UseCases.Management.Queries
 
     public class HandleGetRegisteredBeaconList : IQueryHandler<GetRegisteredBeaconList, IEnumerable<string>>
     {
-        private readonly IReadOnlyRepository<BeaconRegisteredEntity> _repository;
+        private readonly IReadOnlyRepositoryBase<BeaconRegisteredEntity> _repository;
         private readonly IDistributedMemoryCache _cache;
 
-        public HandleGetRegisteredBeaconList(IReadOnlyRepository<BeaconRegisteredEntity> repository, IDistributedMemoryCache cache)
+        public HandleGetRegisteredBeaconList(IReadOnlyRepositoryBase<BeaconRegisteredEntity> repository, IDistributedMemoryCache cache)
         {
             _repository = repository;
             _cache = cache;

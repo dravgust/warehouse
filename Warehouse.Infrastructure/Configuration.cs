@@ -45,18 +45,18 @@ namespace Warehouse.Infrastructure
                 provider => provider.GetRequiredService<AutoMapperWrapper>());
 
 
-            services.AddMySqlContext<WarehouseContext>(configuration)
+            services.AddMySqlContext<AppDbContext>(configuration)
                 .AddScoped<DbConnection>() //add dapper
-                .AddScoped<IUnitOfWork>(s => s.GetRequiredService<WarehouseContext>())
-                .AddScoped<ILinqProvider>(s => s.GetRequiredService<WarehouseContext>());
+                .AddScoped<IUnitOfWork>(s => s.GetRequiredService<AppDbContext>())
+                .AddScoped<ILinqProvider>(s => s.GetRequiredService<AppDbContext>());
 
             services.AddMongoContext(() =>
                 {
                     AutoRegistration.RegisterClassMap(Assembly.GetExecutingAssembly());
                     BsonSerializer.RegisterSerializer(typeof(MacAddress), new MacAddressSerializer());
                 })
-                .AddScoped(typeof(IRepository<>), typeof(MongoRepository<>))
-                .AddScoped(typeof(IReadOnlyRepository<>), typeof(MongoRepository<>))
+                .AddScoped(typeof(IRepositoryBase<>), typeof(MongoRepositoryBase<>))
+                .AddScoped(typeof(IReadOnlyRepositoryBase<>), typeof(MongoRepositoryBase<>))
                 .AddScoped<WarehouseStore>();
 
             services

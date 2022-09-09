@@ -7,9 +7,9 @@ namespace Warehouse.Infrastructure.Persistence
 {
     public class UserStore : IUserStore<UserEntity>, IUserRoleStore
     {
-        private readonly WarehouseContext _context;
+        private readonly AppDbContext _context;
 
-        public UserStore(WarehouseContext context)
+        public UserStore(AppDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }

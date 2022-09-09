@@ -44,11 +44,11 @@ namespace Warehouse.IntegrationTests
             }
         }
 
-        public WarehouseContext CreateContext()
+        public AppDbContext CreateContext()
         {
             var (connectionString, serverVersion, loggerFactory) = _options;
-            return new WarehouseContext(
-                new DbContextOptionsBuilder<WarehouseContext>()
+            return new AppDbContext(
+                new DbContextOptionsBuilder<AppDbContext>()
                     .UseMySql(connectionString, serverVersion).Options, loggerFactory);
         }
             

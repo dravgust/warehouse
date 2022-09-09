@@ -20,9 +20,9 @@ namespace Warehouse.Core.UseCases.Management.Commands
 
     internal class HandleDeleteBeacon : ICommandHandler<DeleteBeacon>
     {
-        private readonly IRepository<BeaconEntity> _repository;
+        private readonly IRepositoryBase<BeaconEntity> _repository;
 
-        public HandleDeleteBeacon(IRepository<BeaconEntity> repository)
+        public HandleDeleteBeacon(IRepositoryBase<BeaconEntity> repository)
         {
             _repository = repository;
         }

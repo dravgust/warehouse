@@ -15,16 +15,16 @@ namespace Warehouse.Core.UseCases.Management.Commands
 
     internal class HandleSetBeacon : ICommandHandler<SetBeacon>
     {
-        private readonly IReadOnlyRepository<BeaconRegisteredEntity> _beaconsRegisteredR;
-        private readonly IRepository<BeaconRegisteredEntity> _beaconsRegistered;
-        private readonly IRepository<BeaconEntity> _beacons;
+        private readonly IReadOnlyRepositoryBase<BeaconRegisteredEntity> _beaconsRegisteredR;
+        private readonly IRepositoryBase<BeaconRegisteredEntity> _beaconsRegistered;
+        private readonly IRepositoryBase<BeaconEntity> _beacons;
         private readonly IUserContext _userContext;
         private readonly IMapper _mapper;
 
         public HandleSetBeacon(
-            IRepository<BeaconEntity> beacons,
-            IRepository<BeaconRegisteredEntity> beaconsRegistered,
-            IReadOnlyRepository<BeaconRegisteredEntity> beaconsRegisteredR,
+            IRepositoryBase<BeaconEntity> beacons,
+            IRepositoryBase<BeaconRegisteredEntity> beaconsRegistered,
+            IReadOnlyRepositoryBase<BeaconRegisteredEntity> beaconsRegisteredR,
             IMapper mapper, IUserContext userContext)
         {
             _beacons = beacons;

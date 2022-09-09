@@ -31,11 +31,11 @@ namespace Warehouse.Host
                 _logger.LogDebug("Event worker running at: {time}", DateTimeOffset.Now);
 
                 using var scope = _serviceProvider.CreateScope(); 
-                var alertRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<AlertEntity>>();
-                var beaconReceivedRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<BeaconReceivedEntity>>();
-                var notifyReadRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<NotificationEntity>>();
-                var notificationRepository = scope.ServiceProvider.GetRequiredService<IRepository<NotificationEntity>>();
-                var beaconItemRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<BeaconEntity>>();
+                var alertRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepositoryBase<AlertEntity>>();
+                var beaconReceivedRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepositoryBase<BeaconReceivedEntity>>();
+                var notifyReadRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepositoryBase<NotificationEntity>>();
+                var notificationRepository = scope.ServiceProvider.GetRequiredService<IRepositoryBase<NotificationEntity>>();
+                var beaconItemRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepositoryBase<BeaconEntity>>();
                 
                 try
                 {

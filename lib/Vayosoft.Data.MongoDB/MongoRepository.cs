@@ -12,11 +12,11 @@ using Vayosoft.Core.SharedKernel.Models.Pagination;
 
 namespace Vayosoft.Data.MongoDB
 {
-    public class MongoRepository<T> : IRepository<T>, IReadOnlyRepository<T> where T : class, IEntity
+    public class MongoRepositoryBase<T> : IRepositoryBase<T> where T : class, IEntity
     {
         protected readonly IMongoCollection<T> Collection;
 
-        public MongoRepository(IMongoConnection connection) =>
+        public MongoRepositoryBase(IMongoConnection connection) =>
             Collection = connection.Collection<T>(CollectionName.For<T>());
 
         public IQueryable<T> AsQueryable() => Collection.AsQueryable();

@@ -40,10 +40,10 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 
     internal class HandleGetNotifications : IQueryHandler<GetUserNotifications, IPagedEnumerable<NotificationEntity>>
     {
-        private readonly IReadOnlyRepository<NotificationEntity> _repository;
+        private readonly IReadOnlyRepositoryBase<NotificationEntity> _repository;
         private readonly IUserContext _userContext;
 
-        public HandleGetNotifications(IReadOnlyRepository<NotificationEntity> repository, IUserContext userContext)
+        public HandleGetNotifications(IReadOnlyRepositoryBase<NotificationEntity> repository, IUserContext userContext)
         {
             this._repository = repository;
             _userContext = userContext;

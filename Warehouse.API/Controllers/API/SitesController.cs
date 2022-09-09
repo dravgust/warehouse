@@ -16,12 +16,12 @@ namespace Warehouse.API.Controllers.API
     [ApiController]
     public class SitesController : ControllerBase
     {
-        private readonly IRepository<WarehouseSiteEntity> _siteRepository;
+        private readonly IRepositoryBase<WarehouseSiteEntity> _siteRepository;
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
 
         public SitesController(
-            IRepository<WarehouseSiteEntity> siteRepository,
+            IRepositoryBase<WarehouseSiteEntity> siteRepository,
             IQueryBus queryBus, ICommandBus commandBus)
         {
             _siteRepository = siteRepository;
