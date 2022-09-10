@@ -9,10 +9,10 @@ using Warehouse.API.Services.ExceptionHandling.Models;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Entities.Models.Security;
 using Warehouse.Core.Services;
+using Warehouse.Core.Services.Security;
 using Warehouse.Core.UseCases.Administration.Commands;
 using Warehouse.Core.UseCases.Administration.Specifications;
 using Warehouse.Core.UseCases.Management.Models;
-using Warehouse.Core.Utilities;
 
 namespace Warehouse.API.Controllers.API
 {

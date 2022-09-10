@@ -8,8 +8,8 @@ using Vayosoft.IPS.Domain;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Entities.Models.Payloads;
 using Warehouse.Core.Services;
+using Warehouse.Core.Services.Security;
 using Warehouse.Core.UseCases.BeaconTracking.Models;
-using Warehouse.Core.Utilities;
 
 namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 {

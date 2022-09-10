@@ -37,6 +37,7 @@
 
   <ItemGroup>
     <Folder Include="UseCases\BeaconTracking\Specifications\" />
+    <Folder Include="Utilities\" />
   </ItemGroup>
 
 </Project>

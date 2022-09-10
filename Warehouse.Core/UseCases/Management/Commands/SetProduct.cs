@@ -5,8 +5,8 @@ using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services;
+using Warehouse.Core.Services.Security;
 using Warehouse.Core.UseCases.Management.Models;
-using Warehouse.Core.Utilities;
 
 namespace Warehouse.Core.UseCases.Management.Commands
 {

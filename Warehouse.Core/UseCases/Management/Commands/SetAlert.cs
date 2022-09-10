@@ -3,7 +3,7 @@ using Vayosoft.Core.Commands;
 using Vayosoft.Core.Persistence;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services;
-using Warehouse.Core.Utilities;
+using Warehouse.Core.Services.Security;
 
 namespace Warehouse.Core.UseCases.Management.Commands
 {

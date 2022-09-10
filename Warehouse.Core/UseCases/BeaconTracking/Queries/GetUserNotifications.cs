@@ -4,7 +4,7 @@ using Vayosoft.Core.SharedKernel.Models;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services;
-using Warehouse.Core.Utilities;
+using Warehouse.Core.Services.Security;
 
 namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 {

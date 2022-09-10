@@ -8,7 +8,7 @@ using Warehouse.API.Services.ExceptionHandling.Models;
 using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Models.Security;
 using Warehouse.Core.Services;
-using Warehouse.Core.Utilities;
+using Warehouse.Core.Services.Security;
 
 //https://docs.microsoft.com/ru-ru/aspnet/core/fundamentals/app-state?cid=kerryherger&view=aspnetcore-6.0
 //https://metanit.com/sharp/aspnet5/2.26.php?ysclid=l67iov921a229435244

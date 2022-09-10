@@ -7,7 +7,7 @@ using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Events;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services.Providers;
-using Warehouse.Core.Utilities;
+using Warehouse.Core.Services.Security;
 
 namespace Warehouse.Core.UseCases.Management.Events
 {

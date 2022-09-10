@@ -9,7 +9,7 @@ using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Exceptions;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
-using Warehouse.Core.Utilities;
+using Warehouse.Core.Services.Security;
 
 namespace Warehouse.Core.UseCases.Administration.Commands;
 

@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace Warehouse.Core.Utilities
+namespace Warehouse.Core.Services.Security
 {
     public static class PrincipalExtensions
     {

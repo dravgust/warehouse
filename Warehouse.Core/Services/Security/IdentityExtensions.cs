@@ -2,7 +2,7 @@
 using System.Security.Principal;
 using Warehouse.Core.Entities.Enums;
 
-namespace Warehouse.Core.Utilities
+namespace Warehouse.Core.Services.Security
 {
     public static class IdentityExtensions
     {
@@ -13,7 +13,7 @@ namespace Warehouse.Core.Utilities
 
             return claim == null ? 0 : long.Parse(claim.Value);
         }
-        
+
         public static long GetUserId(this IIdentity identity)
         {
             var claimsIdentity = identity as ClaimsIdentity;

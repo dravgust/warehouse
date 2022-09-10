@@ -6,7 +6,7 @@ using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Entities.Models.Security;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
-using Warehouse.Core.Utilities;
+using Warehouse.Core.Services.Security;
 
 namespace Warehouse.API.Services
 {
