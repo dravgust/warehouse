@@ -3,6 +3,7 @@ using Vayosoft.Core.Commands;
 using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
+using Warehouse.API.Contracts;
 using Warehouse.API.Services.Authorization.Attributes;
 using Warehouse.API.Services.ExceptionHandling.Models;
 using Warehouse.Core.Entities.Models;

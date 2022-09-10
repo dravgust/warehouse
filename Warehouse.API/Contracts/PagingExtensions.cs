@@ -1,7 +1,7 @@
 ﻿using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Warehouse.Core.UseCases.Management.Models;
 
-namespace Warehouse.Core.Utilities
+namespace Warehouse.API.Contracts
 {
     public static class PagedListExtensions
     {

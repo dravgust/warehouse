@@ -3,11 +3,11 @@ using Vayosoft.Core.Commands;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.Utilities;
+using Warehouse.API.Contracts;
 using Warehouse.API.Services.Authorization.Attributes;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Management.Commands;
 using Warehouse.Core.UseCases.Management.Queries;
-using Warehouse.Core.Utilities;
 
 namespace Warehouse.API.Controllers.API
 {
