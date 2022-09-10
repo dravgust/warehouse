@@ -4,9 +4,9 @@ using Warehouse.Core.Entities.Models.Security;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.UseCases.Administration.Models;
 
-namespace Warehouse.Core.Services
+namespace Warehouse.Core.Services.Authentication
 {
-    public class UserService : IUserService
+    public class AuthService : IAuthService
     {
         private readonly IUserStore<UserEntity> _userStore;
 
@@ -14,7 +14,7 @@ namespace Warehouse.Core.Services
         private readonly IJwtService _jwtUtils;
         private readonly AppSettings _appSettings;
 
-        public UserService(
+        public AuthService(
             IPasswordHasher passwordHasher,
             IJwtService jwtUtils,
             IOptions<AppSettings> appSettings,
@@ -26,10 +26,10 @@ namespace Warehouse.Core.Services
             _appSettings = appSettings.Value;
         }
 
-        public async Task<AuthenticateResult> AuthenticateAsync(AuthenticateRequest model, string ipAddress, CancellationToken cancellationToken)
+        public async Task<AuthResult> AuthenticateAsync(string username, string password, string ipAddress, CancellationToken cancellationToken)
         {
-            var user = await _userStore.FindByNameAsync(model.Email, cancellationToken);
-            if (user == null || !_passwordHasher.VerifyHashedPassword(user.PasswordHash, model.Password))
+            var user = await _userStore.FindByNameAsync(username, cancellationToken);
+            if (user == null || !_passwordHasher.VerifyHashedPassword(user.PasswordHash, password))
                 throw new ApplicationException("Username or password is incorrect");
 
             // authentication successful so generate jwt and refresh tokens
@@ -48,10 +48,10 @@ namespace Warehouse.Core.Services
             // save changes to db
             await _userStore.UpdateAsync(user, cancellationToken);
 
-            return new AuthenticateResult(user, roles, jwtToken, refreshToken.Token, refreshToken.Expires);
+            return new AuthResult(user, roles, jwtToken, refreshToken.Token, refreshToken.Expires);
         }
 
-        public async Task<AuthenticateResult> RefreshTokenAsync(string token, string ipAddress, CancellationToken cancellationToken)
+        public async Task<AuthResult> RefreshTokenAsync(string token, string ipAddress, CancellationToken cancellationToken)
         {
             var user = await _userStore.FindByRefreshTokenAsync(token, cancellationToken);
             if (user == null)
@@ -86,7 +86,7 @@ namespace Warehouse.Core.Services
             }
             var jwtToken = _jwtUtils.GenerateJwtToken(user, roles);
 
-            return new AuthenticateResult(user, roles, jwtToken, newRefreshToken.Token, newRefreshToken.Expires);
+            return new AuthResult(user, roles, jwtToken, newRefreshToken.Token, newRefreshToken.Expires);
         }
 
         public async Task RevokeTokenAsync(string token, string ipAddress, CancellationToken cancellationToken)
@@ -103,14 +103,6 @@ namespace Warehouse.Core.Services
             RevokeRefreshToken(refreshToken, ipAddress, "Revoked without replacement");
             // save changes to db
             await _userStore.UpdateAsync(user, cancellationToken);
-        }
-
-        public async Task<IUser> GetByUserNameAsync(string username, CancellationToken cancellationToken)
-        {
-            var user = await _userStore.FindByNameAsync(username, cancellationToken);
-            if (user == null)
-                throw new ApplicationException("Invalid user");
-            return user;
         }
 
         private RefreshToken RotateRefreshToken(RefreshToken refreshToken, string ipAddress)
@@ -134,9 +126,9 @@ namespace Warehouse.Core.Services
             if (!string.IsNullOrEmpty(refreshToken.ReplacedByToken))
             {
                 var childToken = user.RefreshTokens.SingleOrDefault(x => x.Token == refreshToken.ReplacedByToken);
-                if (childToken is {IsActive: true})
+                if (childToken is { IsActive: true })
                     RevokeRefreshToken(childToken, ipAddress, reason);
-                else if(childToken != null)
+                else if (childToken != null)
                     RevokeDescendantRefreshTokens(childToken, user, ipAddress, reason);
             }
         }

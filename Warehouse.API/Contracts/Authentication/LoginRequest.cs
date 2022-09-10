@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Warehouse.Core.UseCases.Administration.Models
+namespace Warehouse.API.Contracts.Authentication
 {
-    public class AuthenticateRequest
+    public class LoginRequest
     {
         [Required]
         [EmailAddress]

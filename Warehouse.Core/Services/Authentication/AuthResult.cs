@@ -2,9 +2,9 @@
 using Warehouse.Core.Entities.Models.Security;
 using Warehouse.Core.Entities.Models;
 
-namespace Warehouse.Core.UseCases.Administration.Models
+namespace Warehouse.Core.Services.Authentication
 {
-    public class AuthenticateResult
+    public class AuthResult
     {
         public IUser User { get; set; }
         [JsonIgnore]
@@ -15,7 +15,7 @@ namespace Warehouse.Core.UseCases.Administration.Models
         [JsonIgnore] // refresh token is returned in http only cookie
         public string RefreshToken { get; set; }
 
-        public AuthenticateResult(IUser user, IList<RoleDTO> roles, string jwtToken, string refreshToken, DateTime expirationTime)
+        public AuthResult(IUser user, IList<RoleDTO> roles, string jwtToken, string refreshToken, DateTime expirationTime)
         {
             User = user;
             Roles = roles;

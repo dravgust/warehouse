@@ -4,13 +4,15 @@ using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Caching;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.Utilities;
+using Warehouse.API.Contracts.Authentication;
 using Warehouse.API.Resources;
 using Warehouse.API.UseCases.Resources;
-using Warehouse.Core.Services;
 using Warehouse.Core.UseCases.Administration.Models;
 using Warehouse.API.Services.Authorization.Attributes;
 using Warehouse.API.Extensions;
 using Warehouse.API.Services.ExceptionHandling.Models;
+using Warehouse.Core.Services.Authentication;
+
 
 namespace Warehouse.API.Controllers.API
 {
@@ -22,11 +24,11 @@ namespace Warehouse.API.Controllers.API
     [ApiVersion("1.0")]
     public class AccountController : ControllerBase
     {
-        private readonly IUserService _userService;
+        private readonly IAuthService _userService;
         private readonly IQueryBus _queryBus;
         private readonly IDistributedMemoryCache _cache;
 
-        public AccountController(IUserService userService, IQueryBus queryBus, IDistributedMemoryCache cache)
+        public AccountController(IAuthService userService, IQueryBus queryBus, IDistributedMemoryCache cache)
         {
             _userService = userService;
             _queryBus = queryBus;
@@ -45,18 +47,18 @@ namespace Warehouse.API.Controllers.API
             return Ok(new { user, resources });
         }
 
-        [ProducesResponseType(typeof(AuthenticateResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AuthenticationResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<ActionResult<AuthenticateResponse>> Post([FromBody] AuthenticateRequest model, CancellationToken cancellationToken)
+        public async Task<ActionResult<AuthenticationResponse>> Post([FromBody] LoginRequest model, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var result = await _userService.AuthenticateAsync(model, IpAddress(), cancellationToken);
+            var result = await _userService.AuthenticateAsync(model.Email, model.Password, IpAddress(), cancellationToken);
             await HttpContext.Session.SetAsync("_roles", result.Roles);
             SetTokenCookie(result.RefreshToken);
-            return Ok(new AuthenticateResponse(result.User.Username, result.Token, result.TokenExpirationTime));
+            return Ok(new AuthenticationResponse(result.User.Username, result.Token, result.TokenExpirationTime));
         }
 
         [AllowAnonymous]
@@ -69,11 +71,11 @@ namespace Warehouse.API.Controllers.API
             return Ok();
         }
 
-        [ProducesResponseType(typeof(AuthenticateResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AuthenticationResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [AllowAnonymous]
         [HttpPost("refresh-token")]
-        public async Task<ActionResult<AuthenticateResponse>> RefreshToken(TokenRequest model, CancellationToken cancellationToken)
+        public async Task<ActionResult<AuthenticationResponse>> RefreshToken(TokenRequest model, CancellationToken cancellationToken)
         {
             var refreshToken = model.Token ?? Request.Cookies["refreshToken"];
             if (string.IsNullOrEmpty(refreshToken))
@@ -87,7 +89,7 @@ namespace Warehouse.API.Controllers.API
             });
 
             SetTokenCookie(result.RefreshToken);
-            return Ok(new AuthenticateResponse(result.User.Username, result.Token, result.TokenExpirationTime));
+            return Ok(new AuthenticationResponse(result.User.Username, result.Token, result.TokenExpirationTime));
         }
 
         [ProducesResponseType(typeof(HttpExceptionWrapper), StatusCodes.Status401Unauthorized)]

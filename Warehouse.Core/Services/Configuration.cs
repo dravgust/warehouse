@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using Warehouse.Core.Services.Exceptions;
+using Warehouse.Core.Exceptions;
 using Warehouse.Core.Services.Providers;
 using Warehouse.Core.Services.Providers.Default;
 using Warehouse.Core.Services.Validation;

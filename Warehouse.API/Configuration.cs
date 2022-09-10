@@ -15,6 +15,7 @@ using Warehouse.API.UseCases.Resources;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
+using Warehouse.Core.Services.Authentication;
 using Warehouse.Core.UseCases.Administration;
 using Warehouse.Core.UseCases.Administration.Models;
 using Warehouse.Core.UseCases.BeaconTracking;
@@ -81,7 +82,7 @@ namespace Warehouse.API
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IPasswordHasher, MD5PasswordHasher>();
             services.AddScoped<IUserStore<UserEntity>, UserStore>();
-            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAuthService, AuthService>();
 
             //builder.Services.AddAuthorization(options =>
             //{
