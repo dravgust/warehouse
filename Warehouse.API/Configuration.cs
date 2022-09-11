@@ -82,7 +82,7 @@ namespace Warehouse.API
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IPasswordHasher, MD5PasswordHasher>();
             services.AddScoped<IUserStore<UserEntity>, UserStore>();
-            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
 
             //builder.Services.AddAuthorization(options =>
             //{

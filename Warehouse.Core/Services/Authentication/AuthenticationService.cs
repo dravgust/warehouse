@@ -6,7 +6,7 @@ using Warehouse.Core.UseCases.Administration.Models;
 
 namespace Warehouse.Core.Services.Authentication
 {
-    public class AuthService : IAuthService
+    public class AuthenticationService : IAuthenticationService
     {
         private readonly IUserStore<UserEntity> _userStore;
 
@@ -14,7 +14,7 @@ namespace Warehouse.Core.Services.Authentication
         private readonly IJwtService _jwtUtils;
         private readonly AppSettings _appSettings;
 
-        public AuthService(
+        public AuthenticationService(
             IPasswordHasher passwordHasher,
             IJwtService jwtUtils,
             IOptions<AppSettings> appSettings,
@@ -26,7 +26,7 @@ namespace Warehouse.Core.Services.Authentication
             _appSettings = appSettings.Value;
         }
 
-        public async Task<AuthResult> AuthenticateAsync(string username, string password, string ipAddress, CancellationToken cancellationToken)
+        public async Task<AuthenticationResult> AuthenticateAsync(string username, string password, string ipAddress, CancellationToken cancellationToken)
         {
             var user = await _userStore.FindByNameAsync(username, cancellationToken);
             if (user == null || !_passwordHasher.VerifyHashedPassword(user.PasswordHash, password))
@@ -48,10 +48,10 @@ namespace Warehouse.Core.Services.Authentication
             // save changes to db
             await _userStore.UpdateAsync(user, cancellationToken);
 
-            return new AuthResult(user, roles, jwtToken, refreshToken.Token, refreshToken.Expires);
+            return new AuthenticationResult(user, roles, jwtToken, refreshToken.Token, refreshToken.Expires);
         }
 
-        public async Task<AuthResult> RefreshTokenAsync(string token, string ipAddress, CancellationToken cancellationToken)
+        public async Task<AuthenticationResult> RefreshTokenAsync(string token, string ipAddress, CancellationToken cancellationToken)
         {
             var user = await _userStore.FindByRefreshTokenAsync(token, cancellationToken);
             if (user == null)
@@ -86,7 +86,7 @@ namespace Warehouse.Core.Services.Authentication
             }
             var jwtToken = _jwtUtils.GenerateJwtToken(user, roles);
 
-            return new AuthResult(user, roles, jwtToken, newRefreshToken.Token, newRefreshToken.Expires);
+            return new AuthenticationResult(user, roles, jwtToken, newRefreshToken.Token, newRefreshToken.Expires);
         }
 
         public async Task RevokeTokenAsync(string token, string ipAddress, CancellationToken cancellationToken)

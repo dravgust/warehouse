@@ -24,13 +24,13 @@ namespace Warehouse.API.Controllers.API
     [ApiVersion("1.0")]
     public class AccountController : ControllerBase
     {
-        private readonly IAuthService _userService;
+        private readonly IAuthenticationService _authService;
         private readonly IQueryBus _queryBus;
         private readonly IDistributedMemoryCache _cache;
 
-        public AccountController(IAuthService userService, IQueryBus queryBus, IDistributedMemoryCache cache)
+        public AccountController(IAuthenticationService authService, IQueryBus queryBus, IDistributedMemoryCache cache)
         {
-            _userService = userService;
+            _authService = authService;
             _queryBus = queryBus;
             _cache = cache;
         }
@@ -55,10 +55,15 @@ namespace Warehouse.API.Controllers.API
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var result = await _userService.AuthenticateAsync(model.Email, model.Password, IpAddress(), cancellationToken);
-            await HttpContext.Session.SetAsync("_roles", result.Roles);
-            SetTokenCookie(result.RefreshToken);
-            return Ok(new AuthenticationResponse(result.User.Username, result.Token, result.TokenExpirationTime));
+            var authResult = await _authService.AuthenticateAsync(model.Email, model.Password, IpAddress(), cancellationToken);
+            await HttpContext.Session.SetAsync("_roles", authResult.Roles);
+            SetTokenCookie(authResult.RefreshToken);
+            var response = new AuthenticationResponse(
+                authResult.User.Username,
+                authResult.Token,
+                authResult.TokenExpirationTime);
+
+            return Ok(response);
         }
 
         [AllowAnonymous]
@@ -81,15 +86,20 @@ namespace Warehouse.API.Controllers.API
             if (string.IsNullOrEmpty(refreshToken))
                 return BadRequest(new HttpExceptionWrapper(StatusCodes.Status400BadRequest, "Token is required"));
 
-            var result = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<TokenRequest>(model.Token), async options =>
+            var authResult = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<TokenRequest>(model.Token), async options =>
             {
                 options.AbsoluteExpirationRelativeToNow = TimeSpans.Minute;
-                var response = await _userService.RefreshTokenAsync(refreshToken, IpAddress(), cancellationToken);
+                var response = await _authService.RefreshTokenAsync(refreshToken, IpAddress(), cancellationToken);
                 return response;
             });
 
-            SetTokenCookie(result.RefreshToken);
-            return Ok(new AuthenticationResponse(result.User.Username, result.Token, result.TokenExpirationTime));
+            SetTokenCookie(authResult.RefreshToken);
+            var response = new AuthenticationResponse(
+                authResult.User.Username,
+                authResult.Token,
+                authResult.TokenExpirationTime);
+
+            return Ok(response);
         }
 
         [ProducesResponseType(typeof(HttpExceptionWrapper), StatusCodes.Status401Unauthorized)]
@@ -104,7 +114,7 @@ namespace Warehouse.API.Controllers.API
             if (string.IsNullOrEmpty(refreshToken))
                 return BadRequest(new HttpExceptionWrapper(StatusCodes.Status400BadRequest, "Token is required"));
 
-            await _userService.RevokeTokenAsync(refreshToken, IpAddress(), cancellationToken);
+            await _authService.RevokeTokenAsync(refreshToken, IpAddress(), cancellationToken);
             return Ok(new { message = "Token revoked" });
         }
 
