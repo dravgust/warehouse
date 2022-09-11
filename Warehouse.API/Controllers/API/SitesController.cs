@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Throw;
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Queries;
-using Vayosoft.Core.Utilities;
 using Warehouse.API.Contracts;
 using Warehouse.API.Services.Authorization.Attributes;
 using Warehouse.Core.Entities.Models;
@@ -39,16 +39,18 @@ namespace Warehouse.API.Controllers.API
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id, CancellationToken token)
         {
-            Guard.NotEmpty(id, nameof(id));
-            return Ok(await _siteRepository.GetAsync(id, token));
+            id.ThrowIfNull().IfEmpty();
 
+            return Ok(await _siteRepository.GetAsync(id, token));
         }
 
         [HttpGet("{id}/delete")]
         public async Task<IActionResult> DeleteById(string id, CancellationToken token)
         {
-            Guard.NotEmpty(id, nameof(id));
-            await _commandBus.Send(new DeleteWarehouseSite{ Id = id }, token);
+            await _commandBus.Send(new DeleteWarehouseSite
+            {
+                Id = id
+            }, token);
             return Ok(new { id });
         }
 
@@ -69,8 +71,6 @@ namespace Warehouse.API.Controllers.API
         [HttpGet("{id}/delete-gw/{mac}")]
         public async Task<IActionResult> DeleteGw(string id, string mac,  CancellationToken token)
         {
-            Guard.NotEmpty(id, nameof(id));
-            Guard.NotEmpty(mac, nameof(mac));
             await _commandBus.Send(new RemoveGatewayFromSite { SiteId = id, MacAddress = mac }, token);
             return Ok(new { id });
         }
