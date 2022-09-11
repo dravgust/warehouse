@@ -6,6 +6,7 @@ using Vayosoft.Core.Queries;
 using Vayosoft.Core.Commands;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Management.Commands;
+using ErrorOr;
 
 namespace Warehouse.Core.UseCases.Management
 { 
@@ -26,7 +27,8 @@ namespace Warehouse.Core.UseCases.Management
                 .AddQueryHandler<GetProducts, IPagedEnumerable<ProductEntity>, HandleGetProducts>()
                 .AddQueryHandler<GetSites, IPagedEnumerable<WarehouseSiteEntity>, HandleGetSites>()
                 .AddQueryHandler<GetAlerts, IPagedEnumerable<AlertEntity>, HandleGetAlerts>()
-                .AddQueryHandler<GetBeacons, IPagedEnumerable<ProductItemDto>, HandleGetProductItems>();
+                .AddQueryHandler<GetBeacons, IPagedEnumerable<ProductItemDto>, HandleGetProductItems>()
+                ;
 
         
         private static IServiceCollection AddCommandHandlers(this IServiceCollection services) =>
@@ -40,6 +42,8 @@ namespace Warehouse.Core.UseCases.Management
                 .AddCommandHandler<DeleteAlert, HandleDeleteAlert>()
                 .AddCommandHandler<DeleteBeacon, HandleDeleteBeacon>()
                 .AddCommandHandler<SetProduct, HandleSetProduct>()
-                .AddCommandHandler<DeleteProduct, HandleDeleteProduct>();
+                .AddCommandHandler<DeleteProduct, HandleDeleteProduct>()
+                .AddCommandHandler<RegisterTrackedItem, ErrorOr<TrackedItem>, HandleRegisterTrackedItem>()
+            ;
     }
 }

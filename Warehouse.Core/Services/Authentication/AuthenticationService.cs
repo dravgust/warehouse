@@ -7,7 +7,7 @@ namespace Warehouse.Core.Services.Authentication
 {
     public class AuthenticationService : IAuthenticationService
     {
-        private readonly IUserStore<UserEntity> _userStore;
+        private readonly IUserRepository _userRepository;
 
         private readonly IPasswordHasher _passwordHasher;
         private readonly IJwtService _jwtUtils;
@@ -17,23 +17,23 @@ namespace Warehouse.Core.Services.Authentication
             IPasswordHasher passwordHasher,
             IJwtService jwtUtils,
             IOptions<AppSettings> appSettings,
-            IUserStore<UserEntity> userStore)
+            IUserRepository userRepository)
         {
             _passwordHasher = passwordHasher;
             _jwtUtils = jwtUtils;
-            _userStore = userStore;
+            _userRepository = userRepository;
             _appSettings = appSettings.Value;
         }
 
         public async Task<AuthenticationResult> AuthenticateAsync(string username, string password, string ipAddress, CancellationToken cancellationToken)
         {
-            var user = await _userStore.FindByNameAsync(username, cancellationToken);
+            var user = await _userRepository.FindByNameAsync(username, cancellationToken);
             if (user == null || !_passwordHasher.VerifyHashedPassword(user.PasswordHash, password))
                 throw new ApplicationException("Username or password is incorrect");
 
             // authentication successful so generate jwt and refresh tokens
             var roles = new List<RoleDTO>();
-            if (_userStore is IUserRoleStore roleStore)
+            if (_userRepository is IUserRoleStore roleStore)
             {
                 roles.AddRange(await roleStore.GetUserRolesAsync(user.Id, cancellationToken));
             }
@@ -45,14 +45,14 @@ namespace Warehouse.Core.Services.Authentication
             RemoveOldRefreshTokens(user);
 
             // save changes to db
-            await _userStore.UpdateAsync(user, cancellationToken);
+            await _userRepository.UpdateAsync(user, cancellationToken);
 
             return new AuthenticationResult(user, roles, jwtToken, refreshToken.Token, refreshToken.Expires);
         }
 
         public async Task<AuthenticationResult> RefreshTokenAsync(string token, string ipAddress, CancellationToken cancellationToken)
         {
-            var user = await _userStore.FindByRefreshTokenAsync(token, cancellationToken);
+            var user = await _userRepository.FindByRefreshTokenAsync(token, cancellationToken);
             if (user == null)
                 throw new ApplicationException("Invalid token");
 
@@ -62,7 +62,7 @@ namespace Warehouse.Core.Services.Authentication
                 // revoke all descendant tokens in case this token has been compromised
                 RevokeDescendantRefreshTokens(refreshToken, user, ipAddress, $"Attempted reuse of revoked ancestor token: {token}");
                 // save changes to db
-                await _userStore.UpdateAsync(user, cancellationToken);
+                await _userRepository.UpdateAsync(user, cancellationToken);
             }
 
             if (!refreshToken.IsActive)
@@ -75,11 +75,11 @@ namespace Warehouse.Core.Services.Authentication
             // remove old refresh tokens from user
             RemoveOldRefreshTokens(user);
             // save changes to db
-            await _userStore.UpdateAsync(user, cancellationToken);
+            await _userRepository.UpdateAsync(user, cancellationToken);
 
             // generate new jwt
             var roles = new List<RoleDTO>();
-            if (_userStore is IUserRoleStore roleStore)
+            if (_userRepository is IUserRoleStore roleStore)
             {
                 roles.AddRange(await roleStore.GetUserRolesAsync(user.Id, cancellationToken));
             }
@@ -90,7 +90,7 @@ namespace Warehouse.Core.Services.Authentication
 
         public async Task RevokeTokenAsync(string token, string ipAddress, CancellationToken cancellationToken)
         {
-            var user = await _userStore.FindByRefreshTokenAsync(token, cancellationToken);
+            var user = await _userRepository.FindByRefreshTokenAsync(token, cancellationToken);
             if (user == null)
                 throw new ApplicationException("Invalid token");
 
@@ -101,7 +101,7 @@ namespace Warehouse.Core.Services.Authentication
             // revoke token and save
             RevokeRefreshToken(refreshToken, ipAddress, "Revoked without replacement");
             // save changes to db
-            await _userStore.UpdateAsync(user, cancellationToken);
+            await _userRepository.UpdateAsync(user, cancellationToken);
         }
 
         private RefreshToken RotateRefreshToken(RefreshToken refreshToken, string ipAddress)

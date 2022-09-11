@@ -2,6 +2,7 @@
 using Vayosoft.Core.SharedKernel.ValueObjects;
 using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Events;
+using ErrorOr;
 
 namespace Warehouse.Core.Entities.Models
 {
@@ -12,12 +13,10 @@ namespace Warehouse.Core.Entities.Models
         public BeaconStatus Status { get; private set; }
         public BeaconType Type { get; private set; }
 
-        public static TrackedItem Register(MacAddress id)
+        public static ErrorOr<TrackedItem> Register(MacAddress id)
         {
             return new TrackedItem(id);
         }
-
-        public TrackedItem() { }
 
         private TrackedItem(MacAddress id)
         {

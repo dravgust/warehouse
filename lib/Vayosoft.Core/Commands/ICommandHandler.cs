@@ -33,5 +33,25 @@ namespace Vayosoft.Core.Commands
 
             return services;
         }
+
+        public static IServiceCollection AddCommandHandler<T, TOutput, TCommandHandler>(
+            this IServiceCollection services,
+            Func<IServiceProvider, TCommandHandler> configure = null
+        ) where TCommandHandler : class, ICommandHandler<T, TOutput> where T : ICommand<TOutput>
+        {
+
+            if (configure == null)
+            {
+                services.AddTransient<TCommandHandler, TCommandHandler>();
+                services.AddTransient<IRequestHandler<T, TOutput>, TCommandHandler>();
+            }
+            else
+            {
+                services.AddTransient<TCommandHandler, TCommandHandler>(configure);
+                services.AddTransient<IRequestHandler<T, TOutput>, TCommandHandler>(configure);
+            }
+
+            return services;
+        }
     }
 }

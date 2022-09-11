@@ -13,6 +13,7 @@ using Vayosoft.Data.Dapper.MySQL;
 using Vayosoft.Data.EF.MySQL;
 using Vayosoft.Data.MongoDB;
 using Warehouse.Core.Entities.Events;
+using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Serialization;
 using Warehouse.Core.UseCases;
@@ -57,6 +58,7 @@ namespace Warehouse.Infrastructure
                 })
                 .AddScoped(typeof(IRepositoryBase<>), typeof(MongoRepositoryBase<>))
                 .AddScoped(typeof(IReadOnlyRepositoryBase<>), typeof(MongoRepositoryBase<>))
+                .AddScoped(typeof(IRepository<>), typeof(AggregateRepository<>))
                 .AddScoped<WarehouseStore>();
 
             services

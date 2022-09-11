@@ -16,48 +16,45 @@ namespace Warehouse.Core.UseCases.Administration.Commands
 
     public class HandleSaveRole : ICommandHandler<SaveRole>
     {
-        private readonly IUserStore<UserEntity> _userStore;
+        private readonly IUserRepository _userRepository;
         private readonly IUserContext _userContext;
         private readonly ILogger<HandleSaveRole> _logger;
 
-        public HandleSaveRole(IUserStore<UserEntity> userStore, IUserContext userContext, ILogger<HandleSaveRole> logger)
+        public HandleSaveRole(IUserRepository userRepository, IUserContext userContext, ILogger<HandleSaveRole> logger)
         {
-            _userStore = userStore;
+            _userRepository = userRepository;
             _userContext = userContext;
             _logger = logger;
         }
         public async Task<Unit> Handle(SaveRole command, CancellationToken cancellationToken)
         {
-            if (_userStore is IUserRoleStore store)
+            try
             {
-                try
+                await _userContext.LoadSessionAsync();
+
+                if (!_userContext.IsAdministrator)
+                    throw new NotEnoughPermissionsException();
+
+                if (!_userContext.IsSupervisor)
+                    command.ProviderId = _userContext.User.Identity?.GetProviderId();
+
+                if (!string.IsNullOrEmpty(command.Id))
                 {
-                    await _userContext.LoadSessionAsync();
+                    var old = await _userRepository.FindRoleByIdAsync(command.Id, cancellationToken);
+                    if (old == null)
+                        throw new EntityNotFoundException(nameof(SecurityRoleEntity), command.Id);
 
-                    if (!_userContext.IsAdministrator)
-                        throw new NotEnoughPermissionsException();
-
-                    if (!_userContext.IsSupervisor)
-                        command.ProviderId = _userContext.User.Identity?.GetProviderId();
-
-                    if (!string.IsNullOrEmpty(command.Id))
-                    {
-                        var old = await store.FindRoleByIdAsync(command.Id, cancellationToken);
-                        if (old == null)
-                            throw new EntityNotFoundException(nameof(SecurityRoleEntity), command.Id);
-
-                        if (!old.Name.Equals(command.Name) || !string.Equals(old.Description, command.Description))
-                            await store.UpdateSecurityRoleAsync(command, cancellationToken);
-                    }
-                    else
-                    {
-                        await store.UpdateSecurityRoleAsync(command, cancellationToken);
-                    }
+                    if (!old.Name.Equals(command.Name) || !string.Equals(old.Description, command.Description))
+                        await _userRepository.UpdateSecurityRoleAsync(command, cancellationToken);
                 }
-                catch (Exception e)
+                else
                 {
-                    _logger.LogError($"{e.Message}\r\n{e.StackTrace}");
+                    await _userRepository.UpdateSecurityRoleAsync(command, cancellationToken);
                 }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"{e.Message}\r\n{e.StackTrace}");
             }
 
             return Unit.Value;

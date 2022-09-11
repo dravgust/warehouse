@@ -10,15 +10,21 @@
     <Compile Remove="Entities\ValueObjects\**" />
     <Compile Remove="UseCases\Administration\ValueObjects\**" />
     <Compile Remove="UseCases\BeaconTracking\Commands\**" />
+    <Compile Remove="UseCases\BeaconTracking\Specifications\**" />
     <Compile Remove="UseCases\Management\Specifications\**" />
+    <Compile Remove="Utilities\**" />
     <EmbeddedResource Remove="Entities\ValueObjects\**" />
     <EmbeddedResource Remove="UseCases\Administration\ValueObjects\**" />
     <EmbeddedResource Remove="UseCases\BeaconTracking\Commands\**" />
+    <EmbeddedResource Remove="UseCases\BeaconTracking\Specifications\**" />
     <EmbeddedResource Remove="UseCases\Management\Specifications\**" />
+    <EmbeddedResource Remove="Utilities\**" />
     <None Remove="Entities\ValueObjects\**" />
     <None Remove="UseCases\Administration\ValueObjects\**" />
     <None Remove="UseCases\BeaconTracking\Commands\**" />
+    <None Remove="UseCases\BeaconTracking\Specifications\**" />
     <None Remove="UseCases\Management\Specifications\**" />
+    <None Remove="Utilities\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,11 +41,6 @@
     <ProjectReference Include="..\lib\Vayosoft.Data.MongoDB\Vayosoft.Data.MongoDB.csproj" />
     <ProjectReference Include="..\lib\Vayosoft.Data.Redis\Vayosoft.Data.Redis.csproj" />
     <ProjectReference Include="..\lib\Vayosoft.IPS\Vayosoft.IPS.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="UseCases\BeaconTracking\Specifications\" />
-    <Folder Include="Utilities\" />
   </ItemGroup>
 
 </Project>

@@ -39,14 +39,14 @@ public class SaveUser : ICommand
 
 public class HandleSaveUser : ICommandHandler<SaveUser>
 {
-    private readonly IUserStore<UserEntity> _userStore;
+    private readonly IUserRepository _userRepository;
     private readonly IUserContext _userContext;
     private readonly IPasswordHasher _passwordHasher;
     private readonly ILogger<HandleSaveUser> _logger;
 
-    public  HandleSaveUser(IUserStore<UserEntity> userStore, IUserContext userContext, IPasswordHasher passwordHasher, ILogger<HandleSaveUser> logger)
+    public  HandleSaveUser(IUserRepository userRepository, IUserContext userContext, IPasswordHasher passwordHasher, ILogger<HandleSaveUser> logger)
     {
-        _userStore = userStore;
+        _userRepository = userRepository;
         _userContext = userContext;
         _passwordHasher = passwordHasher;
         _logger = logger;
@@ -67,7 +67,7 @@ public class HandleSaveUser : ICommandHandler<SaveUser>
             UserEntity entity;
             if (command.Id > 0)
             {
-                entity = await _userStore.FindByIdAsync(command.Id, cancellationToken);
+                entity = await _userRepository.FindByIdAsync(command.Id, cancellationToken);
                 if (entity == null)
                     throw new EntityNotFoundException(nameof(UserEntity), command.Id);
 
@@ -95,21 +95,18 @@ public class HandleSaveUser : ICommandHandler<SaveUser>
 
             entity.LogLevel = command.LogLevel;
 
-            await _userStore.UpdateAsync(entity, cancellationToken);
+            await _userRepository.UpdateAsync(entity, cancellationToken);
 
             if (command.Roles.Any())
             {
-                if (_userStore is IUserRoleStore store)
+                var userRoles = new List<string>();
+                foreach (var commandRole in command.Roles)
                 {
-                    var userRoles = new List<string>();
-                    foreach (var commandRole in command.Roles)
-                    {
-                        var role = await store.FindRoleByIdAsync(commandRole, cancellationToken);
-                        if (role != null)
-                            userRoles.Add(role.Id);
-                    }
-                    await store.UpdateUserRolesAsync(entity.Id, userRoles, cancellationToken);
+                    var role = await _userRepository.FindRoleByIdAsync(commandRole, cancellationToken);
+                    if (role != null)
+                        userRoles.Add(role.Id);
                 }
+                await _userRepository.UpdateUserRolesAsync(entity.Id, userRoles, cancellationToken);
             }
         }
         catch (Exception e)

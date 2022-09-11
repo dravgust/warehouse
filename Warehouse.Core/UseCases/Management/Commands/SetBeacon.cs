@@ -1,7 +1,9 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel;
+using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services;
@@ -11,7 +13,17 @@ using Warehouse.Core.UseCases.Management.Models;
 namespace Warehouse.Core.UseCases.Management.Commands
 {
     public class SetBeacon : ProductItemDto, ICommand
-    { }
+    {
+        public class SetBeaconValidator : AbstractValidator<SetBeacon>
+        {
+            public SetBeaconValidator()
+            {
+                RuleFor(c => c.MacAddress)
+                    .NotEmpty()
+                    .MacAddress();
+            }
+        }
+    }
 
     internal class HandleSetBeacon : ICommandHandler<SetBeacon>
     {

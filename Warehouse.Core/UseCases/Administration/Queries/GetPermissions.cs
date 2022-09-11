@@ -1,6 +1,5 @@
 ﻿using Vayosoft.Core.Queries;
 using Vayosoft.Core.Utilities;
-using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Entities.Models.Security;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.UseCases.Administration.Models;
@@ -19,18 +18,18 @@ namespace Warehouse.Core.UseCases.Administration.Queries
 
     public class HandleGetPermissions : IQueryHandler<GetPermissions, RolePermissions>
     {
-        private readonly IUserStore<UserEntity> _userStore;
+        private readonly IUserRepository _userRepository;
 
-        public HandleGetPermissions(IUserStore<UserEntity> userStore)
+        public HandleGetPermissions(IUserRepository userRepository)
         {
-            _userStore = userStore;
+            _userRepository = userRepository;
         }
 
         public async Task<RolePermissions> Handle(GetPermissions query, CancellationToken cancellationToken)
         {
             SecurityRoleEntity role = null;
             var permissions = new List<RolePermissionsDTO>();
-            if (_userStore is IUserRoleStore store)
+            if (_userRepository is IUserRoleStore store)
             {
                 role = await store.FindRoleByIdAsync(query.RoleId, cancellationToken);
                 if (role == null)

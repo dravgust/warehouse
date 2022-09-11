@@ -5,11 +5,11 @@ using Warehouse.Core.Persistence;
 
 namespace Warehouse.Infrastructure.Persistence
 {
-    public class UserStore : IUserStore<UserEntity>, IUserRoleStore
+    public class UserRepository : IUserRepository
     {
         private readonly AppDbContext _context;
 
-        public UserStore(AppDbContext context)
+        public UserRepository(AppDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }

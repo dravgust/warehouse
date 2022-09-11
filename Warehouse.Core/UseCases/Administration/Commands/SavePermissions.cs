@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Utilities;
-using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Entities.Models.Security;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
@@ -14,13 +13,13 @@ namespace Warehouse.Core.UseCases.Administration.Commands
 
     public class HandleSavePermissions : ICommandHandler<SavePermissions>
     {
-        private readonly IUserStore<UserEntity> _userStore;
+        private readonly IUserRepository _userRepository;
         private readonly IUserContext _userContext;
         private readonly ILogger<SavePermissions> _logger;
 
-        public HandleSavePermissions(IUserStore<UserEntity> userStore, IUserContext userContext, ILogger<SavePermissions> logger)
+        public HandleSavePermissions(IUserRepository userRepository, IUserContext userContext, ILogger<SavePermissions> logger)
         {
-            _userStore = userStore;
+            _userRepository = userRepository;
             _userContext = userContext;
             _logger = logger;
         }
@@ -30,50 +29,47 @@ namespace Warehouse.Core.UseCases.Administration.Commands
             {
                 var roles = new List<SecurityRoleEntity>();
 
-                if (_userStore is IUserRoleStore store)
+                foreach (var p in command)
                 {
-                    foreach (var p in command)
+                    var role = roles.FirstOrDefault(r => r.Id == p.RoleId);
+                    if (role == null)
                     {
-                        var role = roles.FirstOrDefault(r => r.Id == p.RoleId);
+                        role = await _userRepository.FindRoleByIdAsync(p.RoleId, cancellationToken);
                         if (role == null)
                         {
-                            role = await store.FindRoleByIdAsync(p.RoleId, cancellationToken);
-                            if (role == null)
-                            {
-                                _logger.LogError($"SavePermissions: Role not found [{p.RoleId}] for User: {_userContext.User.Identity?.Name}");
-                                continue;
-                            }
-                            roles.Add(role);
-                        }
-
-                        await _userContext.LoadSessionAsync();
-                        if (!_userContext.IsSupervisor && role.ProviderId == null)
-                        {
-                            _logger.LogError($"SavePermissions: User: {_userContext.User.Identity?.Name}" +
-                                              $" without supervisor rights try edit embedded role [{role.Name}]");
+                            _logger.LogError($"SavePermissions: Role not found [{p.RoleId}] for User: {_userContext.User.Identity?.Name}");
                             continue;
                         }
+                        roles.Add(role);
+                    }
 
-                        SecurityRolePermissionsEntity rp = null;
-                        if (!string.IsNullOrEmpty(p.Id))
-                            rp = await store.FindRolePermissionsByIdAsync(p.Id, cancellationToken);
+                    await _userContext.LoadSessionAsync();
+                    if (!_userContext.IsSupervisor && role.ProviderId == null)
+                    {
+                        _logger.LogError($"SavePermissions: User: {_userContext.User.Identity?.Name}" +
+                                          $" without supervisor rights try edit embedded role [{role.Name}]");
+                        continue;
+                    }
 
-                        if (rp != null)
+                    SecurityRolePermissionsEntity rp = null;
+                    if (!string.IsNullOrEmpty(p.Id))
+                        rp = await _userRepository.FindRolePermissionsByIdAsync(p.Id, cancellationToken);
+
+                    if (rp != null)
+                    {
+                        rp.Permissions = p.Permissions;
+                        await _userRepository.UpdateRolePermissionsAsync(rp, cancellationToken);
+                    }
+                    else
+                    {
+                        rp = new SecurityRolePermissionsEntity
                         {
-                            rp.Permissions = p.Permissions;
-                            await store.UpdateRolePermissionsAsync(rp, cancellationToken);
-                        }
-                        else
-                        {
-                            rp = new SecurityRolePermissionsEntity
-                            {
-                                Id = GuidGenerator.New().ToString("N"),
-                                ObjectId = p.ObjectId,
-                                RoleId = p.RoleId,
-                                Permissions = p.Permissions
-                            };
-                            await store.UpdateRolePermissionsAsync(rp, cancellationToken);
-                        }
+                            Id = GuidGenerator.New().ToString("N"),
+                            ObjectId = p.ObjectId,
+                            RoleId = p.RoleId,
+                            Permissions = p.Permissions
+                        };
+                        await _userRepository.UpdateRolePermissionsAsync(rp, cancellationToken);
                     }
                 }
             }

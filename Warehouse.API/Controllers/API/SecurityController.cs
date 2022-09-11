@@ -18,14 +18,14 @@ namespace Warehouse.API.Controllers.API
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
 
-        private readonly IUserStore<UserEntity> _userStore;
+        private readonly IUserRepository _userRepository;
 
         public SecurityController(
-            IUserStore<UserEntity> userStore,
+            IUserRepository userRepository,
             IQueryBus queryBus, 
             ICommandBus commandBus)
         {
-            _userStore = userStore;
+            _userRepository = userRepository;
             _queryBus = queryBus;
             _commandBus = commandBus;
         }
@@ -35,7 +35,7 @@ namespace Warehouse.API.Controllers.API
         public async Task<IActionResult> GetUserRoles(CancellationToken token = default)
         {
             var items = new List<RoleDTO>();
-            if (_userStore is IUserRoleStore store)
+            if (_userRepository is IUserRoleStore store)
             {
                 var userId = HttpContext.User.Identity!.GetUserId();
                 items.AddRange(await store.GetUserRolesAsync(userId, token));
@@ -49,7 +49,7 @@ namespace Warehouse.API.Controllers.API
         public async Task<IActionResult> GetUserRolesById(long id, CancellationToken token = default)
         {
             var items = new List<RoleDTO>();
-            if (_userStore is IUserRoleStore store)
+            if (_userRepository is IUserRoleStore store)
             {
                 items.AddRange(await store.GetUserRolesAsync(id, token));
             }
@@ -62,7 +62,7 @@ namespace Warehouse.API.Controllers.API
         public async Task<IActionResult> GetRoles(CancellationToken token)
         {
             var items = new List<SecurityRoleEntity>();
-            if (_userStore is IUserRoleStore store)
+            if (_userRepository is IUserRoleStore store)
             {
                 var providerId = HttpContext.User.Identity?.GetProviderId() ?? 0;
                 items.AddRange(await store.GetRolesAsync(new object[] { providerId }, token)!);
@@ -76,7 +76,7 @@ namespace Warehouse.API.Controllers.API
         public async Task<IActionResult> GetObjects(CancellationToken token)
         {
             var items = new List<SecurityObjectEntity>();
-            if (_userStore is IUserRoleStore store)
+            if (_userRepository is IUserRoleStore store)
             {
                 items.AddRange(await store.GetObjectsAsync(token));
             }

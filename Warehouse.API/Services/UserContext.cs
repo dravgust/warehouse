@@ -38,9 +38,9 @@ namespace Warehouse.API.Services
             List<RoleDTO> userRoles;
             if ((userRoles = await context.Session.GetAsync<List<RoleDTO>>("_roles")) == null)
             {
-                var userService = context.RequestServices.GetRequiredService<IUserStore<UserEntity>>();
+                var userRepository = context.RequestServices.GetRequiredService<IUserRepository>();
                 var cancellationToken = context.RequestAborted;
-                userRoles = await ((IUserRoleStore)userService).
+                userRoles = await userRepository.
                     GetUserRolesAsync(context.User.Identity.GetUserId(), cancellationToken);
                 await context.Session.SetAsync("_roles", userRoles);
             }
