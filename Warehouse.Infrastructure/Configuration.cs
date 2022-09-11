@@ -23,7 +23,7 @@ namespace Warehouse.Infrastructure
 {
     public static class Configuration
     {
-        public static IServiceCollection AddWarehouseDependencies(this IServiceCollection services,
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services,
             IConfiguration configuration)
         {
             var domainAssembly = AppDomain.CurrentDomain.GetAssemblies();

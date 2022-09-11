@@ -63,12 +63,12 @@ namespace Warehouse.API
             services.AddHttpContextAccessor()
                 .AddScoped<IUserContext, UserContext>();
 
-            services.AddWarehouseDependencies(configuration);
+            services.AddInfrastructure(configuration);
 
             services
-                .AddWarehouseAdministrationServices()
-                .AddWarehouseTrackingServices()
-                .AddWarehouseManagementServices();
+                .AddAppAdministrationServices()
+                .AddAppTrackingServices()
+                .AddAppManagementServices();
 
             return services;
         }

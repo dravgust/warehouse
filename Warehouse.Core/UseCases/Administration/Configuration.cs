@@ -13,7 +13,7 @@ namespace Warehouse.Core.UseCases.Administration
 { 
     public static class Configuration
     {
-        public static IServiceCollection AddWarehouseAdministrationServices(this IServiceCollection services) =>
+        public static IServiceCollection AddAppAdministrationServices(this IServiceCollection services) =>
             services
                 .AddQueryHandlers()
                 .AddCommandHandlers();

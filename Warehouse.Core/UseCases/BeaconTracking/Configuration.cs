@@ -12,7 +12,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking
 {
     public static class Configuration
     {
-        public static IServiceCollection AddWarehouseTrackingServices(this IServiceCollection services) =>
+        public static IServiceCollection AddAppTrackingServices(this IServiceCollection services) =>
             services
                 .AddQueryHandlers()
                 .AddEventHandlers();

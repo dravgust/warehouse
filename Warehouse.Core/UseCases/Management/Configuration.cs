@@ -11,7 +11,7 @@ namespace Warehouse.Core.UseCases.Management
 { 
     public static class Configuration
     {
-        public static IServiceCollection AddWarehouseManagementServices(this IServiceCollection services) =>
+        public static IServiceCollection AddAppManagementServices(this IServiceCollection services) =>
             services
                 .AddQueryHandlers()
                 .AddCommandHandlers();

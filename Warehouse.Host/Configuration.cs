@@ -17,7 +17,7 @@ namespace Warehouse.Host
 
             services.AddScoped<IUserContext, ServiceContext>();
 
-            services.AddWarehouseDependencies(configuration);
+            services.AddInfrastructure(configuration);
 
             services.AddHostedService<Worker>();
             services.AddHostedService<NotificationWorker>();
