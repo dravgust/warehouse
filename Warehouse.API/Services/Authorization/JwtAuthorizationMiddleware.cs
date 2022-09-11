@@ -1,16 +1,16 @@
 ﻿using System.Security.Claims;
 using Microsoft.Extensions.Options;
 using Warehouse.Core.Services;
-using Warehouse.Core.UseCases.Administration.Models;
+using Warehouse.Core.Services.Authentication;
 
 namespace Warehouse.API.Services.Authorization
 {
-    public class JwtMiddleware
+    public class JwtAuthorizationMiddleware
     {
         private readonly RequestDelegate _next;
         private readonly AppSettings _appSettings;
 
-        public JwtMiddleware(RequestDelegate next, IOptions<AppSettings> appSettings)
+        public JwtAuthorizationMiddleware(RequestDelegate next, IOptions<AppSettings> appSettings)
         {
             _next = next;
             _appSettings = appSettings.Value;

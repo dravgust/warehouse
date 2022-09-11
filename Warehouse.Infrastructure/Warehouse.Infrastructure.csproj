@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.23.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\lib\Vayosoft.Core\Vayosoft.Core.csproj" />
     <ProjectReference Include="..\lib\Vayosoft.Data.Dapper.MySQL\Vayosoft.Data.Dapper.MySQL.csproj" />
     <ProjectReference Include="..\lib\Vayosoft.Data.EF.MySQL\Vayosoft.Data.EF.MySQL.csproj" />

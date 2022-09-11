@@ -8,8 +8,8 @@ using Warehouse.API.Contracts.Authentication;
 using Warehouse.API.Resources;
 using Warehouse.API.UseCases.Resources;
 using Warehouse.Core.UseCases.Administration.Models;
-using Warehouse.API.Services.Authorization.Attributes;
 using Warehouse.API.Extensions;
+using Warehouse.API.Services.Authorization;
 using Warehouse.API.Services.ExceptionHandling.Models;
 using Warehouse.Core.Services.Authentication;
 

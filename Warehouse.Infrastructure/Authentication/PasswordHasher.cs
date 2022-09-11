@@ -1,8 +1,9 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using Vayosoft.Core.Utilities;
+using Warehouse.Core.Services;
 
-namespace Warehouse.Core.Services
+namespace Warehouse.Infrastructure.Authentication
 {
     public class PasswordHasher : IPasswordHasher
     {

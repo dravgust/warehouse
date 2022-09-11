@@ -17,7 +17,6 @@ namespace Warehouse.Core.UseCases.Management.Commands
             public ProductRequestValidator()
             {
                 RuleFor(q => q.Name).NotEmpty();
-                //RuleFor(q => q.MacAddress).MacAddress();
             }
         }
     }

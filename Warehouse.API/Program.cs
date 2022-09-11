@@ -127,7 +127,7 @@ try
     app.UseSession();
 
     // app.UseResponseCaching();
-    app.UseMiddleware<JwtMiddleware>();
+    app.UseMiddleware<JwtAuthorizationMiddleware>();
 
     var locOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
     app.UseRequestLocalization(locOptions!.Value);

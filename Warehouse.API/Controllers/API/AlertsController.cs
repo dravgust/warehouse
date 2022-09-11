@@ -2,7 +2,7 @@
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Queries;
 using Warehouse.API.Contracts;
-using Warehouse.API.Services.Authorization.Attributes;
+using Warehouse.API.Services.Authorization;
 using Warehouse.Core.UseCases.Management.Commands;
 using Warehouse.Core.UseCases.Management.Queries;
 

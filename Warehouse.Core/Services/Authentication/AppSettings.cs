@@ -1,4 +1,4 @@
-﻿namespace Warehouse.Core.UseCases.Administration.Models
+﻿namespace Warehouse.Core.Services.Authentication
 {
     public class AppSettings
     {

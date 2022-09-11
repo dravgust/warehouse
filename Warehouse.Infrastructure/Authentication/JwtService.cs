@@ -9,9 +9,9 @@ using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Entities.Models.Security;
 using Warehouse.Core.Services;
-using Warehouse.Core.UseCases.Administration.Models;
+using Warehouse.Core.Services.Authentication;
 
-namespace Warehouse.API.Services.Authorization
+namespace Warehouse.Infrastructure.Authentication
 {
     public class JwtService : IJwtService
     {

@@ -8,7 +8,6 @@ using Vayosoft.Core.Queries;
 using Vayosoft.Data.Redis;
 using Vayosoft.Streaming.Redis;
 using Warehouse.API.Services;
-using Warehouse.API.Services.Authorization;
 using Warehouse.API.Services.Localization;
 using Warehouse.API.TagHelpers;
 using Warehouse.API.UseCases.Resources;
@@ -17,10 +16,10 @@ using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Authentication;
 using Warehouse.Core.UseCases.Administration;
-using Warehouse.Core.UseCases.Administration.Models;
 using Warehouse.Core.UseCases.BeaconTracking;
 using Warehouse.Core.UseCases.Management;
 using Warehouse.Infrastructure;
+using Warehouse.Infrastructure.Authentication;
 using Warehouse.Infrastructure.Persistence;
 
 namespace Warehouse.API

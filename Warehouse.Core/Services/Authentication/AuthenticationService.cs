@@ -2,7 +2,6 @@
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Entities.Models.Security;
 using Warehouse.Core.Persistence;
-using Warehouse.Core.UseCases.Administration.Models;
 
 namespace Warehouse.Core.Services.Authentication
 {
