@@ -24,13 +24,13 @@ namespace Vayosoft.Data.MongoDB
         public Task<T> FindAsync<TId>(TId id, CancellationToken cancellationToken = default) =>
             Collection.Find(q => q.Id.Equals(id)).FirstOrDefaultAsync(cancellationToken);
 
-        public Task AddAsync(T entity, CancellationToken cancellationToken = default) =>
+        public virtual Task AddAsync(T entity, CancellationToken cancellationToken = default) =>
             Collection.InsertOneAsync(entity, cancellationToken: cancellationToken);
 
-        public Task UpdateAsync(T entity, CancellationToken cancellationToken = default) =>
+        public virtual Task UpdateAsync(T entity, CancellationToken cancellationToken = default) =>
             Collection.ReplaceOneAsync(Builders<T>.Filter.Eq(e => e.Id, entity.Id), entity, cancellationToken: cancellationToken);
 
-        public Task DeleteAsync(T entity, CancellationToken cancellationToken = default) =>
+        public virtual Task DeleteAsync(T entity, CancellationToken cancellationToken = default) =>
             Collection.DeleteOneAsync(Builders<T>.Filter.Eq(e => e.Id, entity.Id), cancellationToken: cancellationToken);
 
         public Task<T> GetAsync<TId>(TId id, CancellationToken cancellationToken = default) where TId : notnull
