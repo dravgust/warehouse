@@ -1,4 +1,4 @@
-namespace Warehouse.API.Services.ExceptionHandling.Models
+namespace Warehouse.API.Services.Errors.Models
 {
     public class ErrorViewModel
     {

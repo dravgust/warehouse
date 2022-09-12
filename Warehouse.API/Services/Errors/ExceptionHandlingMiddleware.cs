@@ -1,7 +1,7 @@
 using System.Text.Json;
-using Warehouse.API.Services.ExceptionHandling.Models;
+using Warehouse.API.Services.Errors.Models;
 
-namespace Warehouse.API.Services.ExceptionHandling
+namespace Warehouse.API.Services.Errors
 {
     public class ExceptionHandlingMiddleware
     {

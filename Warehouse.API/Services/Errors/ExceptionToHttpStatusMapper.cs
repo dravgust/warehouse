@@ -1,7 +1,7 @@
 using System.Net;
 using Vayosoft.Core.SharedKernel.Exceptions;
 
-namespace Warehouse.API.Services.ExceptionHandling
+namespace Warehouse.API.Services.Errors
 {
     public record HttpStatusCodeInfo(HttpStatusCode Code, string Message)
     {

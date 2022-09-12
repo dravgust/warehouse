@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Warehouse.API.Services.ExceptionHandling;
+using Warehouse.API.Services.Errors;
 
 namespace Warehouse.API.Controllers
 {
@@ -11,6 +11,7 @@ namespace Warehouse.API.Controllers
         {
             var exception = HttpContext.Features.Get<IExceptionHandlerFeature>()?.Error;
             var codeInfo = ExceptionToHttpStatusMapper.Map(exception);
+
             return Problem(title: codeInfo.Message, statusCode: (int)codeInfo.Code);
         }
     }

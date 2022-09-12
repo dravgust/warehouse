@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
-using Warehouse.API.Services.ExceptionHandling.Models;
+using Warehouse.API.Services.Errors.Models;
 
 namespace Warehouse.API.Controllers
 {

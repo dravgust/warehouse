@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Warehouse.API.Services.ExceptionHandling.Filters
+namespace Warehouse.API.Services.Errors.Filters
 {
     public class ExceptionHandlingFilterAttribute : ExceptionFilterAttribute
     {

@@ -10,7 +10,7 @@ using Warehouse.API.UseCases.Resources;
 using Warehouse.Core.UseCases.Administration.Models;
 using Warehouse.API.Extensions;
 using Warehouse.API.Services.Authorization;
-using Warehouse.API.Services.ExceptionHandling.Models;
+using Warehouse.API.Services.Errors.Models;
 using Warehouse.Core.Services.Authentication;
 
 
