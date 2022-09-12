@@ -39,7 +39,8 @@ namespace Warehouse.API.Services.ExceptionHandling
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 WriteIndented = true
             };
-            var result = JsonSerializer.Serialize(new HttpExceptionWrapper((int)codeInfo.Code, codeInfo.Message), options);
+            var error = new HttpErrorWrapper((int) codeInfo.Code, "An error occurred while processing your request.");
+            var result = JsonSerializer.Serialize(error, options);
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)codeInfo.Code;
             return context.Response.WriteAsync(result);

@@ -3,27 +3,21 @@ using Vayosoft.Core.SharedKernel.Exceptions;
 
 namespace Warehouse.API.Services.ExceptionHandling
 {
-    public class HttpStatusCodeInfo
+    public record HttpStatusCodeInfo(HttpStatusCode Code, string Message)
     {
-        public HttpStatusCode Code { get; }
-        public string Message { get; }
-
-        public HttpStatusCodeInfo(HttpStatusCode code, string message)
-        {
-            Code = code;
-            Message = message;
-        }
-
-        public static HttpStatusCodeInfo Create(HttpStatusCode code, string message)
-        {
-            return new HttpStatusCodeInfo(code, message);
-        }
+        public static HttpStatusCodeInfo Create(HttpStatusCode code, string message) =>
+            new(code, message);
     }
 
     public static class ExceptionToHttpStatusMapper
     {
         public static HttpStatusCodeInfo Map(Exception exception)
         {
+            if (exception == null)
+            {
+                return new HttpStatusCodeInfo(HttpStatusCode.InternalServerError, "");
+            }
+
             var code = exception switch
             {
                 UnauthorizedAccessException _ => HttpStatusCode.Unauthorized,

@@ -17,7 +17,7 @@ using Warehouse.Core.UseCases.Management.Models;
 namespace Warehouse.API.Controllers.API
 {
     [Produces("application/json")]
-    [ProducesResponseType(typeof(HttpExceptionWrapper), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(HttpErrorWrapper), StatusCodes.Status401Unauthorized)]
     [ProducesErrorResponseType(typeof(void))]
     //[Route("api/v{version:apiVersion}/[controller]")]
     [Route("api/[controller]")]

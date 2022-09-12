@@ -35,7 +35,7 @@ namespace Warehouse.API.Controllers.API
             _cache = cache;
         }
 
-        [ProducesResponseType(typeof(HttpExceptionWrapper), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(HttpErrorWrapper), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("bootstrap")]
         public async Task<IActionResult> Get(CancellationToken token)
@@ -84,7 +84,7 @@ namespace Warehouse.API.Controllers.API
         {
             var refreshToken = model.Token ?? Request.Cookies["refreshToken"];
             if (string.IsNullOrEmpty(refreshToken))
-                return BadRequest(new HttpExceptionWrapper(StatusCodes.Status400BadRequest, "Token is required"));
+                return BadRequest(new HttpErrorWrapper(StatusCodes.Status400BadRequest, "Token is required"));
 
             var authResult = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<TokenRequest>(model.Token), async options =>
             {
@@ -102,7 +102,7 @@ namespace Warehouse.API.Controllers.API
             return Ok(response);
         }
 
-        [ProducesResponseType(typeof(HttpExceptionWrapper), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(HttpErrorWrapper), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("revoke-token")]
@@ -112,7 +112,7 @@ namespace Warehouse.API.Controllers.API
             var refreshToken = model.Token ?? Request.Cookies["refreshToken"];
 
             if (string.IsNullOrEmpty(refreshToken))
-                return BadRequest(new HttpExceptionWrapper(StatusCodes.Status400BadRequest, "Token is required"));
+                return BadRequest(new HttpErrorWrapper(StatusCodes.Status400BadRequest, "Token is required"));
 
             await _authService.RevokeTokenAsync(refreshToken, IpAddress(), cancellationToken);
             return Ok(new { message = "Token revoked" });

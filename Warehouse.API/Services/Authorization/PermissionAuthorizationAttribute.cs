@@ -95,7 +95,7 @@ namespace Warehouse.API.Services.Authorization
             logger.LogError(exception, exception.Message);
 
             var codeInfo = ExceptionToHttpStatusMapper.Map(exception);
-            context.Result = new JsonResult(new HttpExceptionWrapper((int)codeInfo.Code, "Authorization error"))
+            context.Result = new JsonResult(new HttpErrorWrapper((int)codeInfo.Code, "Authorization error"))
             { StatusCode = (int)codeInfo.Code };
         }
 
@@ -103,13 +103,13 @@ namespace Warehouse.API.Services.Authorization
         {
             var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<PermissionAuthorizationAttribute>>();
             logger.LogWarning($"User: {identity.Name} URL: {context.HttpContext.Request.QueryString} rejected by permissions filter");
-            context.Result = new JsonResult(new HttpExceptionWrapper(StatusCodes.Status401Unauthorized, "No enough permissions"))
+            context.Result = new JsonResult(new HttpErrorWrapper(StatusCodes.Status401Unauthorized, "No enough permissions"))
             { StatusCode = StatusCodes.Status401Unauthorized };
         }
 
         private static void HandleUnauthorized(AuthorizationFilterContext context)
         {
-            context.Result = new JsonResult(new HttpExceptionWrapper(StatusCodes.Status401Unauthorized, "Unauthorized"))
+            context.Result = new JsonResult(new HttpErrorWrapper(StatusCodes.Status401Unauthorized, "Unauthorized"))
             { StatusCode = StatusCodes.Status401Unauthorized };
         }
 
