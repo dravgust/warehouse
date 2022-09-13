@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Threading;
 using Vayosoft.Core.Caching;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.ValueObjects;
@@ -7,6 +8,7 @@ using Vayosoft.IPS.Domain;
 using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Entities.Models.Payloads;
+using Warehouse.Core.UseCases.Management.Models;
 using LocationAnchor = Vayosoft.IPS.Domain.LocationAnchor;
 
 namespace Warehouse.Host
@@ -41,7 +43,7 @@ namespace Warehouse.Host
 
             while (!token.IsCancellationRequested)
             {
-                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                _logger.LogDebug("Worker running at: {time}", DateTimeOffset.Now);
 
                 using var scope = _serviceProvider.CreateScope();
                 var siteRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepositoryBase<WarehouseSiteEntity>>();
@@ -71,7 +73,7 @@ namespace Warehouse.Host
                             var gSite = await GetGenericSiteAsync(gwRepository, site, settings);
                             gSite.CalcBeaconsPosition();
 
-                            _logger.LogInformation("\r\n*************** CalcBeacons Position ***************\r\nProviderId: {0} SiteId:{1}:\r\n{2}\r\n******************************",
+                            _logger.LogDebug("\r\n*************** CalcBeacons Position ***************\r\nProviderId: {0} SiteId:{1}:\r\n{2}\r\n******************************",
                                 providerId, gSite.Id, JsonSerializer.Serialize(gSite.Gateways.Select(g =>
                                     new {
                                         mac = g.MacAddress.Value,
@@ -82,7 +84,7 @@ namespace Warehouse.Host
                             var prevStatus = await statusRepository.FindAsync(gSite.Id, token);
                             var currentStatus = GetIndoorPositionStatus(gSite, prevStatus);
 
-                            _logger.LogInformation("\r\n*************** Site Status ***************\r\nProviderId: {0} SiteId:{1}:\r\n{2}\r\n******************************",
+                            _logger.LogDebug("\r\n*************** Site Status ***************\r\nProviderId: {0} SiteId:{1}:\r\n{2}\r\n******************************",
                                 providerId, gSite.Id,
                                 new { @in = currentStatus.In, @out = currentStatus.Out }.ToJson());
 
@@ -122,15 +124,18 @@ namespace Warehouse.Host
                             }
 
                             //**************** events
-                            foreach (var @in in prevStatus.In)
+                            if (prevStatus != null)
                             {
-                                if (!beaconsIn.ContainsKey(@in))
-                                    beaconsIn[@in] = new[] { site.Id, null };
-                                else
+                                foreach (var @in in prevStatus.In)
                                 {
-                                    beaconsIn[@in][0] = site.Id;
-                                }
+                                    if (!beaconsIn.ContainsKey(@in))
+                                        beaconsIn[@in] = new[] {site.Id, null};
+                                    else
+                                    {
+                                        beaconsIn[@in][0] = site.Id;
+                                    }
 
+                                }
                             }
 
                             foreach (var @out in currentStatus.Out)
@@ -154,12 +159,31 @@ namespace Warehouse.Host
                             }
                         }
 
-                        _logger.LogInformation("\r\n*************** Warehouse Status ***************\r\nProviderId: {0}\r\n{1}\r\n******************************",
+                        _logger.LogDebug("\r\n*************** Warehouse Status ***************\r\nProviderId: {0}\r\n{1}\r\n******************************",
                             providerId,
                             new { @in = beaconsIn, @out = beaconsOut }.ToJson());
 
                         foreach (var (macAddress, site) in beaconsIn)
                         {
+                            //var site = await _sites.FindAsync(b.SourceId, cancellationToken);
+                            //if (site != null)
+                            //{
+                            //    asset.Site = _mapper.Map<WarehouseSiteDto>(site);
+                            //}
+
+                            //var productItem = await _beacons.FirstOrDefaultAsync(q => q.Id.Equals(b.MacAddress), cancellationToken);
+                            //if (productItem != null)
+                            //{
+                            //    if (!string.IsNullOrEmpty(productItem.ProductId))
+                            //    {
+                            //        var product = await _products.FirstOrDefaultAsync(p => p.Id == productItem.ProductId, cancellationToken);
+                            //        if (product != null)
+                            //        {
+                            //            asset.Product = _mapper.Map<ProductDto>(product);
+                            //        }
+                            //    }
+                            //}
+
                             //*************** received beacons IN
                             var beaconReceived = new BeaconReceivedEntity
                             {

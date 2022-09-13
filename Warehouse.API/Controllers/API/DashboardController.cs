@@ -29,9 +29,8 @@ namespace Warehouse.API.Controllers.API
         }
 
         [HttpGet("beacons")]
-        public async Task<IActionResult> GetBeacons(int page, int size, string searchTerm = null, CancellationToken token = default) {
-            var query = GetDashboardByBeacon.Create(page, size, searchTerm);
-            return Ok((await _queryBus.Send(query, token)).ToPagedResponse(size));
+        public async Task<IActionResult> GetBeacons([FromQuery] GetDashboardByBeacon query, CancellationToken token = default) {
+            return Ok((await _queryBus.Send(query, token)).ToPagedResponse(query.Size));
         }
 
         [HttpGet("beacon/{id}")]

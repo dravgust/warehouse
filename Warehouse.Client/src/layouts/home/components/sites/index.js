@@ -44,7 +44,7 @@ export default function SiteInfo({
     setExpanded(newExpanded ? panel : false);
     setPattern("");
     onProductSelect(null);
-    onSiteSelect(row);
+    newExpanded ? onSiteSelect(row) : onSiteSelect(null);
   };
 
   const {

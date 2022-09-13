@@ -45,7 +45,7 @@ export default function ProductsTreeView({
     setExpanded(newExpanded ? panel : false);
     setPattern("");
     onSiteSelect(null);
-    onProductSelect(row);
+    newExpanded ? onProductSelect(row) : onProductSelect(null);
   };
   let assets =
     (selectedProduct &&

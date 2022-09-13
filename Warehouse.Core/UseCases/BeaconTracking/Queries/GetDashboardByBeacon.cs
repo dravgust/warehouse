@@ -1,8 +1,11 @@
-﻿using Vayosoft.Core.Persistence;
+﻿using System.Linq.Expressions;
+using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel;
+using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.SharedKernel.Models;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
+using Vayosoft.Core.Specifications;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Security;
@@ -11,33 +14,41 @@ using Warehouse.Core.UseCases.Management.Models;
 
 namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 {
-    public class GetDashboardByBeacon : PagingBase<BeaconReceivedEntity, object>, IQuery<IPagedEnumerable<DashboardByBeacon>>
+    public class GetDashboardByBeacon : IQuery<IPagedEnumerable<DashboardByBeacon>>
     {
-        public string FilterString { get; }
-
-        public GetDashboardByBeacon(int page, int size, string searchTerm = null)
+        public int Page { get; set; }
+        public int Size { get; set; }
+        public string SearchTerm { get; set; }
+        public string SiteId { get; set; }
+        public string ProductId { get; set; }
+    }
+    
+    public class ReceivedBeaconsSpec : PagedSpecificationBase<BeaconReceivedEntity>
+    {
+        public ReceivedBeaconsSpec(int page, int size, long providerId, string siteId = null, string productId = null, string filterString = null) 
+            : base(b => b.ProviderId == providerId)
         {
             Page = page;
             Size = size;
 
-            FilterString = searchTerm;
-        }
+            if (!string.IsNullOrEmpty(filterString))
+            {
+                AddInclude(b => b.MacAddress.ToLower().Contains(filterString.ToLower()));
+            }
 
-        public static GetDashboardByBeacon Create(int pageNumber = 1, int pageSize = 20, string searchTerm = null)
-        {
-            return new GetDashboardByBeacon(pageNumber, pageSize, searchTerm);
+            if (!string.IsNullOrEmpty(siteId))
+            {
+                AddInclude(b => b.SourceId == siteId);
+            }
+
+            if (!string.IsNullOrEmpty(productId))
+            {
+                
+            }
         }
 
         protected override Sorting<BeaconReceivedEntity, object> BuildDefaultSorting() =>
-            new(p => p.Id, SortOrder.Desc);
-
-        public void Deconstruct(out int pageNumber, out int pageSize, out string filterString)
-        {
-            pageNumber = Page;
-            pageSize = Size;
-
-            filterString = FilterString;
-        }
+            new(p => p.MacAddress, SortOrder.Asc);
     }
 
     internal class HandleDashboardByBeacon : IQueryHandler<GetDashboardByBeacon, IPagedEnumerable<DashboardByBeacon>>
@@ -67,21 +78,12 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
         public async Task<IPagedEnumerable<DashboardByBeacon>> Handle(GetDashboardByBeacon query, CancellationToken cancellationToken)
         {
             var providerId = _userContext.User.Identity.GetProviderId();
-            IPagedEnumerable<BeaconReceivedEntity> result;
-            if (!string.IsNullOrEmpty(query.FilterString))
-            {
-                result = await _beaconsReceived.PagedListAsync(query, e =>
-                    e.ProviderId == providerId && 
-                    e.MacAddress.ToLower().Contains(query.FilterString.ToLower()), cancellationToken);
-            }
-            else
-            {
-                result = await _beaconsReceived.PagedListAsync(query, p => p.ProviderId == providerId,
-                    cancellationToken);
-            }
+
+            var spec = new ReceivedBeaconsSpec(query.Page, query.Size, providerId, query.SiteId, query.ProductId, query.SearchTerm);
+            var beacons = await _beaconsReceived.ListAsync(spec, cancellationToken);
 
             var data = new List<DashboardByBeacon>();
-            foreach (var b in result)
+            foreach (var b in beacons)
             {
                 var asset = new DashboardByBeacon
                 {
@@ -113,7 +115,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
                 data.Add(asset);
             }
 
-            return new PagedEnumerable<DashboardByBeacon>(data, result.TotalCount);
+            return new PagedEnumerable<DashboardByBeacon>(data, beacons.TotalCount);
         }
     }
 }

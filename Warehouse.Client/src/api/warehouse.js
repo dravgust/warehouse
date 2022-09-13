@@ -86,8 +86,11 @@ export const getBeaconPosition = async ({ queryKey }) => {
 };
 
 export const getAssets = async ({ queryKey }) => {
-  const [_key, page, searchTerm] = queryKey;
-  const res = await axios.get(`dashboard/beacons?page=${page}&size=8&searchTerm=${searchTerm}`);
+  const [_key, page, selectedSite, searchTerm] = queryKey;
+  const siteId = selectedSite ? selectedSite.id : "";
+  const res = await axios.get(
+    `dashboard/beacons?page=${page}&size=8&siteId=${siteId}&searchTerm=${searchTerm}`
+  );
   return res?.data;
 };
 

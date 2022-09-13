@@ -96,6 +96,7 @@ function Dashboard() {
                   })
                 }
                 selectedItem={selectedBeacon}
+                selectedSite={selectedSite}
               />
             )}
           </Grid>

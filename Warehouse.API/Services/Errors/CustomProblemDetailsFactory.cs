@@ -18,10 +18,10 @@ namespace Warehouse.API.Services.Errors
         public override ProblemDetails CreateProblemDetails(
             HttpContext httpContext,
             int? statusCode = null,
-            string? title = null,
-            string? type = null,
-            string? detail = null,
-            string? instance = null)
+            string title = null,
+            string type = null,
+            string detail = null,
+            string instance = null)
         {
             statusCode ??= 500;
 
@@ -43,10 +43,10 @@ namespace Warehouse.API.Services.Errors
             HttpContext httpContext,
             ModelStateDictionary modelStateDictionary,
             int? statusCode = null,
-            string? title = null,
-            string? type = null,
-            string? detail = null,
-            string? instance = null)
+            string title = null,
+            string type = null,
+            string detail = null,
+            string instance = null)
         {
             if (modelStateDictionary == null)
             {
