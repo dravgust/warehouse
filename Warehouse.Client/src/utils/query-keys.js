@@ -1,4 +1,5 @@
 export const fetchUsers = "FETCH_USERS";
+export const fetchProviders = "FETCH_PROVIDERS";
 export const fetchProducts = "FETCH_PRODUCTS";
 export const fetchBeacons = "FETCH_BEACONS";
 export const fetchAlerts = "FETCH_ALERTS";

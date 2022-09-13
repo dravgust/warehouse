@@ -46,6 +46,7 @@ import Warehouse from "layouts/warehouse";
 import Home from "layouts/home";
 import SiteConfiguration from "layouts/site-configuration";
 import Beacons from "layouts/beacons";
+import Providers from "./layouts/providers";
 
 const routes = [
   {
@@ -157,6 +158,16 @@ const routes = [
     route: "/profile",
     icon: <CustomerSupport size="12px" />,
     component: <Profile />,
+    noCollapse: true,
+    protected: true,
+  },
+  {
+    type: "collapse",
+    name: "Providers",
+    key: "providers",
+    route: "/providers",
+    icon: <Icon fontSize="12px">auto_awesome_motion</Icon>,
+    component: <Providers />,
     noCollapse: true,
     protected: true,
   },

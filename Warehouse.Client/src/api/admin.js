@@ -6,6 +6,12 @@ export const getUsers = async ({ queryKey }) => {
   return res?.data;
 };
 
+export const getProviders = async ({ queryKey }) => {
+  const [_key] = queryKey;
+  const res = await axios.get(`providers`);
+  return res?.data;
+};
+
 export const saveUser = async (user) => {
   const res = await axios.post(`users/set`, user);
   return res?.data;
