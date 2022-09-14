@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Vayosoft.Core.Commands;
+using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Exceptions;
 using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Enums;
@@ -40,13 +41,20 @@ public class SaveUser : ICommand
 public class HandleSaveUser : ICommandHandler<SaveUser>
 {
     private readonly IUserRepository _userRepository;
+    private readonly ILinqProvider _linqProvider;
     private readonly IUserContext _userContext;
     private readonly IPasswordHasher _passwordHasher;
     private readonly ILogger<HandleSaveUser> _logger;
 
-    public  HandleSaveUser(IUserRepository userRepository, IUserContext userContext, IPasswordHasher passwordHasher, ILogger<HandleSaveUser> logger)
+    public  HandleSaveUser(
+        IUserRepository userRepository,
+        ILinqProvider linqProvider,
+        IUserContext userContext,
+        IPasswordHasher passwordHasher,
+        ILogger<HandleSaveUser> logger)
     {
         _userRepository = userRepository;
+        _linqProvider = linqProvider;
         _userContext = userContext;
         _passwordHasher = passwordHasher;
         _logger = logger;
@@ -58,7 +66,7 @@ public class HandleSaveUser : ICommandHandler<SaveUser>
         {
             var identity = _userContext.User.Identity ?? throw new ArgumentNullException(nameof(_userContext.User.Identity));
             var identityType = identity.GetUserType();
-            var providerId = identity.GetProviderId();
+            
             await _userContext.LoadSessionAsync();
 
             if (!_userContext.IsAdministrator)
@@ -92,9 +100,17 @@ public class HandleSaveUser : ICommandHandler<SaveUser>
             var userType = Enum.Parse<UserType>(command.Type);
             entity.Type = userType > identityType ? userType : identityType;
 
-            //todo check if providerId has user parent provider
-            entity.ProviderId = !_userContext.IsSupervisor ? providerId : command.ProviderId;
-
+            var providerId = identity.GetProviderId();
+            if (!_userContext.IsSupervisor && command.ProviderId != providerId)
+            {
+                var provider = _linqProvider.ById<ProviderEntity>(command.ProviderId);
+                entity.ProviderId = provider != null && provider.Parent == providerId ? command.ProviderId : providerId;
+            }
+            else
+            {
+                entity.ProviderId = command.ProviderId;
+            }
+            
             entity.LogLevel = command.LogLevel;
 
             await _userRepository.UpdateAsync(entity, cancellationToken);

@@ -85,7 +85,7 @@ const ProviderEdit = ({ item, onSave, onClose }) => {
                 "& .MuiInputBase-input": { width: "100% !important" },
               }}
               autoComplete="off"
-              autoFocus="true"
+              autoFocus={true}
               type="text"
               id="name"
               name="name"
@@ -116,7 +116,7 @@ const ProviderEdit = ({ item, onSave, onClose }) => {
                 "& .MuiInputBase-input": { width: "100% !important" },
               }}
               autoComplete="off"
-              autoFocus="true"
+              autoFocus={true}
               type="text"
               id="alias"
               name="alias"
