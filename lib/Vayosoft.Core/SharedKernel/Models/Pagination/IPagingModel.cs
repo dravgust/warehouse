@@ -5,7 +5,7 @@
     {
         int Page { get; }
 
-        int Size { get; }
+        int PageSize { get; }
 
         Sorting<TEntity, TSortKey> OrderBy { get; }
     }

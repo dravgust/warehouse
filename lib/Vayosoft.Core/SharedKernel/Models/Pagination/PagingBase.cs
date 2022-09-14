@@ -15,7 +15,7 @@ namespace Vayosoft.Core.SharedKernel.Models.Pagination
         protected PagingBase(int page, int size, Sorting<TEntity, TOrderKey> orderBy)
         {
             Page = page;
-            Size = size;
+            PageSize = size;
 
             _orderBy = orderBy ?? throw new ArgumentException("OrderBy can't be null", nameof(orderBy));
         }
@@ -23,7 +23,7 @@ namespace Vayosoft.Core.SharedKernel.Models.Pagination
         protected PagingBase()
         {
             Page = 1;
-            Size = 30;
+            PageSize = 30;
             
             // ReSharper disable once VirtualMemberCallInConstructor
             _orderBy = BuildDefaultSorting();
@@ -49,7 +49,7 @@ namespace Vayosoft.Core.SharedKernel.Models.Pagination
             }
         }
 
-        public int Size
+        public int PageSize
         {
             get => _size;
             set

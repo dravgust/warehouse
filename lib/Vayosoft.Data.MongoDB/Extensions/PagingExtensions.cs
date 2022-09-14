@@ -14,8 +14,8 @@ namespace Vayosoft.Data.MongoDB.Extensions
             => (pagingModel.OrderBy.SortOrder == SortOrder.Asc
                     ? queryable.OrderBy(pagingModel.OrderBy.Expression)
                     : queryable.OrderByDescending(pagingModel.OrderBy.Expression))
-                .Skip((pagingModel.Page - 1) * pagingModel.Size)
-                .Take(pagingModel.Size);
+                .Skip((pagingModel.Page - 1) * pagingModel.PageSize)
+                .Take(pagingModel.PageSize);
 
         public static async Task<IPagedEnumerable<T>> ToPagedEnumerableAsync<T, TKey>(this IMongoQueryable<T> queryable,
             IPagingModel<T, TKey> pagingModel, CancellationToken cancellationToken = default)
