@@ -18,13 +18,29 @@ namespace Vayosoft.Core.Specifications
         }
 
         public Expression<Func<T, bool>> Criteria { get; }
+        public ICollection<Expression<Func<T, object>>> Includes { get; }
+            = new List<Expression<Func<T, object>>>();
 
-        public ICollection<Expression<Func<T, bool>>> Includes { get; }
+        public ICollection<string> IncludeStrings { get; }
+            = new List<string>();
+
+        public ICollection<Expression<Func<T, bool>>> WhereExpressions { get; }
             = new List<Expression<Func<T, bool>>>();
 
-        public PagedSpecificationBase<T> AddInclude(Expression<Func<T, bool>> includeExpression)
+        public PagedSpecificationBase<T> Where(Expression<Func<T, bool>> includeExpression)
         {
-            Includes.Add(includeExpression);
+            WhereExpressions.Add(includeExpression);
+
+            return this;
+        }
+
+        public PagedSpecificationBase<T> WhereIf(bool condition, Expression<Func<T, bool>> includeExpression)
+        {
+            if (condition)
+            {
+                WhereExpressions.Add(includeExpression);
+            }
+
             return this;
         }
 

@@ -33,20 +33,11 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
             Page = page;
             Size = size;
 
-            if (!string.IsNullOrEmpty(filterString))
-            {
-                AddInclude(b => b.MacAddress.ToLower().Contains(filterString.ToLower()));
-            }
-
-            if (!string.IsNullOrEmpty(siteId))
-            {
-                AddInclude(b => b.SourceId == siteId);
-            }
-
-            if (!string.IsNullOrEmpty(productId))
-            {
-                
-            }
+            this
+                .WhereIf(!string.IsNullOrEmpty(filterString),
+                    b => b.MacAddress.ToLower().Contains(filterString.ToLower()))
+                .WhereIf(!string.IsNullOrEmpty(siteId), b => b.SourceId == siteId)
+                .WhereIf(!string.IsNullOrEmpty(productId), b => true);
         }
 
         protected override Sorting<BeaconReceivedEntity, object> BuildDefaultSorting() =>

@@ -14,11 +14,6 @@ namespace Vayosoft.Core.Specifications
         Expression<Func<T, bool>> Criteria { get; }
         ICollection<Expression<Func<T, object>>> Includes { get; }
         ICollection<string> IncludeStrings { get; }
-    }
-
-    public interface ISpecification2<T>
-    {
-        Expression<Func<T, bool>> Criteria { get; }
-        ICollection<Expression<Func<T, bool>>> Includes { get; }
+        ICollection<Expression<Func<T, bool>>> WhereExpressions { get; }
     }
 }
