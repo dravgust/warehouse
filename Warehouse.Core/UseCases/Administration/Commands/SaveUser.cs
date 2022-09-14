@@ -69,7 +69,7 @@ public class HandleSaveUser : ICommandHandler<SaveUser>
             {
                 entity = await _userRepository.FindByIdAsync(command.Id, cancellationToken);
                 if (entity == null)
-                    throw new EntityNotFoundException(nameof(UserEntity), command.Id);
+                    throw EntityNotFoundException.For<UserEntity>(command.Id);
 
                 if (!string.IsNullOrEmpty(command.Password))
                     entity.PasswordHash = _passwordHasher.HashPassword(command.Password);

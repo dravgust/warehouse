@@ -15,8 +15,16 @@ import Function from "./function";
 import { ButtonGroup, Icon } from "@mui/material";
 import SuiButton from "components/SuiButton";
 import { LogLevel } from "data/log-level";
+import DeletePrompt from "../../../site-configuration/components/delete-promt";
+import { deleteUser } from "api/admin";
 
-const UserList = ({ searchTerm = "", onEdit = () => {}, onAdd = () => {}, reload }) => {
+const UserList = ({
+  searchTerm = "",
+  onEdit = () => {},
+  onAdd = () => {},
+  onDelete = () => {},
+  reload,
+}) => {
   const [page, setPage] = useState(1);
   const {
     isLoading,
@@ -24,6 +32,14 @@ const UserList = ({ searchTerm = "", onEdit = () => {}, onAdd = () => {}, reload
     data: response,
     isSuccess,
   } = useQuery([fetchUsers, page, searchTerm, reload], getUsers);
+  const handleDelete = async (item) => {
+    try {
+      await deleteUser(item);
+      return onDelete();
+    } catch (err) {
+      console.log("delete-user", err);
+    }
+  };
   return (
     <Card>
       <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
@@ -82,6 +98,22 @@ const UserList = ({ searchTerm = "", onEdit = () => {}, onAdd = () => {}, reload
                     <SuiButton variant="text" color="dark" onClick={() => onEdit(item)}>
                       <Icon>border_color</Icon>
                     </SuiButton>
+                    <DeletePrompt
+                      renderButton={(handleClickOpen) => (
+                        <SuiButton
+                          variant="text"
+                          color="error"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleClickOpen();
+                            e.preventDefault();
+                          }}
+                        >
+                          <Icon>delete</Icon>
+                        </SuiButton>
+                      )}
+                      onDelete={() => handleDelete(item)}
+                    />
                   </ButtonGroup>
                 ),
               }))

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Commands;
+using Vayosoft.Core.Persistence.Commands;
 using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
@@ -27,13 +28,13 @@ namespace Warehouse.API.Controllers.API
     {
         private readonly ICommandBus commandBus;
         private readonly IQueryBus queryBus;
-        private readonly IUserContext _userContext;
+        private readonly IUserContext userContext;
 
         public UsersController(ICommandBus commandBus, IQueryBus queryBus, IUserContext userContext)
         {
             this.commandBus = commandBus;
             this.queryBus = queryBus;
-            _userContext = userContext;
+            this.userContext = userContext;
         }
 
         //[MapToApiVersion("1.0")]
@@ -42,9 +43,9 @@ namespace Warehouse.API.Controllers.API
         [PermissionAuthorization("USER", SecurityPermissions.View)]
         public async Task<IActionResult> Get(int page, int size, string searchTerm = null, CancellationToken token = default)
         {
-            await _userContext.LoadSessionAsync();
-            long? providerId = !_userContext.IsSupervisor 
-                ? _userContext.User.Identity?.GetProviderId() ?? 0 
+            await userContext.LoadSessionAsync();
+            long? providerId = !userContext.IsSupervisor 
+                ? userContext.User.Identity?.GetProviderId() ?? 0 
                 : null;
             var spec = new UserSpec(page, size, providerId, searchTerm);
             var query = new SpecificationQuery<UserSpec, IPagedEnumerable<UserEntityDto>>(spec);
@@ -71,6 +72,16 @@ namespace Warehouse.API.Controllers.API
         [ProducesResponseType( StatusCodes.Status200OK)]
         [PermissionAuthorization("USER", SecurityPermissions.Add | SecurityPermissions.Edit)]
         public async Task<IActionResult> Post([FromBody]SaveUser command, CancellationToken token) {
+            await commandBus.Send(command, token);
+            return Ok();
+        }
+
+        [HttpPost("delete")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [PermissionAuthorization("USER", SecurityPermissions.Delete)]
+        public async Task<IActionResult> PostDelete([FromBody] UserEntityDto entity, CancellationToken token)
+        {
+            var command = new DeleteCommand<UserEntity>(new UserEntity(entity.Username){ Id = entity.Id });
             await commandBus.Send(command, token);
             return Ok();
         }

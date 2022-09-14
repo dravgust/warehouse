@@ -1,4 +1,5 @@
-﻿namespace Warehouse.Core.Exceptions
+﻿
+namespace Warehouse.Core.Exceptions
 {
     public class NotEnoughPermissionsException : ApplicationException
     {

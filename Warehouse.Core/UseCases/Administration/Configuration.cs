@@ -29,10 +29,12 @@ namespace Warehouse.Core.UseCases.Administration
 
         private static IServiceCollection AddCommandHandlers(this IServiceCollection services) =>
             services
-                //.AddCommandHandler<CreateOrUpdateCommand<UserEntityDto>, CreateOrUpdateHandler<long, UserEntity, UserEntityDto>>()
                 .AddCommandHandler<SaveUser, HandleSaveUser>()
+                .AddCommandHandler<DeleteCommand<UserEntity>, DeleteCommandHandler<long, UserEntity>>()
+
                 .AddCommandHandler<SavePermissions, HandleSavePermissions>()
                 .AddCommandHandler<SaveRole, HandleSaveRole>()
+
                 .AddCommandHandler<DeleteCommand<ProviderEntity>, DeleteCommandHandler<long, ProviderEntity>>()
                 .AddCommandHandler<CreateOrUpdateCommand<ProviderEntity>, CreateOrUpdateHandler<long, ProviderEntity, ProviderEntity>>()
             ;

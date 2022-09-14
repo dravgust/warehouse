@@ -42,7 +42,7 @@ namespace Warehouse.Core.UseCases.Administration.Commands
                 {
                     var old = await _userRepository.FindRoleByIdAsync(command.Id, cancellationToken);
                     if (old == null)
-                        throw new EntityNotFoundException(nameof(SecurityRoleEntity), command.Id);
+                        throw EntityNotFoundException.For<SecurityRoleEntity>(command.Id);
 
                     if (!old.Name.Equals(command.Name) || !string.Equals(old.Description, command.Description))
                         await _userRepository.UpdateSecurityRoleAsync(command, cancellationToken);

@@ -6,11 +6,9 @@ namespace Vayosoft.Core.SharedKernel.Exceptions
     {
         public EntityNotFoundException(string typeName, object id)
             : base($"Entity \"{typeName}\" ({id}) was not found.")
-        {
-        }
+        { }
 
-        public static EntityNotFoundException For<T>(object id)
-        {
+        public static EntityNotFoundException For<T>(object id) {
             return new EntityNotFoundException(typeof(T).Name, id);
         }
     }

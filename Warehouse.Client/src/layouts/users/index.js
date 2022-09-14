@@ -31,6 +31,10 @@ function Users() {
       logLevel: 0,
     });
   const onUserSave = () => resetPage();
+  function handleDelete() {
+    resetToNull();
+    forceUpdate();
+  }
   return (
     <DashboardLayout>
       <DashboardNavbar onSearch={onSearch} />
@@ -49,6 +53,7 @@ function Users() {
                 searchTerm={searchTerm}
                 onEdit={setUserEdit}
                 onAdd={resetToDefault}
+                onDelete={handleDelete}
                 reload={reload}
               />
             </Grid>

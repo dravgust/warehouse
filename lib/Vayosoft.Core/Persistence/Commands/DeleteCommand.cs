@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using System.Threading.Tasks;
 using System.Threading;
-using System;
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.SharedKernel.Entities;
+using Vayosoft.Core.SharedKernel.Exceptions;
 using Vayosoft.Core.Utilities;
 
 namespace Vayosoft.Core.Persistence.Commands;
@@ -29,7 +29,7 @@ public class DeleteCommandHandler<TKey, TEntity> : ICommandHandler<DeleteCommand
         var entity = _unitOfWork.Find<TEntity>(id);
         if (entity == null)
         {
-            throw new ArgumentException($"Entity {typeof(TEntity).Name} with id={id} doesn't exists");
+            throw EntityNotFoundException.For<TEntity>(id);
         }
 
         _unitOfWork.Delete(entity);

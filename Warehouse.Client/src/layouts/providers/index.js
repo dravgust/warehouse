@@ -13,7 +13,7 @@ const Providers = () => {
   const onSearch = (value) => setSearchTerm(value);
   const [reload, updateReloadState] = useState(0);
   const forceUpdate = () => updateReloadState(Date.now());
-  const { hasPermissions } = useSecurity("USER", SecurityPermissions.View);
+  const { hasPermissions: viewPermissions } = useSecurity("PROVIDER", SecurityPermissions.View);
   const [providerEdit, setProviderEdit] = useState(null);
   const resetToNull = () => setProviderEdit(null);
   const resetPage = () => {
@@ -36,7 +36,7 @@ const Providers = () => {
   return (
     <DashboardLayout>
       <DashboardNavbar onSearch={onSearch} />
-      {hasPermissions && (
+      {viewPermissions && (
         <SuiBox mb={3} py={1}>
           <Grid container spacing={2}>
             <Zoom in={Boolean(providerEdit)}>
