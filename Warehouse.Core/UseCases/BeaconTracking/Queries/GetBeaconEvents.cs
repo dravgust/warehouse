@@ -64,13 +64,13 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
             IPagedEnumerable<BeaconEventEntity> data;
             if (!string.IsNullOrEmpty(query.SearchTerm))
             {
-                data = await _events.PagedListAsync(query, e =>
+                data = await _events.PagedEnumerableAsync(query, e =>
                     e.ProviderId == providerId && 
                     e.MacAddress.ToLower().Contains(query.SearchTerm.ToLower()), cancellationToken);
             }
             else
             {
-                data = await _events.PagedListAsync(query, 
+                data = await _events.PagedEnumerableAsync(query, 
                     p => p.ProviderId == providerId,
                     cancellationToken);
             }

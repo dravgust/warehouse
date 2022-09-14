@@ -3,17 +3,22 @@ import Card from "@mui/material/Card";
 import SuiBox from "components/SuiBox";
 import SuiTypography from "components/SuiTypography";
 import Table from "examples/Tables/Table";
-import { format } from "date-fns";
-import { he } from "date-fns/locale";
-import { ProviderName } from "data/providers";
 import { useQuery } from "react-query";
 import { fetchProviders } from "utils/query-keys";
 import { getProviders } from "api/admin";
 import Provider from "./provider";
 import { ButtonGroup, Icon } from "@mui/material";
 import SuiButton from "components/SuiButton";
+import DeletePrompt from "../../../site-configuration/components/delete-promt";
+import { deleteProvider } from "api/warehouse";
 
-const ProviderList = ({ searchTerm = "", onEdit = () => {}, onAdd = () => {}, reload }) => {
+const ProviderList = ({
+  searchTerm = "",
+  onEdit = () => {},
+  onAdd = () => {},
+  onDelete = () => {},
+  reload,
+}) => {
   const [page, setPage] = useState(1);
   const {
     isLoading,
@@ -21,6 +26,14 @@ const ProviderList = ({ searchTerm = "", onEdit = () => {}, onAdd = () => {}, re
     data: response,
     isSuccess,
   } = useQuery([fetchProviders, page, searchTerm, reload], getProviders);
+  const handleDelete = async (item) => {
+    try {
+      await deleteProvider(item);
+      return onDelete();
+    } catch (err) {
+      console.log("delete-provider", err);
+    }
+  };
   return (
     <Card>
       <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
@@ -48,17 +61,45 @@ const ProviderList = ({ searchTerm = "", onEdit = () => {}, onAdd = () => {}, re
           <Table
             columns={[
               { name: "provider", align: "left" },
+              { name: "description", align: "left" },
+              { name: "culture", align: "left" },
               { name: "action", align: "center" },
             ]}
             rows={
               isSuccess &&
               response.map((item) => ({
-                provider: <Provider name={item.name} />,
+                provider: <Provider name={item.name} alias={item.alias} />,
+                description: (
+                  <SuiTypography variant="caption" color="secondary" fontWeight="medium">
+                    {item.description}
+                  </SuiTypography>
+                ),
+                culture: (
+                  <SuiTypography variant="caption" color="secondary" fontWeight="medium">
+                    {item.culture}
+                  </SuiTypography>
+                ),
                 action: (
                   <ButtonGroup variant="text" aria-label="text button group" color="text">
                     <SuiButton variant="text" color="dark" onClick={() => onEdit(item)}>
                       <Icon>border_color</Icon>
                     </SuiButton>
+                    <DeletePrompt
+                      renderButton={(handleClickOpen) => (
+                        <SuiButton
+                          variant="text"
+                          color="error"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleClickOpen();
+                            e.preventDefault();
+                          }}
+                        >
+                          <Icon>delete</Icon>
+                        </SuiButton>
+                      )}
+                      onDelete={() => handleDelete(item)}
+                    />
                   </ButtonGroup>
                 ),
               }))

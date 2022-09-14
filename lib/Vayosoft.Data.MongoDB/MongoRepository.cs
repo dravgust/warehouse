@@ -4,13 +4,13 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using FluentValidation.Internal;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.Specifications;
+using Vayosoft.Data.MongoDB.Extensions;
 
 namespace Vayosoft.Data.MongoDB
 {
@@ -47,25 +47,19 @@ namespace Vayosoft.Data.MongoDB
         public Task<List<T>> ListAsync(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default) =>
             Collection.Find(criteria).ToListAsync(cancellationToken);
 
-        public Task<IPagedEnumerable<T>> ListAsync(IPagedSpecification<T, object> specification, CancellationToken cancellationToken = default)
-        {
-            var queryableResultWithIncludes = specification
-                .Includes
-                .Aggregate(Collection.AsQueryable(), (current, include) => current.Where(include));
+        public Task<IPagedEnumerable<T>> PagedEnumerableAsync(IPagingModel<T, object> model, Expression<Func<T, bool>> criteria, CancellationToken cancellationToken) =>
+            Collection.AsQueryable().Where(criteria).ToPagedEnumerableAsync(model, cancellationToken);
 
-            return queryableResultWithIncludes.Where(specification.Criteria).ToPagedEnumerableAsync(specification, cancellationToken);
-        }
+        public Task<IPagedEnumerable<T>> PagedEnumerableAsync(IPagingModel<T, object> model, CancellationToken cancellationToken) =>
+            Collection.AsQueryable().ToPagedEnumerableAsync(model, cancellationToken);
+
+        public Task<IPagedEnumerable<T>> PagedEnumerableAsync(IPagedSpecification<T, object> specification, CancellationToken cancellationToken = default) =>
+            Collection.AsQueryable().BySpecification(specification).ToPagedEnumerableAsync(specification, cancellationToken);
 
         //public Task<IPagedEnumerable<T>> PagedListAsync(IPagingModel<T, object> model, Expression<Func<T, bool>> criteria, CancellationToken cancellationToken) =>
         //    Collection.AggregateByPage(model, Builders<T>.Filter.Where(criteria), cancellationToken);
 
         //public Task<IPagedEnumerable<T>> PagedListAsync(IPagingModel<T, object> model, CancellationToken cancellationToken) =>
         //    Collection.AggregateByPage(model, Builders<T>.Filter.Empty, cancellationToken);
-
-        public Task<IPagedEnumerable<T>> PagedListAsync(IPagingModel<T, object> model, Expression<Func<T, bool>> criteria, CancellationToken cancellationToken) =>
-            Collection.AsQueryable().Where(criteria).ToPagedEnumerableAsync(model, cancellationToken);
-
-        public Task<IPagedEnumerable<T>> PagedListAsync(IPagingModel<T, object> model, CancellationToken cancellationToken) =>
-            Collection.AsQueryable().ToPagedEnumerableAsync(model, cancellationToken);
     }
 }

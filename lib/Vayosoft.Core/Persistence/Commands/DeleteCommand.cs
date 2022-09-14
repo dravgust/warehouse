@@ -4,14 +4,13 @@ using System.Threading;
 using System;
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.SharedKernel.Entities;
+using Vayosoft.Core.Utilities;
 
 namespace Vayosoft.Core.Persistence.Commands;
-public class DeleteCommand<TKey> : ICommand
-{
-    public TKey Id { get; set; }
-}
 
-public class DeleteCommandHandler<TKey, TEntity> : ICommandHandler<DeleteCommand<TKey>>
+public record DeleteCommand<TEntity>(TEntity Entity) : ICommand where TEntity : IEntity;
+
+public class DeleteCommandHandler<TKey, TEntity> : ICommandHandler<DeleteCommand<TEntity>>
     where TEntity : class, IEntity
 {
     private readonly IUnitOfWork _unitOfWork;
@@ -21,17 +20,21 @@ public class DeleteCommandHandler<TKey, TEntity> : ICommandHandler<DeleteCommand
         _unitOfWork = unitOfWork;
     }
 
-    public Task<Unit> Handle(DeleteCommand<TKey> command, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(DeleteCommand<TEntity> command, CancellationToken cancellationToken)
     {
-        var entity = _unitOfWork.Find<TEntity>(command.Id);
+        Guard.NotNull(command.Entity, nameof(command.Entity));
+
+        var id = command.Entity.Id;
+
+        var entity = _unitOfWork.Find<TEntity>(id);
         if (entity == null)
         {
-            throw new ArgumentException($"Entity {typeof(TEntity).Name} with id={command.Id} doesn't exists");
+            throw new ArgumentException($"Entity {typeof(TEntity).Name} with id={id} doesn't exists");
         }
 
         _unitOfWork.Delete(entity);
-        _unitOfWork.Commit();
+        await _unitOfWork.CommitAsync();
 
-        return Task.FromResult(Unit.Value);
+        return Unit.Value;
     }
 }

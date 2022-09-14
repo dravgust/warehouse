@@ -56,13 +56,13 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 
             if (!string.IsNullOrEmpty(query.SearchTerm))
             {
-                return await _repository.PagedListAsync(query, e =>
+                return await _repository.PagedEnumerableAsync(query, e =>
                         e.ProviderId == providerId &&
                         e.MacAddress.ToLower().Contains(query.SearchTerm.ToLower()),
                     cancellationToken);
             }
 
-            return await _repository.PagedListAsync(query, 
+            return await _repository.PagedEnumerableAsync(query, 
                 p => p.ProviderId == providerId,
                 cancellationToken);
         }

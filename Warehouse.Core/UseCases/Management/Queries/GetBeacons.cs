@@ -56,12 +56,12 @@ namespace Warehouse.Core.UseCases.Management.Queries
             IPagedEnumerable<BeaconRegisteredEntity> result;
             if (!string.IsNullOrEmpty(query.SearchTerm))
             {
-                result = await _beaconsRegistered.PagedListAsync(query, e =>
+                result = await _beaconsRegistered.PagedEnumerableAsync(query, e =>
                     e.ProviderId == providerId && e.MacAddress.ToLower().Contains(query.SearchTerm.ToLower()), cancellationToken);
             }
             else
             {
-                result = await _beaconsRegistered.PagedListAsync(query, b=> b.ProviderId == providerId,
+                result = await _beaconsRegistered.PagedEnumerableAsync(query, b=> b.ProviderId == providerId,
                     cancellationToken);
             }
             

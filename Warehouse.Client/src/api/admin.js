@@ -17,6 +17,11 @@ export const saveUser = async (user) => {
   return res?.data;
 };
 
+export const saveProvider = async (user) => {
+  const res = await axios.post(`providers/set`, user);
+  return res?.data;
+};
+
 export const getRoles = async ({ queryKey }) => {
   const [_key] = queryKey;
   const res = await axios.get(`security/roles`);

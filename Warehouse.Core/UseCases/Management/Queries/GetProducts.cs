@@ -55,11 +55,11 @@ namespace Warehouse.Core.UseCases.Management.Queries
 
             if (!string.IsNullOrEmpty(query.FilterString))
             {
-                return await _repository.PagedListAsync(query, e =>
+                return await _repository.PagedEnumerableAsync(query, e =>
                     e.ProviderId == providerId && e.Name.ToLower().Contains(query.FilterString.ToLower()), cancellationToken);
             }
 
-            return await _repository.PagedListAsync(query, p => p.ProviderId == providerId, cancellationToken);
+            return await _repository.PagedEnumerableAsync(query, p => p.ProviderId == providerId, cancellationToken);
         }
     }
 }

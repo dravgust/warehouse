@@ -16,7 +16,6 @@ function Assets({ selectedItem, selectedSite, onRowSelect = () => {} }) {
   const [page, setPage] = useState(1);
   const [pattern, setPattern] = useState("");
   const onSearchBeacon = (beacon) => setPattern(beacon);
-  console.log("selsite", selectedSite);
   const {
     isLoading,
     error,

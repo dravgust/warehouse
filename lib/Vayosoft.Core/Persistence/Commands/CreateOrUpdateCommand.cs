@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using System.Threading.Tasks;
 using System.Threading;
-using System;
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Entities;
+using Vayosoft.Core.Utilities;
 
 namespace Vayosoft.Core.Persistence.Commands;
 
@@ -17,24 +17,29 @@ public class CreateOrUpdateHandler<TKey, TEntity, TDto> : ICommandHandler<Create
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public CreateOrUpdateHandler(
-        IUnitOfWork unitOfWork,
-        IMapper mapper)
+    public CreateOrUpdateHandler(IUnitOfWork unitOfWork, IMapper mapper)
     {
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
     }
 
-    public Task<Unit> Handle(CreateOrUpdateCommand<TDto> command, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(CreateOrUpdateCommand<TDto> command, CancellationToken cancellationToken)
     {
+        Guard.NotNull(command.Entity, nameof(command.Entity));
+
         var id = command.Entity.Id;
-        var entity = id != null && !default(TKey)!.Equals(id)
-            ? _mapper.Map(command.Entity, _unitOfWork.Find<TEntity>(id))
-            : _mapper.Map<TEntity>(command.Entity);
+        if (id != null && !default(TKey)!.Equals(id))
+        {
+            var entity = _mapper.Map(command.Entity, _unitOfWork.Find<TEntity>(id));
+            _unitOfWork.Update(entity);
+        }
+        else
+        {
+            var entity = _mapper.Map<TEntity>(command.Entity);
+            _unitOfWork.Add(entity);
+        }
 
-        _unitOfWork.Add(entity);
-        _unitOfWork.Commit();
-
-        return Task.FromResult(Unit.Value);
+        await _unitOfWork.CommitAsync();
+        return Unit.Value;
     }
 }

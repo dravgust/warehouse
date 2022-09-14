@@ -6,6 +6,7 @@ import Footer from "../../examples/Footer";
 import React, { useState } from "react";
 import useSecurity, { SecurityPermissions } from "../../services/security-provider";
 import ProviderList from "./components/provider-list";
+import ProviderEdit from "./components/provider-edit";
 
 const Providers = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -13,34 +14,44 @@ const Providers = () => {
   const [reload, updateReloadState] = useState(0);
   const forceUpdate = () => updateReloadState(Date.now());
   const { hasPermissions } = useSecurity("USER", SecurityPermissions.View);
-  const [userEdit, setUserEdit] = useState(null);
-  const resetToNull = () => setUserEdit(null);
+  const [providerEdit, setProviderEdit] = useState(null);
+  const resetToNull = () => setProviderEdit(null);
   const resetPage = () => {
     resetToNull();
     forceUpdate();
   };
   const resetToDefault = () =>
-    setUserEdit({
+    setProviderEdit({
       id: 0,
       name: "",
+      alias: "",
+      description: "",
+      culture: "en-US",
     });
-  const onUserSave = () => resetPage();
+  const onProviderSave = () => resetPage();
+  function handleDelete() {
+    resetToNull();
+    forceUpdate();
+  }
   return (
     <DashboardLayout>
       <DashboardNavbar onSearch={onSearch} />
       {hasPermissions && (
-        <SuiBox py={3}>
+        <SuiBox mb={3} py={1}>
           <Grid container spacing={2}>
-            <Zoom in={Boolean(userEdit)}>
+            <Zoom in={Boolean(providerEdit)}>
               <Grid item xs={12}>
-                {Boolean(userEdit) && <>...</>}
+                {Boolean(providerEdit) && (
+                  <ProviderEdit item={providerEdit} onClose={resetToNull} onSave={onProviderSave} />
+                )}
               </Grid>
             </Zoom>
             <Grid item xs={12}>
               <ProviderList
                 searchTerm={searchTerm}
-                onEdit={setUserEdit}
+                onEdit={setProviderEdit}
                 onAdd={resetToDefault}
+                onDelete={handleDelete}
                 reload={reload}
               />
             </Grid>

@@ -8,6 +8,7 @@ using Warehouse.Core.UseCases.Administration.Commands;
 using Warehouse.Core.UseCases.Administration.Models;
 using Warehouse.Core.UseCases.Administration.Queries;
 using Warehouse.Core.UseCases.Administration.Specifications;
+using Vayosoft.Core.Persistence.Commands;
 
 namespace Warehouse.Core.UseCases.Administration
 { 
@@ -31,6 +32,9 @@ namespace Warehouse.Core.UseCases.Administration
                 //.AddCommandHandler<CreateOrUpdateCommand<UserEntityDto>, CreateOrUpdateHandler<long, UserEntity, UserEntityDto>>()
                 .AddCommandHandler<SaveUser, HandleSaveUser>()
                 .AddCommandHandler<SavePermissions, HandleSavePermissions>()
-                .AddCommandHandler<SaveRole, HandleSaveRole>();
+                .AddCommandHandler<SaveRole, HandleSaveRole>()
+                .AddCommandHandler<DeleteCommand<ProviderEntity>, DeleteCommandHandler<long, ProviderEntity>>()
+                .AddCommandHandler<CreateOrUpdateCommand<ProviderEntity>, CreateOrUpdateHandler<long, ProviderEntity, ProviderEntity>>()
+            ;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel;
@@ -6,6 +7,7 @@ using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.SharedKernel.Models;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.Specifications;
+using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Security;
@@ -80,8 +82,8 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
             var providerId = _userContext.User.Identity.GetProviderId();
 
             var spec = new ReceivedBeaconsSpec(query.Page, query.Size, providerId, query.SiteId, query.ProductId, query.SearchTerm);
-            var beacons = await _beaconsReceived.ListAsync(spec, cancellationToken);
-
+            var beacons = await _beaconsReceived.PagedEnumerableAsync(spec, cancellationToken);
+            
             var data = new List<DashboardByBeacon>();
             foreach (var b in beacons)
             {

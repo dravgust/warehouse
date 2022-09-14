@@ -22,10 +22,10 @@ namespace Vayosoft.Core.Persistence
         Task<List<T>> ListAsync(CancellationToken cancellationToken = default);
         Task<List<T>> ListAsync(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default);
 
-        Task<IPagedEnumerable<T>> ListAsync(IPagedSpecification<T, object> specification, CancellationToken cancellationToken = default);
+        Task<IPagedEnumerable<T>> PagedEnumerableAsync(IPagedSpecification<T, object> specification, CancellationToken cancellationToken = default);
 
-        Task<IPagedEnumerable<T>> PagedListAsync(IPagingModel<T, object> model, CancellationToken cancellationToken);
-        Task<IPagedEnumerable<T>> PagedListAsync(IPagingModel<T, object> model, Expression<Func<T, bool>> criteria,
+        Task<IPagedEnumerable<T>> PagedEnumerableAsync(IPagingModel<T, object> model, CancellationToken cancellationToken);
+        Task<IPagedEnumerable<T>> PagedEnumerableAsync(IPagingModel<T, object> model, Expression<Func<T, bool>> criteria,
             CancellationToken cancellationToken);
     }
 }

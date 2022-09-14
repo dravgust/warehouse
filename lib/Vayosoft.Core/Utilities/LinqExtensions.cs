@@ -10,6 +10,14 @@ namespace Vayosoft.Core.Utilities
 {
     public static class LinqExtensions
     {
+        public static IQueryable<T> Where<T>(this ILinqProvider linqProvider, Expression<Func<T, bool>> expr)
+            where T : class, IEntity
+            => linqProvider.AsQueryable<T>().Where(expr);
+
+        public static IQueryable<T> WhereIf<T>(this ILinqProvider linqProvider, bool cnd, Expression<Func<T, bool>> expr)
+            where T : class, IEntity
+            => linqProvider.AsQueryable<T>().WhereIf(cnd, expr);
+
         public static IQueryable<T> WhereIf<T>(this IQueryable<T> queryable, bool cnd, Expression<Func<T, bool>> expr)
             => cnd
                 ? queryable.Where(expr)
@@ -35,5 +43,19 @@ namespace Vayosoft.Core.Utilities
         public static TEntity ById<TEntity>(this IQueryable<TEntity> queryable, long id)
             where TEntity : class, IEntity<long>
             => queryable.SingleOrDefault(x => x.Id == id);
+
+        public static IQueryable<TEntity> BySpecification<TEntity>(this ILinqProvider linqProvider, ISpecification<TEntity> spec)
+            where TEntity : class, IEntity<long>
+            => linqProvider.AsQueryable(spec);
+
+        public static IQueryable<T> BySpecification<T>(this IQueryable<T> source, ISpecification2<T> spec)
+            where T : class
+        {
+            var queryableResultWithIncludes = spec
+                .Includes
+                .Aggregate(source, (current, include) => current.Where(include));
+
+            return queryableResultWithIncludes.Where(spec.Criteria);
+        }
     }
 }

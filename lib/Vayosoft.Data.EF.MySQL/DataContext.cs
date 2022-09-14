@@ -36,14 +36,17 @@ namespace Vayosoft.Data.EF.MySQL
 
         public new void Add<TEntity>(TEntity entity) where TEntity : class, IEntity
         {
-           base.Entry(entity).State = entity.Id != null 
-               ? EntityState.Modified 
-               : EntityState.Added;
+           base.Entry(entity).State = EntityState.Added;
         }
-        
+
+        public new void Update<TEntity>(TEntity entity) where TEntity : class, IEntity
+        {
+            base.Entry(entity).State = EntityState.Modified;
+        }
+
         public void Delete<TEntity>(TEntity entity) where TEntity : class, IEntity
         {
-            Set<TEntity>().Remove(entity);
+            base.Entry(entity).State = EntityState.Deleted;
         }
 
         public TEntity Find<TEntity>(object id) where TEntity : class, IEntity
@@ -75,6 +78,7 @@ namespace Vayosoft.Data.EF.MySQL
         }
 
         public void Commit() => SaveChanges();
+        public Task CommitAsync() => SaveChangesAsync();
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

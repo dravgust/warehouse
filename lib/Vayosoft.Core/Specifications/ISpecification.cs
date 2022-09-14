@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Vayosoft.Core.SharedKernel.Entities;
-using Vayosoft.Core.SharedKernel.Models.Pagination;
 
 namespace Vayosoft.Core.Specifications
 {
@@ -22,10 +20,5 @@ namespace Vayosoft.Core.Specifications
     {
         Expression<Func<T, bool>> Criteria { get; }
         ICollection<Expression<Func<T, bool>>> Includes { get; }
-    }
-
-    public interface IPagedSpecification<TEntity, TOrderKey> : ISpecification2<TEntity>, IPagingModel<TEntity, TOrderKey> where TEntity : class, IEntity
-    {
-
     }
 }

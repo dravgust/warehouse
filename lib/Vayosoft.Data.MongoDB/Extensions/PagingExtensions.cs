@@ -5,7 +5,7 @@ using MongoDB.Driver.Linq;
 using Vayosoft.Core.SharedKernel.Models;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 
-namespace Vayosoft.Data.MongoDB
+namespace Vayosoft.Data.MongoDB.Extensions
 {
     public static class PagingExtensions
     {
