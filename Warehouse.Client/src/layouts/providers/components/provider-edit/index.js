@@ -25,7 +25,7 @@ const ProviderEdit = ({ item, onSave, onClose }) => {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      id: item ? item.id : 0,
+      id: item ? item.id : 1000,
       name: item ? item.name : "",
       alias: item ? item.alias : "",
       description: item ? item.description : "",

@@ -7,6 +7,9 @@ import useSecurity, { SecurityPermissions } from "services/security-provider";
 import React, { useState } from "react";
 import { Grid, Zoom } from "@mui/material";
 import UserEdit from "./components/user-edit";
+import { useQuery } from "react-query";
+import { fetchProviders } from "../../utils/query-keys";
+import { getProviders } from "../../api/admin";
 
 function Users() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -35,16 +38,25 @@ function Users() {
     resetToNull();
     forceUpdate();
   }
+  const { data: providers, isSuccess: isProvidersSuccess } = useQuery(
+    [fetchProviders],
+    getProviders
+  );
   return (
     <DashboardLayout>
       <DashboardNavbar onSearch={onSearch} />
       {hasPermissions && (
         <SuiBox py={3}>
           <Grid container spacing={2}>
-            <Zoom in={Boolean(userEdit)}>
+            <Zoom in={Boolean(userEdit) && isProvidersSuccess}>
               <Grid item xs={12}>
                 {Boolean(userEdit) && (
-                  <UserEdit item={userEdit} onClose={resetToNull} onSave={onUserSave} />
+                  <UserEdit
+                    item={userEdit}
+                    onClose={resetToNull}
+                    onSave={onUserSave}
+                    providers={providers}
+                  />
                 )}
               </Grid>
             </Zoom>

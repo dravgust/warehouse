@@ -40,11 +40,10 @@ function getStyles(id, userRoles, theme) {
   };
 }
 
-const UserEdit = ({ item, onSave, onClose }) => {
+const UserEdit = ({ item, onSave, onClose, providers = [] }) => {
   const theme = useTheme();
   const { hasPermissions } = useSecurity("USER", SecurityPermissions.Grant);
   const [selectedRoles, setSelectedRoles] = React.useState([]);
-
   const { data: roles, isSuccess: isRolesSuccess } = useQuery([fetchRoles], getRoles);
   const { data: userRoles, isSuccess: isUserRolesSuccess } = useQuery(
     [fetchUserRoles, item],
@@ -96,7 +95,7 @@ const UserEdit = ({ item, onSave, onClose }) => {
       password: "",
       phone: item ? item.phone : "",
       type: item ? item.type : "",
-      providerId: item ? item.providerId : "",
+      providerId: item ? item.providerId : 0,
       logLevel: item && item.logLevel ? item.logLevel : 0,
     },
     validationSchema: validationSchema,
@@ -153,7 +152,7 @@ const UserEdit = ({ item, onSave, onClose }) => {
                 "& .MuiInputBase-input": { width: "100% !important" },
               }}
               autoComplete="off"
-              autoFocus="true"
+              autoFocus={true}
               type="text"
               id="username"
               name="username"
@@ -237,11 +236,11 @@ const UserEdit = ({ item, onSave, onClose }) => {
                       label="providerId"
                       onChange={formik.handleChange}
                     >
-                      <MenuItem value={1000}>Vayosoft</MenuItem>
-                      <MenuItem value={4}>Tel-Aviv University</MenuItem>
-                      <MenuItem value={3}>Meitav</MenuItem>
-                      <MenuItem value={2}>Dolav</MenuItem>
-                      <MenuItem value={1}>Electra</MenuItem>
+                      {providers.map((item) => (
+                        <MenuItem key={item.id} value={item.id}>
+                          {item.name}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                   <FormControl

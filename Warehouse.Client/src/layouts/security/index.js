@@ -12,10 +12,12 @@ import { useState } from "react";
 import SecurityIcon from "@mui/icons-material/Security";
 import GppGoodIcon from "@mui/icons-material/GppGood";
 import RoleConfiguration from "./components/role-edit";
+import { useUserContext } from "../../context/security.context";
 
 const SecurityObjects = React.lazy(() => import("./components/objects"));
 
 const Security = () => {
+  const { isSupervisor } = useUserContext();
   const { hasPermissions } = useSecurity("USER", SecurityPermissions.View);
   const [selectedView, setSelectView] = useState(0);
   const [roleEdit, setRoleEdit] = useState(null);
@@ -35,12 +37,14 @@ const Security = () => {
           <Grid container spacing={1}>
             <Grid item xs={12}>
               <Card>
-                <SuiBox p={3}>
-                  <Tabs value={selectedView} onChange={handleChange} aria-label="navigation">
-                    <Tab icon={<SecurityIcon />} iconPosition="start" label="Security Roles" />
-                    <Tab icon={<GppGoodIcon />} iconPosition="start" label="Security Objects" />
-                  </Tabs>
-                </SuiBox>
+                {isSupervisor && (
+                  <SuiBox p={3}>
+                    <Tabs value={selectedView} onChange={handleChange} aria-label="navigation">
+                      <Tab icon={<SecurityIcon />} iconPosition="start" label="Security Roles" />
+                      <Tab icon={<GppGoodIcon />} iconPosition="start" label="Security Objects" />
+                    </Tabs>
+                  </SuiBox>
+                )}
               </Card>
             </Grid>
             <Zoom in={Boolean(roleEdit)}>

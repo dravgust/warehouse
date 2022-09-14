@@ -183,7 +183,7 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Security Roles",
+    name: "Security",
     key: "security",
     route: "/security",
     icon: <Icon fontSize="12px">security</Icon>,

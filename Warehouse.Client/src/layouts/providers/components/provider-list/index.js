@@ -29,7 +29,6 @@ const ProviderList = ({
     data: response,
     isSuccess,
   } = useQuery([fetchProviders, page, searchTerm, reload], getProviders);
-  console.log("p_error", error);
   const handleDelete = async (item) => {
     try {
       await deleteProvider(item);

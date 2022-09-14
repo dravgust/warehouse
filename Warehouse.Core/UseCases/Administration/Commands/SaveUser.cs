@@ -91,6 +91,8 @@ public class HandleSaveUser : ICommandHandler<SaveUser>
 
             var userType = Enum.Parse<UserType>(command.Type);
             entity.Type = userType > identityType ? userType : identityType;
+
+            //todo check if providerId has user parent provider
             entity.ProviderId = !_userContext.IsSupervisor ? providerId : command.ProviderId;
 
             entity.LogLevel = command.LogLevel;
