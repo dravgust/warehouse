@@ -7,7 +7,7 @@ namespace Vayosoft.Data.MongoDB.Extensions
 {
     public static class LinqExtensions
     {
-        public static IMongoQueryable<T> BySpecification<T>(this IMongoQueryable<T> source, ISpecification<T> spec)
+        public static IMongoQueryable<T> BySpecification<T>(this IMongoQueryable<T> source, ISpecification<T, object> spec)
             where T : class
         {
             var queryableResultWithIncludes = spec

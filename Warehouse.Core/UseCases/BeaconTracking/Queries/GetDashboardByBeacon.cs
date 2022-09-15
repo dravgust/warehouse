@@ -1,13 +1,8 @@
-﻿using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
-using Vayosoft.Core.Persistence;
+﻿using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel;
-using Vayosoft.Core.SharedKernel.Entities;
-using Vayosoft.Core.SharedKernel.Models;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.Specifications;
-using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Security;
@@ -16,33 +11,8 @@ using Warehouse.Core.UseCases.Management.Models;
 
 namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 {
-    public class GetDashboardByBeacon : IQuery<IPagedEnumerable<DashboardByBeacon>>
-    {
-        public int Page { get; set; }
-        public int Size { get; set; }
-        public string SearchTerm { get; set; }
-        public string SiteId { get; set; }
-        public string ProductId { get; set; }
-    }
-    
-    public class ReceivedBeaconsSpec : PagedSpecificationBase<BeaconReceivedEntity>
-    {
-        public ReceivedBeaconsSpec(int page, int size, long providerId, string siteId = null, string productId = null, string filterString = null) 
-            : base(b => b.ProviderId == providerId)
-        {
-            Page = page;
-            Size = size;
-
-            this
-                .WhereIf(!string.IsNullOrEmpty(filterString),
-                    b => b.MacAddress.ToLower().Contains(filterString.ToLower()))
-                .WhereIf(!string.IsNullOrEmpty(siteId), b => b.SourceId == siteId)
-                .WhereIf(!string.IsNullOrEmpty(productId), b => true);
-        }
-
-        protected override Sorting<BeaconReceivedEntity, object> BuildDefaultSorting() =>
-            new(p => p.MacAddress, SortOrder.Asc);
-    }
+    public record GetDashboardByBeacon(int Page, int Size, string SearchTerm, string SiteId, string ProductId)
+        : IQuery<IPagedEnumerable<DashboardByBeacon>>;
 
     internal class HandleDashboardByBeacon : IQueryHandler<GetDashboardByBeacon, IPagedEnumerable<DashboardByBeacon>>
     {
@@ -72,8 +42,17 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
         {
             var providerId = _userContext.User.Identity.GetProviderId();
 
-            var spec = new ReceivedBeaconsSpec(query.Page, query.Size, providerId, query.SiteId, query.ProductId, query.SearchTerm);
-            var beacons = await _beaconsReceived.PagedEnumerableAsync(spec, cancellationToken);
+            var spec = SpecificationBuilder<BeaconReceivedEntity>
+                .Criteria(b => b.ProviderId == providerId)
+                .WhereIf(!string.IsNullOrEmpty(query.SearchTerm),
+                    b => b.MacAddress.ToLower().Contains(query.SearchTerm.ToLower()))
+                .WhereIf(!string.IsNullOrEmpty(query.SiteId), b => b.SourceId == query.SiteId)
+                .WhereIf(!string.IsNullOrEmpty(query.ProductId), b => true)
+                .Page(query.Page).PageSize(query.Size)
+                .OrderBy(p => p.MacAddress)
+                .Build();
+
+            var beacons = await _beaconsReceived.ListAsync(spec, cancellationToken);
             
             var data = new List<DashboardByBeacon>();
             foreach (var b in beacons)

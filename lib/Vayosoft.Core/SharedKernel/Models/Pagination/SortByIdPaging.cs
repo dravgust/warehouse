@@ -11,7 +11,7 @@ namespace Vayosoft.Core.SharedKernel.Models.Pagination
         public SortByIdPaging() { }
     }
 
-    public class SortByIdPaging<TEntity, TKey>: PagingBase<TEntity, TKey> 
+    public class SortByIdPaging<TEntity, TKey>: PagingModelBase<TEntity, TKey> 
         where TEntity : class, IEntity<TKey>
     {
         public SortByIdPaging(int page, int size, SortOrder orderBy)

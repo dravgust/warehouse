@@ -21,5 +21,19 @@ namespace Vayosoft.Data.MongoDB.Extensions
             IPagingModel<T, TKey> pagingModel, CancellationToken cancellationToken = default)
             where T : class
             => new PagedEnumerable<T>(await queryable.Paginate(pagingModel).ToListAsync(cancellationToken), await queryable.CountAsync(cancellationToken));
+
+        public static IMongoQueryable<T> Paginate<T>(this IMongoQueryable<T> queryable, int page, int pageSize, Sorting<T> orderBy)
+            where T : class
+            => (orderBy.SortOrder == SortOrder.Asc
+                    ? queryable.OrderBy(orderBy.Expression)
+                    : queryable.OrderByDescending(orderBy.Expression))
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize);
+
+        public static async Task<IPagedEnumerable<T>> ToPagedEnumerableAsync<T>(this IMongoQueryable<T> queryable,
+            int page, int pageSize, Sorting<T> orderBy, CancellationToken cancellationToken = default)
+            where T : class
+            => new PagedEnumerable<T>(await queryable.Paginate(page, pageSize, orderBy).ToListAsync(cancellationToken),
+                await queryable.CountAsync(cancellationToken));
     }
 }

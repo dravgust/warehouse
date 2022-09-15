@@ -44,11 +44,11 @@ namespace Vayosoft.Core.Utilities
             where TEntity : class, IEntity<long>
             => queryable.SingleOrDefault(x => x.Id == id);
 
-        public static IQueryable<TEntity> BySpecification<TEntity>(this ILinqProvider linqProvider, ISpecification<TEntity> spec)
+        public static IQueryable<TEntity> BySpecification<TEntity>(this ILinqProvider linqProvider, ISpecification<TEntity, object> spec)
             where TEntity : class, IEntity<long>
             => linqProvider.AsQueryable(spec);
 
-        public static IQueryable<T> BySpecification<T>(this IQueryable<T> source, ISpecification<T> spec)
+        public static IQueryable<T> BySpecification<T>(this IQueryable<T> source, ISpecification<T, object> spec)
             where T : class
         {
             var queryableResultWithIncludes = spec

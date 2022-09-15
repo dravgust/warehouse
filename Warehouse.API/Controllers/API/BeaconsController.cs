@@ -24,8 +24,8 @@ namespace Warehouse.API.Controllers.API
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> Get(int page, int size, string searchTerm = null, CancellationToken token = default) {
-            return Ok((await _queryBus.Send(GetBeacons.Create(page, size, searchTerm), token)).ToPagedResponse(size));
+        public async Task<IActionResult> Get([FromQuery] GetBeacons query, CancellationToken token = default) {
+            return Ok((await _queryBus.Send(query, token)).ToPagedResponse(query.Size));
         }
 
         [HttpGet("registered")]

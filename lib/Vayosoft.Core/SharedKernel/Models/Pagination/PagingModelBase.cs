@@ -3,33 +3,34 @@ using Vayosoft.Core.SharedKernel.Entities;
 
 namespace Vayosoft.Core.SharedKernel.Models.Pagination
 {
-    public abstract class PagingBase<TEntity, TOrderKey> : IPagingModel<TEntity, TOrderKey>
+    public abstract class PagingModelBase<TEntity, TOrderKey> : IPagingModel<TEntity, TOrderKey>
         where TEntity : class, IEntity
     {
-        private readonly Sorting<TEntity, TOrderKey> _orderBy;
-
         private int _page;
 
         private int _size;
 
-        protected PagingBase(int page, int size, Sorting<TEntity, TOrderKey> orderBy)
+        protected PagingModelBase() : this(null)
+        { }
+
+        protected PagingModelBase(int page, int size, Sorting<TEntity, TOrderKey> orderBy)
         {
             Page = page;
             PageSize = size;
 
-            _orderBy = orderBy ?? throw new ArgumentException("OrderBy can't be null", nameof(orderBy));
+            OrderBy = orderBy ?? throw new ArgumentException("OrderBy can't be null", nameof(orderBy));
         }
 
-        protected PagingBase()
+        protected PagingModelBase(Sorting<TEntity, TOrderKey> orderBy)
         {
             Page = 1;
-            PageSize = 30;
-            
+            PageSize = 1000;
+
             // ReSharper disable once VirtualMemberCallInConstructor
-            _orderBy = BuildDefaultSorting();
-            if (_orderBy == null)
+            OrderBy = orderBy ?? BuildDefaultSorting();
+            if (OrderBy == null)
             {
-                throw new ArgumentException("OrderBy can't be null", nameof(_orderBy));
+                throw new ArgumentException("OrderBy can't be null", nameof(OrderBy));
             }
         }
 
@@ -63,6 +64,6 @@ namespace Vayosoft.Core.SharedKernel.Models.Pagination
             }
         }
 
-        public Sorting<TEntity, TOrderKey> OrderBy => _orderBy;
+        public Sorting<TEntity, TOrderKey> OrderBy { get; set; }
     }
 }

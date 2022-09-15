@@ -1,5 +1,6 @@
 ﻿using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Queries;
+using Vayosoft.Core.Specifications;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Security;
@@ -38,7 +39,8 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 
             var items = new Dictionary<(string, string), SiteItem>();
             var providerId = _userContext.User.Identity.GetProviderId();
-            var sites = await _sites.ListAsync(s => s.ProviderId == providerId, cancellationToken);
+            var spec = SpecificationBuilder<WarehouseSiteEntity>.Query(s => s.ProviderId == providerId);
+            var sites = await _sites.ListAsync(spec, cancellationToken);
             foreach (var site in sites)
             {
                 var status = await _statuses.FindAsync(site.Id, cancellationToken);

@@ -23,22 +23,18 @@ namespace Warehouse.API.Controllers.API
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> Get(int page, int size, string searchTerm = null, CancellationToken token = default)
-        {
-            var query = GetAlerts.Create(page, size, searchTerm);
-            return Ok((await _queryBus.Send(query, token)).ToPagedResponse(size));
+        public async Task<IActionResult> Get([FromQuery] GetAlerts query, CancellationToken token = default) {
+            return Ok((await _queryBus.Send(query, token)).ToPagedResponse(query.Size));
         }
 
         [HttpPost("delete")]
-        public async Task<IActionResult> Delete([FromBody] DeleteAlert command, CancellationToken token)
-        {
+        public async Task<IActionResult> Delete([FromBody] DeleteAlert command, CancellationToken token) {
             await _commandBus.Send(command, token);
             return Ok(new { command.Id });
         }
 
         [HttpPost("set")]
-        public async Task<IActionResult> Post([FromBody] SetAlert command, CancellationToken token)
-        {
+        public async Task<IActionResult> Post([FromBody] SetAlert command, CancellationToken token) {
             await _commandBus.Send(command, token);
             return Ok(new { });
         }

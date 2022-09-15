@@ -10,8 +10,8 @@ namespace Vayosoft.Core.SharedKernel.Models.Pagination
             => (pagingModel.OrderBy.SortOrder == SortOrder.Asc
                 ? queryable.OrderBy(pagingModel.OrderBy.Expression)
                 : queryable.OrderByDescending(pagingModel.OrderBy.Expression))
-                .Skip((pagingModel.Page - 1) * pagingModel.Size)
-                .Take(pagingModel.Size);
+                .Skip((pagingModel.Page - 1) * pagingModel.PageSize)
+                .Take(pagingModel.PageSize);
 
         public static IPagedEnumerable<T> ToPagedEnumerable<T, TKey>(this IQueryable<T> queryable,
             IPagingModel<T, TKey> pagingModel)

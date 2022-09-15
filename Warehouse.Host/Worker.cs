@@ -3,6 +3,7 @@ using System.Threading;
 using Vayosoft.Core.Caching;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.ValueObjects;
+using Vayosoft.Core.Specifications;
 using Vayosoft.Core.Utilities;
 using Vayosoft.IPS.Domain;
 using Warehouse.Core.Entities.Enums;
@@ -61,7 +62,8 @@ namespace Warehouse.Host
                     {
                         Dictionary<string, string[]> beaconsIn = new();
                         HashSet<string> beaconsOut = new();
-                        var sites = await siteRepository.ListAsync(s => s.ProviderId == providerId, token);
+                        var spec = SpecificationBuilder<WarehouseSiteEntity>.Query(s => s.ProviderId == providerId);
+                        var sites = await siteRepository.ListAsync(spec, token);
                         foreach (var site in sites)
                         {
                             var settings = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<IpsSettings>(), async options =>

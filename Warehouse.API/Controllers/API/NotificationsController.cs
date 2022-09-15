@@ -19,10 +19,8 @@ namespace Warehouse.API.Controllers.API
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> Get(int page, int size, string searchTerm = null, CancellationToken token = default)
-        {
-            var query = GetUserNotifications.Create(page, size, searchTerm);
-            return Ok((await _queryBus.Send(query, token)).ToPagedResponse(size));
+        public async Task<IActionResult> Get([FromQuery] GetUserNotifications query, CancellationToken token = default) {
+            return Ok((await _queryBus.Send(query, token)).ToPagedResponse(query.Size));
         }
     }
 }

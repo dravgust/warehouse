@@ -5,7 +5,7 @@ using Warehouse.Core.Entities.Models;
 
 namespace Warehouse.Core.UseCases.Administration.Specifications
 {
-    public class UserSpec : PagingBase<UserEntityDto, string>, ILinqSpecification<UserEntity>
+    public class UserSpec : PagingModelBase<UserEntityDto, string>, ILinqSpecification<UserEntity>
     {
         private readonly long? _providerId;
         private readonly string _searchTerm;
@@ -13,7 +13,7 @@ namespace Warehouse.Core.UseCases.Administration.Specifications
         public UserSpec(int page, int size, long? providerId = null, string searchTerm = null)
             : base()
         {
-            Page = page; Size = size;
+            Page = page; PageSize = size;
             _providerId = providerId;
             _searchTerm = searchTerm;
         }

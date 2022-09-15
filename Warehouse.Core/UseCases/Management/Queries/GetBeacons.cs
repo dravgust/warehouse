@@ -1,8 +1,8 @@
 ﻿using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel;
-using Vayosoft.Core.SharedKernel.Models;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
+using Vayosoft.Core.Specifications;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Security;
@@ -10,24 +10,8 @@ using Warehouse.Core.UseCases.Management.Models;
 
 namespace Warehouse.Core.UseCases.Management.Queries
 {
-    public class GetBeacons : PagingBase<BeaconRegisteredEntity, object>, IQuery<IPagedEnumerable<ProductItemDto>>
-    {
-        public string SearchTerm { get; }
-
-        public GetBeacons(int page, int size, string searchTerm = null)
-        {
-            Page = page;
-            Size = size;
-            SearchTerm = searchTerm;
-        }
-
-        public static GetBeacons Create(int pageNumber = 1, int pageSize = 20, string searchTerm = null) {
-            return new GetBeacons(pageNumber, pageSize, searchTerm);
-        }
-
-        protected override Sorting<BeaconRegisteredEntity, object> BuildDefaultSorting() =>
-            new(p => p.Id, SortOrder.Desc);
-    }
+    public record GetBeacons(int Page, int Size, string SearchTerm, string SiteId, string ProductId)
+        : IQuery<IPagedEnumerable<ProductItemDto>>;
 
     internal class HandleGetProductItems : IQueryHandler<GetBeacons, IPagedEnumerable<ProductItemDto>>
     {
@@ -53,17 +37,15 @@ namespace Warehouse.Core.UseCases.Management.Queries
         public async Task<IPagedEnumerable<ProductItemDto>> Handle(GetBeacons query, CancellationToken cancellationToken)
         {
             var providerId = _userContext.User.Identity.GetProviderId();
-            IPagedEnumerable<BeaconRegisteredEntity> result;
-            if (!string.IsNullOrEmpty(query.SearchTerm))
-            {
-                result = await _beaconsRegistered.PagedEnumerableAsync(query, e =>
-                    e.ProviderId == providerId && e.MacAddress.ToLower().Contains(query.SearchTerm.ToLower()), cancellationToken);
-            }
-            else
-            {
-                result = await _beaconsRegistered.PagedEnumerableAsync(query, b=> b.ProviderId == providerId,
-                    cancellationToken);
-            }
+
+            var spec = SpecificationBuilder<BeaconRegisteredEntity>
+                .Criteria(e => e.ProviderId == providerId)
+                .WhereIf(!string.IsNullOrEmpty(query.SearchTerm), e => e.MacAddress.ToLower().Contains(query.SearchTerm.ToLower()))
+                .Page(query.Page).PageSize(query.Size)
+                .OrderBy(p => p.MacAddress)
+                .Build();
+
+            var result = await _beaconsRegistered.ListAsync(spec, cancellationToken);
             
             var data = new List<ProductItemDto>();
             foreach (var item in result)

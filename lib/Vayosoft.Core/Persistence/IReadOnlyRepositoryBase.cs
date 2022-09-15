@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,22 +8,17 @@ using Vayosoft.Core.Specifications;
 
 namespace Vayosoft.Core.Persistence
 {
-    public interface IReadOnlyRepositoryBase<T> where T : class, IEntity
+    public interface IReadOnlyRepositoryBase<TEntity> where TEntity : class, IEntity
     {
-        public IQueryable<T> AsQueryable();
+        Task<TEntity> FindAsync<TId>(TId id,
+            CancellationToken cancellationToken = default) where TId : notnull;
 
-        Task<T> FindAsync<TId>(TId id, CancellationToken cancellationToken = default) where TId : notnull;
+        Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> criteria,
+            CancellationToken cancellationToken = default);
+        Task<TEntity> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> criteria,
+            CancellationToken cancellationToken = default);
 
-        Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default);
-        Task<T> SingleOrDefaultAsync(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default);
-
-        Task<List<T>> ListAsync(CancellationToken cancellationToken = default);
-        Task<List<T>> ListAsync(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default);
-
-        Task<IEnumerable<T>> ListAsync(ISpecification<T> specification, CancellationToken cancellationToken = default);
-
-        Task<IPagedEnumerable<T>> PagedEnumerableAsync(IPagingModel<T, object> model, CancellationToken cancellationToken);
-        Task<IPagedEnumerable<T>> PagedEnumerableAsync(IPagingModel<T, object> model, Expression<Func<T, bool>> criteria,
-            CancellationToken cancellationToken);
+        Task<IPagedEnumerable<TEntity>> ListAsync(ISpecification<TEntity, object> spec,
+            CancellationToken cancellationToken = default);
     }
 }

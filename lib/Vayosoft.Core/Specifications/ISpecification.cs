@@ -1,23 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Vayosoft.Core.SharedKernel.Models;
+using Vayosoft.Core.SharedKernel.Models.Pagination;
 
 namespace Vayosoft.Core.Specifications
 {
-    public interface ISpecification<TEntity, TResult> : ISpecification<TEntity> where TEntity : class
+    public interface ISpecification<TEntity, TSortKey, TResult> : ISpecification<TEntity, TSortKey> where TEntity : class
     {
         Expression<Func<TEntity, TResult>> Selector { get; } 
     }
 
-    public interface ISpecification<TEntity> where TEntity : class
+    public interface ISpecification<TEntity, TSortKey> : IPagingModel<TEntity, TSortKey> where TEntity : class
     {
-        public int? Page { get; }
-
-        public int? PageSize { get; }
-
-        Sorting<TEntity, object> OrderBy { get; }
-
         Expression<Func<TEntity, bool>> Criteria { get; }
 
         ICollection<Expression<Func<TEntity, bool>>> WhereExpressions { get; }

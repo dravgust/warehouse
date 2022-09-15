@@ -30,10 +30,8 @@ namespace Warehouse.API.Controllers.API
         }
 
         [HttpGet("")]
-        public async Task<dynamic> Get(int page, int size, string searchTerm = null, CancellationToken token = default)
-        {
-            var query = GetSites.Create(page, size, searchTerm);
-            return Ok((await _queryBus.Send(query, token)).ToPagedResponse(size));
+        public async Task<dynamic> Get([FromQuery] GetSites query, CancellationToken token = default) {
+            return Ok((await _queryBus.Send(query, token)).ToPagedResponse(query.Size));
         }
 
         [HttpGet("{id}")]
