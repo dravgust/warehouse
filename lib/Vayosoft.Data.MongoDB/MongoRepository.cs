@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 using Vayosoft.Core.Persistence;
+using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.Specifications;
@@ -14,10 +15,14 @@ namespace Vayosoft.Data.MongoDB
 {
     public class MongoRepositoryBase<T> : IRepositoryBase<T> where T : class, IEntity
     {
+        private readonly IMapper mapper;
         protected readonly IMongoCollection<T> Collection;
 
-        public MongoRepositoryBase(IMongoConnection connection) =>
+        public MongoRepositoryBase(IMongoConnection connection, IMapper mapper)
+        {
+            this.mapper = mapper;
             Collection = connection.Collection<T>(CollectionName.For<T>());
+        }
 
         public IQueryable<T> AsQueryable() => Collection.AsQueryable();
 
@@ -41,6 +46,12 @@ namespace Vayosoft.Data.MongoDB
 
         public Task<T> SingleOrDefaultAsync(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default) =>
             Collection.Find(criteria).SingleOrDefaultAsync(cancellationToken);
+
+        public Task<T> SingleOrDefaultAsync(ISingleResultSpecification<T> spec, CancellationToken cancellationToken = default) =>
+            Collection.Find(spec.Criteria).SingleOrDefaultAsync(cancellationToken);
+
+        public Task<TResult> SingleOrDefaultAsync<TResult>(ISingleResultSpecification<T, TResult> spec, CancellationToken cancellationToken = default) =>
+            Collection.Find(spec.Criteria).Project(e => mapper.Map<TResult>(e)).SingleOrDefaultAsync(cancellationToken);
 
         public Task<IPagedEnumerable<T>> ListAsync(ISpecification<T, object> spec, CancellationToken cancellationToken = default)
         {

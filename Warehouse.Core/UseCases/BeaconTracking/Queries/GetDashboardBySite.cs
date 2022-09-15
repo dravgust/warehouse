@@ -13,17 +13,17 @@ public class GetDashboardBySite : IQuery<IEnumerable<DashboardBySite>>
 
 public class HandleGetDashboardBySite : IQueryHandler<GetDashboardBySite, IEnumerable<DashboardBySite>>
 {
-    private readonly IReadOnlyRepositoryBase<IndoorPositionStatusEntity> _statuses;
-    private readonly IReadOnlyRepositoryBase<WarehouseSiteEntity> _sites;
-    private readonly IReadOnlyRepositoryBase<BeaconEntity> _beacons;
-    private readonly IReadOnlyRepositoryBase<ProductEntity> _products;
+    private readonly IReadOnlyRepository<IndoorPositionStatusEntity> _statuses;
+    private readonly IReadOnlyRepository<WarehouseSiteEntity> _sites;
+    private readonly IReadOnlyRepository<BeaconEntity> _beacons;
+    private readonly IReadOnlyRepository<ProductEntity> _products;
     private readonly IUserContext _userContext;
 
     public HandleGetDashboardBySite(
-        IReadOnlyRepositoryBase<IndoorPositionStatusEntity> statuses,
-        IReadOnlyRepositoryBase<WarehouseSiteEntity> sites,
-        IReadOnlyRepositoryBase<BeaconEntity> beacons,
-        IReadOnlyRepositoryBase<ProductEntity> products,
+        IReadOnlyRepository<IndoorPositionStatusEntity> statuses,
+        IReadOnlyRepository<WarehouseSiteEntity> sites,
+        IReadOnlyRepository<BeaconEntity> beacons,
+        IReadOnlyRepository<ProductEntity> products,
         IUserContext userContext)
     {
         _statuses = statuses;

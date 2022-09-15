@@ -35,7 +35,7 @@ namespace Warehouse.Infrastructure.Persistence
             return r;
         }
 
-        public IReadOnlyRepositoryBase<WarehouseSiteEntity> Sites => 
+        public IReadOnlyRepository<WarehouseSiteEntity> Sites => 
             Repository<WarehouseSiteEntity>();
 
         public IQueryable<T> Set<T>() where T : class, IEntity => 

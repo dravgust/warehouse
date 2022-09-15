@@ -5,12 +5,15 @@ using Vayosoft.Core.SharedKernel.Models.Pagination;
 
 namespace Vayosoft.Core.Specifications
 {
+    public interface ISpecification
+    { }
+
     public interface ISpecification<TEntity, TSortKey, TResult> : ISpecification<TEntity, TSortKey> where TEntity : class
     {
-        Expression<Func<TEntity, TResult>> Selector { get; } 
+        //Expression<Func<TEntity, TResult>> Selector { get; } 
     }
 
-    public interface ISpecification<TEntity, TSortKey> : IPagingModel<TEntity, TSortKey> where TEntity : class
+    public interface ISpecification<TEntity, TSortKey> : IPagingModel<TEntity, TSortKey>, ISpecification where TEntity : class
     {
         Expression<Func<TEntity, bool>> Criteria { get; }
 

@@ -47,9 +47,9 @@ namespace Warehouse.Host
                 _logger.LogDebug("Worker running at: {time}", DateTimeOffset.Now);
 
                 using var scope = _serviceProvider.CreateScope();
-                var siteRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepositoryBase<WarehouseSiteEntity>>();
-                var settingsRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepositoryBase<IpsSettings>>();
-                var gwRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepositoryBase<GatewayPayload>>();
+                var siteRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<WarehouseSiteEntity>>();
+                var settingsRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<IpsSettings>>();
+                var gwRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<GatewayPayload>>();
                 var statusRepository = scope.ServiceProvider.GetRequiredService<IRepositoryBase<IndoorPositionStatusEntity>>();
                 var telemetryRepository = scope.ServiceProvider.GetRequiredService<IRepositoryBase<BeaconTelemetryEntity>>();
                 var beaconReceivedRepository = scope.ServiceProvider.GetRequiredService<IRepositoryBase<BeaconReceivedEntity>>();
@@ -328,7 +328,7 @@ namespace Warehouse.Host
             };
         }
 
-        private static async Task<GenericSite> GetGenericSiteAsync(IReadOnlyRepositoryBase<GatewayPayload> repository, WarehouseSiteEntity site, IpsSettings settings)
+        private static async Task<GenericSite> GetGenericSiteAsync(IReadOnlyRepository<GatewayPayload> repository, WarehouseSiteEntity site, IpsSettings settings)
         {
             var gSite = new GenericSite(site.Id)
             {

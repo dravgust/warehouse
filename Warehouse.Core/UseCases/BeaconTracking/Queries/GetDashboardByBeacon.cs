@@ -16,18 +16,18 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 
     internal class HandleDashboardByBeacon : IQueryHandler<GetDashboardByBeacon, IPagedEnumerable<DashboardByBeacon>>
     {
-        private readonly IReadOnlyRepositoryBase<BeaconReceivedEntity> _beaconsReceived;
-        private readonly IReadOnlyRepositoryBase<WarehouseSiteEntity> _sites;
-        private readonly IReadOnlyRepositoryBase<BeaconEntity> _beacons;
-        private readonly IReadOnlyRepositoryBase<ProductEntity> _products;
+        private readonly IReadOnlyRepository<BeaconReceivedEntity> _beaconsReceived;
+        private readonly IReadOnlyRepository<WarehouseSiteEntity> _sites;
+        private readonly IReadOnlyRepository<BeaconEntity> _beacons;
+        private readonly IReadOnlyRepository<ProductEntity> _products;
         private readonly IUserContext _userContext;
         private readonly IMapper _mapper;
 
         public HandleDashboardByBeacon(
-            IReadOnlyRepositoryBase<BeaconReceivedEntity> beaconsReceived,
-            IReadOnlyRepositoryBase<WarehouseSiteEntity> sites,
-            IReadOnlyRepositoryBase<BeaconEntity> beacons,
-            IReadOnlyRepositoryBase<ProductEntity> products,
+            IReadOnlyRepository<BeaconReceivedEntity> beaconsReceived,
+            IReadOnlyRepository<WarehouseSiteEntity> sites,
+            IReadOnlyRepository<BeaconEntity> beacons,
+            IReadOnlyRepository<ProductEntity> products,
             IMapper mapper, IUserContext userContext)
         {
             _sites = sites;

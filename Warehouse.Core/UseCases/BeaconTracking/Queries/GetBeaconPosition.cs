@@ -35,17 +35,17 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 
     public class HandleGetBeaconPosition : IQueryHandler<GetBeaconPosition, ICollection<BeaconPosition>>
     {
-        private readonly IReadOnlyRepositoryBase<WarehouseSiteEntity> _sites;
-        private readonly IReadOnlyRepositoryBase<GatewayPayload> _payloads;
-        private readonly IReadOnlyRepositoryBase<IpsSettings> _settings;
+        private readonly IReadOnlyRepository<WarehouseSiteEntity> _sites;
+        private readonly IReadOnlyRepository<GatewayPayload> _payloads;
+        private readonly IReadOnlyRepository<IpsSettings> _settings;
         private readonly IUserContext _userContext;
         private readonly IDistributedMemoryCache _cache;
 
         public HandleGetBeaconPosition(
-            IReadOnlyRepositoryBase<WarehouseSiteEntity> sites,
-            IReadOnlyRepositoryBase<GatewayPayload> payloads,
+            IReadOnlyRepository<WarehouseSiteEntity> sites,
+            IReadOnlyRepository<GatewayPayload> payloads,
             IUserContext userContext, IDistributedMemoryCache cache,
-            IReadOnlyRepositoryBase<IpsSettings> settings)
+            IReadOnlyRepository<IpsSettings> settings)
         {
             _sites = sites;
             _payloads = payloads;
@@ -54,8 +54,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
             _settings = settings;
         }
 
-        public async Task<ICollection<BeaconPosition>> Handle(GetBeaconPosition request,
-            CancellationToken cancellationToken)
+        public async Task<ICollection<BeaconPosition>> Handle(GetBeaconPosition request, CancellationToken cancellationToken)
         {
             var providerId = _userContext.User.Identity.GetProviderId();
             var site = await _sites.FirstOrDefaultAsync(s => s.Id == request.SiteId && s.ProviderId == providerId,
@@ -83,7 +82,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
         }
 
         private static async Task<GenericSite> GetGenericSiteAsync(MacAddress macAddress,
-            IReadOnlyRepositoryBase<GatewayPayload> repository, WarehouseSiteEntity site, IpsSettings settings)
+            IReadOnlyRepository<GatewayPayload> repository, WarehouseSiteEntity site, IpsSettings settings)
         {
             var gSite = new GenericSite(site.Id)
             {

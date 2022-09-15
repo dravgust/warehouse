@@ -13,10 +13,10 @@ namespace Warehouse.Core.UseCases.Management.Queries
 
     internal class HandleGetSites : IQueryHandler<GetSites, IPagedEnumerable<WarehouseSiteEntity>>
     {
-        private readonly IReadOnlyRepositoryBase<WarehouseSiteEntity> _repository;
+        private readonly IReadOnlyRepository<WarehouseSiteEntity> _repository;
         private readonly IUserContext _userContext;
 
-        public HandleGetSites(IReadOnlyRepositoryBase<WarehouseSiteEntity> repository, IUserContext userContext)
+        public HandleGetSites(IReadOnlyRepository<WarehouseSiteEntity> repository, IUserContext userContext)
         {
             _repository = repository;
             _userContext = userContext;

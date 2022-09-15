@@ -27,7 +27,7 @@ namespace Warehouse.Core.UseCases.Management.Commands
 
     internal class HandleSetBeacon : ICommandHandler<SetBeacon>
     {
-        private readonly IReadOnlyRepositoryBase<BeaconRegisteredEntity> _beaconsRegisteredR;
+        private readonly IReadOnlyRepository<BeaconRegisteredEntity> _beaconsRegisteredR;
         private readonly IRepositoryBase<BeaconRegisteredEntity> _beaconsRegistered;
         private readonly IRepositoryBase<BeaconEntity> _beacons;
         private readonly IUserContext _userContext;
@@ -36,7 +36,7 @@ namespace Warehouse.Core.UseCases.Management.Commands
         public HandleSetBeacon(
             IRepositoryBase<BeaconEntity> beacons,
             IRepositoryBase<BeaconRegisteredEntity> beaconsRegistered,
-            IReadOnlyRepositoryBase<BeaconRegisteredEntity> beaconsRegisteredR,
+            IReadOnlyRepository<BeaconRegisteredEntity> beaconsRegisteredR,
             IMapper mapper, IUserContext userContext)
         {
             _beacons = beacons;

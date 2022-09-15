@@ -8,6 +8,12 @@ using Vayosoft.Core.Utilities;
 
 namespace Vayosoft.Core.Specifications
 {
+    public class Specification<TEntity, TResult> : Specification<TEntity>, ISpecification<TEntity, object, TResult>
+        where TEntity : class, IEntity
+    {
+        
+    }
+
     public class Specification<TEntity> : PagingModelBase<TEntity, object>, ISpecification<TEntity, object> where TEntity : class, IEntity
     {
         public Specification() : this(criteria => true, null)

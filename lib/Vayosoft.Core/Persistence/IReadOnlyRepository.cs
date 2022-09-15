@@ -8,7 +8,7 @@ using Vayosoft.Core.Specifications;
 
 namespace Vayosoft.Core.Persistence
 {
-    public interface IReadOnlyRepositoryBase<TEntity> where TEntity : class, IEntity
+    public interface IReadOnlyRepository<TEntity> where TEntity : class, IEntity
     {
         Task<TEntity> FindAsync<TId>(TId id,
             CancellationToken cancellationToken = default) where TId : notnull;
@@ -16,6 +16,12 @@ namespace Vayosoft.Core.Persistence
         Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> criteria,
             CancellationToken cancellationToken = default);
         Task<TEntity> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> criteria,
+            CancellationToken cancellationToken = default);
+        
+        Task<TEntity> SingleOrDefaultAsync(ISingleResultSpecification<TEntity> spec,
+            CancellationToken cancellationToken = default);
+
+        Task<TResult> SingleOrDefaultAsync<TResult>(ISingleResultSpecification<TEntity, TResult> spec,
             CancellationToken cancellationToken = default);
 
         Task<IPagedEnumerable<TEntity>> ListAsync(ISpecification<TEntity, object> spec,

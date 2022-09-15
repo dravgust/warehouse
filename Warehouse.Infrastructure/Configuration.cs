@@ -57,7 +57,7 @@ namespace Warehouse.Infrastructure
                     BsonSerializer.RegisterSerializer(typeof(MacAddress), new MacAddressSerializer());
                 })
                 .AddScoped(typeof(IRepositoryBase<>), typeof(MongoRepositoryBase<>))
-                .AddScoped(typeof(IReadOnlyRepositoryBase<>), typeof(MongoRepositoryBase<>))
+                .AddScoped(typeof(IReadOnlyRepository<>), typeof(MongoRepositoryBase<>))
                 .AddScoped(typeof(IRepository<>), typeof(AggregateRepository<>))
                 .AddScoped<WarehouseStore>();
 

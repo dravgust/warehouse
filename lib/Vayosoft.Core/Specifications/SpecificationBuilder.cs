@@ -19,8 +19,8 @@ namespace Vayosoft.Core.Specifications
             return new SpecificationBuilder<TEntity>(new Specification<TEntity>(criteria));
         }
 
-        public static Specification<TEntity> Empty() => Criteria(criteria => true).Build();
-        public static Specification<TEntity> Query(Expression<Func<TEntity, bool>> criteria) => Criteria(criteria).Build();
+        public static ISpecification<TEntity, object> Empty() => Criteria(criteria => true).Build();
+        public static ISpecification<TEntity, object> Query(Expression<Func<TEntity, bool>> criteria) => Criteria(criteria).Build();
 
         public SpecificationBuilder<TEntity> OrderBy(Expression<Func<TEntity, object>> expression)
         {
@@ -72,7 +72,7 @@ namespace Vayosoft.Core.Specifications
             return this;
         }
 
-        public Specification<TEntity> Build()
+        public ISpecification<TEntity, object> Build()
         {
             return Specification;
         }

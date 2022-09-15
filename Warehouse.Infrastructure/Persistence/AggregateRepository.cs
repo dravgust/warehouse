@@ -1,4 +1,5 @@
-﻿using Vayosoft.Core.SharedKernel.Aggregates;
+﻿using Vayosoft.Core.SharedKernel;
+using Vayosoft.Core.SharedKernel.Aggregates;
 using Vayosoft.Core.SharedKernel.Events;
 using Vayosoft.Data.MongoDB;
 using Warehouse.Core.Persistence;
@@ -9,7 +10,7 @@ namespace Warehouse.Infrastructure.Persistence
     {
         private readonly IEventBus _eventBus;
 
-        public AggregateRepository(IMongoConnection connection, IEventBus eventBus) : base(connection)
+        public AggregateRepository(IMongoConnection connection, IMapper mapper, IEventBus eventBus) : base(connection, mapper)
         {
             _eventBus = eventBus;
         }
