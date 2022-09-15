@@ -16,8 +16,7 @@ namespace Vayosoft.Data.EF.MySQL
             this._loggerFactory = loggerFactory;
         }
 
-        public IQueryable<TEntity> AsQueryable<TEntity>() where TEntity : class, IEntity
-        {
+        public IQueryable<TEntity> AsQueryable<TEntity>() where TEntity : class, IEntity {
             return Set<TEntity>().AsQueryable();
         }
 
@@ -32,6 +31,10 @@ namespace Vayosoft.Data.EF.MySQL
                 .Aggregate(queryableResultWithIncludes, (current, include) => current.Include(include));
 
             return secondaryResult.Where(specification.Criteria);
+        }
+
+        public IQueryable<TEntity> AsQueryable<TEntity>(ISpecification<TEntity> specification) where TEntity : class, IEntity {
+            return new SpecificationEvaluator<TEntity>().Evaluate(AsQueryable<TEntity>(), specification);
         }
 
         public new void Add<TEntity>(TEntity entity) where TEntity : class, IEntity

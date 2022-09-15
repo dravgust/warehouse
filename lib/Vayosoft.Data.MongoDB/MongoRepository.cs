@@ -26,6 +26,9 @@ namespace Vayosoft.Data.MongoDB
 
         public IQueryable<T> AsQueryable() => Collection.AsQueryable();
 
+        public IQueryable<T> AsQueryable(ISpecification<T> specification) {
+            return new SpecificationEvaluator<T>().Evaluate(AsQueryable(), specification);
+        }
 
         public Task<T> FindAsync<TId>(TId id, CancellationToken cancellationToken = default) =>
             Collection.Find(q => q.Id.Equals(id)).FirstOrDefaultAsync(cancellationToken);
