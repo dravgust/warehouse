@@ -52,6 +52,9 @@ namespace Vayosoft.Data.MongoDB
         public Task<T> FirstOrDefaultAsync(ILinqSpecification<T> spec, CancellationToken cancellationToken = default) =>
             Collection.AsQueryable().Apply(spec).FirstOrDefaultAsync(cancellationToken);
 
+        public Task<T> FirstOrDefaultAsync(ICriteriaSpecification<T> spec, CancellationToken cancellationToken = default) =>
+            Collection.Find(spec.Criteria).FirstOrDefaultAsync(cancellationToken);
+
         public Task<T> SingleOrDefaultAsync(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default) =>
             Collection.Find(criteria).SingleOrDefaultAsync(cancellationToken);
 

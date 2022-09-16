@@ -14,11 +14,16 @@ namespace Vayosoft.Core.Persistence
         Task<TEntity> FindAsync<TId>(TId id,
             CancellationToken cancellationToken = default) where TId : notnull;
 
+
         Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> criteria,
+            CancellationToken cancellationToken = default);
+
+        Task<TEntity> FirstOrDefaultAsync(ICriteriaSpecification<TEntity> spec,
             CancellationToken cancellationToken = default);
 
         Task<TEntity> FirstOrDefaultAsync(ILinqSpecification<TEntity> spec,
             CancellationToken cancellationToken = default);
+
 
         Task<TEntity> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> criteria,
             CancellationToken cancellationToken = default);
@@ -28,6 +33,7 @@ namespace Vayosoft.Core.Persistence
 
         Task<TResult> SingleOrDefaultAsync<TResult>(ICriteriaSpecification<TEntity, TResult> spec,
             CancellationToken cancellationToken = default);
+
 
         Task<List<TEntity>> ListAsync(ISpecification<TEntity> spec,
             CancellationToken cancellationToken = default);
