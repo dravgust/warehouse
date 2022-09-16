@@ -43,9 +43,5 @@ namespace Vayosoft.Core.Utilities
         public static TEntity ById<TEntity>(this IQueryable<TEntity> queryable, long id)
             where TEntity : class, IEntity<long>
             => queryable.SingleOrDefault(x => x.Id == id);
-
-        public static IQueryable<TEntity> BySpecification<TEntity>(this ILinqProvider linqProvider, ISpecification<TEntity, object> spec)
-            where TEntity : class, IEntity<long>
-            => linqProvider.AsQueryable(spec);
     }
 }

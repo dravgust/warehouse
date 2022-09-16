@@ -23,10 +23,10 @@ namespace Vayosoft.Core.Persistence
         Task<TEntity> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> criteria,
             CancellationToken cancellationToken = default);
         
-        Task<TEntity> SingleOrDefaultAsync(ISingleResultSpecification<TEntity> spec,
+        Task<TEntity> SingleOrDefaultAsync(ICriteriaSpecification<TEntity> spec,
             CancellationToken cancellationToken = default);
 
-        Task<TResult> SingleOrDefaultAsync<TResult>(ISingleResultSpecification<TEntity, TResult> spec,
+        Task<TResult> SingleOrDefaultAsync<TResult>(ICriteriaSpecification<TEntity, TResult> spec,
             CancellationToken cancellationToken = default);
 
         Task<List<TEntity>> ListAsync(ISpecification<TEntity> spec,

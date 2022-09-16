@@ -9,7 +9,7 @@ namespace Vayosoft.Core.Persistence
         IQueryable<TEntity> AsQueryable<TEntity>()
             where TEntity : class, IEntity;
 
-        IQueryable<TEntity> AsQueryable<TEntity>(ISpecification<TEntity, object> specification)
+        IQueryable<TEntity> AsQueryable<TEntity>(ISpecification<TEntity> specification)
             where TEntity : class, IEntity;
     }
 }

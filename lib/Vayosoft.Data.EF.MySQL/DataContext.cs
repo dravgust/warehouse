@@ -20,19 +20,6 @@ namespace Vayosoft.Data.EF.MySQL
             return Set<TEntity>().AsQueryable();
         }
 
-        public IQueryable<TEntity> AsQueryable<TEntity>(ISpecification<TEntity, object> specification) where TEntity : class, IEntity
-        {
-            var queryableResultWithIncludes = specification
-                .Includes
-                .Aggregate(AsQueryable<TEntity>(), (current, include) => current.Include(include));
-
-            var secondaryResult = specification
-                .IncludeStrings
-                .Aggregate(queryableResultWithIncludes, (current, include) => current.Include(include));
-
-            return secondaryResult.Where(specification.Criteria);
-        }
-
         public IQueryable<TEntity> AsQueryable<TEntity>(ISpecification<TEntity> specification) where TEntity : class, IEntity {
             return new SpecificationEvaluator<TEntity>().Evaluate(AsQueryable<TEntity>(), specification);
         }

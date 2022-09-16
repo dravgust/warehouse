@@ -10,6 +10,7 @@ namespace Vayosoft.Data.EF.MySQL
         {
             var query = base.Evaluate(input, spec);
             query = spec.Includes.Aggregate(query, (current, include) => current.Include(include));
+            query = spec.IncludeStrings.Aggregate(query, (current, include) => current.Include(include));
             return query;
         }
     }

@@ -55,10 +55,10 @@ namespace Vayosoft.Data.MongoDB
         public Task<T> SingleOrDefaultAsync(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default) =>
             Collection.Find(criteria).SingleOrDefaultAsync(cancellationToken);
 
-        public Task<T> SingleOrDefaultAsync(ISingleResultSpecification<T> spec, CancellationToken cancellationToken = default) =>
+        public Task<T> SingleOrDefaultAsync(ICriteriaSpecification<T> spec, CancellationToken cancellationToken = default) =>
             Collection.Find(spec.Criteria).SingleOrDefaultAsync(cancellationToken);
 
-        public Task<TResult> SingleOrDefaultAsync<TResult>(ISingleResultSpecification<T, TResult> spec, CancellationToken cancellationToken = default) =>
+        public Task<TResult> SingleOrDefaultAsync<TResult>(ICriteriaSpecification<T, TResult> spec, CancellationToken cancellationToken = default) =>
             Collection.Find(spec.Criteria).Project(e => mapper.Map<TResult>(e)).SingleOrDefaultAsync(cancellationToken);
 
         public Task<List<T>> ListAsync(ISpecification<T> spec, CancellationToken cancellationToken = default) {

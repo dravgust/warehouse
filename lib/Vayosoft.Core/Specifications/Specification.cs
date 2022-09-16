@@ -5,27 +5,12 @@ using Vayosoft.Core.SharedKernel.Models;
 
 namespace Vayosoft.Core.Specifications
 {
-    public class PagedSpecification<TEntity> : SpecificationBase<TEntity>, IPagedSpecification<TEntity> where TEntity : class
+    public class Specification<TEntity> : ISpecification<TEntity> where TEntity : class
     {
-        public PagedSpecification(int page, int pageSize) : this(page, pageSize, null)
+        public Specification()
         { }
 
-        public PagedSpecification(int page, int pageSize, Expression<Func<TEntity, bool>> criteria) : base(criteria)
-        {
-            Page = page;
-            PageSize = pageSize;
-        }
-
-        public int Page { get; init; }
-        public int PageSize { get; init; }
-    }
-
-    public class SpecificationBase<TEntity> : ISpecification<TEntity> where TEntity : class
-    {
-        public SpecificationBase()
-        { }
-
-        public SpecificationBase(Expression<Func<TEntity, bool>> criteria) {
+        public Specification(Expression<Func<TEntity, bool>> criteria) {
             Criteria = criteria;
         }
 

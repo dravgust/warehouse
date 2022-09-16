@@ -46,12 +46,12 @@ namespace Warehouse.Host
                     foreach (var providerId in providers)
                     {
                         //var registeredBeacons = await store.ListAsync<BeaconRegisteredEntity>(cancellationToken: token);
-                        var alertSpec = new SpecificationBase<AlertEntity>(s => s.ProviderId == providerId);
+                        var alertSpec = new Specification<AlertEntity>(s => s.ProviderId == providerId);
                         var alerts = await alertRepository.ListAsync(alertSpec, token);
 
                         foreach (var alert in alerts.Where(a => a.Enabled))
                         {
-                            var beaconSpec = new SpecificationBase<BeaconReceivedEntity>(b =>
+                            var beaconSpec = new Specification<BeaconReceivedEntity>(b =>
                                 b.ReceivedAt < DateTime.UtcNow.AddSeconds(-alert.CheckPeriod) &&
                                 b.ProviderId == providerId);
 
