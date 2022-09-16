@@ -1,13 +1,16 @@
-﻿using MongoDB.Driver;
+﻿using MediatR;
+using MongoDB.Driver;
+using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.ValueObjects;
+using Vayosoft.Core.Specifications;
 using Vayosoft.Data.MongoDB;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.BeaconTracking.Models;
 
 namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 {
-    public class GetBeaconTelemetry : IQuery<BeaconTelemetryDto>
+    public class GetBeaconTelemetry : IQuery<BeaconTelemetryDto>, ILinqSpecification<BeaconTelemetryEntity>
     {
         public GetBeaconTelemetry(MacAddress macAddress)
         {
@@ -15,24 +18,27 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
         }
 
         public MacAddress MacAddress { get; }
+
+        public IQueryable<BeaconTelemetryEntity> Apply(IQueryable<BeaconTelemetryEntity> query)
+        {
+            return query
+                .Where(t => t.MacAddress == MacAddress)
+                .OrderByDescending(m => m.ReceivedAt);
+        }
     }
 
     public class HandleGetBeaconTelemetry : IQueryHandler<GetBeaconTelemetry, BeaconTelemetryDto>
     {
-        private readonly IMongoConnection _connection;
+        private readonly IReadOnlyRepository<BeaconTelemetryEntity> _repository;
 
-        public HandleGetBeaconTelemetry(IMongoConnection connection)
+        public HandleGetBeaconTelemetry(IReadOnlyRepository<BeaconTelemetryEntity> repository)
         {
-            _connection = connection;
+            _repository = repository;
         }
 
         public async Task<BeaconTelemetryDto> Handle(GetBeaconTelemetry request, CancellationToken cancellationToken)
         {
-            var data = _connection.Collection<BeaconTelemetryEntity>()
-                .AsQueryable()
-                .Where(t => t.MacAddress == request.MacAddress)
-                .OrderByDescending(m => m.ReceivedAt)
-                .FirstOrDefault();
+            var data = await _repository.FirstOrDefaultAsync(request, cancellationToken);
             if (data == null) return null;
             return await Task.FromResult(new BeaconTelemetryDto
             {

@@ -16,6 +16,10 @@ namespace Vayosoft.Core.Persistence
 
         Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> criteria,
             CancellationToken cancellationToken = default);
+
+        Task<TEntity> FirstOrDefaultAsync(ILinqSpecification<TEntity> spec,
+            CancellationToken cancellationToken = default);
+
         Task<TEntity> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> criteria,
             CancellationToken cancellationToken = default);
         

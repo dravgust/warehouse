@@ -30,8 +30,7 @@ namespace Warehouse.Core.UseCases.Management.Queries
                     options.AbsoluteExpirationRelativeToNow = TimeSpans.FiveMinutes;
 
                     var data = await _linqProvider
-                        .AsQueryable<DeviceEntity>()
-                        .Where(d => d.ProviderId == 2)
+                        .Where<DeviceEntity>(d => d.ProviderId == 2)
                         .ToListAsync(cancellationToken: cancellationToken);
 
                     return data.Select(d => d.MacAddress).OrderBy(macAddress => macAddress);

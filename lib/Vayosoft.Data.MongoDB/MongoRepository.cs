@@ -49,6 +49,9 @@ namespace Vayosoft.Data.MongoDB
         public Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default) =>
             Collection.Find(criteria).FirstOrDefaultAsync(cancellationToken);
 
+        public Task<T> FirstOrDefaultAsync(ILinqSpecification<T> spec, CancellationToken cancellationToken = default) =>
+            Collection.AsQueryable().Apply(spec).FirstOrDefaultAsync(cancellationToken);
+
         public Task<T> SingleOrDefaultAsync(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default) =>
             Collection.Find(criteria).SingleOrDefaultAsync(cancellationToken);
 
@@ -65,8 +68,6 @@ namespace Vayosoft.Data.MongoDB
         public async Task<IPagedEnumerable<T>> PagedEnumerableAsync(ILinqSpecification<T> spec, CancellationToken cancellationToken = default) {
             var queryable = Collection.AsQueryable().Apply(spec);
             return new PagedEnumerable<T>(await queryable.ToListAsync(cancellationToken), await queryable.CountAsync(cancellationToken));
-            //var queryable = spec.Apply(Collection.AsQueryable());
-            //return Task.FromResult<IPagedEnumerable<T>>(new PagedEnumerable<T>(queryable.ToList(), queryable.Count()));
         }
 
         //public Task<IPagedEnumerable<T>> PagedListAsync(IPagingModel<T, object> model, Expression<Func<T, bool>> criteria, CancellationToken cancellationToken) =>
