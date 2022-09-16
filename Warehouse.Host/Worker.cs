@@ -62,7 +62,7 @@ namespace Warehouse.Host
                     {
                         Dictionary<string, string[]> beaconsIn = new();
                         HashSet<string> beaconsOut = new();
-                        var spec = SpecificationBuilder<WarehouseSiteEntity>.Query(s => s.ProviderId == providerId);
+                        var spec = new SpecificationBase<WarehouseSiteEntity>(s => s.ProviderId == providerId);
                         var sites = await siteRepository.ListAsync(spec, token);
                         foreach (var site in sites)
                         {

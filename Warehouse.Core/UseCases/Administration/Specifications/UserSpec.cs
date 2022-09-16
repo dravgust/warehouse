@@ -13,7 +13,7 @@ namespace Warehouse.Core.UseCases.Administration.Specifications
         public UserSpec(int page, int size, long? providerId = null, string searchTerm = null)
             : base()
         {
-            Page = page; PageSize = size;
+            Page = page; Size = size;
             _providerId = providerId;
             _searchTerm = searchTerm;
         }

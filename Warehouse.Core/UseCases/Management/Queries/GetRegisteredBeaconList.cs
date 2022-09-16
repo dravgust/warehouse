@@ -31,7 +31,7 @@ namespace Warehouse.Core.UseCases.Management.Queries
             var data = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<BeaconRegisteredEntity>(providerId.ToString()), async options =>
             {
                 options.AbsoluteExpirationRelativeToNow = TimeSpans.FiveMinutes;
-                var spec = SpecificationBuilder<BeaconRegisteredEntity>.Query(s => s.ProviderId == providerId);
+                var spec = new SpecificationBase<BeaconRegisteredEntity>(s => s.ProviderId == providerId);
                 return (await _repository.ListAsync(spec, cancellationToken))
                     .Select(b => b.MacAddress);
             });

@@ -3,6 +3,7 @@ using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.Specifications;
+using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Security;
@@ -10,8 +11,21 @@ using Warehouse.Core.UseCases.Management.Models;
 
 namespace Warehouse.Core.UseCases.Management.Queries
 {
-    public record GetBeacons(int Page, int Size, string SearchTerm, string SiteId, string ProductId)
-        : IQuery<IPagedEnumerable<ProductItemDto>>;
+    public class GetBeacons : PagingModelBase, IQuery<IPagedEnumerable<ProductItemDto>>, ILinqSpecification<BeaconRegisteredEntity>
+    {
+        public string SearchTerm { get; set; }
+        public long ProviderId { get; set; }
+        public IQueryable<BeaconRegisteredEntity> Apply(IQueryable<BeaconRegisteredEntity> query)
+        {
+            query
+                .Where(e => e.ProviderId == ProviderId)
+                .WhereIf(!string.IsNullOrEmpty(SearchTerm), e => e.MacAddress.ToLower().Contains(SearchTerm.ToLower()))
+                .OrderBy(p => p.MacAddress)
+                .Paginate(this);
+
+            return query;
+        }
+    }
 
     internal class HandleGetProductItems : IQueryHandler<GetBeacons, IPagedEnumerable<ProductItemDto>>
     {
@@ -36,16 +50,9 @@ namespace Warehouse.Core.UseCases.Management.Queries
 
         public async Task<IPagedEnumerable<ProductItemDto>> Handle(GetBeacons query, CancellationToken cancellationToken)
         {
-            var providerId = _userContext.User.Identity.GetProviderId();
+            query.ProviderId = _userContext.User.Identity.GetProviderId();
 
-            var spec = SpecificationBuilder<BeaconRegisteredEntity>
-                .Criteria(e => e.ProviderId == providerId)
-                .WhereIf(!string.IsNullOrEmpty(query.SearchTerm), e => e.MacAddress.ToLower().Contains(query.SearchTerm.ToLower()))
-                .Page(query.Page).PageSize(query.Size)
-                .OrderBy(p => p.MacAddress)
-                .Build();
-
-            var result = await _beaconsRegistered.ListAsync(spec, cancellationToken);
+            var result = await _beaconsRegistered.PagedEnumerableAsync(query, cancellationToken);
             
             var data = new List<ProductItemDto>();
             foreach (var item in result)

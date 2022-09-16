@@ -2,14 +2,29 @@
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.Specifications;
+using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Security;
 
 namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 {
-    public record GetUserNotifications(string SearchTerm, int Page, int Size)
-        : IQuery<IPagedEnumerable<NotificationEntity>>;
+    public class GetUserNotifications : PagingModelBase, IQuery<IPagedEnumerable<NotificationEntity>>, ILinqSpecification<NotificationEntity>
+    {
+        public string SearchTerm { get; set; }
+        public long ProviderId { get; set; }
+        public IQueryable<NotificationEntity> Apply(IQueryable<NotificationEntity> query)
+        {
+            query
+                .Where(e => e.ProviderId == ProviderId)
+                .WhereIf(!string.IsNullOrEmpty(SearchTerm),
+                    e => e.MacAddress.ToLower().Contains(SearchTerm.ToLower()))
+                .OrderByDescending(p => p.Id)
+                .Paginate(this);
+
+            return query;
+        }
+    }
 
     internal class HandleGetNotifications : IQueryHandler<GetUserNotifications, IPagedEnumerable<NotificationEntity>>
     {
@@ -25,16 +40,8 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
         public async Task<IPagedEnumerable<NotificationEntity>> Handle(GetUserNotifications query,
             CancellationToken cancellationToken)
         {
-            var providerId = _userContext.User.Identity.GetProviderId();
-
-            var spec = SpecificationBuilder<NotificationEntity>
-                .Criteria(e => e.ProviderId == providerId)
-                .WhereIf(!string.IsNullOrEmpty(query.SearchTerm), e => e.MacAddress.ToLower().Contains(query.SearchTerm.ToLower()))
-                .Page(query.Page).PageSize(query.Size)
-                .OrderByDescending(p => p.Id)
-                .Build();
-
-            return await _repository.ListAsync(spec, cancellationToken);
+            query.ProviderId = _userContext.User.Identity.GetProviderId();
+            return await _repository.PagedEnumerableAsync(query, cancellationToken);
         }
     }
 }

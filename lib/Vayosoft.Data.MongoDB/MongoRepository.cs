@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Entities;
@@ -56,10 +58,13 @@ namespace Vayosoft.Data.MongoDB
         public Task<TResult> SingleOrDefaultAsync<TResult>(ISingleResultSpecification<T, TResult> spec, CancellationToken cancellationToken = default) =>
             Collection.Find(spec.Criteria).Project(e => mapper.Map<TResult>(e)).SingleOrDefaultAsync(cancellationToken);
 
-        public Task<IPagedEnumerable<T>> ListAsync(ISpecification<T, object> spec, CancellationToken cancellationToken = default)
-        {
-            return Collection.AsQueryable().BySpecification(spec)
-                .ToPagedEnumerableAsync(spec, cancellationToken);
+        public Task<List<T>> ListAsync(ISpecification<T> spec, CancellationToken cancellationToken = default) {
+            return Collection.AsQueryable().Evaluate(spec).ToListAsync(cancellationToken);
+        }
+
+        public async Task<IPagedEnumerable<T>> PagedEnumerableAsync(ILinqSpecification<T> spec, CancellationToken cancellationToken = default) {
+            var queryable = Collection.AsQueryable().Apply(spec);
+            return new PagedEnumerable<T>(await queryable.ToListAsync(cancellationToken), await queryable.CountAsync(cancellationToken));
         }
 
         //public Task<IPagedEnumerable<T>> PagedListAsync(IPagingModel<T, object> model, Expression<Func<T, bool>> criteria, CancellationToken cancellationToken) =>

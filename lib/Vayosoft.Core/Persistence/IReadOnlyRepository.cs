@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,7 +25,10 @@ namespace Vayosoft.Core.Persistence
         Task<TResult> SingleOrDefaultAsync<TResult>(ISingleResultSpecification<TEntity, TResult> spec,
             CancellationToken cancellationToken = default);
 
-        Task<IPagedEnumerable<TEntity>> ListAsync(ISpecification<TEntity, object> spec,
+        Task<List<TEntity>> ListAsync(ISpecification<TEntity> spec,
+            CancellationToken cancellationToken = default);
+
+        Task<IPagedEnumerable<TEntity>> PagedEnumerableAsync(ILinqSpecification<TEntity> spec,
             CancellationToken cancellationToken = default);
     }
 }

@@ -2,14 +2,28 @@
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.Specifications;
+using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Security;
 
 namespace Warehouse.Core.UseCases.Management.Queries
 {
-    public record GetSites(int Page, int Size, string SearchTerm, string SiteId, string ProductId)
-        : IQuery<IPagedEnumerable<WarehouseSiteEntity>>;
+    public class GetSites : PagingModelBase, IQuery<IPagedEnumerable<WarehouseSiteEntity>>, ILinqSpecification<WarehouseSiteEntity>
+    {
+        public string SearchTerm { get; set; }
+        public long ProviderId { get; set; }
+        public IQueryable<WarehouseSiteEntity> Apply(IQueryable<WarehouseSiteEntity> query)
+        {
+            query
+                .Where(e => e.ProviderId == ProviderId)
+                .WhereIf(!string.IsNullOrEmpty(SearchTerm), e => e.Name.ToLower().Contains(SearchTerm.ToLower()))
+                .OrderBy(p => p.Name)
+                .Paginate(this);
+
+            return query;
+        }
+    }
 
     internal class HandleGetSites : IQueryHandler<GetSites, IPagedEnumerable<WarehouseSiteEntity>>
     {
@@ -24,16 +38,8 @@ namespace Warehouse.Core.UseCases.Management.Queries
 
         public async Task<IPagedEnumerable<WarehouseSiteEntity>> Handle(GetSites query, CancellationToken cancellationToken)
         {
-            var providerId = _userContext.User.Identity.GetProviderId();
-
-            var spec = SpecificationBuilder<WarehouseSiteEntity>
-                .Criteria(e => e.ProviderId == providerId)
-                .WhereIf(!string.IsNullOrEmpty(query.SearchTerm), e => e.Name.ToLower().Contains(query.SearchTerm.ToLower()))
-                .Page(query.Page).PageSize(query.Size)
-                .OrderBy(p => p.Name)
-                .Build();
-
-            return await _repository.ListAsync(spec, cancellationToken);
+            query.ProviderId = _userContext.User.Identity.GetProviderId();
+            return await _repository.PagedEnumerableAsync(query, cancellationToken);
         }
     }
 }

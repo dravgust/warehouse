@@ -3,6 +3,7 @@ using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.Specifications;
+using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Security;
@@ -11,8 +12,26 @@ using Warehouse.Core.UseCases.Management.Models;
 
 namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 {
-    public record GetDashboardByBeacon(int Page, int Size, string SearchTerm, string SiteId, string ProductId)
-        : IQuery<IPagedEnumerable<DashboardByBeacon>>;
+    public class GetDashboardByBeacon : PagingModelBase, ILinqSpecification<BeaconReceivedEntity>, IQuery<IPagedEnumerable<DashboardByBeacon>>
+    {
+        public string SearchTerm { set; get; }
+        public string SiteId { set; get; }
+        public string ProductId { set; get; }
+        public long ProviderId { set; get; }
+
+        public IQueryable<BeaconReceivedEntity> Apply(IQueryable<BeaconReceivedEntity> query)
+        {
+            query.Where(b => b.ProviderId == ProviderId)
+                .WhereIf(!string.IsNullOrEmpty(SearchTerm),
+                    b => b.MacAddress.ToLower().Contains(SearchTerm.ToLower()))
+                .WhereIf(!string.IsNullOrEmpty(SiteId), b => b.SourceId == SiteId)
+                .WhereIf(!string.IsNullOrEmpty(ProductId), b => true)
+                .OrderBy(p => p.MacAddress)
+                .Paginate(this);
+
+            return query;
+        }
+    }
 
     internal class HandleDashboardByBeacon : IQueryHandler<GetDashboardByBeacon, IPagedEnumerable<DashboardByBeacon>>
     {
@@ -40,19 +59,9 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 
         public async Task<IPagedEnumerable<DashboardByBeacon>> Handle(GetDashboardByBeacon query, CancellationToken cancellationToken)
         {
-            var providerId = _userContext.User.Identity.GetProviderId();
+            query.ProviderId = _userContext.User.Identity.GetProviderId();
 
-            var spec = SpecificationBuilder<BeaconReceivedEntity>
-                .Criteria(b => b.ProviderId == providerId)
-                .WhereIf(!string.IsNullOrEmpty(query.SearchTerm),
-                    b => b.MacAddress.ToLower().Contains(query.SearchTerm.ToLower()))
-                .WhereIf(!string.IsNullOrEmpty(query.SiteId), b => b.SourceId == query.SiteId)
-                .WhereIf(!string.IsNullOrEmpty(query.ProductId), b => true)
-                .Page(query.Page).PageSize(query.Size)
-                .OrderBy(p => p.MacAddress)
-                .Build();
-
-            var beacons = await _beaconsReceived.ListAsync(spec, cancellationToken);
+            var beacons = await _beaconsReceived.PagedEnumerableAsync(query, cancellationToken);
             
             var data = new List<DashboardByBeacon>();
             foreach (var b in beacons)

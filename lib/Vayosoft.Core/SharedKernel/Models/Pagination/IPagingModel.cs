@@ -1,12 +1,15 @@
 ﻿namespace Vayosoft.Core.SharedKernel.Models.Pagination
 {
-    public interface IPagingModel<TEntity, TSortKey>
-        where TEntity : class
+    public interface IPagingModel
     {
         int Page { get; }
 
-        int PageSize { get; }
+        int Size { get; }
+    }
 
+    public interface IPagingModel<TEntity, TSortKey> : IPagingModel
+        where TEntity : class
+    {
         Sorting<TEntity, TSortKey> OrderBy { get; }
     }
 }

@@ -47,15 +47,5 @@ namespace Vayosoft.Core.Utilities
         public static IQueryable<TEntity> BySpecification<TEntity>(this ILinqProvider linqProvider, ISpecification<TEntity, object> spec)
             where TEntity : class, IEntity<long>
             => linqProvider.AsQueryable(spec);
-
-        public static IQueryable<T> BySpecification<T>(this IQueryable<T> source, ISpecification<T, object> spec)
-            where T : class
-        {
-            var queryableResultWithIncludes = spec
-                .WhereExpressions
-                .Aggregate(source, (current, include) => current.Where(include));
-
-            return queryableResultWithIncludes.Where(spec.Criteria);
-        }
     }
 }

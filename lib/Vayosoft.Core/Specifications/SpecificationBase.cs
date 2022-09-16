@@ -1,16 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Vayosoft.Core.SharedKernel.Models;
 
 namespace Vayosoft.Core.Specifications
 {
+    public class PagedSpecification<TEntity> : SpecificationBase<TEntity>, IPagedSpecification<TEntity> where TEntity : class
+    {
+        public PagedSpecification(int page, int pageSize) : this(page, pageSize, null)
+        { }
+
+        public PagedSpecification(int page, int pageSize, Expression<Func<TEntity, bool>> criteria) : base(criteria)
+        {
+            Page = page;
+            PageSize = pageSize;
+        }
+
+        public int Page { get; init; }
+        public int PageSize { get; init; }
+    }
+
     public class SpecificationBase<TEntity> : ISpecification<TEntity> where TEntity : class
     {
         public SpecificationBase()
         { }
 
-        public SpecificationBase(Expression<Func<TEntity, bool>> criteria)
-        {
+        public SpecificationBase(Expression<Func<TEntity, bool>> criteria) {
             Criteria = criteria;
         }
 
@@ -22,23 +37,29 @@ namespace Vayosoft.Core.Specifications
         public ICollection<Expression<Func<TEntity, object>>> Includes { get; }
             = new List<Expression<Func<TEntity, object>>>();
 
-        public Expression<Func<TEntity, object>> OrderBy { get; private set; }
+        public ICollection<string> IncludeStrings { get; }
+            = new List<string>(10);
 
-        public Expression<Func<TEntity, object>> OrderByDescending { get; private set; }
+        public Sorting<TEntity> Sorting { get; private set; }
 
-        protected void AddInclude(Expression<Func<TEntity, object>> includeExpression)
-        {
+        protected void Where(Expression<Func<TEntity, bool>> whereExpression) {
+            WhereExpressions.Add(whereExpression);
+        }
+
+        protected void WhereIf(bool condition, Expression<Func<TEntity, bool>> whereExpression) {
+            if(condition) WhereExpressions.Add(whereExpression);
+        }
+
+        protected void Include(Expression<Func<TEntity, object>> includeExpression) {
             Includes.Add(includeExpression);
         }
 
-        protected void AddOrderBy(Expression<Func<TEntity, object>> orderByExpression)
-        {
-            OrderBy = orderByExpression;
+        protected void OrderBy(Expression<Func<TEntity, object>> orderByExpression) {
+            Sorting = new Sorting<TEntity>(orderByExpression, SortOrder.Asc);
         }
 
-        protected void AddOrderByDescending(Expression<Func<TEntity, object>> orderByDescExpression)
-        {
-            OrderByDescending = orderByDescExpression;
+        protected void OrderByDescending(Expression<Func<TEntity, object>> orderByDescExpression) {
+            Sorting = new Sorting<TEntity>(orderByDescExpression, SortOrder.Desc);
         }
     }
 }

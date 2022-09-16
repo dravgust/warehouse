@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using Vayosoft.Core.SharedKernel.Entities;
-using Vayosoft.Core.Specifications;
+using Vayosoft.Core.SharedKernel.Models;
 
-namespace Vayosoft.Data.MongoDB
+namespace Vayosoft.Core.Specifications
 {
     public class SpecificationEvaluator<TEntity> : ISpecificationEvaluator<TEntity> where TEntity : class, IEntity
     {
@@ -11,8 +11,13 @@ namespace Vayosoft.Data.MongoDB
             var query = input;
             if (spec.Criteria != null) query = query.Where(spec.Criteria);
             query = spec.WhereExpressions.Aggregate(query, (current, include) => current.Where(include));
-            if (spec.OrderBy != null) query = query.OrderBy(spec.OrderBy);
-            else if (spec.OrderByDescending != null) query = query.OrderByDescending(spec.OrderByDescending);
+            if (spec.Sorting != null)
+            {
+                query = spec.Sorting.SortOrder == SortOrder.Asc
+                    ? query.OrderBy(spec.Sorting.Expression)
+                    : query.OrderByDescending(spec.Sorting.Expression);
+            }
+
             return query;
         }
     }

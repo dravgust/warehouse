@@ -2,6 +2,7 @@
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.Specifications;
+using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Security;
@@ -9,11 +10,18 @@ using Warehouse.Core.UseCases.BeaconTracking.Models;
 
 namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 {
-    public class GetBeaconEvents : IQuery<IPagedEnumerable<BeaconEventDto>>
+    public class GetBeaconEvents : PagingModelBase, IQuery<IPagedEnumerable<BeaconEventDto>>, ILinqSpecification<BeaconEventEntity>
     {
-        public string SearchTerm { get; set; }
-        public int Page { get; set; }
-        public int Size { get; set; }
+        public string SearchTerm { get; init; }
+        public long ProviderId { get; set; }
+
+        public IQueryable<BeaconEventEntity> Apply(IQueryable<BeaconEventEntity> query)
+        {
+            return query.Where(e => e.ProviderId == ProviderId)
+                .WhereIf(!string.IsNullOrEmpty(SearchTerm), e => e.MacAddress.ToLower().Contains(SearchTerm.ToLower()))
+                .OrderByDescending(p => p.Id)
+                .Paginate(Page, Size);
+        }
     }
 
     internal class HandleGetBeaconEvents : IQueryHandler<GetBeaconEvents, IPagedEnumerable<BeaconEventDto>>
@@ -38,16 +46,9 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 
         public async Task<IPagedEnumerable<BeaconEventDto>> Handle(GetBeaconEvents query, CancellationToken cancellationToken)
         {
-            var providerId = _userContext.User.Identity.GetProviderId();
-            
-            var spec = SpecificationBuilder<BeaconEventEntity>
-                .Criteria(e => e.ProviderId == providerId)
-                .WhereIf(!string.IsNullOrEmpty(query.SearchTerm), e => e.MacAddress.ToLower().Contains(query.SearchTerm.ToLower()))
-                .Page(query.Page).PageSize(query.Size)
-                .OrderByDescending(p => p.Id)
-                .Build();
+            query.ProviderId = _userContext.User.Identity.GetProviderId();
 
-            var data = await _events.ListAsync(spec, cancellationToken);
+            var data = await _events.PagedEnumerableAsync(query, cancellationToken);
 
             var list = new List<BeaconEventDto>();
             foreach (var e in data)

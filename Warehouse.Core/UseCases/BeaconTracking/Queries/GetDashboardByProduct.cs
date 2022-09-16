@@ -39,7 +39,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 
             var items = new Dictionary<(string, string), SiteItem>();
             var providerId = _userContext.User.Identity.GetProviderId();
-            var spec = SpecificationBuilder<WarehouseSiteEntity>.Query(s => s.ProviderId == providerId);
+            var spec = new SpecificationBase<WarehouseSiteEntity>(s => s.ProviderId == providerId);
             var sites = await _sites.ListAsync(spec, cancellationToken);
             foreach (var site in sites)
             {

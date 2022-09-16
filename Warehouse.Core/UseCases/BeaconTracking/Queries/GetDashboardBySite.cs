@@ -38,7 +38,7 @@ public class HandleGetDashboardBySite : IQueryHandler<GetDashboardBySite, IEnume
         var result = new List<DashboardBySite>();
 
         var providerId = _userContext.User.Identity.GetProviderId();
-        var spec = SpecificationBuilder<WarehouseSiteEntity>.Query(s => s.ProviderId == providerId);
+        var spec = new SpecificationBase<WarehouseSiteEntity>(s => s.ProviderId == providerId);
         var sites = await _sites.ListAsync(spec, cancellationToken);
         foreach (var site in sites)
         {
