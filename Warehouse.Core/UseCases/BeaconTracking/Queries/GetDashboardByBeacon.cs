@@ -21,15 +21,13 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 
         public IQueryable<BeaconReceivedEntity> Apply(IQueryable<BeaconReceivedEntity> query)
         {
-            query.Where(b => b.ProviderId == ProviderId)
+            return query.Where(b => b.ProviderId == ProviderId)
                 .WhereIf(!string.IsNullOrEmpty(SearchTerm),
                     b => b.MacAddress.ToLower().Contains(SearchTerm.ToLower()))
                 .WhereIf(!string.IsNullOrEmpty(SiteId), b => b.SourceId == SiteId)
                 .WhereIf(!string.IsNullOrEmpty(ProductId), b => true)
                 .OrderBy(p => p.MacAddress)
                 .Paginate(this);
-
-            return query;
         }
     }
 

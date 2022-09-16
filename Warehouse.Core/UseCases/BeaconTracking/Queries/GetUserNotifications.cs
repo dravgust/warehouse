@@ -15,14 +15,12 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
         public long ProviderId { get; set; }
         public IQueryable<NotificationEntity> Apply(IQueryable<NotificationEntity> query)
         {
-            query
+            return query
                 .Where(e => e.ProviderId == ProviderId)
                 .WhereIf(!string.IsNullOrEmpty(SearchTerm),
                     e => e.MacAddress.ToLower().Contains(SearchTerm.ToLower()))
                 .OrderByDescending(p => p.Id)
                 .Paginate(this);
-
-            return query;
         }
     }
 

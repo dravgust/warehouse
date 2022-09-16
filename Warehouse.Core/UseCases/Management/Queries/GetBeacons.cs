@@ -17,13 +17,11 @@ namespace Warehouse.Core.UseCases.Management.Queries
         public long ProviderId { get; set; }
         public IQueryable<BeaconRegisteredEntity> Apply(IQueryable<BeaconRegisteredEntity> query)
         {
-            query
+            return query
                 .Where(e => e.ProviderId == ProviderId)
                 .WhereIf(!string.IsNullOrEmpty(SearchTerm), e => e.MacAddress.ToLower().Contains(SearchTerm.ToLower()))
                 .OrderBy(p => p.MacAddress)
                 .Paginate(this);
-
-            return query;
         }
     }
 
