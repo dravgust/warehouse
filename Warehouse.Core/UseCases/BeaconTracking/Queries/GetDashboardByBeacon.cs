@@ -9,6 +9,7 @@ using Warehouse.Core.Services;
 using Warehouse.Core.Services.Security;
 using Warehouse.Core.UseCases.BeaconTracking.Models;
 using Warehouse.Core.UseCases.Management.Models;
+using static System.String;
 
 namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 {
@@ -22,10 +23,10 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
         public IQueryable<BeaconReceivedEntity> Apply(IQueryable<BeaconReceivedEntity> query)
         {
             return query.Where(b => b.ProviderId == ProviderId)
-                .WhereIf(!string.IsNullOrEmpty(SearchTerm),
+                .WhereIf(!IsNullOrEmpty(SearchTerm),
                     b => b.MacAddress.ToLower().Contains(SearchTerm.ToLower()))
-                .WhereIf(!string.IsNullOrEmpty(SiteId), b => b.SourceId == SiteId)
-                .WhereIf(!string.IsNullOrEmpty(ProductId), b => true)
+                .WhereIf(!IsNullOrEmpty(SiteId), b => b.SourceId == SiteId)
+                .WhereIf(!IsNullOrEmpty(ProductId), b => true)
                 .OrderBy(p => p.MacAddress)
                 .Paginate(this);
         }
