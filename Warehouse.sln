@@ -68,7 +68,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{A0789A2C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.SharedKernel", "lib\Vayosoft.SharedKernel\Vayosoft.SharedKernel.csproj", "{4F376C87-C6B0-4824-8C21-A8BE8CE2896F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warehouse.Benchmark", "Warehouse.Benchmark\Warehouse.Benchmark.csproj", "{E336DA45-6828-45C5-91A8-71855CB6A509}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warehouse.Benchmarks", "Warehouse.Benchmarks\Warehouse.Benchmarks.csproj", "{E336DA45-6828-45C5-91A8-71855CB6A509}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

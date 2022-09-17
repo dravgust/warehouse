@@ -2,12 +2,12 @@
 using BenchmarkDotNet.Attributes;
 
 //https://sharplab.io
-namespace Warehouse.Benchmark;
+namespace Warehouse.Benchmarks;
 
 [MemoryDiagnoser(true)]
 public class Enumeration
 {
-    private static readonly Random R = new Random(80085);
+    private static readonly Random R = new(80085);
     private List<int> _list;
 
     [Params(100, 100_000, 1_000_000)]

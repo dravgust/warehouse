@@ -1,6 +1,6 @@
 ﻿
 using BenchmarkDotNet.Running;
-using Warehouse.Benchmark;
+using Warehouse.Benchmarks;
 
 BenchmarkRunner.Run<Enumeration>();
 
