@@ -29,42 +29,47 @@ namespace Warehouse.API.Services.Errors
 
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-            if (!string.IsNullOrEmpty(context.Request.Headers["x-requested-with"]))
+            logger.LogError(exception, exception.Message);
+
+            if (!IsAjaxRequest(context))
             {
-                if (context.Request.Headers["x-requested-with"][0].ToLower() == "xmlhttprequest")
-                //if(IsJsonRequest(context)
-                {
-                    logger.LogError(exception, exception.Message);
-
-                    var codeInfo = ExceptionToHttpStatusMapper.Map(exception);
-
-                    var options = new JsonSerializerOptions
-                    {
-                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                        WriteIndented = true
-                    };
-                    var error = new HttpErrorWrapper((int)codeInfo.Code, "An error occurred while processing your request.");
-                    var result = JsonSerializer.Serialize(error, options);
-                    context.Response.ContentType = "application/json";
-                    context.Response.StatusCode = (int)codeInfo.Code;
-                    return context.Response.WriteAsync(result);
-                }
+                throw exception;
+                //context.Response.Redirect("/error");
+                //return Task.FromResult<object>(null);
             }
 
-            throw exception;
-            //context.Response.Redirect("/error");
-            return Task.FromResult<object>(null);
+            var codeInfo = ExceptionToHttpStatusMapper.Map(exception);
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true
+            };
+            var error = new HttpErrorWrapper((int)codeInfo.Code, "An error occurred while processing your request.");
+            var result = JsonSerializer.Serialize(error, options);
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = (int)codeInfo.Code;
+            return context.Response.WriteAsync(result);
         }
 
-        private const string JsonMime = "json";
-        public bool IsJsonRequest(HttpContext context)
+        public bool IsAjaxRequest(HttpContext context)
         {
-            var requiresJsonResponse = context.Request
-                .GetTypedHeaders()
-                .Accept
-                .Any(t => (t.Suffix.Value?.Contains(JsonMime, StringComparison.OrdinalIgnoreCase) ?? false)
-                          || (t.SubTypeWithoutSuffix.Value?.Contains(JsonMime, StringComparison.OrdinalIgnoreCase) ?? false));
-            return requiresJsonResponse;
+            if (string.IsNullOrEmpty(context.Request.Headers["x-requested-with"])) return false;
+            return context.Request.Headers["x-requested-with"][0].ToLower() == "xmlhttprequest";
         }
+
+        //private const string JsonMime = "json";
+        //public bool IsAcceptJson(HttpContext context)
+        //{
+        //    var accept = context.Request
+        //        .GetTypedHeaders()
+        //        .Accept;
+
+        //    var result = accept
+        //        .Any(t => 
+        //            (t.Suffix.Value?.Contains(JsonMime, StringComparison.OrdinalIgnoreCase) ?? false)
+        //            || (t.SubTypeWithoutSuffix.Value?.Contains(JsonMime, StringComparison.OrdinalIgnoreCase) ?? false));
+        //    return result;
+        //}
     }
 }
