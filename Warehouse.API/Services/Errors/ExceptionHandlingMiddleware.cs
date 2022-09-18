@@ -39,7 +39,6 @@ namespace Warehouse.API.Services.Errors
             }
 
             var codeInfo = ExceptionToHttpStatusMapper.Map(exception);
-
             var options = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -65,8 +64,13 @@ namespace Warehouse.API.Services.Errors
         //        .GetTypedHeaders()
         //        .Accept;
 
+        //    if (accept.Count == 0)
+        //    {
+        //        return true;
+        //    }
+
         //    var result = accept
-        //        .Any(t => 
+        //        .Any(t =>
         //            (t.Suffix.Value?.Contains(JsonMime, StringComparison.OrdinalIgnoreCase) ?? false)
         //            || (t.SubTypeWithoutSuffix.Value?.Contains(JsonMime, StringComparison.OrdinalIgnoreCase) ?? false));
         //    return result;
