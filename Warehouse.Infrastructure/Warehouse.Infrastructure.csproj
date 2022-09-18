@@ -16,4 +16,8 @@
     <ProjectReference Include="..\Warehouse.Core\Warehouse.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="D:\Sources\warehouse\Warehouse.Infrastructure\.editorconfig" />
+  </ItemGroup>
+
 </Project>
