@@ -5,8 +5,6 @@ namespace Warehouse.API.Services.Errors
 {
     public class ExceptionHandlingMiddleware
     {
-        private const string ContentType = "json";
-
         private readonly RequestDelegate next;
         private readonly ILogger logger;
 
@@ -31,16 +29,10 @@ namespace Warehouse.API.Services.Errors
 
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-            //var requiresJsonResponse = context.Request
-            //    .GetTypedHeaders()
-            //    .Accept
-            //    .Any(t => (t.Suffix.Value?.Contains(ContentType, StringComparison.OrdinalIgnoreCase) ?? false)
-            //              || (t.SubTypeWithoutSuffix.Value?.Contains(ContentType, StringComparison.OrdinalIgnoreCase) ?? false));
-
             if (!string.IsNullOrEmpty(context.Request.Headers["x-requested-with"]))
             {
                 if (context.Request.Headers["x-requested-with"][0].ToLower() == "xmlhttprequest")
-                //if(requiresJsonResponse)
+                //if(IsJsonRequest(context)
                 {
                     logger.LogError(exception, exception.Message);
 
@@ -62,6 +54,17 @@ namespace Warehouse.API.Services.Errors
             throw exception;
             //context.Response.Redirect("/error");
             return Task.FromResult<object>(null);
+        }
+
+        private const string JsonMime = "json";
+        public bool IsJsonRequest(HttpContext context)
+        {
+            var requiresJsonResponse = context.Request
+                .GetTypedHeaders()
+                .Accept
+                .Any(t => (t.Suffix.Value?.Contains(JsonMime, StringComparison.OrdinalIgnoreCase) ?? false)
+                          || (t.SubTypeWithoutSuffix.Value?.Contains(JsonMime, StringComparison.OrdinalIgnoreCase) ?? false));
+            return requiresJsonResponse;
         }
     }
 }
