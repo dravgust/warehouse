@@ -9,7 +9,7 @@ using Warehouse.Core.Entities.Models;
 
 namespace Warehouse.Infrastructure.Persistence
 {
-    public class WarehouseStore : IDisposable
+    public sealed class WarehouseStore : IDisposable
     {
         private readonly IMongoConnection _connection;
         private readonly IServiceScope _scope;

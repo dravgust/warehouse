@@ -6,7 +6,7 @@ using Warehouse.Core.Persistence;
 
 namespace Warehouse.Infrastructure.Persistence
 {
-    public class AggregateRepository<T> : MongoRepositoryBase<T> ,IRepository<T> where T : class, IAggregate<string>
+    public sealed class AggregateRepository<T> : MongoRepositoryBase<T> ,IRepository<T> where T : class, IAggregate<string>
     {
         private readonly IEventBus _eventBus;
 

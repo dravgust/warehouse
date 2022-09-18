@@ -5,7 +5,7 @@ using Warehouse.Core.Persistence;
 
 namespace Warehouse.Infrastructure.Persistence
 {
-    public class UserRepository : IUserRepository
+    public sealed class UserRepository : IUserRepository
     {
         private readonly AppDbContext _context;
 
