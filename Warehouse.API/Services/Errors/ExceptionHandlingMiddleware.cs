@@ -30,20 +30,30 @@ namespace Warehouse.API.Services.Errors
 
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-            logger.LogError(exception, exception.Message);
-
-            var codeInfo = ExceptionToHttpStatusMapper.Map(exception);
-
-            var options = new JsonSerializerOptions
+            if (!string.IsNullOrEmpty(context.Request.Headers["x-requested-with"]))
             {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                WriteIndented = true
-            };
-            var error = new HttpErrorWrapper((int) codeInfo.Code, "An error occurred while processing your request.");
-            var result = JsonSerializer.Serialize(error, options);
-            context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)codeInfo.Code;
-            return context.Response.WriteAsync(result);
+                if (context.Request.Headers["x-requested-with"][0].ToLower() == "xmlhttprequest")
+                {
+                    logger.LogError(exception, exception.Message);
+
+                    var codeInfo = ExceptionToHttpStatusMapper.Map(exception);
+
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                        WriteIndented = true
+                    };
+                    var error = new HttpErrorWrapper((int)codeInfo.Code, "An error occurred while processing your request.");
+                    var result = JsonSerializer.Serialize(error, options);
+                    context.Response.ContentType = "application/json";
+                    context.Response.StatusCode = (int)codeInfo.Code;
+                    return context.Response.WriteAsync(result);
+                }
+            }
+
+            throw exception;
+            //context.Response.Redirect("/error");
+            return Task.FromResult<object>(null);
         }
     }
 }

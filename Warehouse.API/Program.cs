@@ -79,6 +79,7 @@ try
         builder.Services.AddApiVersioningService();
         builder.Services.AddSwaggerService();
 
+        builder.Services.AddResponseCaching();
         //builder.Services.AddMemoryCache();
         //builder.Services.AddDistributedMemoryCache();
         //builder.Services.Configure<RedisCacheOptions>(options =>
@@ -109,13 +110,12 @@ try
         if (!app.Environment.IsDevelopment())
         {
             app.UseExceptionHandler("/Home/Error");
+            //app.UseExceptionHandler("/error");
         }
         else
         {
-            app.UseExceptionHandler("/error");
-            //app.UseDeveloperExceptionPage();
+            app.UseDeveloperExceptionPage();
         }
-
         app.UseMiddleware<ExceptionHandlingMiddleware>();
 
         app.UseStaticFiles();
@@ -125,6 +125,8 @@ try
         // level in appsettings.json to "Information".
         app.UseSerilogRequestLogging();
 
+        app.UseResponseCaching();
+
         app.UseRouting();
 
         app.UseCors("AllowCors");
@@ -132,7 +134,6 @@ try
         app.UseAuthorization();
         app.UseSession();
 
-        // app.UseResponseCaching();
         app.UseMiddleware<JwtAuthorizationMiddleware>();
 
         var locOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
