@@ -8,10 +8,9 @@ using Warehouse.Core.UseCases.BeaconTracking.Models;
 
 namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 {
-    public class GetDashboardByProduct : IQuery<IEnumerable<DashboardByProduct>>
-    { }
+    public record GetDashboardByProduct : IQuery<IEnumerable<DashboardByProduct>>;
 
-    internal class HandleGetDashboardByProduct : IQueryHandler<GetDashboardByProduct, IEnumerable<DashboardByProduct>>
+    internal sealed class HandleGetDashboardByProduct : IQueryHandler<GetDashboardByProduct, IEnumerable<DashboardByProduct>>
     {
         private readonly IReadOnlyRepository<IndoorPositionStatusEntity> _statuses;
         private readonly IReadOnlyRepository<WarehouseSiteEntity> _sites;

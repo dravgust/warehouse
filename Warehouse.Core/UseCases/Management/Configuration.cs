@@ -22,7 +22,7 @@ namespace Warehouse.Core.UseCases.Management
                 .AddQueryHandler<GetProductMetadata, ProductMetadata, HandleGetProductMetadata>()
                 .AddQueryHandler<GetProductItemMetadata, ProductMetadata, HandlerGetProductItemMetadata>()
                 .AddQueryHandler<GetRegisteredBeaconList, IEnumerable<string>, HandleGetRegisteredBeaconList>()
-                .AddQueryHandler<GetRegisteredGwList, IEnumerable<string>, GetRegisteredGwList.RegisteredGwQueryHandler>()
+                .AddQueryHandler<GetRegisteredGwList, IEnumerable<string>, RegisteredGwQueryHandler>()
                 .AddQueryHandler<GetBeacons, IPagedEnumerable<ProductItemDto>, HandleGetProductItems>()
                 .AddQueryHandler<GetProducts, IPagedEnumerable<ProductEntity>, HandleGetProducts>()
                 .AddQueryHandler<GetSites, IPagedEnumerable<WarehouseSiteEntity>, HandleGetSites>()

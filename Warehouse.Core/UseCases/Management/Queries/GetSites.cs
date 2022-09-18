@@ -18,8 +18,7 @@ namespace Warehouse.Core.UseCases.Management.Queries
             return query
                 .Where(e => e.ProviderId == ProviderId)
                 .WhereIf(!string.IsNullOrEmpty(SearchTerm), e => e.Name.ToLower().Contains(SearchTerm.ToLower()))
-                .OrderBy(p => p.Name)
-                .Paginate(this);
+                .OrderBy(p => p.Name);
         }
     }
 

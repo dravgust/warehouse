@@ -8,36 +8,36 @@ using Warehouse.Core.Services;
 
 namespace Warehouse.Core.UseCases.Management.Queries
 {
-    public class GetRegisteredGwList : IQuery<IEnumerable<string>>
+    public record GetRegisteredGwList : IQuery<IEnumerable<string>>;
+
+    public sealed class RegisteredGwQueryHandler : IQueryHandler<GetRegisteredGwList, IEnumerable<string>>
     {
-        public class RegisteredGwQueryHandler : IQueryHandler<GetRegisteredGwList, IEnumerable<string>>
+        private readonly IDistributedMemoryCache _cache;
+        private readonly IUserContext _userContext;
+        private readonly ILinqProvider _linqProvider;
+
+        public RegisteredGwQueryHandler(ILinqProvider linqProvider, IDistributedMemoryCache cache,
+            IUserContext userContext)
         {
-            private readonly IDistributedMemoryCache _cache;
-            private readonly IUserContext _userContext;
-            private readonly ILinqProvider _linqProvider;
+            _linqProvider = linqProvider;
+            _cache = cache;
+            _userContext = userContext;
+        }
 
-            public RegisteredGwQueryHandler(ILinqProvider linqProvider, IDistributedMemoryCache cache, IUserContext userContext)
+        public async Task<IEnumerable<string>> Handle(GetRegisteredGwList request, CancellationToken cancellationToken)
+        {
+            var data = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<DeviceEntity>(), async options =>
             {
-                _linqProvider = linqProvider;
-                _cache = cache;
-                _userContext = userContext;
-            }
+                options.AbsoluteExpirationRelativeToNow = TimeSpans.FiveMinutes;
 
-            public async Task<IEnumerable<string>> Handle(GetRegisteredGwList request, CancellationToken cancellationToken)
-            {
-                var data = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<DeviceEntity>(), async options =>
-                {
-                    options.AbsoluteExpirationRelativeToNow = TimeSpans.FiveMinutes;
+                var data = await _linqProvider
+                    .Where<DeviceEntity>(d => d.ProviderId == 2)
+                    .ToListAsync(cancellationToken: cancellationToken);
 
-                    var data = await _linqProvider
-                        .Where<DeviceEntity>(d => d.ProviderId == 2)
-                        .ToListAsync(cancellationToken: cancellationToken);
+                return data.Select(d => d.MacAddress).OrderBy(macAddress => macAddress);
+            });
 
-                    return data.Select(d => d.MacAddress).OrderBy(macAddress => macAddress);
-                });
-
-                return data;
-            }
+            return data;
         }
     }
 }

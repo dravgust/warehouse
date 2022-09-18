@@ -19,8 +19,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
                 .Where(e => e.ProviderId == ProviderId)
                 .WhereIf(!string.IsNullOrEmpty(SearchTerm),
                     e => e.MacAddress.ToLower().Contains(SearchTerm.ToLower()))
-                .OrderByDescending(p => p.Id)
-                .Paginate(this);
+                .OrderByDescending(p => p.Id);
         }
     }
 

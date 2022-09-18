@@ -70,7 +70,8 @@ namespace Vayosoft.Data.MongoDB
 
         public async Task<IPagedEnumerable<T>> PagedEnumerableAsync(ILinqSpecification<T> spec, CancellationToken cancellationToken = default) {
             var queryable = Collection.AsQueryable().Apply(spec);
-            return new PagedEnumerable<T>(await queryable.ToListAsync(cancellationToken), await queryable.CountAsync(cancellationToken));
+            var result = spec is IPagingModel model ? queryable.Paginate(model) : queryable;
+            return new PagedEnumerable<T>(await result.ToListAsync(cancellationToken), await queryable.CountAsync(cancellationToken));
         }
 
         //public Task<IPagedEnumerable<T>> PagedListAsync(IPagingModel<T, object> model, Expression<Func<T, bool>> criteria, CancellationToken cancellationToken) =>

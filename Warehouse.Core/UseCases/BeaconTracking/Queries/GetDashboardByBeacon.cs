@@ -13,7 +13,7 @@ using static System.String;
 
 namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 {
-    public class GetDashboardByBeacon : PagingModelBase, ILinqSpecification<BeaconReceivedEntity>, IQuery<IPagedEnumerable<DashboardByBeacon>>
+    public sealed class GetDashboardByBeacon : PagingModelBase, ILinqSpecification<BeaconReceivedEntity>, IQuery<IPagedEnumerable<DashboardByBeacon>>
     {
         public string SearchTerm { set; get; }
         public string SiteId { set; get; }
@@ -27,12 +27,11 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
                     b => b.MacAddress.ToLower().Contains(SearchTerm.ToLower()))
                 .WhereIf(!IsNullOrEmpty(SiteId), b => b.SourceId == SiteId)
                 .WhereIf(!IsNullOrEmpty(ProductId), b => true)
-                .OrderBy(p => p.MacAddress)
-                .Paginate(this);
+                .OrderBy(p => p.MacAddress);
         }
     }
 
-    internal class HandleDashboardByBeacon : IQueryHandler<GetDashboardByBeacon, IPagedEnumerable<DashboardByBeacon>>
+    internal sealed class HandleDashboardByBeacon : IQueryHandler<GetDashboardByBeacon, IPagedEnumerable<DashboardByBeacon>>
     {
         private readonly IReadOnlyRepository<BeaconReceivedEntity> _beaconsReceived;
         private readonly IReadOnlyRepository<WarehouseSiteEntity> _sites;
