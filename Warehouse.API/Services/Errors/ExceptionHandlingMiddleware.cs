@@ -5,8 +5,9 @@ namespace Warehouse.API.Services.Errors
 {
     public class ExceptionHandlingMiddleware
     {
-        private readonly RequestDelegate next;
+        private const string ContentType = "json";
 
+        private readonly RequestDelegate next;
         private readonly ILogger logger;
 
         public ExceptionHandlingMiddleware(RequestDelegate next,
@@ -30,9 +31,16 @@ namespace Warehouse.API.Services.Errors
 
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
+            //var requiresJsonResponse = context.Request
+            //    .GetTypedHeaders()
+            //    .Accept
+            //    .Any(t => (t.Suffix.Value?.Contains(ContentType, StringComparison.OrdinalIgnoreCase) ?? false)
+            //              || (t.SubTypeWithoutSuffix.Value?.Contains(ContentType, StringComparison.OrdinalIgnoreCase) ?? false));
+
             if (!string.IsNullOrEmpty(context.Request.Headers["x-requested-with"]))
             {
                 if (context.Request.Headers["x-requested-with"][0].ToLower() == "xmlhttprequest")
+                //if(requiresJsonResponse)
                 {
                     logger.LogError(exception, exception.Message);
 
