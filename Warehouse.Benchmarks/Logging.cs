@@ -37,13 +37,13 @@ namespace Warehouse.Benchmarks
         }
 
         [Benchmark]
-        public void Log_WithoutIf()
+        public void MicrosoftLogger_WithoutIf()
         {
             _logger.LogDebug(LogMessage);
         }
 
         [Benchmark]
-        public void Log_WithIf()
+        public void MicrosoftLogger_WithIf()
         {
             if (_logger.IsEnabled(LogLevel.Debug))
             {
@@ -52,13 +52,13 @@ namespace Warehouse.Benchmarks
         }
 
         [Benchmark]
-        public void Log_WithoutIf_WithParams()
+        public void MicrosoftLogger_WithoutIf_WithParams()
         {
             _logger.LogDebug(LogMessageWithParameters, "param1", 2, 3);
         }
 
         [Benchmark]
-        public void Log_WithIf_WithParams()
+        public void MicrosoftLogger_WithIf_WithParams()
         {
             if (_logger.IsEnabled(LogLevel.Debug))
             {
