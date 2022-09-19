@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Queries;
 using Warehouse.API.Contracts;
 using Warehouse.API.Services.Authorization;
@@ -24,6 +25,7 @@ namespace Warehouse.API.Controllers.API
             return Ok((await _queryBus.Send(query, token)).ToPagedResponse(query.Size));
         }
 
+        [AllowAnonymous]
         [HttpGet("stream")]
         public IAsyncEnumerable<NotificationEntity> GetStream(CancellationToken token = default)
         {
