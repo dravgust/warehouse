@@ -47,7 +47,7 @@ namespace Vayosoft.Core.Utilities.AsyncLoop
             return Task.Run(async () =>
             {
                 Exception uncaughtException = null;
-                Trace.TraceInformation($"\r\n========================================\r\n=> Job {this.Name} started with interval {this.RepeatEvery}. \r\n========================================");
+                Trace.TraceInformation("\r\n========================================\r\n=> Job {0} started with interval {1}. \r\n========================================", this.Name, this.RepeatEvery);
                 try
                 {
                     if (delayStart != null)
@@ -81,7 +81,7 @@ namespace Vayosoft.Core.Utilities.AsyncLoop
                 }
                 finally
                 {
-	                Trace.TraceInformation($"\r\n========================================\r\n=> {this.Name} stopped. \r\n========================================");
+	                Trace.TraceInformation("\r\n========================================\r\n=> {0} stopped. \r\n========================================", this.Name);
                 }
 
                 if (uncaughtException != null)

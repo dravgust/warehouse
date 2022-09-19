@@ -291,7 +291,7 @@ namespace Vayosoft.Data.MongoDB
             }
             catch (MongoCommandException ex) when (ex.Message.Contains("already exists"))
             {
-                Trace.TraceError($"Index already exists {ex.Result}", ex.Result);
+                Trace.TraceError("Index already exists {0}", ex.Result);
             }
 
             return Empty;

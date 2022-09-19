@@ -35,7 +35,7 @@ namespace Vayosoft.PushMessage
         private void Start()
         {
             Broker!.Start();
-            Trace.TraceInformation($"{nameof(GooglePushBroker)}| Service started.");
+            Trace.TraceInformation("{0}| Service started.", nameof(GooglePushBroker));
         }
 
         private void NotificationFailed(INotification notification, AggregateException aggregateEx)
@@ -125,7 +125,7 @@ namespace Vayosoft.PushMessage
         public void Dispose()
         {
             Broker?.Stop(true);
-            Trace.TraceInformation($"{nameof(GooglePushBroker)}| Services stopped.");
+            Trace.TraceInformation("{0}| Services stopped.", nameof(GooglePushBroker));
         }
     }
 }

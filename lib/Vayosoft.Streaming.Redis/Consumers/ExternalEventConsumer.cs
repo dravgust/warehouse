@@ -49,7 +49,7 @@ namespace Vayosoft.Streaming.Redis.Consumers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error consuming message: {e.Message} {e.StackTrace}");
+                _logger.LogError("Error consuming message: {0} {1}", e.Message, e.StackTrace);
             }
         }
     }

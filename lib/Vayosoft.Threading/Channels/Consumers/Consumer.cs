@@ -85,7 +85,7 @@ namespace Vayosoft.Threading.Channels.Consumers
                     }
                     catch (Exception exception)
                     {
-                        Trace.TraceError($"[{WorkerName}]: Exception occurred: {exception}");
+                        Trace.TraceError("[{0}]: Exception occurred: {1}", WorkerName, exception);
                     }
                 }
 
@@ -97,7 +97,7 @@ namespace Vayosoft.Threading.Channels.Consumers
             }
             catch (Exception e)
             {
-                Trace.TraceError($"[{WorkerName}]: Shutdown error: {e.Message}");
+                Trace.TraceError("[{0}]: Shutdown error: {1}", WorkerName, e.Message);
             }
         }
 

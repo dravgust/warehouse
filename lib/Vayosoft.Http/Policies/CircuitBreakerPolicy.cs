@@ -18,7 +18,7 @@ namespace Vayosoft.Http.Policies
                     onBreak: (iRestResponse, timespan, context) =>
                     {
                         context.GetLogger()?
-                            .LogWarning($"Service shutdown during {config.BreakDuration} after {config.RetryCount} failed retries.");
+                            .LogWarning("Service shutdown during {0} after {1} failed retries.", config.BreakDuration, config.RetryCount);
                         //throw new BrokenCircuitException("Service inoperative. Please try again later");
                     },
                     onReset: (context) =>

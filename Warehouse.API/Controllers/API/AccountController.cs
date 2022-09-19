@@ -35,15 +35,6 @@ namespace Warehouse.API.Controllers.API
             _cache = cache;
         }
 
-        [AllowAnonymous]
-        [ResponseCache(Duration = 30)]
-        [HttpGet("test")]
-        public IActionResult Test()
-        {
-            throw new Exception("test");
-            return Ok($"{DateTime.Now}");
-        }
-
         [ProducesResponseType(typeof(HttpErrorWrapper), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("bootstrap")]

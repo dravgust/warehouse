@@ -49,7 +49,7 @@ namespace Vayosoft.PushMessage
         private void Start()
         {
             Broker!.Start();
-            Trace.TraceInformation($"{nameof(ApplePushBroker)}|  Service started.");
+            Trace.TraceInformation("{0}|  Service started.", nameof(ApplePushBroker));
         }
 
         private void NotificationFailed(ApnsNotification notification, AggregateException aggregateEx)
@@ -75,7 +75,7 @@ namespace Vayosoft.PushMessage
 
                 foreach (var e in aggregateEx.Flatten().InnerExceptions)
                 {
-                    Trace.TraceError($"{ex.GetType().Name}| {e.Message}\r\n{e.InnerException}\r\n{ex.StackTrace}");
+                    Trace.TraceError("{0}| {1}\r\n{2}\r\n{3}", ex.GetType().Name, e.Message, e.InnerException, ex.StackTrace);
                 }
 
                 return true;
@@ -114,7 +114,7 @@ namespace Vayosoft.PushMessage
             _fbsTimer?.Dispose();
             Broker?.Stop(true);
 
-            Trace.TraceInformation($"{nameof(ApplePushBroker)}| Services stopped.");
+            Trace.TraceInformation("{0}| Services stopped.", nameof(ApplePushBroker));
         }
     }
 }
