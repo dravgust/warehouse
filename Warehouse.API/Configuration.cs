@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using MediatR;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +12,6 @@ using Warehouse.API.Services;
 using Warehouse.API.Services.Localization;
 using Warehouse.API.TagHelpers;
 using Warehouse.API.UseCases.Resources;
-using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Authentication;
@@ -21,6 +21,8 @@ using Warehouse.Core.UseCases.Management;
 using Warehouse.Infrastructure;
 using Warehouse.Infrastructure.Authentication;
 using Warehouse.Infrastructure.Persistence;
+using Warehouse.API.Controllers.API;
+using Warehouse.Core.Entities.Models;
 
 namespace Warehouse.API
 {
@@ -68,6 +70,11 @@ namespace Warehouse.API
                 .AddAppAdministrationServices()
                 .AddAppTrackingServices()
                 .AddAppManagementServices();
+
+            //todo:Stream test
+            services
+                .AddTransient<IStreamRequestHandler<NotificationStreamRequest, NotificationEntity>,
+                    NotificationStreamRequestHandler>();
 
             return services;
         }
