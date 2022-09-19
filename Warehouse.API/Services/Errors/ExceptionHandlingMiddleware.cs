@@ -27,28 +27,29 @@ namespace Warehouse.API.Services.Errors
             }
         }
 
+        private const string JsonMime = "json";
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             logger.LogError(exception, exception.Message);
-
-            if (!IsAjaxRequest(context))
+            
+            if (IsAjaxRequest(context) || IsAcceptMimeType(context, JsonMime))
             {
-                throw exception;
-                //context.Response.Redirect("/error");
-                //return Task.FromResult<object>(null);
+                var codeInfo = ExceptionToHttpStatusMapper.Map(exception);
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    WriteIndented = true
+                };
+                var error = new HttpErrorWrapper((int)codeInfo.Code, "An error occurred while processing your request.");
+                var result = JsonSerializer.Serialize(error, options);
+                context.Response.ContentType = "application/json";
+                context.Response.StatusCode = (int)codeInfo.Code;
+                return context.Response.WriteAsync(result);
             }
-
-            var codeInfo = ExceptionToHttpStatusMapper.Map(exception);
-            var options = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                WriteIndented = true
-            };
-            var error = new HttpErrorWrapper((int)codeInfo.Code, "An error occurred while processing your request.");
-            var result = JsonSerializer.Serialize(error, options);
-            context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)codeInfo.Code;
-            return context.Response.WriteAsync(result);
+            
+            throw exception;
+            //context.Response.Redirect("/error");
+            //return Task.FromResult<object>(null);
         }
 
         public bool IsAjaxRequest(HttpContext context)
@@ -57,23 +58,13 @@ namespace Warehouse.API.Services.Errors
             return context.Request.Headers["x-requested-with"][0].ToLower() == "xmlhttprequest";
         }
 
-        //private const string JsonMime = "json";
-        //public bool IsAcceptJson(HttpContext context)
-        //{
-        //    var accept = context.Request
-        //        .GetTypedHeaders()
-        //        .Accept;
-
-        //    if (accept.Count == 0)
-        //    {
-        //        return true;
-        //    }
-
-        //    var result = accept
-        //        .Any(t =>
-        //            (t.Suffix.Value?.Contains(JsonMime, StringComparison.OrdinalIgnoreCase) ?? false)
-        //            || (t.SubTypeWithoutSuffix.Value?.Contains(JsonMime, StringComparison.OrdinalIgnoreCase) ?? false));
-        //    return result;
-        //}
+        public bool IsAcceptMimeType(HttpContext context, string mimeType)
+        {
+            var acceptHeader = context.Request.GetTypedHeaders().Accept;
+            var result = acceptHeader.Any(t => 
+                t.Suffix.Value?.ToLower() == mimeType ||
+                t.SubTypeWithoutSuffix.Value?.ToLower() == mimeType);
+            return result;
+        }
     }
 }
