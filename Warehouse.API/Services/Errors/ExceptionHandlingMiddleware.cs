@@ -27,12 +27,11 @@ namespace Warehouse.API.Services.Errors
             }
         }
 
-        private const string JsonMime = "json";
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             logger.LogError(exception, exception.Message);
             
-            if (IsAjaxRequest(context) || IsAcceptMimeType(context, JsonMime))
+            if (IsAjaxRequest(context) || IsAcceptMimeType(context, "json"))
             {
                 var codeInfo = ExceptionToHttpStatusMapper.Map(exception);
                 var options = new JsonSerializerOptions
