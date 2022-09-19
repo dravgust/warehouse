@@ -23,7 +23,7 @@ namespace Warehouse.Infrastructure.Persistence
             _mapper = mapper;
         }
 
-        protected IRepositoryBase<T> Repository<T>() where T : class, IEntity
+        private IRepositoryBase<T> Repository<T>() where T : class, IEntity
         {
             var key = typeof(T).Name;
             if (_repositories.ContainsKey(key))
