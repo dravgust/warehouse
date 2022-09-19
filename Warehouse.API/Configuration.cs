@@ -23,6 +23,7 @@ using Warehouse.Infrastructure.Authentication;
 using Warehouse.Infrastructure.Persistence;
 using Warehouse.API.Controllers.API;
 using Warehouse.Core.Entities.Models;
+using Warehouse.Core.UseCases.BeaconTracking.Queries;
 
 namespace Warehouse.API
 {
@@ -70,11 +71,6 @@ namespace Warehouse.API
                 .AddAppAdministrationServices()
                 .AddAppTrackingServices()
                 .AddAppManagementServices();
-
-            //todo:Stream test
-            services
-                .AddTransient<IStreamRequestHandler<NotificationStreamRequest, NotificationEntity>,
-                    NotificationStreamRequestHandler>();
 
             return services;
         }

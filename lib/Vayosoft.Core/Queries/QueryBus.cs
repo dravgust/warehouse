@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -13,9 +14,16 @@ namespace Vayosoft.Core.Queries
             this.mediator = mediator;
         }
 
-        public Task<TResponse> Send<TResponse>(IQuery<TResponse> query, CancellationToken cancellationToken = default)
+        public Task<TResponse> Send<TResponse>(IQuery<TResponse> query,
+            CancellationToken cancellationToken = default)
         {
             return mediator.Send(query, cancellationToken);
+        }
+
+        public IAsyncEnumerable<TResponse> Send<TResponse>(IStreamQuery<TResponse> query,
+            CancellationToken cancellationToken = default)
+        {
+            return mediator.CreateStream(query, cancellationToken);
         }
     }
 }

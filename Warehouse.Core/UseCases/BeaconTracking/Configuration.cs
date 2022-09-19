@@ -21,13 +21,15 @@ namespace Warehouse.Core.UseCases.BeaconTracking
             services
                 .AddQueryHandler<GetDashboardByBeacon, IPagedEnumerable<DashboardByBeacon>, HandleDashboardByBeacon>()
                 .AddQueryHandler<GetBeaconEvents, IPagedEnumerable<BeaconEventDto>, HandleGetBeaconEvents>()
-                .AddQueryHandler<GetUserNotifications, IPagedEnumerable<NotificationEntity>, HandleGetNotifications>()
                 .AddQueryHandler<GetDashboardByProduct, IEnumerable<DashboardByProduct>, HandleGetDashboardByProduct>()
                 .AddQueryHandler<GetDashboardBySite, IEnumerable<DashboardBySite>, HandleGetDashboardBySite>()
                 .AddQueryHandler<GetDashboardSite, DashboardBySite, HandleGetIpsStatus>()
                 .AddQueryHandler<GetBeaconCharts, BeaconCharts, HandleGetBeaconCharts>()
                 .AddQueryHandler<GetBeaconPosition, ICollection<BeaconPosition>, HandleGetBeaconPosition>()
-                .AddQueryHandler<GetBeaconTelemetry, BeaconTelemetryDto, HandleGetBeaconTelemetry>();
+                .AddQueryHandler<GetBeaconTelemetry, BeaconTelemetryDto, HandleGetBeaconTelemetry>()
+
+                .AddQueryHandler<GetUserNotifications, IPagedEnumerable<NotificationEntity>, HandleGetNotifications>()
+                .AddStreamQueryHandler<GetUserNotificationStream, NotificationEntity, NotificationStreamQueryHandler>();
 
         private static IServiceCollection AddEventHandlers(this IServiceCollection services) =>
                 services

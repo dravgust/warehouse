@@ -23,6 +23,11 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
         }
     }
 
+    //dapper
+    //https://stackoverflow.com/questions/59956623/using-iasyncenumerable-with-dapper
+    public class GetUserNotificationStream : IStreamQuery<NotificationEntity>
+    { }
+
     internal class HandleGetNotifications : IQueryHandler<GetUserNotifications, IPagedEnumerable<NotificationEntity>>
     {
         private readonly IReadOnlyRepository<NotificationEntity> _repository;
@@ -39,6 +44,36 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
         {
             query.ProviderId = _userContext.User.Identity.GetProviderId();
             return await _repository.PagedEnumerableAsync(query, cancellationToken);
+        }
+    }
+
+    public class NotificationStreamQueryHandler : IStreamQueryHandler<GetUserNotificationStream, NotificationEntity>
+    {
+        private readonly IReadOnlyRepository<NotificationEntity> _notifications;
+        private readonly IUserContext _userContext;
+
+        public NotificationStreamQueryHandler(IReadOnlyRepository<NotificationEntity> notifications, IUserContext userContext)
+        {
+            _notifications = notifications;
+            _userContext = userContext;
+        }
+
+        public IAsyncEnumerable<NotificationEntity> Handle(GetUserNotificationStream query, CancellationToken cancellationToken)
+        {
+            var providerId = _userContext.User.Identity.GetProviderId();
+            return _notifications.AsyncEnumerable(new Specification<NotificationEntity>(n => n.ProviderId == providerId), cancellationToken);
+
+            //while (!cancellationToken.IsCancellationRequested)
+            //{
+            //    await Task.Delay(1000, cancellationToken);
+            //    yield return new NotificationEntity
+            //    {
+            //        MacAddress = "test",
+            //        AlertId = "test",
+            //        ProviderId = 1000,
+            //        TimeStamp = DateTime.UtcNow
+            //    };
+            //}
         }
     }
 }

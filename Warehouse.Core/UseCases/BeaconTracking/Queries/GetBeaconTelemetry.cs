@@ -1,16 +1,13 @@
-﻿using MediatR;
-using MongoDB.Driver;
-using Vayosoft.Core.Persistence;
+﻿using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.ValueObjects;
 using Vayosoft.Core.Specifications;
-using Vayosoft.Data.MongoDB;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.BeaconTracking.Models;
 
 namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 {
-    public class GetBeaconTelemetry : IQuery<BeaconTelemetryDto>, ILinqSpecification<BeaconTelemetryEntity>
+    public sealed class GetBeaconTelemetry : IQuery<BeaconTelemetryDto>, ILinqSpecification<BeaconTelemetryEntity>
     {
         public GetBeaconTelemetry(MacAddress macAddress)
         {
@@ -27,7 +24,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
         }
     }
 
-    public class HandleGetBeaconTelemetry : IQueryHandler<GetBeaconTelemetry, BeaconTelemetryDto>
+    internal sealed class HandleGetBeaconTelemetry : IQueryHandler<GetBeaconTelemetry, BeaconTelemetryDto>
     {
         private readonly IReadOnlyRepository<BeaconTelemetryEntity> _repository;
 
