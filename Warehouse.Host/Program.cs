@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Serilog;
 using Warehouse.Host;
 
