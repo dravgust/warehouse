@@ -1,8 +1,6 @@
-﻿using System.Linq.Expressions;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 using Vayosoft.Core.Persistence;
-using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Data.MongoDB;
 using Warehouse.Core.Entities.Models;
@@ -13,14 +11,12 @@ namespace Warehouse.Core.Persistence
     {
         private readonly IMongoConnection _connection;
         private readonly IServiceScope _scope;
-        private readonly IMapper _mapper;
         private readonly Dictionary<string, object> _repositories = new();
 
-        public WarehouseStore(IMongoConnection connection, IServiceProvider serviceProvider, IMapper mapper)
+        public WarehouseStore(IMongoConnection connection, IServiceProvider serviceProvider)
         {
             _connection = connection;
             _scope = serviceProvider.CreateScope();
-            _mapper = mapper;
         }
 
         private IRepositoryBase<T> Repository<T>() where T : class, IEntity
@@ -44,15 +40,6 @@ namespace Warehouse.Core.Persistence
 
         public IQueryable<T> Set<T>() where T : class, IEntity => 
             _connection.Collection<T>().AsQueryable();
-
-        public Task<TResult> FirstOrDefaultAsync<T, TResult>(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default) where T : IEntity =>
-            _connection.Collection<T>().Find(criteria).Project(x => _mapper.Map<TResult>(x)).FirstOrDefaultAsync(cancellationToken);
-
-        public Task<TResult> SingleOrDefaultAsync<T, TResult>(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default) where T : IEntity =>
-            _connection.Collection<T>().Find(criteria).Project(x => _mapper.Map<TResult>(x)).SingleOrDefaultAsync(cancellationToken);
-
-        public Task<List<TResult>> ListAsync<T, TResult>(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default) where T : IEntity =>
-            _connection.Collection<T>().Find(criteria).Project(x => _mapper.Map<TResult>(x)).ToListAsync(cancellationToken);
 
         public async Task<string> SetWarehouseSite(WarehouseSiteEntity entity, CancellationToken cancellationToken)
         {
