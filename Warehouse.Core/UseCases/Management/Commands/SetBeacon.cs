@@ -1,18 +1,19 @@
 ﻿using FluentValidation;
 using MediatR;
 using Vayosoft.Core.Commands;
-using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel;
+using Vayosoft.Core.SharedKernel.ValueObjects;
 using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Security;
 using Warehouse.Core.UseCases.Management.Models;
 
 namespace Warehouse.Core.UseCases.Management.Commands
 {
-    public class SetBeacon : ProductItemDto, ICommand
+    public sealed class SetBeacon : ProductItemDto, ICommand
     {
         public class SetBeaconValidator : AbstractValidator<SetBeacon>
         {
@@ -25,34 +26,25 @@ namespace Warehouse.Core.UseCases.Management.Commands
         }
     }
 
-    internal class HandleSetBeacon : ICommandHandler<SetBeacon>
+    internal sealed class HandleSetBeacon : ICommandHandler<SetBeacon>
     {
-        private readonly IReadOnlyRepository<BeaconRegisteredEntity> _beaconsRegisteredR;
-        private readonly IRepositoryBase<BeaconRegisteredEntity> _beaconsRegistered;
-        private readonly IRepositoryBase<BeaconEntity> _beacons;
+        private readonly WarehouseStore _store;
         private readonly IUserContext _userContext;
         private readonly IMapper _mapper;
 
-        public HandleSetBeacon(
-            IRepositoryBase<BeaconEntity> beacons,
-            IRepositoryBase<BeaconRegisteredEntity> beaconsRegistered,
-            IReadOnlyRepository<BeaconRegisteredEntity> beaconsRegisteredR,
-            IMapper mapper, IUserContext userContext)
+        public HandleSetBeacon(WarehouseStore store, IMapper mapper, IUserContext userContext)
         {
-            _beacons = beacons;
-            _beaconsRegistered = beaconsRegistered;
             _mapper = mapper;
             _userContext = userContext;
-            _beaconsRegisteredR = beaconsRegisteredR;
+            _store = store;
         }
 
         public async Task<Unit> Handle(SetBeacon request, CancellationToken cancellationToken)
         {
+            request.MacAddress = request.MacAddress.ToUpper();
             var providerId = _userContext.User.Identity.GetProviderId();
-            var b = await _beaconsRegisteredR
-                .FirstOrDefaultAsync(r => r.MacAddress == request.MacAddress, cancellationToken);
-            //var b = await _beaconRegisteredRepository.FindAsync(request.MacAddress, cancellationToken);
-            if (b == null)
+
+            if (await _store.BeaconRegistered.FindAsync(request.MacAddress, cancellationToken) == null)
             {
                 var rb = new BeaconRegisteredEntity
                 {
@@ -61,22 +53,33 @@ namespace Warehouse.Core.UseCases.Management.Commands
                     BeaconType = BeaconType.Registered,
                     ProviderId = providerId
                 };
-                await _beaconsRegistered.AddAsync(rb, cancellationToken: cancellationToken);
+                await _store.BeaconRegistered.AddAsync(rb, cancellationToken: cancellationToken);
             }
 
+            if (await _store.TrackedItems.FindAsync(request.MacAddress, cancellationToken) == null)
+            {
+                var registerTrackedItemResult = TrackedItem.Register(request.MacAddress);
+                if (registerTrackedItemResult.IsError)
+                {
+
+                }
+
+                await _store.TrackedItems.AddAsync(registerTrackedItemResult.Value, cancellationToken);
+            }
+            
             BeaconEntity entity;
-            if (!string.IsNullOrEmpty(request.MacAddress) && (entity = await _beacons.FindAsync(request.MacAddress, cancellationToken)) != null)
+            if ((entity = await _store.Beacons.FindAsync(request.MacAddress, cancellationToken)) != null)
             {
                 entity.Name = request.Name;
                 entity.ProductId = request.Product?.Id;
                 entity.Metadata = request.Metadata;
-                await _beacons.UpdateAsync(entity, cancellationToken);
+                await _store.Beacons.UpdateAsync(entity, cancellationToken);
             }
             else
             {
                 entity = _mapper.Map<BeaconEntity>(request);
                 entity.ProviderId = providerId;
-                await _beacons.AddAsync(entity, cancellationToken);
+                await _store.Beacons.AddAsync(entity, cancellationToken);
             }
 
             return Unit.Value;

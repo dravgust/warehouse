@@ -34,6 +34,8 @@ namespace Vayosoft.Data.MongoDB
 
         public Task<T> FindAsync<TId>(TId id, CancellationToken cancellationToken = default) =>
             Collection.Find(q => q.Id.Equals(id)).FirstOrDefaultAsync(cancellationToken);
+        public Task<TResult> FindAsync<TId, TResult>(TId id, CancellationToken cancellationToken = default) =>
+            Collection.Find(q => q.Id.Equals(id)).Project(e => mapper.Map<TResult>(e)).FirstOrDefaultAsync(cancellationToken);
 
 
         public virtual Task AddAsync(T entity, CancellationToken cancellationToken = default) =>

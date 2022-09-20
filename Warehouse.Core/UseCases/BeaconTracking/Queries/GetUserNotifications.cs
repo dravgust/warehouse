@@ -69,9 +69,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
                 await Task.Delay(1000, cancellationToken);
                 yield return new NotificationEntity
                 {
-                    MacAddress = "test",
-                    AlertId = "test",
-                    ProviderId = 1000,
+                    MacAddress = Guid.NewGuid().ToString(),
                     TimeStamp = DateTime.UtcNow
                 };
             }

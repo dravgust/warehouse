@@ -8,6 +8,9 @@ namespace Warehouse.Core.Entities.Models
 {
     public class TrackedItem : Aggregate<string>
     {
+        public TrackedItem()
+        { }
+
         public string SourceId { get; private set; } = null!;
         public string DestinationId { get; private set; } = null!;
         public BeaconStatus Status { get; private set; }
@@ -28,19 +31,18 @@ namespace Warehouse.Core.Entities.Models
 
         public void EnterTo(string destinationId)
         {
-            if (Status != BeaconStatus.OUT)
-                throw new InvalidOperationException($"'{Status}' status is not allowed.");
+            //if (Status != BeaconStatus.OUT)
+            //    throw new InvalidOperationException($"'{Status}' status is not allowed.");
 
             var @event = TrackedItemEntered.Create(Id, DateTime.UtcNow, destinationId);
-
             Enqueue(@event);
             Apply(@event);
         }
 
         public void GetOutFrom(string sourceId)
         {
-            if (Status != BeaconStatus.IN)
-                throw new InvalidOperationException($"'{Status}' status is not allowed.");
+            //if (Status != BeaconStatus.IN)
+            //    throw new InvalidOperationException($"'{Status}' status is not allowed.");
 
             var @event = TrackedItemGotOut.Create(Id, DateTime.UtcNow, sourceId);
 
@@ -50,8 +52,8 @@ namespace Warehouse.Core.Entities.Models
 
         public void MoveFromTo(string sourceId, string destinationId)
         {
-            if (Status != BeaconStatus.IN)
-                throw new InvalidOperationException($"'{Status}' status is not allowed.");
+            //if (Status != BeaconStatus.IN)
+            //    throw new InvalidOperationException($"'{Status}' status is not allowed.");
 
             var @event = TrackedItemMoved.Create(Id, DateTime.UtcNow, sourceId, destinationId);
 
@@ -80,7 +82,7 @@ namespace Warehouse.Core.Entities.Models
         public void Apply(TrackedItemMoved @event)
         {
             SourceId = @event.SourceId;
-            SourceId = @event.DestinationId;
+            DestinationId = @event.DestinationId;
             Status = BeaconStatus.IN;
         }
     }

@@ -39,7 +39,7 @@ namespace Warehouse.Core.Entities.Models
         public string SourceId { set; get; }
         public long ProviderId { set; get; }
         public BeaconStatus Status { get; set; }
-        object IEntity.Id => Id;
+        object IEntity.Id => MacAddress;
         public string Id => MacAddress;
     }
 
@@ -49,7 +49,7 @@ namespace Warehouse.Core.Entities.Models
         public string MacAddress { get; set; }
         public BeaconType BeaconType { get; set; }
         public DateTime ReceivedAt { get; set; }
-        object IEntity.Id => Id;
+        object IEntity.Id => MacAddress;
         public string Id => MacAddress;
         public long ProviderId { get; set; }
     }

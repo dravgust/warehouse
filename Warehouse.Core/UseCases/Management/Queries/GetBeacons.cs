@@ -1,10 +1,9 @@
-﻿using Vayosoft.Core.Persistence;
-using Vayosoft.Core.Queries;
-using Vayosoft.Core.SharedKernel;
+﻿using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.Specifications;
 using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Security;
 using Warehouse.Core.UseCases.Management.Models;
@@ -26,22 +25,14 @@ namespace Warehouse.Core.UseCases.Management.Queries
 
     internal class HandleGetProductItems : IQueryHandler<GetBeacons, IPagedEnumerable<ProductItemDto>>
     {
-        private readonly IReadOnlyRepository<BeaconRegisteredEntity> _beaconsRegistered;
-        private readonly IReadOnlyRepository<BeaconEntity> _beacons;
-        private readonly IReadOnlyRepository<ProductEntity> _products;
+        private readonly WarehouseStore _store;
         private readonly IUserContext _userContext;
-        private readonly IMapper _mapper;
 
         public HandleGetProductItems(
-            IReadOnlyRepository<BeaconRegisteredEntity> beaconsRegistered,
-            IReadOnlyRepository<BeaconEntity> beacons,
-            IReadOnlyRepository<ProductEntity> products,
-            IMapper mapper, IUserContext userContext)
+            WarehouseStore store,
+            IUserContext userContext)
         {
-            _beacons = beacons;
-            _beaconsRegistered = beaconsRegistered;
-            _products = products;
-            _mapper = mapper;
+            _store = store;
             _userContext = userContext;
         }
 
@@ -49,7 +40,7 @@ namespace Warehouse.Core.UseCases.Management.Queries
         {
             query.ProviderId = _userContext.User.Identity.GetProviderId();
 
-            var result = await _beaconsRegistered.PagedEnumerableAsync(query, cancellationToken);
+            var result = await _store.BeaconRegistered.PagedEnumerableAsync(query, cancellationToken);
             
             var data = new List<ProductItemDto>();
             foreach (var item in result)
@@ -59,14 +50,12 @@ namespace Warehouse.Core.UseCases.Management.Queries
                     MacAddress = item.MacAddress,
                 };
 
-                var productItem = await _beacons.FirstOrDefaultAsync(q => q.Id.Equals(item.MacAddress), cancellationToken);
+                var productItem = await _store.Beacons.FirstOrDefaultAsync(q => q.Id.Equals(item.MacAddress), cancellationToken);
                 if (productItem != null)
                 {
                     if (!string.IsNullOrEmpty(productItem.ProductId))
                     {
-                        var product = await _products.FindAsync(productItem.ProductId, cancellationToken);
-                        if (product != null)
-                            dto.Product = _mapper.Map<ProductDto>(product);
+                        dto.Product = await _store.Products.FindAsync<string, ProductDto>(productItem.ProductId, cancellationToken);
                     }
 
                     dto.Name = productItem.Name;

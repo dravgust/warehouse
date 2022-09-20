@@ -3,12 +3,13 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import SuiBox from "components/SuiBox";
 import { Zoom, Grid } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BeaconList from "./components/beacon-list";
 import SelectedBeacon from "./components/selected-beacon";
 import { useQuery } from "react-query";
 import { fetchBeaconMetadata } from "utils/query-keys";
 import { getBeaconMetadata } from "api/warehouse";
+import { streamClient } from "../../utils/stream-client";
 
 const Beacons = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -53,28 +54,26 @@ const Beacons = () => {
   return (
     <DashboardLayout>
       <DashboardNavbar onSearch={onSearch} />
-      <SuiBox>
-        <SuiBox mb={3} py={3}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} lg={selectedItem ? 5 : 12}>
-              <BeaconList
-                searchTerm={searchTerm}
-                selectedItem={selectedItem}
-                onRowSelect={onSelectItem}
-                onAdd={resetToDefault}
-                onDelete={handleDelete}
-                refresh={refresh}
-              />
-            </Grid>
-            <Zoom in={Boolean(selectedItem)}>
-              <Grid item xs={12} lg={7}>
-                {Boolean(selectedItem) && (
-                  <SelectedBeacon item={selectedItem} onSave={handleSave} onClose={resetToNull} />
-                )}
-              </Grid>
-            </Zoom>
+      <SuiBox mb={3} py={3}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} lg={selectedItem ? 5 : 12}>
+            <BeaconList
+              searchTerm={searchTerm}
+              selectedItem={selectedItem}
+              onRowSelect={onSelectItem}
+              onAdd={resetToDefault}
+              onDelete={handleDelete}
+              refresh={refresh}
+            />
           </Grid>
-        </SuiBox>
+          <Zoom in={Boolean(selectedItem)}>
+            <Grid item xs={12} lg={7}>
+              {Boolean(selectedItem) && (
+                <SelectedBeacon item={selectedItem} onSave={handleSave} onClose={resetToNull} />
+              )}
+            </Grid>
+          </Zoom>
+        </Grid>
       </SuiBox>
       <Footer />
     </DashboardLayout>

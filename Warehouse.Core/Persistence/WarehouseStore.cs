@@ -7,14 +7,14 @@ using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Data.MongoDB;
 using Warehouse.Core.Entities.Models;
 
-namespace Warehouse.Infrastructure.Persistence
+namespace Warehouse.Core.Persistence
 {
     public sealed class WarehouseStore : IDisposable
     {
         private readonly IMongoConnection _connection;
         private readonly IServiceScope _scope;
         private readonly IMapper _mapper;
-        private readonly Dictionary<string, IRepositoryBase<IEntity>> _repositories = new();
+        private readonly Dictionary<string, object> _repositories = new();
 
         public WarehouseStore(IMongoConnection connection, IServiceProvider serviceProvider, IMapper mapper)
         {
@@ -30,13 +30,17 @@ namespace Warehouse.Infrastructure.Persistence
                 return (IRepositoryBase<T>) _repositories[key];
 
             var r = _scope.ServiceProvider.GetRequiredService<IRepositoryBase<T>>();
-            _repositories.Add(key, (IRepositoryBase<IEntity>) r);
+            _repositories.Add(key, r);
 
             return r;
         }
 
-        public IReadOnlyRepository<WarehouseSiteEntity> Sites => 
-            Repository<WarehouseSiteEntity>();
+        public IRepositoryBase<WarehouseSiteEntity> Sites => Repository<WarehouseSiteEntity>();
+        public IRepositoryBase<TrackedItem> TrackedItems => Repository<TrackedItem>();
+        public IRepositoryBase<BeaconEntity> Beacons => Repository<BeaconEntity>(); 
+        public IRepositoryBase<BeaconRegisteredEntity> BeaconRegistered => Repository<BeaconRegisteredEntity>();
+        public IRepositoryBase<BeaconReceivedEntity> BeaconReceived => Repository<BeaconReceivedEntity>();
+        public IRepositoryBase<ProductEntity> Products => Repository<ProductEntity>();
 
         public IQueryable<T> Set<T>() where T : class, IEntity => 
             _connection.Collection<T>().AsQueryable();

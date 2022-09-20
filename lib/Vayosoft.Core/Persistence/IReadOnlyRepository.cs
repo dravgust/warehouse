@@ -11,8 +11,8 @@ namespace Vayosoft.Core.Persistence
 {
     public interface IReadOnlyRepository<TEntity> where TEntity : class, IEntity
     {
-        Task<TEntity> FindAsync<TId>(TId id,
-            CancellationToken cancellationToken = default) where TId : notnull;
+        Task<TEntity> FindAsync<TId>(TId id, CancellationToken cancellationToken = default) where TId : notnull;
+        Task<TResult> FindAsync<TId, TResult>(TId id, CancellationToken cancellationToken = default) where TId : notnull;
 
 
         Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> criteria,

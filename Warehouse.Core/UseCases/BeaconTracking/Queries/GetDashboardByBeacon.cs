@@ -5,6 +5,7 @@ using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.Specifications;
 using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Security;
 using Warehouse.Core.UseCases.BeaconTracking.Models;
@@ -33,25 +34,12 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 
     internal sealed class HandleDashboardByBeacon : IQueryHandler<GetDashboardByBeacon, IPagedEnumerable<DashboardByBeacon>>
     {
-        private readonly IReadOnlyRepository<BeaconReceivedEntity> _beaconsReceived;
-        private readonly IReadOnlyRepository<WarehouseSiteEntity> _sites;
-        private readonly IReadOnlyRepository<BeaconEntity> _beacons;
-        private readonly IReadOnlyRepository<ProductEntity> _products;
+        private readonly WarehouseStore _store;
         private readonly IUserContext _userContext;
-        private readonly IMapper _mapper;
 
-        public HandleDashboardByBeacon(
-            IReadOnlyRepository<BeaconReceivedEntity> beaconsReceived,
-            IReadOnlyRepository<WarehouseSiteEntity> sites,
-            IReadOnlyRepository<BeaconEntity> beacons,
-            IReadOnlyRepository<ProductEntity> products,
-            IMapper mapper, IUserContext userContext)
+        public HandleDashboardByBeacon(WarehouseStore store, IUserContext userContext)
         {
-            _sites = sites;
-            _beaconsReceived = beaconsReceived;
-            _beacons = beacons;
-            _products = products;
-            _mapper = mapper;
+            _store = store;
             _userContext = userContext;
         }
 
@@ -59,7 +47,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
         {
             query.ProviderId = _userContext.User.Identity.GetProviderId();
 
-            var beacons = await _beaconsReceived.PagedEnumerableAsync(query, cancellationToken);
+            var beacons = await _store.BeaconReceived.PagedEnumerableAsync(query, cancellationToken);
             
             var data = new List<DashboardByBeacon>();
             foreach (var b in beacons)
@@ -69,26 +57,14 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
                     MacAddress = b.MacAddress,
                     TimeStamp = b.ReceivedAt,
 
-                    SiteId = b.SourceId
+                    SiteId = b.SourceId,
+                    Site = await _store.Sites.FindAsync<string, WarehouseSiteDto>(b.SourceId, cancellationToken)
                 };
 
-                var site = await _sites.FindAsync(b.SourceId, cancellationToken);
-                if (site != null)
+                var productItem = await _store.Beacons.FindAsync(b.MacAddress, cancellationToken);
+                if (productItem != null && !IsNullOrEmpty(productItem.ProductId))
                 {
-                    asset.Site = _mapper.Map<WarehouseSiteDto>(site);
-                }
-
-                var productItem = await _beacons.FirstOrDefaultAsync(q => q.Id.Equals(b.MacAddress), cancellationToken);
-                if (productItem != null)
-                {
-                    if (!string.IsNullOrEmpty(productItem.ProductId))
-                    {
-                        var product = await _products.FirstOrDefaultAsync(p => p.Id == productItem.ProductId, cancellationToken);
-                        if (product != null)
-                        {
-                            asset.Product = _mapper.Map<ProductDto>(product);
-                        }
-                    }
+                    asset.Product = await _store.Products.FindAsync<string, ProductDto>(productItem.ProductId, cancellationToken);
                 }
 
                 data.Add(asset);
