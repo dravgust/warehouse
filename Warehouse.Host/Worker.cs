@@ -9,7 +9,7 @@ using Vayosoft.IPS.Domain;
 using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Entities.Models.Payloads;
-using Warehouse.Core.UseCases.Management.Models;
+using Warehouse.Core.Persistence;
 using LocationAnchor = Vayosoft.IPS.Domain.LocationAnchor;
 
 namespace Warehouse.Host
@@ -55,6 +55,7 @@ namespace Warehouse.Host
                 var beaconReceivedRepository = scope.ServiceProvider.GetRequiredService<IRepositoryBase<BeaconReceivedEntity>>();
                 var eventRepository = scope.ServiceProvider.GetRequiredService<IRepositoryBase<BeaconEventEntity>>();
                 var trackedItems = scope.ServiceProvider.GetRequiredService<IRepositoryBase<TrackedItem>>();
+                var store = scope.ServiceProvider.GetRequiredService<WarehouseStore>();
 
                 try
                 {
@@ -248,11 +249,10 @@ namespace Warehouse.Host
                             else
                             {
                                 //state not changed
-                                continue;
+                                trackedItem?.UpdateReceivedTimeStamp();
                             }
 
-                            if(trackedItem != null)
-                                await trackedItems.UpdateAsync(trackedItem, token);
+                            await store?.UpdateTrackedItemAsync(trackedItem, token);
                         }
 
                         //*************** received beacons OUT

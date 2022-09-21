@@ -6,15 +6,16 @@ namespace Warehouse.Core.Entities.Events
     public record TrackedItemRegistered
     (
         MacAddress Id,
-        DateTime RegisteredAt
+        DateTime Timestamp,
+        long ProviderId
     ) : IExternalEvent
     {
-        public static TrackedItemRegistered Create(MacAddress id, DateTime registeredAt)
+        public static TrackedItemRegistered Create(MacAddress id, DateTime registeredAt, long providerId)
         {
             if (registeredAt == default)
                 registeredAt = DateTime.UtcNow;
 
-            return new TrackedItemRegistered(id, registeredAt);
+            return new TrackedItemRegistered(id, registeredAt, providerId);
         }
     }
 }

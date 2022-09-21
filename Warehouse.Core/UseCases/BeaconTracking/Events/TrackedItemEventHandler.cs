@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Vayosoft.Core.SharedKernel.Events;
+using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Events;
 
 namespace Warehouse.Core.UseCases.BeaconTracking.Events
@@ -19,21 +20,25 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Events
 
         public Task Handle(TrackedItemEntered notification, CancellationToken cancellationToken)
         {
+            _logger.LogDebug("EVENT: {0}", notification.ToJson());
             return Task.CompletedTask;
         }
 
         public Task Handle(TrackedItemRegistered notification, CancellationToken cancellationToken)
         {
+            _logger.LogDebug("EVENT: {0}", notification.ToJson());
             return Task.CompletedTask;
         }
 
         public Task Handle(TrackedItemGotOut notification, CancellationToken cancellationToken)
         {
+            _logger.LogDebug("EVENT: {0}", notification.ToJson());
             return Task.CompletedTask;
         }
 
         public Task Handle(TrackedItemMoved notification, CancellationToken cancellationToken)
         {
+            _logger.LogDebug("EVENT: {0}", notification.ToJson());
             return Task.CompletedTask;
         }
     }

@@ -11,9 +11,9 @@ namespace Warehouse.Host
         public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
         {
             services
-                .AddCoreServices()
+                .AddCaching(configuration)
                 .AddRedisProducerAndConsumer()
-                .AddCaching(configuration);
+                .AddCoreServices();
 
             services.AddScoped<IUserContext, ServiceContext>();
 

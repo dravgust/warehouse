@@ -56,10 +56,10 @@ namespace Warehouse.API
             IConfiguration configuration)
         {
             services
-                .AddCoreServices()
                 .AddRedisConnection()
-                .AddRedisProducer()
-                .AddCaching(configuration);
+                .AddCaching(configuration)
+                .AddRedisConsumer()
+                .AddCoreServices();
             //builder.Services.AddRedisCache(configuration);
 
             services.AddHttpContextAccessor()

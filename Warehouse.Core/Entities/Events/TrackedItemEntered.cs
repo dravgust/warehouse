@@ -5,18 +5,19 @@ namespace Warehouse.Core.Entities.Events
 {
     public record TrackedItemEntered(
         MacAddress Id,
-        DateTime EnteredAt,
-        string SiteId
+        DateTime Timestamp,
+        string DestinationId,
+        long ProviderId
         ) : IExternalEvent
     {
-        public static TrackedItemEntered Create(MacAddress id, DateTime enteredAt, string siteId)
+        public static TrackedItemEntered Create(MacAddress id, DateTime enteredAt, string siteId, long providerId)
         {
             if(enteredAt == default)
                 enteredAt = DateTime.UtcNow;
             if(string.IsNullOrEmpty(siteId))
                 throw new ArgumentNullException(nameof(siteId));
 
-            return new TrackedItemEntered(id, enteredAt, siteId);
+            return new TrackedItemEntered(id, enteredAt, siteId, providerId);
         }
     }
 }

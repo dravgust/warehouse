@@ -58,7 +58,7 @@ namespace Warehouse.Core.UseCases.Management.Commands
 
             if (await _store.TrackedItems.FindAsync(request.MacAddress, cancellationToken) == null)
             {
-                var registerTrackedItemResult = TrackedItem.Register(request.MacAddress);
+                var registerTrackedItemResult = TrackedItem.Create(request.MacAddress, providerId);
                 if (registerTrackedItemResult.IsError)
                 {
 

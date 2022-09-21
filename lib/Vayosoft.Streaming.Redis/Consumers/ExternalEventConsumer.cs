@@ -8,7 +8,7 @@ using Vayosoft.Core.Utilities;
 
 namespace Vayosoft.Streaming.Redis.Consumers
 {
-    public class ExternalEventConsumer : IExternalEventConsumer
+    public sealed class ExternalEventConsumer : IExternalEventConsumer
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<ExternalEventConsumer> _logger;
@@ -31,12 +31,12 @@ namespace Vayosoft.Streaming.Redis.Consumers
             var topics = _config?.Topics ?? new []{ nameof(IExternalEvent) };
 
             var consumer = _serviceProvider.GetRequiredService<IRedisConsumer>();
-            consumer.Subscribe(topics, async message => await OnEvent(message), cancellationToken);
+            consumer.Subscribe(topics, OnEvent, cancellationToken);
 
             return Task.CompletedTask;
         }
 
-        private async Task OnEvent(ConsumeResult<string, string> message)
+        private void OnEvent(ConsumeResult<string, string> message)
         {
             try
             {
@@ -45,7 +45,7 @@ namespace Vayosoft.Streaming.Redis.Consumers
 
                 using var scope = _serviceProvider.CreateScope();
                 var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
-                await eventBus.Publish((IEvent)@event);
+                eventBus.Publish((IEvent)@event).GetAwaiter().GetResult();
             }
             catch (Exception e)
             {

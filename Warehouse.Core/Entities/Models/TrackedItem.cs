@@ -6,81 +6,114 @@ using ErrorOr;
 
 namespace Warehouse.Core.Entities.Models
 {
-    public class TrackedItem : Aggregate<string>
+    public sealed class TrackedItem : Aggregate<string>
     {
-        public TrackedItem()
+        private TrackedItem()
         { }
 
-        public string SourceId { get; private set; } = null!;
-        public string DestinationId { get; private set; } = null!;
+        public string SourceId { get; private set; }
+        public string DestinationId { get; private set; }
         public BeaconStatus Status { get; private set; }
+        public DateTime ReceivedAt { get; private set; }
         public BeaconType Type { get; private set; }
+        public long ProviderId { get; private set; }
 
-        public static ErrorOr<TrackedItem> Register(MacAddress id)
+        public static ErrorOr<TrackedItem> Create(MacAddress id, long providerId)
         {
-            return new TrackedItem(id);
+            var item = new TrackedItem();
+            return item.Register(id, providerId).Match<ErrorOr<TrackedItem>>(
+                    @event => item, 
+                    errors => errors);
         }
 
-        private TrackedItem(MacAddress id)
+        public ErrorOr<TrackedItemRegistered> Register(MacAddress id, long providerId)
         {
-            var @event = TrackedItemRegistered.Create(id, DateTime.UtcNow);
+            var @event = TrackedItemRegistered.Create(id, DateTime.UtcNow, providerId);
 
             Enqueue(@event);
             Apply(@event);
+
+            return @event;
         }
 
-        public void EnterTo(string destinationId)
+        public ErrorOr<TrackedItemEntered> EnterTo(string destId)
         {
-            //if (Status != BeaconStatus.OUT)
-            //    throw new InvalidOperationException($"'{Status}' status is not allowed.");
+            if (Status != BeaconStatus.OUT)
+                return Error.Failure($"'{Status}' status is not allowed.");
 
-            var @event = TrackedItemEntered.Create(Id, DateTime.UtcNow, destinationId);
-            Enqueue(@event);
-            Apply(@event);
-        }
-
-        public void GetOutFrom(string sourceId)
-        {
-            //if (Status != BeaconStatus.IN)
-            //    throw new InvalidOperationException($"'{Status}' status is not allowed.");
-
-            var @event = TrackedItemGotOut.Create(Id, DateTime.UtcNow, sourceId);
+            var @event = TrackedItemEntered.Create(Id, DateTime.UtcNow, destId, ProviderId);
 
             Enqueue(@event);
             Apply(@event);
+
+            return @event;
         }
 
-        public void MoveFromTo(string sourceId, string destinationId)
+        public ErrorOr<DateTime> UpdateReceivedTimeStamp()
         {
-            //if (Status != BeaconStatus.IN)
-            //    throw new InvalidOperationException($"'{Status}' status is not allowed.");
+            ReceivedAt = DateTime.UtcNow;
+            if (Type != BeaconType.Registered)
+            {
+                Type = BeaconType.Received;
+            }
+            return ReceivedAt;
+        }
 
-            var @event = TrackedItemMoved.Create(Id, DateTime.UtcNow, sourceId, destinationId);
+        public ErrorOr<TrackedItemGotOut> GetOutFrom(string srcId)
+        {
+            if (Status != BeaconStatus.IN)
+                return Error.Failure($"'{Status}' status is not allowed.");
+
+            var @event = TrackedItemGotOut.Create(Id, DateTime.UtcNow, srcId, ProviderId);
 
             Enqueue(@event);
             Apply(@event);
+
+            return @event;
+        }
+
+        public ErrorOr<TrackedItemMoved> MoveFromTo(string srcId, string destinationId)
+        {
+            if (Status != BeaconStatus.IN)
+                return Error.Failure($"'{Status}' status is not allowed.");
+
+            var @event = TrackedItemMoved.Create(Id, DateTime.UtcNow, srcId, destinationId, ProviderId);
+
+            Enqueue(@event);
+            Apply(@event);
+
+            return @event;
         }
 
         public void Apply(TrackedItemRegistered @event)
         {
             Id = @event.Id;
+            Status = BeaconStatus.OUT;
+            ReceivedAt = @event.Timestamp;
             Type = BeaconType.Registered;
+            ProviderId = @event.ProviderId;
         }
 
         public void Apply(TrackedItemEntered @event)
         {
-            DestinationId = @event.SiteId;
+            ReceivedAt = @event.Timestamp;
+
+            DestinationId = @event.DestinationId;
             Status = BeaconStatus.IN;
         }
 
         public void Apply(TrackedItemGotOut @event)
         {
-            SourceId = @event.SiteId;
+            ReceivedAt = @event.Timestamp;
+
+            SourceId = @event.SourceId;
             Status = BeaconStatus.OUT;
         }
 
         public void Apply(TrackedItemMoved @event)
         {
+            ReceivedAt = @event.Timestamp;
+
             SourceId = @event.SourceId;
             DestinationId = @event.DestinationId;
             Status = BeaconStatus.IN;

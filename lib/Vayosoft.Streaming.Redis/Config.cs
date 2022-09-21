@@ -7,7 +7,7 @@ using Vayosoft.Streaming.Redis.Producers;
 
 namespace Vayosoft.Streaming.Redis
 {
-    public static class Config
+    public static class Configuration
     {
         public static IServiceCollection AddRedisProducer(this IServiceCollection services)
         {

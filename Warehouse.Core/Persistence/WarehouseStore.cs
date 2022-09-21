@@ -2,8 +2,12 @@
 using MongoDB.Driver;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Entities;
+using Vayosoft.Core.SharedKernel.Events;
+using Vayosoft.Core.SharedKernel.ValueObjects;
+using Vayosoft.Core.Utilities;
 using Vayosoft.Data.MongoDB;
 using Warehouse.Core.Entities.Models;
+using Warehouse.Core.UseCases.Administration.Models;
 
 namespace Warehouse.Core.Persistence
 {
@@ -59,6 +63,31 @@ namespace Warehouse.Core.Persistence
                 await collection.InsertOneAsync(entity, cancellationToken: cancellationToken);
 
             return entity.Id;
+        }
+
+        public async Task UpdateTrackedItemAsync(TrackedItem aggregate, CancellationToken cancellationToken)
+        {
+            Guard.NotEmpty(aggregate.Id, nameof(aggregate.Id));
+
+            var collection = _connection.Collection<TrackedItem>();
+            var filter = Builders<TrackedItem>.Filter.Where(e => e.Id == aggregate.Id);
+            var update = Builders<TrackedItem>.Update
+                .Set(fs => fs.SourceId, aggregate.SourceId)
+                .Set(fs => fs.DestinationId, aggregate.DestinationId)
+                .Set(fs => fs.Status, aggregate.Status)
+
+                .Set(fs => fs.Type, aggregate.Type)
+                .Set(fs => fs.ReceivedAt, aggregate.ReceivedAt);
+
+            await collection.FindOneAndUpdateAsync(filter, update, cancellationToken: cancellationToken);
+
+            var events = aggregate.DequeueUncommittedEvents();
+            if (!events.Any()) return;
+            var publisher = _scope.ServiceProvider.GetRequiredService<IEventBus>();
+            foreach (var @event in events)
+            {
+                await publisher.Publish(@event, cancellationToken);
+            }
         }
 
         public void Dispose()
