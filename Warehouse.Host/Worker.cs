@@ -209,7 +209,7 @@ namespace Warehouse.Host
                             if (site[0] == null)
                             {
                                 //macAddress in to beacon.Value[1]
-                                trackedItem?.EnterTo(site[1]);
+                                trackedItem?.EnterTheSite(site[1]);
                                 await eventRepository.AddAsync(new BeaconEventEntity
                                 {
                                     MacAddress = macAddress,
@@ -222,7 +222,7 @@ namespace Warehouse.Host
                             else if (site[1] == null)
                             {
                                 //macAddress out from beacon.Value[0]
-                                trackedItem?.GetOutFrom(site[0]);
+                                trackedItem?.LeaveTheSite(site[0]);
                                 await eventRepository.AddAsync(new BeaconEventEntity
                                 {
                                     MacAddress = macAddress,
@@ -235,7 +235,7 @@ namespace Warehouse.Host
                             else if (site[0] != site[1])
                             {
                                 //macAddress moved from beacon.Value[0] to beacon.Value[1]
-                                trackedItem?.MoveFromTo(site[0], site[1]);
+                                trackedItem?.MoveBetweenSites(site[0], site[1]);
                                 await eventRepository.AddAsync(new BeaconEventEntity
                                 {
                                     MacAddress = macAddress,

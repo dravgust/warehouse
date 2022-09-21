@@ -7,7 +7,7 @@ using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Entities;
 
 namespace Vayosoft.Core.Persistence.Queries;
-public record SingleQuery<TResult>(
+public sealed record SingleQuery<TResult>(
     object Id
 ) : IQuery<TResult>;
 

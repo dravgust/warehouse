@@ -36,7 +36,7 @@ namespace Warehouse.Core.Entities.Models
             return @event;
         }
 
-        public ErrorOr<TrackedItemEntered> EnterTo(string destId)
+        public ErrorOr<TrackedItemEntered> EnterTheSite(string destId)
         {
             if (Status != BeaconStatus.OUT)
                 return Error.Failure($"'{Status}' status is not allowed.");
@@ -59,7 +59,7 @@ namespace Warehouse.Core.Entities.Models
             return ReceivedAt;
         }
 
-        public ErrorOr<TrackedItemGotOut> GetOutFrom(string srcId)
+        public ErrorOr<TrackedItemGotOut> LeaveTheSite(string srcId)
         {
             if (Status != BeaconStatus.IN)
                 return Error.Failure($"'{Status}' status is not allowed.");
@@ -72,7 +72,7 @@ namespace Warehouse.Core.Entities.Models
             return @event;
         }
 
-        public ErrorOr<TrackedItemMoved> MoveFromTo(string srcId, string destinationId)
+        public ErrorOr<TrackedItemMoved> MoveBetweenSites(string srcId, string destinationId)
         {
             if (Status != BeaconStatus.IN)
                 return Error.Failure($"'{Status}' status is not allowed.");
