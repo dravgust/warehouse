@@ -5,6 +5,7 @@ namespace Vayosoft.Streaming.Redis.Producers
     public class RedisProducerConfig
     { 
         public string Topic { get; set; }
+        public int MaxLength { get; set; }
     }
 
     public static class RedisProducerConfigExtensions
