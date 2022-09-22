@@ -62,7 +62,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
         public async IAsyncEnumerable<NotificationEntity> Handle(GetUserNotificationStream query, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
             //var providerId = _userContext.User.Identity.GetProviderId();
-            //return _notifications.AsyncEnumerable(new Specification<NotificationEntity>(n => n.ProviderId == providerId), cancellationToken);
+            //return _notifications.AsyncEnumerable(new Specification<NotificationEntity>(), cancellationToken);
 
             while (!cancellationToken.IsCancellationRequested)
             {

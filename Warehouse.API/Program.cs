@@ -13,6 +13,7 @@ using Warehouse.API.Services.Errors;
 using Warehouse.API.Services.Monitoring;
 using Warehouse.API.Services.Swagger;
 
+//https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/?view=aspnetcore-3.1
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Debug()
     .CreateBootstrapLogger();
