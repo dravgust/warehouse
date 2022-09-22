@@ -59,19 +59,19 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
             _userContext = userContext;
         }
 
-        public async IAsyncEnumerable<NotificationEntity> Handle(GetUserNotificationStream query, [EnumeratorCancellation] CancellationToken cancellationToken)
+        public IAsyncEnumerable<NotificationEntity> Handle(GetUserNotificationStream query, CancellationToken cancellationToken)
         {
-            //var providerId = _userContext.User.Identity.GetProviderId();
-            //return _notifications.AsyncEnumerable(new Specification<NotificationEntity>(), cancellationToken);
+            var providerId = _userContext.User.Identity.GetProviderId();
+            return _notifications.AsyncEnumerable(new Specification<NotificationEntity>(), cancellationToken);
 
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                await Task.Delay(1000, cancellationToken);
-                yield return new NotificationEntity
-                {
-                    TimeStamp = DateTime.UtcNow
-                };
-            }
+            //while (!cancellationToken.IsCancellationRequested)
+            //{
+            //    await Task.Delay(1000, cancellationToken);
+            //    yield return new NotificationEntity
+            //    {
+            //        TimeStamp = DateTime.UtcNow
+            //    };
+            //}
         }
     }
 }
