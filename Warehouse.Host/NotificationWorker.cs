@@ -2,6 +2,7 @@ using Vayosoft.Core.Caching;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Specifications;
 using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Persistence;
 using Warehouse.Core.UseCases.Administration.Models;
 
 namespace Warehouse.Host
@@ -36,10 +37,9 @@ namespace Warehouse.Host
 
                 using var scope = _serviceProvider.CreateScope(); 
                 var alertRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<AlertEntity>>();
-                var beaconReceivedRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<BeaconReceivedEntity>>();
                 var notifyReadRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<NotificationEntity>>();
                 var notificationRepository = scope.ServiceProvider.GetRequiredService<IRepositoryBase<NotificationEntity>>();
-                var beaconItemRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<BeaconEntity>>();
+                var store = scope.ServiceProvider.GetRequiredService<WarehouseStore>();
                 
                 try
                 {
@@ -51,24 +51,24 @@ namespace Warehouse.Host
 
                         foreach (var alert in alerts.Where(a => a.Enabled))
                         {
-                            var beaconSpec = new Specification<BeaconReceivedEntity>(b =>
+                            var beaconSpec = new Specification<TrackedItem>(b =>
                                 b.ReceivedAt < DateTime.UtcNow.AddSeconds(-alert.CheckPeriod) &&
                                 b.ProviderId == providerId);
 
-                            var result = await beaconReceivedRepository.ListAsync(beaconSpec, token);
+                            var result = await store.TrackedItems.ListAsync(beaconSpec, token);
 
                             if (result.Any())
                             {
                                 //var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
                                 foreach (var beacon in result)
                                 {
-                                    var beaconItem = await beaconItemRepository
-                                        .FirstOrDefaultAsync(q => q.Id.Equals(beacon.MacAddress), token);
+                                    var beaconItem = await store.TrackedItems
+                                        .FirstOrDefaultAsync(q => q.Id.Equals(beacon.Id), token);
                                     if (beaconItem == null) continue;
 
                                     //await eventBus.Publish(UserNotification.Create);
                                     var notified = await notifyReadRepository.SingleOrDefaultAsync(n =>
-                                        n.AlertId == alert.Id && n.MacAddress == beacon.MacAddress, token);
+                                        n.AlertId == alert.Id && n.MacAddress == beacon.Id, token);
                                     if (notified != null) continue;
 
                                     var notification = new NotificationEntity

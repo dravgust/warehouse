@@ -24,7 +24,7 @@ namespace Warehouse.API.Controllers.API
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> Get([FromQuery] GetBeacons query, CancellationToken token = default) {
+        public async Task<IActionResult> Get([FromQuery] GetTrackedItems query, CancellationToken token = default) {
             return Ok((await _queryBus.Send(query, token)).ToPagedResponse(query.Size));
         }
 
@@ -34,13 +34,13 @@ namespace Warehouse.API.Controllers.API
         }
 
         [HttpPost("delete")]
-        public async Task<IActionResult> Delete([FromBody] DeleteBeacon query, CancellationToken token) {
+        public async Task<IActionResult> Delete([FromBody] DeleteTrackedItem query, CancellationToken token) {
             await _commandBus.Send(query, token);
             return Ok(new { query.MacAddress });
         }
 
         [HttpPost("set")]
-        public async Task<IActionResult> Post([FromBody] SetBeacon command, CancellationToken token) {
+        public async Task<IActionResult> Post([FromBody] SetTrackedItem command, CancellationToken token) {
             await _commandBus.Send(command, token);
             return Ok(new { });
         }

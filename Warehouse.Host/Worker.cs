@@ -52,7 +52,6 @@ namespace Warehouse.Host
                 var gwRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<GatewayPayload>>();
                 var statusRepository = scope.ServiceProvider.GetRequiredService<IRepositoryBase<IndoorPositionStatusEntity>>();
                 var telemetryRepository = scope.ServiceProvider.GetRequiredService<IRepositoryBase<BeaconTelemetryEntity>>();
-                var beaconReceivedRepository = scope.ServiceProvider.GetRequiredService<IRepositoryBase<BeaconReceivedEntity>>();
                 var eventRepository = scope.ServiceProvider.GetRequiredService<IRepositoryBase<BeaconEventEntity>>();
                 var trackedItems = scope.ServiceProvider.GetRequiredService<IRepositoryBase<TrackedItem>>();
                 var store = scope.ServiceProvider.GetRequiredService<WarehouseStore>();
@@ -168,42 +167,6 @@ namespace Warehouse.Host
 
                         foreach (var (macAddress, site) in beaconsIn)
                         {
-                            //var site = await _sites.FindAsync(b.SourceId, cancellationToken);
-                            //if (site != null)
-                            //{
-                            //    asset.Site = _mapper.Map<WarehouseSiteDto>(site);
-                            //}
-
-                            //var productItem = await _beacons.FirstOrDefaultAsync(q => q.Id.Equals(b.MacAddress), cancellationToken);
-                            //if (productItem != null)
-                            //{
-                            //    if (!string.IsNullOrEmpty(productItem.ProductId))
-                            //    {
-                            //        var product = await _products.FirstOrDefaultAsync(p => p.Id == productItem.ProductId, cancellationToken);
-                            //        if (product != null)
-                            //        {
-                            //            asset.Product = _mapper.Map<ProductDto>(product);
-                            //        }
-                            //    }
-                            //}
-
-                            //*************** received beacons IN
-                            var beaconReceived = new BeaconReceivedEntity
-                            {
-                                MacAddress = macAddress,
-                                ReceivedAt = DateTime.UtcNow,
-                                SourceId = site[1],
-                                Status = BeaconStatus.IN,
-                                ProviderId = providerId
-                            };
-
-                            if (await beaconReceivedRepository.FindAsync(macAddress, token) != null)
-                                await beaconReceivedRepository.UpdateAsync(beaconReceived, token);
-                            else
-                            {
-                                await beaconReceivedRepository.AddAsync(beaconReceived, token);
-                            }
-
                             //******************* events
                             var trackedItem = await trackedItems.FindAsync(macAddress, token);
                             if (site[0] == null)
@@ -256,23 +219,10 @@ namespace Warehouse.Host
                         }
 
                         //*************** received beacons OUT
-                        foreach (var macAddress in beaconsOut)
-                        {
-                            var beaconReceived = new BeaconReceivedEntity
-                            {
-                                MacAddress = macAddress,
-                                ReceivedAt = DateTime.UtcNow,
-                                Status = BeaconStatus.OUT,
-                                ProviderId = providerId
-                            };
-
-                            if (await beaconReceivedRepository.FindAsync(macAddress, token) != null)
-                                await beaconReceivedRepository.UpdateAsync(beaconReceived, token);
-                            else
-                            {
-                                await beaconReceivedRepository.AddAsync(beaconReceived, token);
-                            }
-                        }
+                        //foreach (var macAddress in beaconsOut)
+                        //{
+                            
+                        //}
                     }
 
                     await Task.Delay(Interval, token);

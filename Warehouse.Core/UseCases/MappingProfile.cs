@@ -26,12 +26,6 @@ namespace Warehouse.Core.UseCases
             CreateMap<Beacon, BeaconDto>();
             CreateMap<WarehouseSiteEntity, WarehouseSiteDto>();
 
-            CreateMap<BeaconEntity, ProductItemDto>()
-                .ForMember(p => p.Product, des => des.Ignore());
-            CreateMap<ProductItemDto, BeaconEntity>()
-                .ForMember(p => p.Id, des => des.MapFrom(m => m.MacAddress))
-                .ForMember(m => m.ProviderId, dest => dest.Ignore());
-
             CreateMap<ProviderEntity, ProviderEntity>();
         }
     }

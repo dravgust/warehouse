@@ -37,9 +37,6 @@ namespace Warehouse.Core.Persistence
 
         public IRepositoryBase<WarehouseSiteEntity> Sites => Repository<WarehouseSiteEntity>();
         public IRepositoryBase<TrackedItem> TrackedItems => Repository<TrackedItem>();
-        public IRepositoryBase<BeaconEntity> Beacons => Repository<BeaconEntity>(); 
-        public IRepositoryBase<BeaconRegisteredEntity> BeaconRegistered => Repository<BeaconRegisteredEntity>();
-        public IRepositoryBase<BeaconReceivedEntity> BeaconReceived => Repository<BeaconReceivedEntity>();
         public IRepositoryBase<ProductEntity> Products => Repository<ProductEntity>();
 
         public IQueryable<T> Set<T>() where T : class, IEntity => 

@@ -30,27 +30,4 @@ namespace Warehouse.Core.Entities.Models
         public double? Y0 { get; set; }
         public double? Z0 { get; set; }
     }
-
-    [CollectionName("dolav_beacons_received")]
-    public class BeaconReceivedEntity : IEntity<string>
-    {
-        public string MacAddress { get; set; }
-        public DateTime ReceivedAt { get; set; }
-        public string SourceId { set; get; }
-        public long ProviderId { set; get; }
-        public BeaconStatus Status { get; set; }
-        object IEntity.Id => MacAddress;
-        public string Id => MacAddress;
-    }
-
-    [CollectionName("dolav_beacons_registered")]
-    public class BeaconRegisteredEntity : IEntity<string>
-    {
-        public string MacAddress { get; set; }
-        public BeaconType BeaconType { get; set; }
-        public DateTime ReceivedAt { get; set; }
-        object IEntity.Id => MacAddress;
-        public string Id => MacAddress;
-        public long ProviderId { get; set; }
-    }
 }

@@ -46,6 +46,8 @@ namespace Vayosoft.Data.MongoDB
 
         public virtual Task DeleteAsync(T entity, CancellationToken cancellationToken = default) =>
             Collection.DeleteOneAsync(Builders<T>.Filter.Eq(e => e.Id, entity.Id), cancellationToken: cancellationToken);
+        public virtual Task DeleteAsync<TId>(TId id, CancellationToken cancellationToken = default) where TId : notnull =>
+            Collection.DeleteOneAsync(Builders<T>.Filter.Eq(e => e.Id, id), cancellationToken: cancellationToken);
 
 
         public Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> criteria, CancellationToken cancellationToken = default) =>

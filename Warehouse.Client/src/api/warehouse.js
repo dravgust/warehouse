@@ -60,10 +60,11 @@ export const getBeaconPosition = ({ queryKey }) => {
   );
 };
 export const getAssets = ({ queryKey }) => {
-  const [_key, page, selectedSite, searchTerm] = queryKey;
+  const [_key, page, selectedSite, selectedProduct, searchTerm] = queryKey;
   const siteId = selectedSite ? selectedSite.id : "";
+  const productId = selectedProduct ? selectedProduct.id : "";
   return axios.get(
-    `dashboard/beacons?page=${page}&size=8&siteId=${siteId}&searchTerm=${searchTerm}`
+    `dashboard/beacons?page=${page}&size=8&siteId=${siteId}&productId=${productId}&searchTerm=${searchTerm}`
   );
 };
 export const getBeaconTelemetryCharts = ({ queryKey }) => {

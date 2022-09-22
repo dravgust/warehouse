@@ -2,6 +2,7 @@
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.Specifications;
 using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Security;
 using Warehouse.Core.UseCases.BeaconTracking.Models;
@@ -14,20 +15,20 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
     {
         private readonly IReadOnlyRepository<IndoorPositionStatusEntity> _statuses;
         private readonly IReadOnlyRepository<WarehouseSiteEntity> _sites;
-        private readonly IReadOnlyRepository<BeaconEntity> _beacons;
+        private readonly WarehouseStore _store;
         private readonly IReadOnlyRepository<ProductEntity> _products;
         private readonly IUserContext _userContext;
 
         public HandleGetDashboardByProduct(
             IReadOnlyRepository<IndoorPositionStatusEntity> statuses,
             IReadOnlyRepository<WarehouseSiteEntity> sites,
-            IReadOnlyRepository<BeaconEntity> beacons,
+            WarehouseStore store,
             IReadOnlyRepository<ProductEntity> products,
             IUserContext userContext)
         {
             _statuses = statuses;
             _sites = sites;
-            _beacons = beacons;
+            _store = store;
             _products = products;
             _userContext = userContext;
         }
@@ -47,7 +48,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
                 {
                     foreach (var macAddress in status.In)
                     {
-                        var beacon = await _beacons
+                        var beacon = await _store.TrackedItems
                             .FirstOrDefaultAsync(q => q.Id.Equals(macAddress), cancellationToken);
                         if (beacon != null && !string.IsNullOrEmpty(beacon.ProductId))
                         {
@@ -64,7 +65,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 
                             item.Beacons.Add(new BeaconItem
                             {
-                                MacAddress = beacon.MacAddress,
+                                MacAddress = beacon.Id,
                                 Name = beacon.Name
                             });
                         }

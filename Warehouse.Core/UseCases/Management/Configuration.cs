@@ -23,11 +23,11 @@ namespace Warehouse.Core.UseCases.Management
                 .AddQueryHandler<GetProductItemMetadata, Metadata, HandlerGetProductItemMetadata>()
                 .AddQueryHandler<GetRegisteredBeaconList, IEnumerable<string>, HandleGetRegisteredBeaconList>()
                 .AddQueryHandler<GetRegisteredGwList, IEnumerable<string>, RegisteredGwQueryHandler>()
-                .AddQueryHandler<GetBeacons, IPagedEnumerable<ProductItemDto>, HandleGetProductItems>()
+                .AddQueryHandler<GetTrackedItems, IPagedEnumerable<TrackedItemDto>, HandleGetProductItems>()
                 .AddQueryHandler<GetProducts, IPagedEnumerable<ProductEntity>, HandleGetProducts>()
                 .AddQueryHandler<GetSites, IPagedEnumerable<WarehouseSiteEntity>, HandleGetSites>()
                 .AddQueryHandler<GetAlerts, IPagedEnumerable<AlertEntity>, HandleGetAlerts>()
-                .AddQueryHandler<GetBeacons, IPagedEnumerable<ProductItemDto>, HandleGetProductItems>()
+                .AddQueryHandler<GetTrackedItems, IPagedEnumerable<TrackedItemDto>, HandleGetProductItems>()
                 ;
 
         
@@ -37,13 +37,12 @@ namespace Warehouse.Core.UseCases.Management
                 .AddCommandHandler<DeleteWarehouseSite, HandleDeleteWarehouseSite>()
                 .AddCommandHandler<SetGatewayToSite, HandleSetGatewayToSite>()
                 .AddCommandHandler<RemoveGatewayFromSite, HandleRemoveGatewayFromSite>()
-                .AddCommandHandler<SetBeacon, HandleSetBeacon>()
+                .AddCommandHandler<SetTrackedItem, HandleSetBeacon>()
                 .AddCommandHandler<SetAlert, HandleSetAlert>()
                 .AddCommandHandler<DeleteAlert, HandleDeleteAlert>()
-                .AddCommandHandler<DeleteBeacon, HandleDeleteBeacon>()
+                .AddCommandHandler<DeleteTrackedItem, HandleDeleteTrackedItem>()
                 .AddCommandHandler<SetProduct, HandleSetProduct>()
                 .AddCommandHandler<DeleteProduct, HandleDeleteProduct>()
-                .AddCommandHandler<RegisterTrackedItem, ErrorOr<TrackedItem>, HandleRegisterTrackedItem>()
-            ;
+        ;
     }
 }
