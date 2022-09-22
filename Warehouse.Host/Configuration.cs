@@ -32,7 +32,6 @@ namespace Warehouse.Host
 
         private static IServiceCollection AddEventHandlers(this IServiceCollection services) =>
             services
-                .AddScoped<INotificationHandler<TrackedItemRegistered>, TrackedItemEventHandler>()
                 .AddScoped<INotificationHandler<TrackedItemMoved>, TrackedItemEventHandler>()
                 .AddScoped<INotificationHandler<TrackedItemGotOut>, TrackedItemEventHandler>()
                 .AddScoped<INotificationHandler<TrackedItemEntered>, TrackedItemEventHandler>();

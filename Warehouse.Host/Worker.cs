@@ -1,12 +1,10 @@
 using System.Text.Json;
-using System.Threading;
 using Vayosoft.Core.Caching;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.ValueObjects;
 using Vayosoft.Core.Specifications;
 using Vayosoft.Core.Utilities;
 using Vayosoft.IPS.Domain;
-using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Entities.Models.Payloads;
 using Warehouse.Core.Persistence;
@@ -52,7 +50,6 @@ namespace Warehouse.Host
                 var gwRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<GatewayPayload>>();
                 var statusRepository = scope.ServiceProvider.GetRequiredService<IRepositoryBase<IndoorPositionStatusEntity>>();
                 var telemetryRepository = scope.ServiceProvider.GetRequiredService<IRepositoryBase<BeaconTelemetryEntity>>();
-                var eventRepository = scope.ServiceProvider.GetRequiredService<IRepositoryBase<BeaconEventEntity>>();
                 var trackedItems = scope.ServiceProvider.GetRequiredService<IRepositoryBase<TrackedItem>>();
                 var store = scope.ServiceProvider.GetRequiredService<WarehouseStore>();
 
@@ -75,20 +72,34 @@ namespace Warehouse.Host
                             var gSite = await GetGenericSiteAsync(gwRepository, site, settings);
                             gSite.CalcBeaconsPosition();
 
-                            _logger.LogDebug("\r\n*************** CalcBeacons Position ***************\r\nProviderId: {0} SiteId:{1}:\r\n{2}\r\n******************************",
-                                providerId, gSite.Id, JsonSerializer.Serialize(gSite.Gateways.Select(g =>
-                                    new {
-                                        mac = g.MacAddress.Value,
-                                        gauge = new { mac = g.Gauge.MacAddress.Value, txPower = g.Gauge.TxPower, rssi = g.Gauge.Rssi, radius = g.Gauge.Radius },
-                                        beacons = g.Beacons.Select(b => new { mac = b.MacAddress.Value, rssi = b.Rssi, radius = b.Radius })
-                                    })));
+                            if (_logger.IsEnabled(LogLevel.Debug))
+                            {
+                                _logger.LogDebug(
+                                    "\r\n*************** CalcBeacons Position ***************\r\nProviderId: {0} SiteId:{1}:\r\n{2}\r\n******************************",
+                                    providerId, gSite.Id, JsonSerializer.Serialize(gSite.Gateways.Select(g =>
+                                        new
+                                        {
+                                            mac = g.MacAddress.Value,
+                                            gauge = new
+                                            {
+                                                mac = g.Gauge.MacAddress.Value, txPower = g.Gauge.TxPower,
+                                                rssi = g.Gauge.Rssi, radius = g.Gauge.Radius
+                                            },
+                                            beacons = g.Beacons.Select(b => new
+                                                {mac = b.MacAddress.Value, rssi = b.Rssi, radius = b.Radius})
+                                        })));
+                            }
 
                             var prevStatus = await statusRepository.FindAsync(gSite.Id, token);
                             var currentStatus = GetIndoorPositionStatus(gSite, prevStatus);
 
-                            _logger.LogDebug("\r\n*************** Site Status ***************\r\nProviderId: {0} SiteId:{1}:\r\n{2}\r\n******************************",
-                                providerId, gSite.Id,
-                                new { @in = currentStatus.In, @out = currentStatus.Out }.ToJson());
+                            if (_logger.IsEnabled(LogLevel.Debug))
+                            {
+                                _logger.LogDebug(
+                                    "\r\n*************** Site Status ***************\r\nProviderId: {0} SiteId:{1}:\r\n{2}\r\n******************************",
+                                    providerId, gSite.Id,
+                                    new {@in = currentStatus.In, @out = currentStatus.Out}.ToJson());
+                            }
 
                             if (!string.IsNullOrEmpty(currentStatus.Id))
                                 await statusRepository.UpdateAsync(currentStatus, token);
@@ -161,9 +172,13 @@ namespace Warehouse.Host
                             }
                         }
 
-                        _logger.LogDebug("\r\n*************** Warehouse Status ***************\r\nProviderId: {0}\r\n{1}\r\n******************************",
-                            providerId,
-                            new { @in = beaconsIn, @out = beaconsOut }.ToJson());
+                        if (_logger.IsEnabled(LogLevel.Debug))
+                        {
+                            _logger.LogDebug(
+                                "\r\n*************** Warehouse Status ***************\r\nProviderId: {0}\r\n{1}\r\n******************************",
+                                providerId,
+                                new {@in = beaconsIn, @out = beaconsOut}.ToJson());
+                        }
 
                         foreach (var (macAddress, site) in beaconsIn)
                         {
@@ -171,47 +186,18 @@ namespace Warehouse.Host
                             var trackedItem = await trackedItems.FindAsync(macAddress, token);
                             if (site[0] == null)
                             {
-                                //macAddress in to beacon.Value[1]
                                 trackedItem?.EnterTheSite(site[1]);
-                                await eventRepository.AddAsync(new BeaconEventEntity
-                                {
-                                    MacAddress = macAddress,
-                                    TimeStamp = DateTime.UtcNow,
-                                    DestinationId = site[1],
-                                    Type = BeaconEventType.IN,
-                                    ProviderId = providerId
-                                }, token);
                             }
                             else if (site[1] == null)
                             {
-                                //macAddress out from beacon.Value[0]
                                 trackedItem?.LeaveTheSite(site[0]);
-                                await eventRepository.AddAsync(new BeaconEventEntity
-                                {
-                                    MacAddress = macAddress,
-                                    TimeStamp = DateTime.UtcNow,
-                                    SourceId = site[0],
-                                    Type = BeaconEventType.OUT,
-                                    ProviderId = providerId
-                                }, token);
                             }
                             else if (site[0] != site[1])
                             {
-                                //macAddress moved from beacon.Value[0] to beacon.Value[1]
                                 trackedItem?.MoveBetweenSites(site[0], site[1]);
-                                await eventRepository.AddAsync(new BeaconEventEntity
-                                {
-                                    MacAddress = macAddress,
-                                    TimeStamp = DateTime.UtcNow,
-                                    SourceId = site[0],
-                                    DestinationId = site[1],
-                                    Type = BeaconEventType.MOVE,
-                                    ProviderId = providerId
-                                }, token);
                             }
                             else
                             {
-                                //state not changed
                                 trackedItem?.UpdateReceivedTimeStamp();
                             }
 

@@ -1,44 +1,59 @@
-﻿using Vayosoft.Core.SharedKernel.Events;
-using Vayosoft.Core.Utilities;
+﻿using Vayosoft.Core.Persistence;
+using Vayosoft.Core.SharedKernel.Events;
 using Warehouse.Core.Entities.Events;
+using Warehouse.Core.Entities.Models;
 
 namespace Warehouse.Host
 {
-    public class TrackedItemEventHandler :
-        IEventHandler<TrackedItemRegistered>,
+    internal sealed class TrackedItemEventHandler :
         IEventHandler<TrackedItemEntered>,
         IEventHandler<TrackedItemGotOut>,
         IEventHandler<TrackedItemMoved>
     {
         private readonly ILogger<TrackedItemEventHandler> _logger;
+        private readonly IRepositoryBase<BeaconEventEntity> _repository;
 
-        public TrackedItemEventHandler(ILogger<TrackedItemEventHandler> logger)
+        public TrackedItemEventHandler(IRepositoryBase<BeaconEventEntity> repository, ILogger<TrackedItemEventHandler> logger)
         {
+            _repository = repository;
             _logger = logger;
         }
 
-        public Task Handle(TrackedItemEntered notification, CancellationToken cancellationToken)
+        public async Task Handle(TrackedItemEntered @event, CancellationToken cancellationToken)
         {
-            _logger.LogDebug("EVENT: {0}: {1}", nameof(notification.GetType), notification.ToJson());
-            return Task.CompletedTask;
+            await _repository.AddAsync(new BeaconEventEntity
+            {
+                MacAddress = @event.Id,
+                TimeStamp = DateTime.UtcNow,
+                DestinationId = @event.DestinationId,
+                Type = BeaconEventType.IN,
+                ProviderId = @event.ProviderId
+            }, cancellationToken);
         }
 
-        public Task Handle(TrackedItemRegistered notification, CancellationToken cancellationToken)
+        public async Task Handle(TrackedItemGotOut @event, CancellationToken cancellationToken)
         {
-            _logger.LogDebug("EVENT: {0}: {1}", nameof(notification.GetType), notification.ToJson());
-            return Task.CompletedTask;
+            await _repository.AddAsync(new BeaconEventEntity
+            {
+                MacAddress = @event.Id,
+                TimeStamp = DateTime.UtcNow,
+                SourceId = @event.SourceId,
+                Type = BeaconEventType.OUT,
+                ProviderId = @event.ProviderId
+            }, cancellationToken);
         }
 
-        public Task Handle(TrackedItemGotOut notification, CancellationToken cancellationToken)
+        public async Task Handle(TrackedItemMoved @event, CancellationToken cancellationToken)
         {
-            _logger.LogDebug("EVENT: {0}: {1}", nameof(notification.GetType), notification.ToJson());
-            return Task.CompletedTask;
-        }
-
-        public Task Handle(TrackedItemMoved notification, CancellationToken cancellationToken)
-        {
-            _logger.LogDebug("EVENT: {0}: {1}", nameof(notification.GetType),notification.ToJson());
-            return Task.CompletedTask;
+            await _repository.AddAsync(new BeaconEventEntity
+            {
+                MacAddress = @event.Id,
+                TimeStamp = DateTime.UtcNow,
+                SourceId = @event.SourceId,
+                DestinationId = @event.DestinationId,
+                Type = BeaconEventType.MOVE,
+                ProviderId = @event.ProviderId
+            }, cancellationToken);
         }
     }
 }
