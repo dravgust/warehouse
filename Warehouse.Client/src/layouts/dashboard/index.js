@@ -41,11 +41,18 @@ import OrderOverview from "layouts/dashboard/components/OrderOverview";
 // Data
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import gradientLineChartData from "layouts/dashboard/data/gradientLineChartData";
+import { useEffect } from "react";
+import { streamClient } from "../../utils/stream-client";
 
 function Dashboard() {
   const { size } = typography;
   const { chart, items } = reportsBarChartData;
 
+  useEffect(() => {
+    streamClient("notifications/stream", (value) => {
+      console.log(value);
+    });
+  }, []);
   return (
     <DashboardLayout>
       <DashboardNavbar />

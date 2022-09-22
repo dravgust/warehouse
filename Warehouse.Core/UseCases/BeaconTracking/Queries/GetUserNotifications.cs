@@ -45,10 +45,10 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 
     //dapper
     //https://stackoverflow.com/questions/59956623/using-iasyncenumerable-with-dapper
-    public class GetUserNotificationStream : IStreamQuery<NotificationEntity>
+    public record GetUserNotificationStream : IStreamQuery<NotificationEntity>
     { }
 
-    public class NotificationStreamQueryHandler : IStreamQueryHandler<GetUserNotificationStream, NotificationEntity>
+    internal sealed class NotificationStreamQueryHandler : IStreamQueryHandler<GetUserNotificationStream, NotificationEntity>
     {
         private readonly IReadOnlyRepository<NotificationEntity> _notifications;
         private readonly IUserContext _userContext;
