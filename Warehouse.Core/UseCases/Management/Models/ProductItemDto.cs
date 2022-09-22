@@ -8,7 +8,7 @@ namespace Warehouse.Core.UseCases.Management.Models
         public string MacAddress { get; set; }
         public string Name { get; set; }
         public ProductDto Product { get; set; }
-        public ProductMetadata Metadata { get; set; }
+        public Metadata Metadata { get; set; }
         object IEntity.Id => Id;
         public string Id
         {

@@ -6,10 +6,10 @@ using Warehouse.Core.Entities.Models;
 
 namespace Warehouse.Core.UseCases.Management.Queries
 {
-    public class GetProductItemMetadata : IQuery<ProductMetadata>
+    public class GetProductItemMetadata : IQuery<Metadata>
     { }
 
-    public class HandlerGetProductItemMetadata : IQueryHandler<GetProductItemMetadata, ProductMetadata>
+    public class HandlerGetProductItemMetadata : IQueryHandler<GetProductItemMetadata, Metadata>
     {
         private readonly IDistributedMemoryCache _cache;
         private readonly IRepositoryBase<FileEntity> _fileRepository;
@@ -20,15 +20,15 @@ namespace Warehouse.Core.UseCases.Management.Queries
             _cache = cache;
         }
 
-        public async Task<ProductMetadata> Handle(GetProductItemMetadata request, CancellationToken cancellationToken)
+        public async Task<Metadata> Handle(GetProductItemMetadata request, CancellationToken cancellationToken)
         {
-            var data = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<ProductMetadata>("beacon"), async options =>
+            var data = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<Metadata>("beacon"), async options =>
             {
                 options.SlidingExpiration = TimeSpans.FiveMinutes;
                 var entity = await _fileRepository.FindAsync("beacon_metadata", cancellationToken);
-                ProductMetadata data = null;
+                Metadata data = null;
                 if (!string.IsNullOrEmpty(entity?.Content))
-                    data = entity.Content.FromJson<ProductMetadata>();
+                    data = entity.Content.FromJson<Metadata>();
 
                 return data;
             });

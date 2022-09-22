@@ -3,6 +3,7 @@ using Vayosoft.Core.SharedKernel.ValueObjects;
 using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Events;
 using ErrorOr;
+using MediatR;
 
 namespace Warehouse.Core.Entities.Models
 {
@@ -11,12 +12,17 @@ namespace Warehouse.Core.Entities.Models
         private TrackedItem()
         { }
 
+        public DateTime ReceivedAt { get; private set; }
+        public string Name { get; set; }
+        public BeaconType Type { get; private set; }
+        public long ProviderId { get; private set; }
+
         public string SourceId { get; private set; }
         public string DestinationId { get; private set; }
         public BeaconStatus Status { get; private set; }
-        public DateTime ReceivedAt { get; private set; }
-        public BeaconType Type { get; private set; }
-        public long ProviderId { get; private set; }
+
+        public string ProductId { get; set; }
+        public Metadata Metadata { get; set; }
 
         public static ErrorOr<TrackedItem> Create(MacAddress id, long providerId)
         {
@@ -49,14 +55,14 @@ namespace Warehouse.Core.Entities.Models
             return @event;
         }
 
-        public ErrorOr<DateTime> UpdateReceivedTimeStamp()
+        public ErrorOr<Unit> UpdateReceivedTimeStamp()
         {
             ReceivedAt = DateTime.UtcNow;
             if (Type != BeaconType.Registered)
             {
                 Type = BeaconType.Received;
             }
-            return ReceivedAt;
+            return Unit.Value;
         }
 
         public ErrorOr<TrackedItemGotOut> LeaveTheSite(string srcId)

@@ -11,6 +11,6 @@ namespace Warehouse.Core.UseCases.Management.Models
 
         public string Description { get; set; }
 
-        public ProductMetadata Metadata { get; set; }
+        public Metadata Metadata { get; set; }
     }
 }

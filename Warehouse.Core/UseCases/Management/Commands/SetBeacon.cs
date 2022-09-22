@@ -56,17 +56,28 @@ namespace Warehouse.Core.UseCases.Management.Commands
                 await _store.BeaconRegistered.AddAsync(rb, cancellationToken: cancellationToken);
             }
 
-            if (await _store.TrackedItems.FindAsync(request.MacAddress, cancellationToken) == null)
+            TrackedItem trackedItem;
+            if ((trackedItem = await _store.TrackedItems.FindAsync(request.MacAddress, cancellationToken)) == null)
             {
                 var registerTrackedItemResult = TrackedItem.Create(request.MacAddress, providerId);
-                if (registerTrackedItemResult.IsError)
-                {
-
-                }
-
-                await _store.TrackedItems.AddAsync(registerTrackedItemResult.Value, cancellationToken);
+                trackedItem = registerTrackedItemResult.Value;
+                await _store.TrackedItems.AddAsync(trackedItem, cancellationToken);
             }
-            
+
+            if (request.Name != null)
+            {
+                trackedItem.Name = request.Name;
+            }
+            if (request.Product != null)
+            {
+                trackedItem.ProductId = request.Product.Id;
+            }
+            if (request.Metadata != null)
+            {
+                trackedItem.Metadata = request.Metadata;
+            }
+            await _store.TrackedItems.UpdateAsync(trackedItem, cancellationToken);
+
             BeaconEntity entity;
             if ((entity = await _store.Beacons.FindAsync(request.MacAddress, cancellationToken)) != null)
             {
