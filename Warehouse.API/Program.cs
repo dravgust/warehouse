@@ -108,20 +108,20 @@ try
     var app = builder.Build();
     {
         // Configure the HTTP request pipeline.
-        //if (!app.Environment.IsDevelopment())
+        if (!app.Environment.IsDevelopment())
         {
-            //app.UseExceptionHandler("/Home/Error");
+            app.UseExceptionHandler("/Home/Error");
+        }
+        else
+        {
+            app.UseDeveloperExceptionPage();
+        }
+
+        app.UseWhen(context => context.Request.Path.StartsWithSegments("/api"), appBuilder =>
+        {
             app.UseExceptionHandler("/error");
-        }
-        //else
-        {
-            //app.UseDeveloperExceptionPage();
-        }
-        
-        //app.UseWhen(context => context.Request.Path.StartsWithSegments("/api"), appBuilder =>
-        //{
-        //    app.UseMiddleware<ExceptionHandlingMiddleware>();
-        //});
+            //app.UseMiddleware<ExceptionHandlingMiddleware>();
+        });
 
         app.UseStaticFiles();
 
