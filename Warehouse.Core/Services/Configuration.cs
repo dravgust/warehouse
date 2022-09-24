@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using System.Reflection;
+using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Warehouse.Core.Exceptions;
 using Warehouse.Core.Services.Providers;
@@ -11,6 +13,8 @@ namespace Warehouse.Core.Services
     {
         public static void AddValidation(this IServiceCollection services)
         {
+            //.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<SetProduct.CertificateRequestValidator>())
+            services.AddValidatorsFromAssembly(Assembly.GetAssembly(typeof(Configuration)), ServiceLifetime.Transient);
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
         }
 

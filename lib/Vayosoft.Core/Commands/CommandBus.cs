@@ -13,7 +13,12 @@ namespace Vayosoft.Core.Commands
             this.mediator = mediator;
         }
 
-        public Task Send<TCommand>(TCommand command, CancellationToken cancellationToken = default) where TCommand : ICommand
+        public Task Send(ICommand command, CancellationToken cancellationToken = default)
+        {
+            return mediator.Send(command, cancellationToken);
+        }
+
+        public Task<TResponse> Send<TResponse>(ICommand<TResponse> command, CancellationToken cancellationToken = default)
         {
             return mediator.Send(command, cancellationToken);
         }

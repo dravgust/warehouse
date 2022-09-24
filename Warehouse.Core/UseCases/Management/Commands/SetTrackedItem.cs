@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using MediatR;
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Models;
@@ -7,15 +6,18 @@ using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Security;
 using Warehouse.Core.UseCases.Management.Models;
+using LanguageExt.Common;
 
 namespace Warehouse.Core.UseCases.Management.Commands
 {
-    public sealed class SetTrackedItem : TrackedItemDto, ICommand
+    public sealed class SetTrackedItem : TrackedItemDto, ICommand<Result<TrackedItem>>
     {
-        public class SetBeaconValidator : AbstractValidator<SetTrackedItem>
+        public class SetTrackedItemValidator : AbstractValidator<SetTrackedItem>
         {
-            public SetBeaconValidator()
+            public SetTrackedItemValidator()
             {
+                //RuleLevelCascadeMode = CascadeMode.Stop;
+
                 RuleFor(c => c.MacAddress)
                     .NotEmpty()
                     .MacAddress();
@@ -23,19 +25,29 @@ namespace Warehouse.Core.UseCases.Management.Commands
         }
     }
 
-    internal sealed class HandleSetBeacon : ICommandHandler<SetTrackedItem>
+    internal sealed class HandleSetBeacon : ICommandHandler<SetTrackedItem, Result<TrackedItem>>
     {
         private readonly WarehouseStore _store;
         private readonly IUserContext _userContext;
+        private readonly IValidator<SetTrackedItem> _validator;
 
-        public HandleSetBeacon(WarehouseStore store, IUserContext userContext)
+        public HandleSetBeacon(WarehouseStore store, IUserContext userContext, IValidator<SetTrackedItem> validator)
         {
             _userContext = userContext;
+            _validator = validator;
             _store = store;
         }
 
-        public async Task<Unit> Handle(SetTrackedItem request, CancellationToken cancellationToken)
+        public async Task<Result<TrackedItem>> Handle(SetTrackedItem request, CancellationToken cancellationToken)
         {
+            var validationResult = await _validator.ValidateAsync(request, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var exception = new ValidationException(validationResult.Errors);
+                return new Result<TrackedItem>(exception);
+                //return validationResult.Errors.ToErrorOr<TrackedItem>();
+            }
+
             request.MacAddress = request.MacAddress.ToUpper();
             var providerId = _userContext.User.Identity.GetProviderId();
 
@@ -61,7 +73,7 @@ namespace Warehouse.Core.UseCases.Management.Commands
             }
             await _store.TrackedItems.UpdateAsync(trackedItem, cancellationToken);
 
-            return Unit.Value;
+            return trackedItem;
         }
     }
 }

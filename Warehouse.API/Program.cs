@@ -108,16 +108,16 @@ try
     var app = builder.Build();
     {
         // Configure the HTTP request pipeline.
-        if (!app.Environment.IsDevelopment())
+        //if (!app.Environment.IsDevelopment())
         {
-            app.UseExceptionHandler("/Home/Error");
-            //app.UseExceptionHandler("/error");
+            //app.UseExceptionHandler("/Home/Error");
+            app.UseExceptionHandler("/error");
         }
-        else
+        //else
         {
-            app.UseDeveloperExceptionPage();
+            //app.UseDeveloperExceptionPage();
         }
-        app.UseMiddleware<ExceptionHandlingMiddleware>();
+        //app.UseMiddleware<ExceptionHandlingMiddleware>();
 
         app.UseStaticFiles();
 

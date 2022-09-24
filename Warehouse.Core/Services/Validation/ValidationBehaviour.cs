@@ -32,13 +32,14 @@ namespace Warehouse.Core.Services.Validation
                     .Where(error => error != null).ToList();
                 if (failures.Any())
                 {
-                    _logger
-                        .LogWarning("Validation errors - {CommandType} - Command: {@Command} - Errors: {@ValidationErrors}",
+                    _logger.LogWarning("Validation errors - {CommandType} - Command: {@Command} - Errors: {@ValidationErrors}",
                         typeName, request, failures);
 
-                    throw new ApplicationException(
-                        $"Command Validation Errors for type {typeof(TRequest).Name}",
-                        new ValidationException("Validation exception", failures));
+                    //throw new ApplicationException(
+                    //    $"Command Validation Errors for type {typeof(TRequest).Name}",
+                    //    new ValidationException("Validation exception", failures));
+
+                    throw new ValidationException("Validation exception", failures);
                 }
 
             }

@@ -7,6 +7,7 @@ using Vayosoft.Core.Commands;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Management.Commands;
 using ErrorOr;
+using LanguageExt.Common;
 
 namespace Warehouse.Core.UseCases.Management
 { 
@@ -37,7 +38,7 @@ namespace Warehouse.Core.UseCases.Management
                 .AddCommandHandler<DeleteWarehouseSite, HandleDeleteWarehouseSite>()
                 .AddCommandHandler<SetGatewayToSite, HandleSetGatewayToSite>()
                 .AddCommandHandler<RemoveGatewayFromSite, HandleRemoveGatewayFromSite>()
-                .AddCommandHandler<SetTrackedItem, HandleSetBeacon>()
+                .AddCommandHandler<SetTrackedItem, Result<TrackedItem>, HandleSetBeacon>()
                 .AddCommandHandler<SetAlert, HandleSetAlert>()
                 .AddCommandHandler<DeleteAlert, HandleDeleteAlert>()
                 .AddCommandHandler<DeleteTrackedItem, HandleDeleteTrackedItem>()

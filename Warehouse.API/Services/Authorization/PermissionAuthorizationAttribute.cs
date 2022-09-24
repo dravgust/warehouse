@@ -94,7 +94,7 @@ namespace Warehouse.API.Services.Authorization
             var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<PermissionAuthorizationAttribute>>();
             logger.LogError(exception, exception.Message);
 
-            var codeInfo = ExceptionToHttpStatusMapper.Map(exception);
+            var codeInfo = exception.GetHttpStatusCodeInfo();
             context.Result = new JsonResult(new HttpErrorWrapper((int)codeInfo.Code, "Authorization error"))
             { StatusCode = (int)codeInfo.Code };
         }

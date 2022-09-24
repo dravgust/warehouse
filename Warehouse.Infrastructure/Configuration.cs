@@ -66,10 +66,7 @@ namespace Warehouse.Infrastructure
 
             services.AddScoped<INotificationHandler<UserOperation>, OperationEventHandler>();
 
-            services
-                //.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<SetProduct.CertificateRequestValidator>())
-                .AddValidatorsFromAssembly(Assembly.GetAssembly(typeof(Core.Services.Configuration)), ServiceLifetime.Transient)
-                .AddValidation();
+            services.AddValidation();
 
             services.AddQueryUnhandledException();
 

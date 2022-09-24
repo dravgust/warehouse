@@ -89,6 +89,8 @@ namespace Warehouse.API.Services.Errors
             {
                 problemDetails.Extensions["traceId"] = traceId;
             }
+
+            //problemDetails.Extensions.Add("customProperty", "customValue");
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Warehouse.API.Services.Errors.Filters
         public override void OnException(ExceptionContext context)
         {
             var exception = context.Exception;
-            var codeInfo = ExceptionToHttpStatusMapper.Map(exception);
+            var codeInfo = exception.GetHttpStatusCodeInfo();
 
             var problemDetails = new ProblemDetails
             {

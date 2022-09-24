@@ -1,5 +1,9 @@
+using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Text.Json;
+using FluentValidation;
 using Warehouse.API.Services.Errors.Models;
+using Warehouse.API.Extensions;
 
 namespace Warehouse.API.Services.Errors
 {
@@ -29,26 +33,40 @@ namespace Warehouse.API.Services.Errors
 
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-            logger.LogError(exception, exception.Message);
-            
-            if (IsAjaxRequest(context) || IsAcceptMimeType(context, "json"))
-            {
-                var codeInfo = ExceptionToHttpStatusMapper.Map(exception);
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                    WriteIndented = true
-                };
-                var error = new HttpErrorWrapper((int)codeInfo.Code, "An error occurred while processing your request.");
-                var result = JsonSerializer.Serialize(error, options);
-                context.Response.ContentType = "application/json";
-                context.Response.StatusCode = (int)codeInfo.Code;
-                return context.Response.WriteAsync(result);
-            }
-            
-            throw exception;
+            logger.LogError(exception, "An unhandled exception has occurred, {0}", exception.Message);
             //context.Response.Redirect("/error");
-            //return Task.FromResult<object>(null);
+
+            if (exception is ValidationException validationException)
+            {
+                var errors = validationException.Errors.ToDictionary(
+                    p => p.PropertyName,
+                    v => new[] { v.ErrorMessage });
+
+                var problemDetails = new ValidationProblemDetails(errors)
+                {
+                    Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+                    Title = "One or more validation errors occurred.",
+                    Status = (int)HttpStatusCode.BadRequest,
+                    Instance = context.Request.Path,
+                };
+                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                context.Response.WriteAsJsonAsync(problemDetails);
+            }
+            else
+            {
+                var problemDetails = new ProblemDetails
+                {
+                    Type = "https://tools.ietf.org/html/rfc7231#section-6.6.1",
+                    Title = "Internal Server Error",
+                    Status = (int)HttpStatusCode.InternalServerError,
+                    Instance = context.Request.Path,
+                    Detail = "An error occurred while processing your request."
+                };
+                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                context.Response.WriteAsJsonAsync(problemDetails);
+            }
+
+            return Task.FromResult<object>(null);
         }
 
         public bool IsAjaxRequest(HttpContext context)

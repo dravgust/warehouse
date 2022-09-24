@@ -11,13 +11,8 @@ namespace Warehouse.API.Services.Errors
 
     public static class ExceptionToHttpStatusMapper
     {
-        public static HttpStatusCodeInfo Map(Exception exception)
+        public static HttpStatusCodeInfo GetHttpStatusCodeInfo(this Exception exception)
         {
-            if (exception == null)
-            {
-                return new HttpStatusCodeInfo(HttpStatusCode.InternalServerError, "");
-            }
-
             var code = exception switch
             {
                 UnauthorizedAccessException _ => HttpStatusCode.Unauthorized,
