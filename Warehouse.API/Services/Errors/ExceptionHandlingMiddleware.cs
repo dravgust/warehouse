@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Warehouse.API.Extensions;
 
 namespace Warehouse.API.Services.Errors
 {
@@ -40,19 +41,8 @@ namespace Warehouse.API.Services.Errors
 
             if (exception is ValidationException validationException)
             {
-                var errors = validationException.Errors.ToDictionary(
-                    p => p.PropertyName,
-                    v => new[] { v.ErrorMessage });
-
-                var problemDetails = new ValidationProblemDetails(errors)
-                {
-                    Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
-                    Title = "One or more validation errors occurred.",
-                    Status = (int)HttpStatusCode.BadRequest,
-                    Instance = context.Request.Path,
-                };
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                context.Response.WriteAsJsonAsync(problemDetails);
+                context.Response.WriteAsJsonAsync(validationException.Errors.ToProblemDetails(context.Request.Path));
             }
             else
             {

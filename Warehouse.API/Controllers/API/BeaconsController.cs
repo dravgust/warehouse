@@ -3,15 +3,9 @@ using Vayosoft.Core.Commands;
 using Vayosoft.Core.Queries;
 using Warehouse.API.Contracts;
 using Warehouse.API.Services.Authorization;
-using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Services;
 using Warehouse.Core.UseCases.Management.Commands;
 using Warehouse.Core.UseCases.Management.Queries;
-using ErrorOr;
-using FluentValidation;
-using LanguageExt.Common;
-using Vayosoft.Core.Utilities;
-using System;
 using Microsoft.AspNetCore.Authorization;
 using Warehouse.API.Extensions;
 
@@ -51,7 +45,7 @@ namespace Warehouse.API.Controllers.API
         [HttpPost("set")]
         public async Task<IActionResult> Post([FromBody] SetTrackedItem command, CancellationToken token) {
             var result = await _commandBus.Send(command, token);
-            return result.Ok();
+            return this.FromResult(result);t
         }
     }
 }
