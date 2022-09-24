@@ -3,23 +3,20 @@ using Vayosoft.Core.Commands;
 using Vayosoft.Core.Queries;
 using Warehouse.API.Contracts;
 using Warehouse.API.Services.Authorization;
-using Warehouse.Core.Services;
 using Warehouse.Core.UseCases.Management.Commands;
 using Warehouse.Core.UseCases.Management.Queries;
 using Microsoft.AspNetCore.Authorization;
-using Warehouse.API.Extensions;
 
 namespace Warehouse.API.Controllers.API
 {
     [PermissionAuthorization]
     [Route("api/[controller]")]
-    [ApiController]
-    public class BeaconsController : ControllerBase
+    public class BeaconsController : ApiControllerBase
     {
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
 
-        public BeaconsController(IQueryBus queryBus, ICommandBus commandBus, IUserContext session)
+        public BeaconsController(IQueryBus queryBus, ICommandBus commandBus)
         {
             _queryBus = queryBus;
             _commandBus = commandBus;
@@ -44,8 +41,7 @@ namespace Warehouse.API.Controllers.API
         [AllowAnonymous]
         [HttpPost("set")]
         public async Task<IActionResult> Post([FromBody] SetTrackedItem command, CancellationToken token) {
-            var result = await _commandBus.Send(command, token);
-            return this.CreateResult(result);
+            return Result(await _commandBus.Send(command, token));
         }
     }
 }

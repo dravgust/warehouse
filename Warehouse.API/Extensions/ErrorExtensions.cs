@@ -16,7 +16,7 @@ namespace Warehouse.API.Extensions
             return ErrorOr<T>.From(errors);
         }
 
-        public static ProblemDetails ToProblemDetails(this IEnumerable<ValidationFailure> failures, string instance)
+        public static ValidationProblemDetails ToProblemDetails(this IEnumerable<ValidationFailure> failures, string instance)
         {
             var errors = failures.ToDictionary(
                 p => p.PropertyName,

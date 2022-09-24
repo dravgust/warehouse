@@ -23,7 +23,6 @@ namespace Warehouse.Core.Services.Validation
             if (_validators.Any())
             {
                 string typeName = request.GetGenericTypeName();
-                //_logger.LogInformation("----- Validating command {CommandType}", typeName);
 
                 ValidationContext<TRequest> context = new(request);
                 ValidationResult[] validationResults =
@@ -32,8 +31,12 @@ namespace Warehouse.Core.Services.Validation
                     .Where(error => error != null).ToList();
                 if (failures.Any())
                 {
-                    _logger.LogWarning("Validation errors - {CommandType} - Command: {@Command} - Errors: {@ValidationErrors}",
-                        typeName, request, failures);
+                    if (_logger.IsEnabled(LogLevel.Warning))
+                    {
+                        _logger.LogWarning(
+                            "Validation errors - {CommandType} - Command: {@Command} - Errors: {@ValidationErrors}",
+                            typeName, request, failures);
+                    }
 
                     //throw new ApplicationException(
                     //    $"Command Validation Errors for type {typeof(TRequest).Name}",
