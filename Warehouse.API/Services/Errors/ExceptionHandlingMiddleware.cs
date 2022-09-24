@@ -1,21 +1,23 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using System.Text.Json;
 using FluentValidation;
-using Warehouse.API.Services.Errors.Models;
-using Warehouse.API.Extensions;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace Warehouse.API.Services.Errors
 {
     public class ExceptionHandlingMiddleware
     {
         private readonly RequestDelegate next;
+        private readonly ProblemDetailsFactory _problemDetailsFactory;
         private readonly ILogger logger;
 
-        public ExceptionHandlingMiddleware(RequestDelegate next,
+        public ExceptionHandlingMiddleware(
+            RequestDelegate next,
+            ProblemDetailsFactory problemDetailsFactory,
             ILoggerFactory loggerFactory)
         {
             this.next = next;
+            _problemDetailsFactory = problemDetailsFactory;
             logger = loggerFactory.CreateLogger<ExceptionHandlingMiddleware>();
         }
 
@@ -54,15 +56,11 @@ namespace Warehouse.API.Services.Errors
             }
             else
             {
-                var problemDetails = new ProblemDetails
-                {
-                    Type = "https://tools.ietf.org/html/rfc7231#section-6.6.1",
-                    Title = "Internal Server Error",
-                    Status = (int)HttpStatusCode.InternalServerError,
-                    Instance = context.Request.Path,
-                    Detail = "An error occurred while processing your request."
-                };
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                var codeInfo = exception.GetHttpStatusCodeInfo();
+                var problemDetails = _problemDetailsFactory.CreateProblemDetails(context,
+                    title: "An error occurred while processing your request.", statusCode: (int)codeInfo.Code);
+
+                context.Response.StatusCode = (int)codeInfo.Code;
                 context.Response.WriteAsJsonAsync(problemDetails);
             }
 
