@@ -117,7 +117,11 @@ try
         {
             //app.UseDeveloperExceptionPage();
         }
-        //app.UseMiddleware<ExceptionHandlingMiddleware>();
+        
+        //app.UseWhen(context => context.Request.Path.StartsWithSegments("/api"), appBuilder =>
+        //{
+        //    app.UseMiddleware<ExceptionHandlingMiddleware>();
+        //});
 
         app.UseStaticFiles();
 

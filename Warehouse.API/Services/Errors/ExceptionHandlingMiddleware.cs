@@ -3,6 +3,7 @@ using System.Net;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Warehouse.API.Extensions;
+using Warehouse.API.Services.Errors.Models;
 
 namespace Warehouse.API.Services.Errors
 {

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Warehouse.API.Services.Errors.Models;
 
 namespace Warehouse.API.Services.Errors.Filters
 {

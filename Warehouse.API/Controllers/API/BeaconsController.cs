@@ -45,7 +45,7 @@ namespace Warehouse.API.Controllers.API
         [HttpPost("set")]
         public async Task<IActionResult> Post([FromBody] SetTrackedItem command, CancellationToken token) {
             var result = await _commandBus.Send(command, token);
-            return this.FromResult(result);t
+            return this.CreateResult(result);
         }
     }
 }

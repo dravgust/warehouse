@@ -1,7 +1,8 @@
 ﻿using FluentValidation;
 using LanguageExt.Common;
 using Microsoft.AspNetCore.Mvc;
-using Warehouse.API.Services.Errors;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Warehouse.API.Services.Errors.Models;
 
 namespace Warehouse.API.Extensions
 {
@@ -43,11 +44,16 @@ namespace Warehouse.API.Extensions
 
             if (exception is ValidationException validationException)
             {
-                return controller.BadRequest(validationException.Errors.ToProblemDetails(controller.Request.Path));
+                return new BadRequestObjectResult(validationException.Errors.ToProblemDetails(controller.Request.Path));
+                //return controller.BadRequest(validationException.Errors.ToProblemDetails(controller.Request.Path));
             }
 
             var codeInfo = exception.GetHttpStatusCodeInfo();
-            return controller.Problem(title: "An error occurred while processing your request.", statusCode: (int)codeInfo.Code);
+            var problemDetailsFactory = services.GetRequiredService<ProblemDetailsFactory>();
+            var problemDetails = problemDetailsFactory.CreateProblemDetails(controller.HttpContext,
+                title: "An error occurred while processing your request.", statusCode: (int)codeInfo.Code);
+            return new ObjectResult(problemDetails) {StatusCode = (int) codeInfo.Code};
+            //return controller.Problem(title: "An error occurred while processing your request.", statusCode: (int)codeInfo.Code);
         }
     }
 }

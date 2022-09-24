@@ -1,10 +1,7 @@
 ﻿using ErrorOr;
 using FluentValidation.Results;
-using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using Vayosoft.Core.SharedKernel.Exceptions;
-using ValidationException = FluentValidation.ValidationException;
 
 namespace Warehouse.API.Extensions
 {

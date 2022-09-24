@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using FluentValidation;
-using Warehouse.API.Services.Errors;
 using Warehouse.API.Extensions;
+using Warehouse.API.Services.Errors.Models;
 
 namespace Warehouse.API.Controllers
 {
