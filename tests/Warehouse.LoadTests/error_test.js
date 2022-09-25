@@ -1,3 +1,4 @@
+//Ubuntu
 //sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
 // echo "deb https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
 //
@@ -5,15 +6,19 @@
 // sudo apt-get update
 // sudo apt-get install k6
 
-//alias curl="cmd.exe /C curl"
+//alias k6="cmd.exe /C k6"
 
+//Windows
+//choco install k6
+
+import { check } from "k6";
 import http from "k6/http";
 
 export let options = {
     insecureSkipTLSVerify: true,
-    noConnectionReuse: false,
-    vus: 1,
-    duration: '10s',
+    //noConnectionReuse: false,
+    vus: 10,
+    duration: '1m',
 };
 
 export default () => {
@@ -28,5 +33,7 @@ export default () => {
         },
     };
 
-    http.post(url, payload, params);
+    const res = http.post(url, payload, params);
+
+    check(res, { "is status 400" : (r) => r.status === 400 });
 };

@@ -121,7 +121,8 @@ try
         {
             app.UseExceptionHandler("/error");
             //app.UseMiddleware<ExceptionHandlingMiddleware>();
-        });
+        }
+        );
 
         app.UseStaticFiles();
 

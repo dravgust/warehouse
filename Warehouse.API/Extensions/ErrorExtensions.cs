@@ -18,11 +18,24 @@ namespace Warehouse.API.Extensions
 
         public static ValidationProblemDetails ToProblemDetails(this IEnumerable<ValidationFailure> failures, string instance)
         {
-            var errors = failures.ToDictionary(
-                p => p.PropertyName,
-                v => new []{ v.ErrorMessage });
+            var dict = new Dictionary<string, List<string>>(10);
+            foreach (var v in failures)
+            {
+                if (!dict.ContainsKey(v.PropertyName))
+                {
+                    dict[v.PropertyName] = new List<string>{ v.ErrorMessage };
+                }
+                else
+                {
+                    dict[v.PropertyName].Add(v.ErrorMessage);
+                }
+            }
 
-           return new ValidationProblemDetails(errors)
+            var errors = dict.ToDictionary(
+                e => e.Key,
+                e => e.Value.ToArray());
+
+            return new ValidationProblemDetails(errors)
            {
                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
                Title = "One or more validation errors occurred.",
