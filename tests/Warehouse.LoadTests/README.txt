@@ -1,0 +1,1 @@
+npx @openapitools/openapi-generator-cli generate -i swagger.json -g k6 -o k6-test/ --skip-validate-spec
