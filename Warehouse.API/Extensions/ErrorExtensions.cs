@@ -18,22 +18,9 @@ namespace Warehouse.API.Extensions
 
         public static ValidationProblemDetails ToProblemDetails(this IEnumerable<ValidationFailure> failures, string instance)
         {
-            var dict = new Dictionary<string, List<string>>(10);
-            foreach (var v in failures)
-            {
-                if (!dict.ContainsKey(v.PropertyName))
-                {
-                    dict[v.PropertyName] = new List<string>{ v.ErrorMessage };
-                }
-                else
-                {
-                    dict[v.PropertyName].Add(v.ErrorMessage);
-                }
-            }
-
-            var errors = dict.ToDictionary(
-                e => e.Key,
-                e => e.Value.ToArray());
+            var errors = failures
+                .GroupBy(e => e.PropertyName, e => e.ErrorMessage)
+                .ToDictionary(failureGroup => failureGroup.Key, failureGroup => failureGroup.ToArray());
 
             return new ValidationProblemDetails(errors)
            {
