@@ -15,7 +15,7 @@ namespace Warehouse.Core.Services
         {
             //.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<SetProduct.CertificateRequestValidator>())
             services.AddValidatorsFromAssembly(Assembly.GetAssembly(typeof(Configuration)), ServiceLifetime.Transient);
-            //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
         }
 
         public static void AddQueryUnhandledException(this IServiceCollection services)

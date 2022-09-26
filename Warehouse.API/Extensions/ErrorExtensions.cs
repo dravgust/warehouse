@@ -20,7 +20,9 @@ namespace Warehouse.API.Extensions
         {
             var errors = failures
                 .GroupBy(e => e.PropertyName, e => e.ErrorMessage)
-                .ToDictionary(failureGroup => failureGroup.Key, failureGroup => failureGroup.ToArray());
+                .ToDictionary(
+                    failureGroup => failureGroup.Key, 
+                    failureGroup => failureGroup.ToArray());
 
             return new ValidationProblemDetails(errors)
            {
