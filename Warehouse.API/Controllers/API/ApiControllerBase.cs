@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using LanguageExt.Common;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using Warehouse.API.Extensions;
 using Warehouse.API.Services.Errors.Models;
 
@@ -10,33 +11,28 @@ namespace Warehouse.API.Controllers.API
     public class ApiControllerBase : ControllerBase
     {
         protected IActionResult Result<TResult>(Result<TResult> result) {
-            return result.Match(obj => Ok(obj), ExceptionResult);
+            return result.Match(obj => Ok(obj), Problem);
         }
 
         protected IActionResult Result<TResult, TContract>(Result<TResult> result, Func<TResult, TContract> mapper) {
-            return result.Match(obj => Ok(mapper(obj)), ExceptionResult);
+            return result.Match(obj => Ok(mapper(obj)), Problem);
         }
 
-        protected IActionResult ExceptionResult(Exception exception)
+        protected IActionResult Problem(Exception exception)
         {
-            var loggerFactory = HttpContext.RequestServices.GetRequiredService<ILoggerFactory>();
-            var logger = loggerFactory.CreateLogger(GetType());
-
-            if (exception is ValidationException validationException)
+            switch (exception)
             {
-                var problemDetails = validationException.Errors.ToProblemDetails(Request.Path);
-                if (logger.IsEnabled(LogLevel.Warning))
+                case ValidationException validationException:
                 {
-                    logger.LogWarning("Validation errors - Errors: {@ValidationErrors}", problemDetails.Errors);
+                    return BadRequest(validationException.Errors.ToProblemDetails(Request.Path));
                 }
-
-                return BadRequest(problemDetails);
+                default:
+                {
+                    var codeInfo = exception?.GetHttpStatusCodeInfo();
+                    return Problem(title: "An error occurred while processing your request.",
+                        statusCode: (int)(codeInfo?.Code ?? HttpStatusCode.InternalServerError));
+                }
             }
-
-            logger.LogError(exception, "An exception has occurred, {0}", exception.Message);
-
-            var codeInfo = exception.GetHttpStatusCodeInfo();
-            return Problem(title: "An error occurred while processing your request.", statusCode: (int)codeInfo.Code);
         }
     }
 }

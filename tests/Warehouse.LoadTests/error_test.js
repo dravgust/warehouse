@@ -16,7 +16,6 @@ import http from "k6/http";
 
 export let options = {
     insecureSkipTLSVerify: true,
-    //noConnectionReuse: false,
     vus: 10,
     duration: '1m',
 };

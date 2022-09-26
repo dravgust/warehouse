@@ -5,7 +5,6 @@ using Warehouse.API.Contracts;
 using Warehouse.API.Services.Authorization;
 using Warehouse.Core.UseCases.Management.Commands;
 using Warehouse.Core.UseCases.Management.Queries;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Warehouse.API.Controllers.API
 {
@@ -38,7 +37,6 @@ namespace Warehouse.API.Controllers.API
             return Ok(new { query.MacAddress });
         }
 
-        [AllowAnonymous]
         [HttpPost("set")]
         public async Task<IActionResult> Post([FromBody] SetTrackedItem command, CancellationToken token) {
             return Result(await _commandBus.Send(command, token));
