@@ -11,7 +11,7 @@ namespace Warehouse.API.Controllers.API
 {
     [PermissionAuthorization]
     [Route("api/[controller]")]
-    public class BeaconsController : ApiControllerBase
+    public sealed class BeaconsController : ApiControllerBase
     {
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;

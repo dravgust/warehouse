@@ -4,7 +4,7 @@ using Warehouse.API.Controllers.API;
 
 namespace Warehouse.API.Controllers
 {
-    public class ErrorsController : ApiControllerBase
+    public sealed class ErrorsController : ApiControllerBase
     {
         [Route("/error")]
         [ApiExplorerSettings(IgnoreApi = true)]
