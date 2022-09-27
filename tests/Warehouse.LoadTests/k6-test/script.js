@@ -17,7 +17,7 @@ import { group, check, sleep } from "k6";
 const BASE_URL = "/";
 // Sleep duration between successive requests.
 // You might want to edit the value of this variable or remove calls to the sleep function on the script.
-const SLEEP_DURATION = 0.1;
+const SLEEP_DURATION = 1;
 // Global variables should be initialized.
 let xApiVersion = "TODO_EDIT_THE_X-API-VERSION";
 
