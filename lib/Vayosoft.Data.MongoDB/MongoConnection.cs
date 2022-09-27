@@ -87,10 +87,9 @@ namespace Vayosoft.Data.MongoDB
                 var endIndex = connectionString.IndexOf("?", startIndex, StringComparison.Ordinal);
                 if (startIndex > 0)
                 {
-                    if (endIndex > 0)
-                        return connectionString.Substring(startIndex, endIndex - startIndex);
-                    else
-                        return connectionString[startIndex..];
+                    return endIndex > 0 ?
+                        connectionString[startIndex..(endIndex - startIndex)] :
+                        connectionString[startIndex..];
                 }
             }
 

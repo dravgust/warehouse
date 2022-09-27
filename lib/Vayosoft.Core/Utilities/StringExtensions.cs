@@ -150,9 +150,8 @@ namespace Vayosoft.Core.Utilities
 
         public static string Truncate(this string value, int maxLength, string suffix = "...")
         {
-            if (string.IsNullOrEmpty(value))
-                return value;
-            return value.Length <= maxLength ? value : value.Substring(0, maxLength) + suffix;
+            if (string.IsNullOrEmpty(value)) return value;
+            return value.Length <= maxLength ? value : value[..maxLength] + suffix;
         }
 
         public static string EscapeSearchTerm(this string term)
@@ -306,7 +305,7 @@ namespace Vayosoft.Core.Utilities
             {
                 throw new ArgumentException("input");
             }
-            return input.First().ToString().ToUpper() + input.Substring(1);
+            return input.First().ToString().ToUpper() + input[1..];
         }
 
         public static bool IsValidEmail(this string input)
