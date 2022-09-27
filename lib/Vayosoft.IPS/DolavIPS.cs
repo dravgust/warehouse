@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using MathNet.Numerics.Statistics;
+using Vayosoft.Core.Utilities;
 using Vayosoft.IPS.Filters;
 
 namespace Vayosoft.IPS
@@ -61,7 +62,7 @@ namespace Vayosoft.IPS
          the calibration value, you need to configure it inside your beacon per the manufacturer's instructions. 
          This will give you more accurate distance estimates. 
     */
-    public class DolavIPS
+    public sealed class DolavIPS
     {
         public int CalculationMethod { set; get; }
         public SmoothAlgorithm SmoothAlgorithm { set; get; }
@@ -136,7 +137,7 @@ namespace Vayosoft.IPS
             return result;
         }
 
-        public ReadOnlyCollection<double> GetFilteredBuffer(IEnumerable<double> buffer, IRssiFilter filter)
+        public static ReadOnlyCollection<double> GetFilteredBuffer(IEnumerable<double> buffer, IRssiFilter filter)
         {
             var input = buffer as IList<double> ?? buffer.ToList();
 
@@ -148,12 +149,15 @@ namespace Vayosoft.IPS
             return new ReadOnlyCollection<double>(result);
         }
 
-        public ReadOnlyCollection<double> SmoothByCustom(IEnumerable<double> buffer)
+        public static ReadOnlyCollection<double> SmoothByCustom(IEnumerable<double> buffer)
         {
-            var input = buffer.ToList();
+            var input = buffer as List<double> ?? buffer.ToList();
 
             var count = input.Count;
-            if (count < 2) return new List<double>().AsReadOnly();
+            if (count < 2)
+            {
+                return ReadOnlyCollection.Empty<double>();
+            }
 
             input.Sort();
             var s = input.StandardDeviation();
@@ -172,7 +176,7 @@ namespace Vayosoft.IPS
             //return input.Skip(count - 1).ToList();
         }
 
-        public double GetMedian(IReadOnlyCollection<double> list)
+        public double GetMedian(IEnumerable<double> list)
         {
             return list.Median();
         }

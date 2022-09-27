@@ -12,15 +12,18 @@ using Vayosoft.Core.SharedKernel.Entities;
 
 namespace Vayosoft.Data.MongoDB
 {
-    public class MongoConnection : IMongoConnection
+    public sealed class MongoConnection : IMongoConnection
     {
+        private const string DefaultDb = "default";
         private readonly MongoClient _client;
         public IMongoDatabase Database { get; }
         public IClientSessionHandle Session { get; private set; }
 
         [ActivatorUtilitiesConstructor]
-        public MongoConnection(IConfiguration config, ILoggerFactory loggerFactory) : this(config.GetConnectionSetting(), loggerFactory) { }
-        public MongoConnection(ConnectionSetting config, ILoggerFactory loggerFactory) : this(config?.ConnectionString, config?.ReplicaSet?.BootstrapServers, loggerFactory) { }
+        public MongoConnection(IConfiguration config, ILoggerFactory loggerFactory) 
+            : this(config.GetConnectionSetting(), loggerFactory) { }
+        public MongoConnection(ConnectionSetting config, ILoggerFactory loggerFactory) 
+            : this(config?.ConnectionString, config?.ReplicaSet?.BootstrapServers, loggerFactory) { }
         public MongoConnection(string connectionString, string[] bootstrapServers, ILoggerFactory loggerFactory)
         {
             MongoClientSettings settings;
@@ -46,8 +49,6 @@ namespace Vayosoft.Data.MongoDB
                     settings.Servers = new[]
                     {
                         new MongoServerAddress("localhost", 37017),
-                        new MongoServerAddress("localhost", 37018),
-                        new MongoServerAddress("localhost", 37019)
                     };
                 }
             }
@@ -57,12 +58,15 @@ namespace Vayosoft.Data.MongoDB
             {
                 cb.Subscribe<CommandStartedEvent>(e =>
                 {
-                    logger.LogDebug($"{e.CommandName} {e.Command.ToJson()}");
+                    if (logger.IsEnabled(LogLevel.Debug))
+                    {
+                        logger.LogDebug("{commandName} {command}", e.CommandName, e.Command.ToJson());
+                    }
                 });
             };
 
             _client = new MongoClient(settings);
-            Database = _client.GetDatabase(databaseName ?? "default");
+            Database = _client.GetDatabase(databaseName ?? DefaultDb);
         }
 
         public async Task<IClientSessionHandle> StartSession(CancellationToken cancellationToken = default)

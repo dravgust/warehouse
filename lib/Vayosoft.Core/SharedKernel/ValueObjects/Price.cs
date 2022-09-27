@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Vayosoft.Core.SharedKernel.Enums;
+﻿using Vayosoft.Core.SharedKernel.Enums;
 
 namespace Vayosoft.Core.SharedKernel.ValueObjects
 {
@@ -39,7 +37,7 @@ namespace Vayosoft.Core.SharedKernel.ValueObjects
 
         protected override IEnumerable<object> GetEqualityComponents()
         {
-            return new List<object> { Amount, Unit};
+            return new List<object> { Amount, Unit };
         }
     }
 }
