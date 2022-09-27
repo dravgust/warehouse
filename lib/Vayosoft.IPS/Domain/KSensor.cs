@@ -19,7 +19,7 @@ namespace Vayosoft.IPS.Domain
                 !hexString.StartsWith("0201060303AAF"))
                 return null;
 
-            var bytes = GetBytes(hexString);
+            var bytes = Convert.FromHexString(hexString);
             var buffer = new ArraySegment<byte>(bytes);
 
             var offset = 13;
@@ -43,13 +43,6 @@ namespace Vayosoft.IPS.Domain
             return result;
         }
 
-        private static byte[] GetBytes(string hexString)
-        {
-            return Enumerable.Range(0, hexString.Length)
-                .Where(x => x % 2 == 0)
-                .Select(x => Convert.ToByte(hexString.Substring(x, 2), 16))
-                .ToArray();
-        }
         private static bool IsBitSet(byte b, int pos)
         {
             return (b & (1 << pos)) != 0;

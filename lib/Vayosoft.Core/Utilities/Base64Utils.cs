@@ -4,7 +4,8 @@ using System.Text;
 
 namespace Vayosoft.Core.Utilities
 {
-	public static class Base64Utils
+    [Obsolete]
+    public static class Base64Utils
 	{
 		private static readonly char[] TableBase64 = new char[65]
 														 {  'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
@@ -233,7 +234,5 @@ namespace Vayosoft.Core.Utilities
 		}
 
 		#endregion Encode
-
-
-	}
+    }
 }

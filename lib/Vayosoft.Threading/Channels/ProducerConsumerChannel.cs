@@ -57,7 +57,8 @@ namespace Vayosoft.Threading.Channels
                 w.StartConsume();
             }
 
-            Trace.TraceInformation($"[{_channelName}] started with {workerThreads} consumers. Options: maxWorkers: {MAX_WORKERS}, maxQueueLength: {MAX_QUEUE}, consumerManagementTimeout: {CONSUMER_MANAGEMENT_TIMEOUT_MS} ms");
+            Trace.TraceInformation("[{0}] started with {1} consumers. Options: maxWorkers: {2}, maxQueueLength: {3}, consumerManagementTimeout: {4} ms",
+                _channelName, workerThreads, MAX_WORKERS, MAX_QUEUE, CONSUMER_MANAGEMENT_TIMEOUT_MS);
 
             _timer = new System.Timers.Timer { Interval = CONSUMER_MANAGEMENT_TIMEOUT_MS };
             _timer.Elapsed += (sender, e) => ManageWorkers();
@@ -78,7 +79,7 @@ namespace Vayosoft.Threading.Channels
             return false;
         }
 
-        private string ConsumerName => $"{_channelName}Consumer: {IdGenerator.ShortUID()}";
+        private string ConsumerName => $"{_channelName}Consumer: {GuidUtils.ToStringFromGuid(Guid.NewGuid())}";
 
         private void ManageWorkers()
         {
