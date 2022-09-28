@@ -1,4 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
+using Bogus;
 
 namespace Warehouse.Benchmarks
 {
@@ -85,24 +86,24 @@ namespace Warehouse.Benchmarks
 
     public class Person
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; } = default!;
     }
 
     public class StaticObject
     {
-        public static object Person = new Person
-        {
-            Id = Guid.NewGuid(),
-            Name = Guid.NewGuid().ToString()
-        };
 
-        public static List<object> People = Enumerable
-            .Range(1, 10_000)
-            .Select(x => (object)new Person
+        static StaticObject()
         {
-            Id = Guid.NewGuid(),
-            Name = Guid.NewGuid().ToString()
-        }).ToList();
+            //Randomizer.Seed = new Random(11);
+
+            var personFaker = new Faker<Person>()
+                .RuleFor(p => p.Id, faker => faker.IndexFaker)
+                .RuleFor(p => p.Name, faker => faker.Person.FullName);
+
+            People  = new List<object>(personFaker.Generate(10_000));
+        }
+
+        public static List<object> People { get; }
     }
 }

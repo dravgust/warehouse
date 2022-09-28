@@ -67,7 +67,7 @@ namespace Warehouse.Host
                                     if (beaconItem == null) continue;
 
                                     //await eventBus.Publish(UserNotification.Create);
-                                    var notified = await notifyReadRepository.SingleOrDefaultAsync(n =>
+                                    var notified = await notifyReadRepository.FirstOrDefaultAsync(n =>
                                         n.AlertId == alert.Id && n.MacAddress == beacon.Id, token);
                                     if (notified != null) continue;
 

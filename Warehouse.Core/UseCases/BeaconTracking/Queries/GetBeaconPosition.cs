@@ -96,7 +96,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
                 var gauge = gateway.Gauge;
                 if (string.IsNullOrEmpty(gauge?.MAC)) continue;
 
-                var payload = await repository.SingleOrDefaultAsync(g => g.MacAddress == gateway.MacAddress);
+                var payload = await repository.FirstOrDefaultAsync(g => g.MacAddress == gateway.MacAddress);
                 if (payload == null) continue;
 
                 var pGauge =
