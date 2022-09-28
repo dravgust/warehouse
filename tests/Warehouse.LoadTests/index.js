@@ -3,7 +3,7 @@ import { group, check, sleep } from "k6";
 import { Rate } from "k6/metrics";
 
 const BASE_URL = "http://localhost:5243";
-const SLEEP_DURATION = 1;
+const SLEEP_DURATION = 3;
 let xApiVersion = "1";
 
 // A custom metric to track failure rates
@@ -17,8 +17,8 @@ export let options = {
         { duration:'10m', target:100 },//stay at 100 requests for 10 mins
         { duration:'5m', target:0 },   // ramp-down to 0 users
     ],*/
-    vus: 1,
-    duration: '10s',
+    vus: 70,
+    duration: '1m',
     thresholds: {
         http_req_duration: ["p(99)<150"] //99% of request must complete below 150 ms
     }
@@ -78,7 +78,7 @@ export default function(data) {
         ]);
 
         const beaconsResp = resps[2].json();
-        if(beaconsResp.items.length > 0){
+        if(beaconsResp.status === 200 && beaconsResp.items.length > 0){
             selectedBeacon = beaconsResp.items[0];
         }
 

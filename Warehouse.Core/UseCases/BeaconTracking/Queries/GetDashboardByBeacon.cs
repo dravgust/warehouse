@@ -54,10 +54,13 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
                 {
                     MacAddress = b.Id,
                     TimeStamp = b.ReceivedAt,
-
                     SiteId = b.DestinationId,
-                    Site = await _store.Sites.FindAsync<string, WarehouseSiteDto>(b.DestinationId, cancellationToken)
                 };
+
+                if (!IsNullOrEmpty(b.DestinationId))
+                {
+                    asset.Site = await _store.Sites.FindAsync<string, WarehouseSiteDto>(b.DestinationId, cancellationToken);
+                }
 
                 if (!IsNullOrEmpty(b.ProductId))
                 {
