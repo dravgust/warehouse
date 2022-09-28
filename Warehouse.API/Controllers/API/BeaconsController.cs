@@ -38,7 +38,6 @@ namespace Warehouse.API.Controllers.API
             return Ok(new { query.MacAddress });
         }
 
-        [AllowAnonymous]
         [HttpPost("set")]
         public async Task<IActionResult> Post([FromBody] SetTrackedItem command, CancellationToken token) {
             return Result(await _commandBus.Send(command, token));

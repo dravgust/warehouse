@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
@@ -92,7 +88,7 @@ namespace Vayosoft.Data.MongoDB
                 if (startIndex > 0)
                 {
                     return endIndex > 0 ?
-                        connectionString[startIndex..(endIndex - startIndex)] :
+                        connectionString[startIndex..endIndex] :
                         connectionString[startIndex..];
                 }
             }
