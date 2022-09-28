@@ -23,7 +23,7 @@ try
         builder.WebHost.ConfigureKestrel(options => { options.AddServerHeader = false; });
 
         //builder.Logging.ClearProviders();
-        //var logger = new LoggerConfiguration()
+        //Serilog.ILogger logger = new LoggerConfiguration()
         //    .CreateLogger();
         //builder.Logging.AddSerilog(logger);
         //builder.Services.AddSingleton(logger);

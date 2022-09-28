@@ -15,11 +15,23 @@ namespace Warehouse.API.Controllers.API
     {
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
+        private readonly Serilog.ILogger _logger;
+        private readonly ILogger<BeaconsController> _logger2;
 
-        public BeaconsController(IQueryBus queryBus, ICommandBus commandBus)
+        public BeaconsController(IQueryBus queryBus, ICommandBus commandBus, Serilog.ILogger logger, ILogger<BeaconsController> logger2)
         {
             _queryBus = queryBus;
             _commandBus = commandBus;
+            _logger = logger;
+            _logger2 = logger2;
+        }
+
+        [AllowAnonymous]
+        [HttpGet("log")]
+        public IActionResult Get2()
+        {
+            _logger.Information("Loggin text with {Param1}, and with {Param2}.", "test", "test2");
+            return Ok();
         }
 
         [HttpGet("")]
