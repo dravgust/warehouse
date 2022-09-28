@@ -1,5 +1,3 @@
-
-using System.Diagnostics;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -23,6 +21,12 @@ try
     var builder = WebApplication.CreateBuilder(args);
     {
         builder.WebHost.ConfigureKestrel(options => { options.AddServerHeader = false; });
+
+        //builder.Logging.ClearProviders();
+        //var logger = new LoggerConfiguration()
+        //    .CreateLogger();
+        //builder.Logging.AddSerilog(logger);
+        //builder.Services.AddSingleton(logger);
 
         builder.Host.UseSerilog((context, services, configuration) => configuration
                 .ReadFrom.Configuration(context.Configuration)
