@@ -63,15 +63,15 @@ internal sealed class HandleGetDashboardBySite : IQueryHandler<GetDashboardBySit
                             .FirstOrDefaultAsync(p => p.Id == beacon.ProductId, cancellationToken);
                         if (product != null)
                         {
-                            if (!items.TryGetValue(product.Id, out var item))
+                            if (!items.TryGetValue(beacon.ProductId, out var item))
                             {
                                 item = new ProductItem
                                 {
-                                    Id = product.Id,
+                                    Id = beacon.ProductId,
                                     Name = product.Name,
                                     Beacons = new List<BeaconItem>()
                                 };
-                                items.Add(product.Id, item);
+                                items.Add(beacon.ProductId, item);
                             }
 
                             item.Beacons.Add(new BeaconItem

@@ -63,11 +63,6 @@ namespace Vayosoft.Streaming.Redis.Consumers
         {
             Task.Factory.StartNew(async () =>
             {
-                //try
-                //{ redisDb.StreamCreateConsumerGroup(streamName, groupName); }
-                //catch (RedisServerException e) when (e.Message.StartsWith("BUSYGROUP"))
-                //{ /*BUSYGROUP Consumer Group name already exists*/ }
-
                 try
                 {
                     if (!(await redisDb.KeyExistsAsync(streamName)) ||
@@ -78,18 +73,18 @@ namespace Vayosoft.Streaming.Redis.Consumers
 
                     while (!cancellationToken.IsCancellationRequested)
                     {
-                        var streamEntries = await redisDb.StreamReadGroupAsync(streamName, groupName, consumerName);
+                        var streamEntries = await redisDb.StreamReadGroupAsync(streamName, groupName, consumerName, ">", 1, CommandFlags.None);
                         if (!streamEntries.Any())
                             await Task.Delay(intervalMilliseconds, cancellationToken);
                         else
                         {
-                            foreach (var streamEntry in streamEntries)
+                            var streamEntry = streamEntries.First();
                             foreach (var nameValueEntry in streamEntry.Values)
                             {
                                 try
                                 {
-                                    o.OnNext(new ConsumeResult<string, string>(streamName, nameValueEntry.Name, nameValueEntry.Value));
                                     await redisDb.StreamAcknowledgeAsync(streamName, groupName, streamEntry.Id);
+                                    o.OnNext(new ConsumeResult<string, string>(streamName, nameValueEntry.Name, nameValueEntry.Value));
                                 }
                                 catch (Exception e) { o.OnError(e); }
                             }
