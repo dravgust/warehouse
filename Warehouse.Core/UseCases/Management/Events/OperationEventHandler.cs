@@ -6,12 +6,11 @@ using Vayosoft.Core.Utilities;
 using Warehouse.Core.Entities.Enums;
 using Warehouse.Core.Entities.Events;
 using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Services.Providers;
 using Warehouse.Core.Services.Security;
 
 namespace Warehouse.Core.UseCases.Management.Events
 {
-    public class OperationEventHandler : IEventHandler<UserOperation>
+    public sealed class OperationEventHandler : IEventHandler<UserOperation>
     {
         private readonly IServiceProvider _serviceProvider;
         //private readonly ProviderFactory _providerFactory;

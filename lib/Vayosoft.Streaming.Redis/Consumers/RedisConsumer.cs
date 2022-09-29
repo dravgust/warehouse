@@ -7,7 +7,7 @@ using Vayosoft.Data.Redis;
 
 namespace Vayosoft.Streaming.Redis.Consumers
 {
-    public class RedisConsumer : IRedisConsumer
+    public sealed class RedisConsumer : IRedisConsumer
     {
         private const int IntervalMilliseconds = 500;
 

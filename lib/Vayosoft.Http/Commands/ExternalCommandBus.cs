@@ -8,7 +8,7 @@ using Polly;
 
 namespace Vayosoft.Http.Commands
 {
-    public class ExternalCommandBus: IExternalCommandBus
+    public sealed class ExternalCommandBus: IExternalCommandBus
     {
         private readonly HttpClient client;
         private readonly ILogger<ExternalCommandBus> logger;
