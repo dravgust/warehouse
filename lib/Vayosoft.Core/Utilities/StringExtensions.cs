@@ -134,7 +134,7 @@ namespace Vayosoft.Core.Utilities
             }
             catch
             {
-                return "";
+                return string.Empty;
             }
         }
 
@@ -171,7 +171,7 @@ namespace Vayosoft.Core.Utilities
         /// <returns></returns>
         public static string EscapeSelector(this string attribute)
         {
-            return Regex.Replace(attribute, string.Format("([{0}])", "/[!\"#$%&'()*+,./:;<=>?@^`{|}~\\]"), @"\\$1");
+            return Regex.Replace(attribute, "([/[!\"#$%&'()*+,./:;<=>?@^`{|}~\\]])", @"\\$1");
         }
 
         public static string GenerateSlug(this string phrase)
