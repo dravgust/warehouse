@@ -41,8 +41,9 @@ import OrderOverview from "layouts/dashboard/components/OrderOverview";
 // Data
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import gradientLineChartData from "layouts/dashboard/data/gradientLineChartData";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { streamClient } from "../../utils/stream-client";
+import { HubConnectionBuilder } from "@microsoft/signalr";
 
 function Dashboard() {
   const { size } = typography;
@@ -53,6 +54,39 @@ function Dashboard() {
       console.log(value);
     });
   }, []);
+
+  const [connection, setConnection] = useState(null);
+  useEffect(() => {
+    const newConnection = new HubConnectionBuilder()
+      .withUrl("http://localhost:5243/streaming/notifications")
+      .withAutomaticReconnect()
+      .build();
+
+    setConnection(newConnection);
+  }, []);
+
+  useEffect(() => {
+    if (connection) {
+      connection
+        .start()
+        .then(() => {
+          console.log("Connected!");
+          connection.stream("Streaming").subscribe({
+            next: (item) => {
+              console.log("item", item);
+            },
+            complete: () => {
+              console.log("completed");
+            },
+            error: (err) => {
+              console.log("error", err);
+            },
+          });
+        })
+        .catch((e) => console.log("Connection failed: ", e));
+    }
+  }, [connection]);
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -146,9 +180,9 @@ function Dashboard() {
           <Grid item xs={12} md={6} lg={8}>
             <Projects />
           </Grid>
-          <Grid item xs={12} md={6} lg={4}>
+          {/* <Grid item xs={12} md={6} lg={4}>
             <OrderOverview />
-          </Grid>
+          </Grid>*/}
         </Grid>
       </SuiBox>
       <Footer />

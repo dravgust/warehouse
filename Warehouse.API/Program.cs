@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using Serilog;
 using Vayosoft.Data.MongoDB;
 using Warehouse.API;
+using Warehouse.API.Hubs;
 using Warehouse.API.Resources;
 using Warehouse.API.Services.Authorization;
 using Warehouse.API.Services.Errors;
@@ -102,6 +103,7 @@ try
         });
 
         builder.Services.AddSingleton<ProblemDetailsFactory, CustomProblemDetailsFactory>();
+        builder.Services.AddSignalR();
     }
 
     var app = builder.Build();
@@ -154,6 +156,8 @@ try
             Predicate = (check) => check.Tags.Contains("infrastructure"),
             ResponseWriter = HealthCheckResponse.WriteRaw
         });
+
+        app.MapHub<StreamingHub>("/streaming/notifications");
 
         //app.MapControllerRoute(
         //    name: "default",
