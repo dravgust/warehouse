@@ -4,7 +4,7 @@
     {
         public RedisCachingMessage()
         {
-            Id = $"{Guid.NewGuid():N}";
+            Id = Guid.NewGuid().ToString("N");
             CreationDate = DateTime.UtcNow;
         }
 

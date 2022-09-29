@@ -49,14 +49,18 @@ namespace Vayosoft.Caching.Redis
 
         private void CacheCancellableTokensRegistry_OnTokenCancelled(TokenCancelledEventArgs e)
         {
-            var message = new RedisCachingMessage { InstanceId = InstanceId, IsToken = true, CacheKeys = new[] { e.TokenKey } };
+            var message = new RedisCachingMessage { InstanceId = InstanceId, IsToken = true, CacheKeys = new object[] { e.TokenKey } };
             Publish(message);
-            _log.LogTrace($"Published token cancellation message {message.ToString()}");
+            if (_log.IsEnabled(LogLevel.Trace))
+            {
+                _log.LogTrace("Published token cancellation message {Message}", message.ToString());
+            }
         }
 
         protected virtual void OnConnectionFailed(object sender, ConnectionFailedEventArgs e)
         {
-            _log.LogError($"Redis disconnected from instance {InstanceId}. Endpoint is {e.EndPoint}, failure type is {e.FailureType}");
+            _log.LogError("Redis disconnected from instance {InstanceId}. Endpoint is {EndPoint}, failure type is {FailureType}",
+                InstanceId, e.EndPoint, e.FailureType);
 
             // If we have no connection to Redis, we can't invalidate cache on another platform instances,
             // so the better idea is to disable cache at all for data consistence
@@ -68,7 +72,10 @@ namespace Vayosoft.Caching.Redis
 
         protected virtual void OnConnectionRestored(object sender, ConnectionFailedEventArgs e)
         {
-            _log.LogTrace($"Redis backplane connection restored for instance {InstanceId}");
+            if (_log.IsEnabled(LogLevel.Trace))
+            {
+                _log.LogTrace("Redis backplane connection restored for instance {InstanceId}", InstanceId);
+            }
 
             // Return cache to the same state as it was initially.
             // Don't set directly true because it may be disabled in app settings
@@ -90,12 +97,20 @@ namespace Vayosoft.Caching.Redis
                 {
                     if (message.IsToken)
                     {
-                        _log.LogTrace($"Trying to cancel token with key: {key}");
+                        if (_log.IsEnabled(LogLevel.Trace))
+                        {
+                            _log.LogTrace("Trying to cancel token with key: {Key}", key);
+                        }
+
                         CancellableCacheRegion.CancelForKey(key, propagate: false);
                     }
                     else
                     {
-                        _log.LogTrace($"Trying to remove cache entry with key: {key} from in-memory cache");
+                        if (_log.IsEnabled(LogLevel.Trace))
+                        {
+                            _log.LogTrace("Trying to remove cache entry with key: {Key} from in-memory cache", key);
+                        }
+
                         base.Remove(key);
                     }
                 }
@@ -106,7 +121,10 @@ namespace Vayosoft.Caching.Redis
         {
             var message = new RedisCachingMessage { InstanceId = InstanceId, CacheKeys = new[] { key } };
             Publish(message);
-            _log.LogTrace($"Published message {message} to the Redis backplane");
+            if (_log.IsEnabled(LogLevel.Trace))
+            {
+                _log.LogTrace("Published message {Message} to the Redis backplane", message);
+            }
 
             base.EvictionCallback(key, value, reason, state);
         }
@@ -128,14 +146,19 @@ namespace Vayosoft.Caching.Redis
                         _connectionProvider.Connection.ConnectionFailed += OnConnectionFailed;
                         _connectionProvider.Connection.ConnectionRestored += OnConnectionRestored;
 
-                        _bus.Subscriber.Subscribe(_redisCachingOptions.ChannelName, OnMessage, CommandFlags.FireAndForget);
+                        _bus.Subscriber.Subscribe(_redisCachingOptions.ChannelName, OnMessage,
+                            CommandFlags.FireAndForget);
+                        if (_log.IsEnabled(LogLevel.Trace))
+                        {
+                            _log.LogTrace(
+                                "Successfully subscribed to Redis backplane channel {ChannelName} with instance id:{InstanceId}",
+                                _redisCachingOptions.ChannelName, InstanceId);
+                        }
 
-                        _log.LogTrace($"Successfully subscribed to Redis backplane channel {_redisCachingOptions.ChannelName} with instance id:{InstanceId}");
                         _isSubscribed = true;
                     }
                 }
             }
-
         }
 
         protected override void Dispose(bool disposing)

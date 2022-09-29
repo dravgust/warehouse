@@ -29,7 +29,10 @@ namespace Warehouse.Core.UseCases.Management.Events
 
         public async Task Handle(UserOperation @event, CancellationToken cancellationToken)
         {
-            _logger.LogDebug($"operation history event listener catch: {@event.ToJson()}");
+            if (_logger.IsEnabled(LogLevel.Debug))
+            {
+                _logger.LogDebug($"operation history event listener catch: {@event.ToJson()}");
+            }
 
             var sourceId = @event.SourceId;
             var eventType = @event.Type;
