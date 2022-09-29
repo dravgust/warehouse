@@ -58,7 +58,7 @@ function Dashboard() {
   const [connection, setConnection] = useState(null);
   useEffect(() => {
     const newConnection = new HubConnectionBuilder()
-      .withUrl("http://localhost:5243/streaming/notifications")
+      .withUrl("http://localhost:5243/stream/notifications")
       .withAutomaticReconnect()
       .build();
 
@@ -71,7 +71,7 @@ function Dashboard() {
         .start()
         .then(() => {
           console.log("Connected!");
-          connection.stream("Streaming").subscribe({
+          connection.stream("Notifications").subscribe({
             next: (item) => {
               console.log("item", item);
             },

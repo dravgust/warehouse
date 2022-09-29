@@ -157,7 +157,8 @@ try
             ResponseWriter = HealthCheckResponse.WriteRaw
         });
 
-        app.MapHub<StreamingHub>("/streaming/notifications");
+        app.MapHub<StreamHub>("/stream/notifications");
+        app.MapHub<AsyncEnumerableHub>("/enumerable/notifications");
 
         //app.MapControllerRoute(
         //    name: "default",

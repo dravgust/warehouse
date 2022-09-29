@@ -1,10 +1,10 @@
-﻿using System.Runtime.CompilerServices;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
+using System.Runtime.CompilerServices;
 using Warehouse.Core.Entities.Models;
 
 namespace Warehouse.API.Hubs
 {
-    public sealed class StreamingHub : Hub
+    public class AsyncEnumerableHub : Hub
     {
         public async IAsyncEnumerable<NotificationEntity> Notifications([EnumeratorCancellation] CancellationToken cancellationToken)
         {
