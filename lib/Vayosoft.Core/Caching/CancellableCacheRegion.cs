@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
 using Microsoft.Extensions.Primitives;
+using Vayosoft.Core.Utilities;
 
 namespace Vayosoft.Core.Caching
 {
@@ -88,10 +89,8 @@ namespace Vayosoft.Core.Caching
 
         public static IChangeToken CreateChangeTokenForKey(string key)
         {
-            if (key is null)
-            {
-                throw new ArgumentNullException(nameof(key));
-            }
+            Guard.NotNull(key);
+
             var tokenKey = GenerateRegionTokenKey(key);
             var tokenSource = _keyTokensDict.GetOrAdd(tokenKey, _ => new CancellationTokenSource());
 

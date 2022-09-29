@@ -1,40 +1,60 @@
-﻿using System;
+﻿using System.Runtime.CompilerServices;
 
 namespace Vayosoft.Core.Utilities
 {
     public static class Guard
     {
-        public static void Assert(bool condition)
+        public static void Assert(bool condition, 
+            [CallerArgumentExpression("condition")] string message = "")
         {
             if (!condition)
-                throw new Exception("Assertion failed");
+            {
+                throw new ArgumentException(null, message);
+            }
         }
 
-        public static T NotNull<T>(T value, string parameterName)
+        public static void Assert(Func<bool> condition,
+            [CallerArgumentExpression("condition")] string message = "")
         {
-            if (string.IsNullOrWhiteSpace(parameterName))
+            Assert(condition());
+        }
+
+        public static T NotNull<T>(T value,
+            [CallerArgumentExpression("value")] string message = "")
+        {
+            if (string.IsNullOrWhiteSpace(message))
             {
-                throw new ArgumentNullException(parameterName);
+                throw new ArgumentNullException(message);
             }
 
             if (ReferenceEquals(value, null))
             {
-                throw new ArgumentNullException(parameterName);
+                throw new ArgumentNullException(message);
             }
 
             return value;
         }
 
-        public static string NotEmpty(string value, string parameterName)
+        public static string NotEmpty(string value,
+            [CallerArgumentExpression("value")] string message = "")
         {
-            NotNull(value, parameterName);
+            NotNull(value, message);
 
             if (value.Trim().Length == 0)
             {
-                throw new ArgumentException($"The string parameter {parameterName} cannot be empty.");
+                throw new ArgumentException("Parameter cannot be empty.", message);
             }
 
             return value;
+        }
+
+        public static void NotEmpty<T>(IEnumerable<T> value,
+            [CallerArgumentExpression("value")] string message = "")
+        {
+            if (!value.Any())
+            {
+                throw new ArgumentException("Enumerable cannot be empty.", message);
+            }
         }
     }
 }

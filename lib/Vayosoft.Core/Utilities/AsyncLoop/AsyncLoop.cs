@@ -17,11 +17,8 @@ namespace Vayosoft.Core.Utilities.AsyncLoop
 
         public AsyncLoop(string name, Func<CancellationToken, Task> loop)
         {
-            Guard.NotEmpty(name, nameof(name));
-            Guard.NotNull(loop, nameof(loop));
-
-            this.Name = name;
-            this._loopAsync = loop;
+            this.Name = Guard.NotEmpty(name);
+            this._loopAsync = Guard.NotNull(loop);
             this.RepeatEvery = TimeSpan.FromMilliseconds(1000);
         }
 

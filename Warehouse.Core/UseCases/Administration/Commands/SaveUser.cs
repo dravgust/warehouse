@@ -64,7 +64,7 @@ public class HandleSaveUser : ICommandHandler<SaveUser>
     {
         try
         {
-            var identity = _userContext.User.Identity ?? throw new ArgumentNullException(nameof(_userContext.User.Identity));
+            var identity = Guard.NotNull(_userContext.User.Identity);
             var identityType = identity.GetUserType();
             
             await _userContext.LoadSessionAsync();
@@ -84,8 +84,7 @@ public class HandleSaveUser : ICommandHandler<SaveUser>
             }
             else
             {
-                if (string.IsNullOrEmpty(command.Password))
-                    throw new ArgumentNullException(nameof(command.Password));
+                Guard.NotEmpty(command.Password);
 
                 entity = new UserEntity(command.Username)
                 {
