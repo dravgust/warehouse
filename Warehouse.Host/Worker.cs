@@ -66,7 +66,7 @@ namespace Warehouse.Host
                             var settings = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<IpsSettings>(), async options =>
                             {
                                 options.AbsoluteExpirationRelativeToNow = TimeSpans.FiveMinutes;
-                                return await settingsRepository.SingleOrDefaultAsync(e => true, cancellationToken: token) ?? new IpsSettings();
+                                return await settingsRepository.FirstOrDefaultAsync(e => true, cancellationToken: token) ?? new IpsSettings();
                             });
 
                             var gSite = await GetGenericSiteAsync(gwRepository, site, settings);
@@ -278,7 +278,7 @@ namespace Warehouse.Host
                 var gauge = gateway.Gauge;
                 if (string.IsNullOrEmpty(gauge?.MAC)) continue;
 
-                var payload = await repository.SingleOrDefaultAsync(g => g.MacAddress == gateway.MacAddress);
+                var payload = await repository.FirstOrDefaultAsync(g => g.MacAddress == gateway.MacAddress);
                 if (payload == null) continue;
 
                 var pGauge = payload.Beacons.FirstOrDefault(p => p.MacAddress.Equals(gauge.MAC, StringComparison.Ordinal));

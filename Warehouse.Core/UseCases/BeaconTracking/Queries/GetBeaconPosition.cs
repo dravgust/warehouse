@@ -64,7 +64,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
             var settings = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<IpsSettings>(), async options =>
             {
                 options.AbsoluteExpirationRelativeToNow = TimeSpans.FiveMinutes;
-                return await _settings.SingleOrDefaultAsync(e => true, cancellationToken: cancellationToken) ??
+                return await _settings.FirstOrDefaultAsync(e => true, cancellationToken: cancellationToken) ??
                        new IpsSettings();
             });
 
