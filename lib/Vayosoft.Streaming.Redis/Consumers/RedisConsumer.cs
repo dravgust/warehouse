@@ -29,7 +29,7 @@ namespace Vayosoft.Streaming.Redis.Consumers
 
         public void Subscribe(string[] topics, Action<ConsumeResult<string, string>> action, CancellationToken cancellationToken)
         {
-            var consumerName = _config?.ConsumerId ?? $"{Guid.NewGuid()}";
+            var consumerName = _config?.ConsumerId ?? Guid.NewGuid().ToString();
             var groupName = _config?.GroupId ?? consumerName;
  
             foreach (var topic in topics)
@@ -43,12 +43,12 @@ namespace Vayosoft.Streaming.Redis.Consumers
 
                 var handler = new AnonymousObserver<ConsumeResult<string, string>>(
                 onNext: action,
-                onCompleted: () => _logger.LogInformation($"[{groupName}.{consumerName}] Unsubscribed from stream {topics}"),
-                onError: (e) => _logger.LogError($"{e.Message}\r\n{e.StackTrace}"));
+                onCompleted: () => _logger.LogInformation("[{GroupName}.{ConsumerName}] Unsubscribed from stream {Topics}", groupName, consumerName, topics),
+                onError: (e) => _logger.LogError("{Message}\r\n{StackTrace}", e.Message, e.StackTrace));
 
                 CreateMessageSubscriber(_database, topic, groupName, consumerName, handler, tokenSource.Token, IntervalMilliseconds);
 
-                _logger.LogInformation($"[{groupName}.{consumerName}] Subscribed to stream {topic}");
+                _logger.LogInformation("[{GroupName}.{ConsumerName}] Subscribed to stream {Topic}", groupName, consumerName, topic);
             }
         }
 

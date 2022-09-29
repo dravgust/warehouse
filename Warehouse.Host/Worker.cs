@@ -36,13 +36,13 @@ namespace Warehouse.Host
         protected override async Task ExecuteAsync(CancellationToken token)
         {
             string[] args = Environment.GetCommandLineArgs();
-            _logger.LogInformation("command line args: {args}", string.Join(" ", args));
+            _logger.LogInformation("command line args: {Args}", string.Join(" ", args));
 
             var providers = new List<long>{ 2, 1000 };
 
             while (!token.IsCancellationRequested)
             {
-                _logger.LogDebug("Worker running at: {time}", DateTimeOffset.Now);
+                _logger.LogDebug("Worker running at: {Time}", DateTimeOffset.Now);
 
                 using var scope = _serviceProvider.CreateScope();
                 var siteRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<WarehouseSiteEntity>>();
@@ -75,7 +75,7 @@ namespace Warehouse.Host
                             if (_logger.IsEnabled(LogLevel.Debug))
                             {
                                 _logger.LogDebug(
-                                    "\r\n*************** CalcBeacons Position ***************\r\nProviderId: {0} SiteId:{1}:\r\n{2}\r\n******************************",
+                                    "\r\n*************** CalcBeacons Position ***************\r\nProviderId: {ProviderId} SiteId:{SiteId}:\r\n{2}\r\n******************************",
                                     providerId, gSite.Id, JsonSerializer.Serialize(gSite.Gateways.Select(g =>
                                         new
                                         {
@@ -96,7 +96,7 @@ namespace Warehouse.Host
                             if (_logger.IsEnabled(LogLevel.Debug))
                             {
                                 _logger.LogDebug(
-                                    "\r\n*************** Site Status ***************\r\nProviderId: {0} SiteId:{1}:\r\n{2}\r\n******************************",
+                                    "\r\n*************** Site Status ***************\r\nProviderId: {ProviderId} SiteId:{SiteId}:\r\n{2}\r\n******************************",
                                     providerId, gSite.Id,
                                     new {@in = currentStatus.In, @out = currentStatus.Out}.ToJson());
                             }

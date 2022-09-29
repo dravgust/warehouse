@@ -21,7 +21,7 @@ namespace Vayosoft.Http.Diagnostics
             var fullRequest = $"{headers}\r\n{body}";
 
             var options = new JsonSerializerOptions { WriteIndented = true };
-            _logger.LogInformation($"{JsonSerializer.Serialize(fullRequest, options)}");
+            _logger.LogInformation(JsonSerializer.Serialize(fullRequest, options));
 
             var response = await base.SendAsync(request, cancellationToken);
 
@@ -29,7 +29,7 @@ namespace Vayosoft.Http.Diagnostics
             body = await response.Content.ReadAsStringAsync(cancellationToken);
             var fullResponse = $"{headers}\r\n{body}";
 
-            _logger.LogInformation($"{JsonSerializer.Serialize(fullResponse, options)}");
+            _logger.LogInformation(JsonSerializer.Serialize(fullResponse, options));
 
             return response;
         }

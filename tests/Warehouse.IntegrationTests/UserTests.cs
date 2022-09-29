@@ -40,7 +40,7 @@ namespace Warehouse.IntegrationTests
             context.Users.Add(user);
             context.SaveChanges();
 
-            _logger.LogInformation($"userId: {user.Id}");
+            _logger.LogInformation("userId: {UserId}", user.Id);
 
             Assert.True(user.Id > 0);
         }

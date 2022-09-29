@@ -24,8 +24,8 @@ namespace Vayosoft.Streaming.Redis.Consumers
             {
                 var observer = new AnonymousObserver<ConsumeResult<string, string>>(
                 onNext: action,
-                onCompleted: () => _logger.LogInformation($"Unsubscribed from channel {topic}"),
-                onError: (e) => _logger.LogError($"{e.Message}\r\n{e.StackTrace}"));
+                onCompleted: () => _logger.LogInformation("Unsubscribed from channel {Topic}", topic),
+                onError: (e) => _logger.LogError("{Message}\r\n{StackTrace}", e.Message, e.StackTrace));
 
                 _subscriber.Subscribe(new RedisChannel(topic, RedisChannel.PatternMode.Auto), (channel, message) =>
                 {
@@ -39,7 +39,7 @@ namespace Vayosoft.Streaming.Redis.Consumers
                     catch (Exception ex) { observer.OnError(ex); }
                 });
 
-                _logger.LogInformation($"Subscribed to channel {topic}");
+                _logger.LogInformation("Subscribed to channel {Topic}", topic);
             }
         }
 
