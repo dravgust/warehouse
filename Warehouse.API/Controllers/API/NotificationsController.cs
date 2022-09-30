@@ -25,7 +25,6 @@ namespace Warehouse.API.Controllers.API
             return Ok((await _queryBus.Send(query, token)).ToPagedResponse(query.Size));
         }
 
-        [AllowAnonymous]
         [HttpGet("stream")]
         public IAsyncEnumerable<NotificationEntity> GetStream(CancellationToken token = default)
         {

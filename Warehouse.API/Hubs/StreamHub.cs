@@ -31,7 +31,7 @@ namespace Warehouse.API.Hubs
                     await writer.WriteAsync(item, cancellationToken);
                 }
             }
-            catch(OperationCanceledException){}
+            catch(TaskCanceledException){}
             catch (Exception e)
             {
                 localException = e;
