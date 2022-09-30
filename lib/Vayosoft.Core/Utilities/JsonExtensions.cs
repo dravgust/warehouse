@@ -1,4 +1,3 @@
-using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 
@@ -6,6 +5,12 @@ namespace Vayosoft.Core.Utilities
 {
     public static class JsonExtensions
     {
+        private static readonly JsonSerializerOptions _options = new()
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            WriteIndented = true
+        };
+
         /// <summary>
         /// Deserialize object from json with JsonNet
         /// </summary>
@@ -14,12 +19,7 @@ namespace Vayosoft.Core.Utilities
         /// <returns>deserialized object</returns>
         public static T FromJson<T>(this string json)
         {
-            var options = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                WriteIndented = true
-            };
-            return JsonSerializer.Deserialize<T>(json, options);
+            return JsonSerializer.Deserialize<T>(json, _options);
         }
 
         /// <summary>
@@ -29,12 +29,7 @@ namespace Vayosoft.Core.Utilities
         /// <returns>json string</returns>
         public static string ToJson(this object obj)
         {
-            var options = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                WriteIndented = true
-            };
-            return JsonSerializer.Serialize(obj, options);
+            return JsonSerializer.Serialize(obj, _options);
         }
 
         /// <summary>

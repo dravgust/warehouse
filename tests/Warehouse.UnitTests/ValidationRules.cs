@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using FluentAssertions;
 
 namespace Warehouse.UnitTests
 {
@@ -7,10 +8,10 @@ namespace Warehouse.UnitTests
         [Fact]
         public void Check_MacAddress()
         {
-            var pattern = @"^([0-9A-Fa-f]{2}[:-]?){5}([0-9A-Fa-f]{2})$";
+            const string pattern = @"^([0-9A-Fa-f]{2}[:-]?){5}([0-9A-Fa-f]{2})$";
             var matches = Regex.Match("DD340206CB76", pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-            Assert.True(matches.Success);
+            matches.Success.Should().Be(true);
         }
     }
 }
