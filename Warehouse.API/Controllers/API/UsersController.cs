@@ -39,7 +39,7 @@ namespace Warehouse.API.Controllers.API
 
         //[MapToApiVersion("1.0")]
         [HttpGet]
-        [ProducesResponseType(typeof(PagedListResponse<UserEntityDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PagedResponse<UserEntityDto>), StatusCodes.Status200OK)]
         [PermissionAuthorization("USER", SecurityPermissions.View)]
         public async Task<IActionResult> Get(int page, int size, string searchTerm = null, CancellationToken token = default)
         {
@@ -48,7 +48,7 @@ namespace Warehouse.API.Controllers.API
                 ? Guard.NotNull(userContext.User.Identity?.GetProviderId())
                 : null;
             var spec = new UserSpec(page, size, providerId, searchTerm);
-            var query = new SpecificationQuery<UserSpec, IPagedEnumerable<UserEntityDto>>(spec);
+            var query = new SpecificationQuery<UserSpec, IPagedCollection<UserEntityDto>>(spec);
 
             return Paged(await queryBus.Send(query, token), size);
         }

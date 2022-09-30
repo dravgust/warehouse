@@ -16,14 +16,14 @@ namespace Vayosoft.Data.MongoDB.Extensions
             where T : class
             => queryable.Skip((page - 1) * pageSize).Take(pageSize);
 
-        public static async Task<IPagedEnumerable<T>> ToPagedEnumerableAsync<T>(this IMongoQueryable<T> queryable,
+        public static async Task<IPagedCollection<T>> ToPagedEnumerableAsync<T>(this IMongoQueryable<T> queryable,
             IPagingModel pagingModel, CancellationToken cancellationToken = default)
             where T : class
         {
             var list = queryable.Paginate(pagingModel).ToListAsync(cancellationToken: cancellationToken);
             var count = queryable.CountAsync(cancellationToken: cancellationToken);
             await Task.WhenAll(list, count);
-            return new PagedEnumerable<T>(await list, await count);
+            return new PagedCollection<T>(await list, await count);
         }
     }
 }

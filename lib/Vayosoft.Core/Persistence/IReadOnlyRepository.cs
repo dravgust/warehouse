@@ -38,7 +38,7 @@ namespace Vayosoft.Core.Persistence
         Task<List<TEntity>> ListAsync(ISpecification<TEntity> spec,
             CancellationToken cancellationToken = default);
 
-        Task<IPagedEnumerable<TEntity>> PagedEnumerableAsync(ILinqSpecification<TEntity> spec,
+        Task<IPagedCollection<TEntity>> PagedEnumerableAsync(ILinqSpecification<TEntity> spec,
             CancellationToken cancellationToken = default);
 
         IAsyncEnumerable<TEntity> AsyncEnumerable(ISpecification<TEntity> spec,

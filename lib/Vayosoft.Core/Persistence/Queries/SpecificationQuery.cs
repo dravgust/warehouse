@@ -50,7 +50,7 @@ namespace Vayosoft.Core.Persistence.Queries
     }
 
     public class PagingQueryHandler<TSortKey, TSpec, TEntity, TDto> : ProjectionQueryHandler<TSpec, TEntity, TDto>,
-        IQueryHandler<SpecificationQuery<TSpec, IPagedEnumerable<TDto>>, IPagedEnumerable<TDto>>
+        IQueryHandler<SpecificationQuery<TSpec, IPagedCollection<TDto>>, IPagedCollection<TDto>>
         where TEntity : class, IEntity
         where TDto : class, IEntity
         where TSpec : IPagingModel<TDto, TSortKey>
@@ -58,7 +58,7 @@ namespace Vayosoft.Core.Persistence.Queries
         public PagingQueryHandler(ILinqProvider linqProvider, IProjector projector)
             : base(linqProvider, projector) { }
 
-        public IQueryHandler<SpecificationQuery<TSpec, IPagedEnumerable<TDto>>, IPagedEnumerable<TDto>> AsPaged() => this;
+        public IQueryHandler<SpecificationQuery<TSpec, IPagedCollection<TDto>>, IPagedCollection<TDto>> AsPaged() => this;
 
         public override Task<IEnumerable<TDto>> Handle(SpecificationQuery<TSpec, IEnumerable<TDto>> request, CancellationToken cancellationToken)
         {
@@ -66,7 +66,7 @@ namespace Vayosoft.Core.Persistence.Queries
             return Task.FromResult<IEnumerable<TDto>>(result);
         }
 
-        public Task<IPagedEnumerable<TDto>> Handle(SpecificationQuery<TSpec, IPagedEnumerable<TDto>> request, CancellationToken cancellationToken)
+        public Task<IPagedCollection<TDto>> Handle(SpecificationQuery<TSpec, IPagedCollection<TDto>> request, CancellationToken cancellationToken)
         {
             var result = GetQueryable(request.Specification).ToPagedEnumerable(request.Specification);
             return Task.FromResult(result);

@@ -1,15 +1,15 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 
 namespace Vayosoft.Core.SharedKernel.Models.Pagination
 {
-    public class PagedEnumerable<T> : IPagedEnumerable<T>
+    public class PagedCollection<T> : IPagedCollection<T>
     {
         private readonly IEnumerable<T> _inner;
 
-        public PagedEnumerable(IEnumerable<T> inner, long totalCount)
+        public PagedCollection(IEnumerable<T> inner, long totalCount)
         {
             _inner = inner;
+
             TotalCount = totalCount;
         }
 
@@ -24,5 +24,7 @@ namespace Vayosoft.Core.SharedKernel.Models.Pagination
         }
 
         public long TotalCount { get; }
+
+
     }
 }

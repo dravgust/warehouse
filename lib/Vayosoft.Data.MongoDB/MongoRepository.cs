@@ -76,7 +76,7 @@ namespace Vayosoft.Data.MongoDB
             return Collection.AsQueryable().Evaluate(spec).ToAsyncEnumerable(cancellationToken);
         }
 
-        public async Task<IPagedEnumerable<T>> PagedEnumerableAsync(ILinqSpecification<T> spec, CancellationToken cancellationToken = default) {
+        public async Task<IPagedCollection<T>> PagedEnumerableAsync(ILinqSpecification<T> spec, CancellationToken cancellationToken = default) {
             var cursor = Collection.AsQueryable().Apply(spec);
 
             if (spec is IPagingModel model) {
@@ -85,7 +85,7 @@ namespace Vayosoft.Data.MongoDB
             var list = cursor.ToListAsync(cancellationToken);
             var count = cursor.CountAsync(cancellationToken);
             await Task.WhenAll(list, count);
-            return new PagedEnumerable<T>(await list, await count);
+            return new PagedCollection<T>(await list, await count);
         }
 
         //public Task<IPagedEnumerable<T>> PagedListAsync(IPagingModel<T, object> model, Expression<Func<T, bool>> criteria, CancellationToken cancellationToken) =>
