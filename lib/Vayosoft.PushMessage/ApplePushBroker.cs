@@ -87,7 +87,7 @@ namespace Vayosoft.PushMessage
             if (string.IsNullOrEmpty(token))
                 throw new ApplicationException("parameter: 'token' was not received");
 
-            if (payload == null)
+            if (payload is null)
                 throw new ApplicationException("parameter: 'payload' was not received");
 
             // Queue a notification to send

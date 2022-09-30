@@ -8,8 +8,7 @@ namespace Vayosoft.Data.MongoDB
     {
         public static void RegisterClassMap(Assembly domainAssembly)
         {
-            if (domainAssembly == null)
-                domainAssembly = Assembly.GetCallingAssembly();
+            domainAssembly ??= Assembly.GetCallingAssembly();
             var classMaps = domainAssembly
                 .GetTypes()
                 .Where(t => t.BaseType is { IsGenericType: true } && t.BaseType.GetGenericTypeDefinition() == typeof(MongoClassMap<>));

@@ -53,7 +53,7 @@ namespace Warehouse.Core.Services.Authentication
         public async Task<AuthenticationResult> RefreshTokenAsync(string token, string ipAddress, CancellationToken cancellationToken)
         {
             var user = await _userRepository.FindByRefreshTokenAsync(token, cancellationToken);
-            if (user == null)
+            if (user is null)
                 throw new ApplicationException("Invalid token");
 
             var refreshToken = user.RefreshTokens.Single(x => x.Token == token);
@@ -91,7 +91,7 @@ namespace Warehouse.Core.Services.Authentication
         public async Task RevokeTokenAsync(string token, string ipAddress, CancellationToken cancellationToken)
         {
             var user = await _userRepository.FindByRefreshTokenAsync(token, cancellationToken);
-            if (user == null)
+            if (user is null)
                 throw new ApplicationException("Invalid token");
 
             var refreshToken = user.RefreshTokens.Single(x => x.Token == token);
