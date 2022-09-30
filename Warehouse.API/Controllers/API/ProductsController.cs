@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Queries;
-using Warehouse.API.Contracts;
 using Warehouse.API.Services;
 using Warehouse.API.Services.Authorization;
 using Warehouse.Core.UseCases.Management.Commands;
@@ -12,7 +11,7 @@ namespace Warehouse.API.Controllers.API
     [PermissionAuthorization]
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductsController : ControllerBase
+    public class ProductsController : ApiControllerBase
     {
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
@@ -35,7 +34,7 @@ namespace Warehouse.API.Controllers.API
 
         [HttpGet("")]
         public async Task<IActionResult> Get([FromQuery] GetProducts query, CancellationToken token = default) {
-            return Ok((await _queryBus.Send(query, token)).ToPagedResponse(query.Size));
+            return Paged(await _queryBus.Send(query, token), query.Size);
         }
 
         [HttpPost("delete")]

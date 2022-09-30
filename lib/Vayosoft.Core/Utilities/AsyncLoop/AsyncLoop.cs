@@ -28,7 +28,7 @@ namespace Vayosoft.Core.Utilities.AsyncLoop
         {
             Guard.NotNull(cancellation, nameof(cancellation));
 
-            if (repeatEvery != null)
+            if (repeatEvery is not null)
                 this.RepeatEvery = repeatEvery.Value;
 
             this.RunningTask = this.StartAsync(cancellation, startAfter);
@@ -44,7 +44,7 @@ namespace Vayosoft.Core.Utilities.AsyncLoop
                 Trace.TraceInformation("\r\n========================================\r\n=> Job {0} started with interval {1}. \r\n========================================", this.Name, this.RepeatEvery);
                 try
                 {
-                    if (delayStart != null)
+                    if (delayStart is not null)
                         await Task.Delay(delayStart.Value, cancellation).ConfigureAwait(false);
 
                     if (this.RepeatEvery == TimeSpans.RunOnce)
@@ -78,7 +78,7 @@ namespace Vayosoft.Core.Utilities.AsyncLoop
 	                Trace.TraceInformation("\r\n========================================\r\n=> {0} stopped. \r\n========================================", this.Name);
                 }
 
-                if (uncaughtException != null)
+                if (uncaughtException is not null)
                 {
 	                Trace.TraceError("{0} threw an unhandled exception: {1}", this.Name, uncaughtException);
                 }

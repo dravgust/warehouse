@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Queries;
-using Warehouse.API.Contracts;
 using Warehouse.API.Services.Authorization;
 using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.BeaconTracking.Queries;
@@ -11,7 +9,7 @@ namespace Warehouse.API.Controllers.API
     [PermissionAuthorization]
     [Route("api/[controller]")]
     [ApiController]
-    public class NotificationsController : ControllerBase
+    public class NotificationsController : ApiControllerBase
     {
         private readonly IQueryBus _queryBus;
 
@@ -22,7 +20,7 @@ namespace Warehouse.API.Controllers.API
 
         [HttpGet("")]
         public async Task<IActionResult> Get([FromQuery] GetUserNotifications query, CancellationToken token = default) {
-            return Ok((await _queryBus.Send(query, token)).ToPagedResponse(query.Size));
+            return Paged(await _queryBus.Send(query, token), query.Size);
         }
 
         [HttpGet("stream")]

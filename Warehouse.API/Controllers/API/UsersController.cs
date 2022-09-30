@@ -4,7 +4,7 @@ using Vayosoft.Core.Persistence.Commands;
 using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
-using Warehouse.API.Contracts;
+using Vayosoft.Core.Utilities;
 using Warehouse.API.Services.Authorization;
 using Warehouse.API.Services.Errors.Models;
 using Warehouse.Core.Entities.Models;
@@ -24,7 +24,7 @@ namespace Warehouse.API.Controllers.API
     [Route("api/[controller]")]
     [ApiController]
     [ApiVersion("1.0")]
-    public class UsersController : ControllerBase
+    public class UsersController : ApiControllerBase
     {
         private readonly ICommandBus commandBus;
         private readonly IQueryBus queryBus;
@@ -44,13 +44,13 @@ namespace Warehouse.API.Controllers.API
         public async Task<IActionResult> Get(int page, int size, string searchTerm = null, CancellationToken token = default)
         {
             await userContext.LoadSessionAsync();
-            long? providerId = !userContext.IsSupervisor 
-                ? userContext.User.Identity?.GetProviderId() ?? 0 
+            var providerId = !userContext.IsSupervisor 
+                ? Guard.NotNull(userContext.User.Identity?.GetProviderId())
                 : null;
             var spec = new UserSpec(page, size, providerId, searchTerm);
             var query = new SpecificationQuery<UserSpec, IPagedEnumerable<UserEntityDto>>(spec);
 
-            return Ok((await queryBus.Send(query, token)).ToPagedResponse(size));
+            return Paged(await queryBus.Send(query, token), size);
         }
 
         [HttpGet("{id}")]
@@ -61,7 +61,7 @@ namespace Warehouse.API.Controllers.API
         {
             var query = new SingleQuery<UserEntityDto>(id);
             UserEntityDto result;
-            if ((result = await queryBus.Send(query, token)) == null)
+            if ((result = await queryBus.Send(query, token)) is null)
             {
                 return NotFound();
             }

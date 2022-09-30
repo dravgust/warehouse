@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Queries;
-using Warehouse.API.Contracts;
 using Warehouse.API.Services.Authorization;
 using Warehouse.Core.UseCases.Management.Commands;
 using Warehouse.Core.UseCases.Management.Queries;
@@ -23,7 +22,7 @@ namespace Warehouse.API.Controllers.API
 
         [HttpGet("")]
         public async Task<IActionResult> Get([FromQuery] GetTrackedItems query, CancellationToken token = default) {
-            return Ok((await _queryBus.Send(query, token)).ToPagedResponse(query.Size));
+            return Paged(await _queryBus.Send(query, token), query.Size);
         }
 
         [HttpGet("registered")]

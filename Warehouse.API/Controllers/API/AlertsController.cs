@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Queries;
-using Warehouse.API.Contracts;
 using Warehouse.API.Services.Authorization;
 using Warehouse.Core.UseCases.Management.Commands;
 using Warehouse.Core.UseCases.Management.Queries;
@@ -11,7 +10,7 @@ namespace Warehouse.API.Controllers.API
     [PermissionAuthorization]
     [Route("api/[controller]")]
     [ApiController]
-    public class AlertsController : ControllerBase
+    public class AlertsController : ApiControllerBase
     {
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
@@ -24,7 +23,7 @@ namespace Warehouse.API.Controllers.API
 
         [HttpGet("")]
         public async Task<IActionResult> Get([FromQuery] GetAlerts query, CancellationToken token = default) {
-            return Ok((await _queryBus.Send(query, token)).ToPagedResponse(query.Size));
+            return Paged(await _queryBus.Send(query, token), query.Size);
         }
 
         [HttpPost("delete")]

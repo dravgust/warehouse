@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Drawing;
 using Vayosoft.Core.Queries;
 using Warehouse.API.Contracts;
 using Warehouse.API.Services.Authorization;
@@ -9,7 +10,7 @@ namespace Warehouse.API.Controllers.API
     [PermissionAuthorization]
     [Route("api/[controller]")]
     [ApiController]
-    public class DashboardController : ControllerBase
+    public class DashboardController : ApiControllerBase
     {
         private readonly IQueryBus _queryBus;
 
@@ -30,7 +31,7 @@ namespace Warehouse.API.Controllers.API
 
         [HttpGet("beacons")]
         public async Task<IActionResult> GetBeacons([FromQuery] GetDashboardByBeacon query, CancellationToken token = default) {
-            return Ok((await _queryBus.Send(query, token)).ToPagedResponse(query.Size));
+            return Paged(await _queryBus.Send(query, token), query.Size);
         }
 
         [HttpGet("beacon/{id}")]

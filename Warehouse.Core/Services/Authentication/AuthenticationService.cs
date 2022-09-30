@@ -28,7 +28,7 @@ namespace Warehouse.Core.Services.Authentication
         public async Task<AuthenticationResult> AuthenticateAsync(string username, string password, string ipAddress, CancellationToken cancellationToken)
         {
             var user = await _userRepository.FindByNameAsync(username, cancellationToken);
-            if (user == null || !_passwordHasher.VerifyHashedPassword(user.PasswordHash, password))
+            if (user is null || !_passwordHasher.VerifyHashedPassword(user.PasswordHash, password))
                 throw new ApplicationException("Username or password is incorrect");
 
             // authentication successful so generate jwt and refresh tokens
@@ -127,7 +127,7 @@ namespace Warehouse.Core.Services.Authentication
                 var childToken = user.RefreshTokens.SingleOrDefault(x => x.Token == refreshToken.ReplacedByToken);
                 if (childToken is { IsActive: true })
                     RevokeRefreshToken(childToken, ipAddress, reason);
-                else if (childToken != null)
+                else if (childToken is not null)
                     RevokeDescendantRefreshTokens(childToken, user, ipAddress, reason);
             }
         }

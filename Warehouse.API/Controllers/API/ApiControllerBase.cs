@@ -2,8 +2,10 @@
 using LanguageExt.Common;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Warehouse.API.Extensions;
 using Warehouse.API.Services.Errors.Models;
+using Warehouse.Core.UseCases.Management.Models;
 
 namespace Warehouse.API.Controllers.API
 {
@@ -16,6 +18,11 @@ namespace Warehouse.API.Controllers.API
 
         protected IActionResult Result<TResult, TContract>(Result<TResult> result, Func<TResult, TContract> mapper) {
             return result.Match(obj => Ok(mapper(obj)), Problem);
+        }
+
+        protected IActionResult Paged<TResult>(IPagedEnumerable<TResult> pagedList, long pageSize)
+        {
+            return Ok(new PagedListResponse<TResult>(pagedList, pageSize));
         }
 
         protected IActionResult Problem(Exception exception)

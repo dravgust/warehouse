@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Queries;
-using Warehouse.API.Contracts;
 using Warehouse.API.Services.Authorization;
 using Warehouse.Core.UseCases.BeaconTracking.Queries;
 
@@ -9,7 +8,7 @@ namespace Warehouse.API.Controllers.API
     [PermissionAuthorization]
     [Route("api/[controller]")]
     [ApiController]
-    public class EventsController : ControllerBase
+    public class EventsController : ApiControllerBase
     {
         private readonly IQueryBus _queryBus;
 
@@ -20,7 +19,7 @@ namespace Warehouse.API.Controllers.API
 
         [HttpGet("")]
         public async Task<IActionResult> Get([FromQuery] GetBeaconEvents query, CancellationToken token = default) {
-            return Ok((await _queryBus.Send(query, token)).ToPagedResponse(query.Size));
+            return Paged(await _queryBus.Send(query, token), query.Size);
         }
     }
 }
