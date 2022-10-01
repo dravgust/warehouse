@@ -40,7 +40,7 @@ namespace Warehouse.Core.UseCases.Management.Queries
         {
             query.ProviderId = _userContext.User.Identity.GetProviderId();
 
-            var result = await _store.TrackedItems.PagedEnumerableAsync(query, cancellationToken);
+            var result = await _store.TrackedItems.PageAsync(query, cancellationToken);
             
             var data = new List<TrackedItemDto>();
             foreach (var item in result)

@@ -39,7 +39,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
             CancellationToken cancellationToken)
         {
             query.ProviderId = _userContext.User.Identity.GetProviderId();
-            return await _repository.PagedEnumerableAsync(query, cancellationToken);
+            return await _repository.PageAsync(query, cancellationToken);
         }
     }
 
@@ -62,7 +62,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
         public IAsyncEnumerable<NotificationEntity> Handle(GetUserNotificationStream query, CancellationToken cancellationToken)
         {
             var providerId = _userContext.User.Identity.GetProviderId();
-            return _notifications.AsyncEnumerable(new Specification<NotificationEntity>(n => n.ProviderId == providerId), cancellationToken);
+            return _notifications.StreamAsync(new Specification<NotificationEntity>(n => n.ProviderId == providerId), cancellationToken);
         }
     }
 }

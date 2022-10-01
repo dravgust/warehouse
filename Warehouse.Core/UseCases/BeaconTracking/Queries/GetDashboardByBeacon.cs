@@ -45,7 +45,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
         {
             query.ProviderId = _userContext.User.Identity.GetProviderId();
 
-            var beacons = await _store.TrackedItems.PagedEnumerableAsync(query, cancellationToken);
+            var beacons = await _store.TrackedItems.PageAsync(query, cancellationToken);
             
             var data = new List<DashboardByBeacon>();
             foreach (var b in beacons)
