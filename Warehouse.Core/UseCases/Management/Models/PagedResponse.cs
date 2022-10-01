@@ -10,7 +10,7 @@ namespace Warehouse.Core.UseCases.Management.Models
 
         public long TotalPages { get; }
 
-        public PagedResponse(IPagedCollection<T> items, long pageSize)
+        public PagedResponse(IPagedEnumerable<T> items, long pageSize)
         {
             Items = items.ToList();
 

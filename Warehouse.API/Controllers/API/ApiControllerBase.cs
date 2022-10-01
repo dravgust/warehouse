@@ -20,7 +20,7 @@ namespace Warehouse.API.Controllers.API
             return result.Match(obj => Ok(mapper(obj)), Problem);
         }
 
-        protected IActionResult Paged<TResult>(IPagedCollection<TResult> collection, long pageSize)
+        protected IActionResult Paged<TResult>(IPagedEnumerable<TResult> collection, long pageSize)
         {
             return Ok(new PagedResponse<TResult>(collection, pageSize));
         }

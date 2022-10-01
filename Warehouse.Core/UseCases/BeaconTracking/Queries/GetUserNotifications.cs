@@ -10,7 +10,7 @@ using Warehouse.Core.Services.Security;
 
 namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 {
-    public class GetUserNotifications : PagingModelBase, IQuery<IPagedCollection<NotificationEntity>>, ILinqSpecification<NotificationEntity>
+    public class GetUserNotifications : PagingModelBase, IQuery<IPagedEnumerable<NotificationEntity>>, ILinqSpecification<NotificationEntity>
     {
         public string SearchTerm { get; set; }
         public long ProviderId { get; set; }
@@ -24,7 +24,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
         }
     }
     
-    internal class HandleGetNotifications : IQueryHandler<GetUserNotifications, IPagedCollection<NotificationEntity>>
+    internal class HandleGetNotifications : IQueryHandler<GetUserNotifications, IPagedEnumerable<NotificationEntity>>
     {
         private readonly IReadOnlyRepository<NotificationEntity> _repository;
         private readonly IUserContext _userContext;
@@ -35,7 +35,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
             _userContext = userContext;
         }
 
-        public async Task<IPagedCollection<NotificationEntity>> Handle(GetUserNotifications query,
+        public async Task<IPagedEnumerable<NotificationEntity>> Handle(GetUserNotifications query,
             CancellationToken cancellationToken)
         {
             query.ProviderId = _userContext.User.Identity.GetProviderId();

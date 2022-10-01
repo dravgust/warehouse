@@ -9,7 +9,7 @@ using Warehouse.Core.Services.Security;
 
 namespace Warehouse.Core.UseCases.Management.Queries
 {
-    public class GetSites : PagingModelBase, IQuery<IPagedCollection<WarehouseSiteEntity>>, ILinqSpecification<WarehouseSiteEntity>
+    public class GetSites : PagingModelBase, IQuery<IPagedEnumerable<WarehouseSiteEntity>>, ILinqSpecification<WarehouseSiteEntity>
     {
         public string SearchTerm { get; set; }
         public long ProviderId { get; set; }
@@ -22,7 +22,7 @@ namespace Warehouse.Core.UseCases.Management.Queries
         }
     }
 
-    internal class HandleGetSites : IQueryHandler<GetSites, IPagedCollection<WarehouseSiteEntity>>
+    internal class HandleGetSites : IQueryHandler<GetSites, IPagedEnumerable<WarehouseSiteEntity>>
     {
         private readonly IReadOnlyRepository<WarehouseSiteEntity> _repository;
         private readonly IUserContext _userContext;
@@ -33,7 +33,7 @@ namespace Warehouse.Core.UseCases.Management.Queries
             _userContext = userContext;
         }
 
-        public async Task<IPagedCollection<WarehouseSiteEntity>> Handle(GetSites query, CancellationToken cancellationToken)
+        public async Task<IPagedEnumerable<WarehouseSiteEntity>> Handle(GetSites query, CancellationToken cancellationToken)
         {
             query.ProviderId = _userContext.User.Identity.GetProviderId();
             return await _repository.PagedEnumerableAsync(query, cancellationToken);

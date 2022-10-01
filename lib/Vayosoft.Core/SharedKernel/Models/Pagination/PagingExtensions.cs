@@ -22,15 +22,15 @@ namespace Vayosoft.Core.SharedKernel.Models.Pagination
             => queryable.Skip((page - 1) * pageSize).Take(pageSize);
 
 
-        public static IPagedCollection<T> ToPagedEnumerable<T, TKey>(this IQueryable<T> queryable,
+        public static IPagedEnumerable<T> ToPagedEnumerable<T, TKey>(this IQueryable<T> queryable,
             IPagingModel<T, TKey> pagingModel)
             where T : class
             => From(queryable.Paginate(pagingModel).ToArray(), queryable.Count());
 
-        public static IPagedCollection<T> From<T>(IEnumerable<T> inner, int totalCount)
+        public static IPagedEnumerable<T> From<T>(IEnumerable<T> inner, int totalCount)
             =>  new PagedCollection<T>(inner, totalCount);
 
-        public static IPagedCollection<T> Empty<T>()
+        public static IPagedEnumerable<T> Empty<T>()
              =>  From(Enumerable.Empty<T>(), 0);
     }
 }

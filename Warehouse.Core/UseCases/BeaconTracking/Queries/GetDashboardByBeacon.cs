@@ -12,7 +12,7 @@ using static System.String;
 
 namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 {
-    public sealed class GetDashboardByBeacon : PagingModelBase, ILinqSpecification<TrackedItem>, IQuery<IPagedCollection<DashboardByBeacon>>
+    public sealed class GetDashboardByBeacon : PagingModelBase, ILinqSpecification<TrackedItem>, IQuery<IPagedEnumerable<DashboardByBeacon>>
     {
         public string SearchTerm { set; get; }
         public string SiteId { set; get; }
@@ -30,7 +30,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
         }
     }
 
-    internal sealed class HandleDashboardByBeacon : IQueryHandler<GetDashboardByBeacon, IPagedCollection<DashboardByBeacon>>
+    internal sealed class HandleDashboardByBeacon : IQueryHandler<GetDashboardByBeacon, IPagedEnumerable<DashboardByBeacon>>
     {
         private readonly WarehouseStore _store;
         private readonly IUserContext _userContext;
@@ -41,7 +41,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
             _userContext = userContext;
         }
 
-        public async Task<IPagedCollection<DashboardByBeacon>> Handle(GetDashboardByBeacon query, CancellationToken cancellationToken)
+        public async Task<IPagedEnumerable<DashboardByBeacon>> Handle(GetDashboardByBeacon query, CancellationToken cancellationToken)
         {
             query.ProviderId = _userContext.User.Identity.GetProviderId();
 

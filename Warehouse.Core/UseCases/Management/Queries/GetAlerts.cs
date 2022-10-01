@@ -9,7 +9,7 @@ using Warehouse.Core.Services.Security;
 
 namespace Warehouse.Core.UseCases.Management.Queries
 {
-    public class GetAlerts : PagingModelBase, IQuery<IPagedCollection<AlertEntity>>, ILinqSpecification<AlertEntity>
+    public class GetAlerts : PagingModelBase, IQuery<IPagedEnumerable<AlertEntity>>, ILinqSpecification<AlertEntity>
     {
         public string SearchTerm { get; set; }
         public long ProviderId { get; set; }
@@ -22,7 +22,7 @@ namespace Warehouse.Core.UseCases.Management.Queries
         }
     }
 
-    internal class HandleGetAlerts : IQueryHandler<GetAlerts, IPagedCollection<AlertEntity>>
+    internal class HandleGetAlerts : IQueryHandler<GetAlerts, IPagedEnumerable<AlertEntity>>
     {
         private readonly IReadOnlyRepository<AlertEntity> _repository;
         private readonly IUserContext _userContext;
@@ -33,7 +33,7 @@ namespace Warehouse.Core.UseCases.Management.Queries
             _userContext = userContext;
         }
 
-        public async Task<IPagedCollection<AlertEntity>> Handle(GetAlerts query, CancellationToken cancellationToken)
+        public async Task<IPagedEnumerable<AlertEntity>> Handle(GetAlerts query, CancellationToken cancellationToken)
         {
             query.ProviderId = _userContext.User.Identity.GetProviderId();
             return await _repository.PagedEnumerableAsync(query, cancellationToken);

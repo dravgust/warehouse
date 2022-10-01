@@ -2,7 +2,7 @@
 
 namespace Vayosoft.Core.SharedKernel.Models.Pagination
 {
-    public class PagedCollection<T> : IPagedCollection<T>
+    public class PagedCollection<T> : IPagedEnumerable<T>
     {
         private readonly IEnumerable<T> _inner;
 
@@ -24,7 +24,5 @@ namespace Vayosoft.Core.SharedKernel.Models.Pagination
         }
 
         public long TotalCount { get; }
-
-
     }
 }

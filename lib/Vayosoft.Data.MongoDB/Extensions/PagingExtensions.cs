@@ -1,8 +1,6 @@
 ﻿using MongoDB.Driver.Linq;
-using System.Threading.Tasks;
 using MongoDB.Driver;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
-using System.Threading;
 
 namespace Vayosoft.Data.MongoDB.Extensions
 {
@@ -16,11 +14,18 @@ namespace Vayosoft.Data.MongoDB.Extensions
             where T : class
             => queryable.Skip((page - 1) * pageSize).Take(pageSize);
 
-        public static async Task<IPagedCollection<T>> ToPagedEnumerableAsync<T>(this IMongoQueryable<T> queryable,
+        public static async Task<IPagedEnumerable<T>> ToPagedEnumerableAsync<T>(this IMongoQueryable<T> queryable,
             IPagingModel pagingModel, CancellationToken cancellationToken = default)
             where T : class
         {
-            var list = queryable.Paginate(pagingModel).ToListAsync(cancellationToken: cancellationToken);
+            return await queryable.ToPagedEnumerableAsync(pagingModel.Page, pagingModel.Size, cancellationToken);
+        }
+
+        public static async Task<IPagedEnumerable<T>> ToPagedEnumerableAsync<T>(this IMongoQueryable<T> queryable,
+            int page = 1, int pageSize = IPagingModel.DefaultSize, CancellationToken cancellationToken = default)
+            where T : class
+        {
+            var list = queryable.Paginate(page, pageSize).ToListAsync(cancellationToken: cancellationToken);
             var count = queryable.CountAsync(cancellationToken: cancellationToken);
             await Task.WhenAll(list, count);
             return new PagedCollection<T>(await list, await count);

@@ -48,7 +48,7 @@ namespace Warehouse.API.Controllers.API
                 ? Guard.NotNull(userContext.User.Identity?.GetProviderId())
                 : null;
             var spec = new UserSpec(page, size, providerId, searchTerm);
-            var query = new SpecificationQuery<UserSpec, IPagedCollection<UserEntityDto>>(spec);
+            var query = new SpecificationQuery<UserSpec, IPagedEnumerable<UserEntityDto>>(spec);
 
             return Paged(await queryBus.Send(query, token), size);
         }

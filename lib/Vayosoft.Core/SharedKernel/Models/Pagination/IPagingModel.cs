@@ -5,6 +5,8 @@
         int Page { get; }
 
         int Size { get; }
+
+        const int DefaultSize = 30;
     }
 
     public interface IPagingModel<TEntity, TSortKey> : IPagingModel

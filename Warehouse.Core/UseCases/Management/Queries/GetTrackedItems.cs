@@ -10,7 +10,7 @@ using Warehouse.Core.UseCases.Management.Models;
 
 namespace Warehouse.Core.UseCases.Management.Queries
 {
-    public sealed class GetTrackedItems : PagingModelBase, IQuery<IPagedCollection<TrackedItemDto>>, ILinqSpecification<TrackedItem>
+    public sealed class GetTrackedItems : PagingModelBase, IQuery<IPagedEnumerable<TrackedItemDto>>, ILinqSpecification<TrackedItem>
     {
         public string SearchTerm { get; set; }
         public long ProviderId { get; set; }
@@ -23,7 +23,7 @@ namespace Warehouse.Core.UseCases.Management.Queries
         }
     }
 
-    internal sealed class HandleGetProductItems : IQueryHandler<GetTrackedItems, IPagedCollection<TrackedItemDto>>
+    internal sealed class HandleGetProductItems : IQueryHandler<GetTrackedItems, IPagedEnumerable<TrackedItemDto>>
     {
         private readonly WarehouseStore _store;
         private readonly IUserContext _userContext;
@@ -36,7 +36,7 @@ namespace Warehouse.Core.UseCases.Management.Queries
             _userContext = userContext;
         }
 
-        public async Task<IPagedCollection<TrackedItemDto>> Handle(GetTrackedItems query, CancellationToken cancellationToken)
+        public async Task<IPagedEnumerable<TrackedItemDto>> Handle(GetTrackedItems query, CancellationToken cancellationToken)
         {
             query.ProviderId = _userContext.User.Identity.GetProviderId();
 

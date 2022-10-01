@@ -21,7 +21,7 @@ namespace Warehouse.Core.UseCases.Administration
 
         private static IServiceCollection AddQueryHandlers(this IServiceCollection services) =>
             services
-                .AddQueryHandler<SpecificationQuery<UserSpec, IPagedCollection<UserEntityDto>>, IPagedCollection<UserEntityDto>,
+                .AddQueryHandler<SpecificationQuery<UserSpec, IPagedEnumerable<UserEntityDto>>, IPagedEnumerable<UserEntityDto>,
                     PagingQueryHandler<string, UserSpec, UserEntity, UserEntityDto>>()
                 .AddQueryHandler<SingleQuery<UserEntityDto>, UserEntityDto, SingleQueryHandler<long, UserEntity, UserEntityDto>>()
                 .AddQueryHandler<GetUserSubscription, UserSubscription, HandleGetUserSubscription>()

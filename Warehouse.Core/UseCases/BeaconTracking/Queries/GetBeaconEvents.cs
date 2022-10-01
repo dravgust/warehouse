@@ -11,7 +11,7 @@ using Warehouse.Core.UseCases.BeaconTracking.Models;
 
 namespace Warehouse.Core.UseCases.BeaconTracking.Queries
 {
-    public sealed class GetBeaconEvents : PagingModelBase, IQuery<IPagedCollection<BeaconEventDto>>, ILinqSpecification<BeaconEventEntity>
+    public sealed class GetBeaconEvents : PagingModelBase, IQuery<IPagedEnumerable<BeaconEventDto>>, ILinqSpecification<BeaconEventEntity>
     {
         public string SearchTerm { get; init; }
         public long ProviderId { get; set; }
@@ -24,7 +24,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
         }
     }
 
-    internal sealed class HandleGetBeaconEvents : IQueryHandler<GetBeaconEvents, IPagedCollection<BeaconEventDto>>
+    internal sealed class HandleGetBeaconEvents : IQueryHandler<GetBeaconEvents, IPagedEnumerable<BeaconEventDto>>
     {
         private readonly IReadOnlyRepository<BeaconEventEntity> _events;
         private readonly WarehouseStore _store;
@@ -41,7 +41,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
             _userContext = userContext;
         }
 
-        public async Task<IPagedCollection<BeaconEventDto>> Handle(GetBeaconEvents query, CancellationToken cancellationToken)
+        public async Task<IPagedEnumerable<BeaconEventDto>> Handle(GetBeaconEvents query, CancellationToken cancellationToken)
         {
             query.ProviderId = _userContext.User.Identity.GetProviderId();
 

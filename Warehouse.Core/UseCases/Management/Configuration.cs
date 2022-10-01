@@ -24,11 +24,11 @@ namespace Warehouse.Core.UseCases.Management
                 .AddQueryHandler<GetProductItemMetadata, Metadata, HandlerGetProductItemMetadata>()
                 .AddQueryHandler<GetRegisteredBeaconList, IEnumerable<string>, HandleGetRegisteredBeaconList>()
                 .AddQueryHandler<GetRegisteredGwList, IEnumerable<string>, RegisteredGwQueryHandler>()
-                .AddQueryHandler<GetTrackedItems, IPagedCollection<TrackedItemDto>, HandleGetProductItems>()
-                .AddQueryHandler<GetProducts, IPagedCollection<ProductEntity>, HandleGetProducts>()
-                .AddQueryHandler<GetSites, IPagedCollection<WarehouseSiteEntity>, HandleGetSites>()
-                .AddQueryHandler<GetAlerts, IPagedCollection<AlertEntity>, HandleGetAlerts>()
-                .AddQueryHandler<GetTrackedItems, IPagedCollection<TrackedItemDto>, HandleGetProductItems>()
+                .AddQueryHandler<GetTrackedItems, IPagedEnumerable<TrackedItemDto>, HandleGetProductItems>()
+                .AddQueryHandler<GetProducts, IPagedEnumerable<ProductEntity>, HandleGetProducts>()
+                .AddQueryHandler<GetSites, IPagedEnumerable<WarehouseSiteEntity>, HandleGetSites>()
+                .AddQueryHandler<GetAlerts, IPagedEnumerable<AlertEntity>, HandleGetAlerts>()
+                .AddQueryHandler<GetTrackedItems, IPagedEnumerable<TrackedItemDto>, HandleGetProductItems>()
                 ;
 
         

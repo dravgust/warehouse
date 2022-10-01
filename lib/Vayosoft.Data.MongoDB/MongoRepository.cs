@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using Vayosoft.Core.Persistence;
@@ -69,23 +64,21 @@ namespace Vayosoft.Data.MongoDB
             Collection.Find(spec.Criteria).Project(e => mapper.Map<TResult>(e)).SingleOrDefaultAsync(cancellationToken);
 
         public Task<List<T>> ListAsync(ISpecification<T> spec, CancellationToken cancellationToken = default) {
-            return Collection.AsQueryable().Evaluate(spec).ToListAsync(cancellationToken);
+            return Collection.AsQueryable().Apply(spec).ToListAsync(cancellationToken);
         }
-
+        
         public IAsyncEnumerable<T> AsyncEnumerable(ISpecification<T> spec, CancellationToken cancellationToken = default) {
-            return Collection.AsQueryable().Evaluate(spec).ToAsyncEnumerable(cancellationToken);
+            return Collection.AsQueryable().Apply(spec).ToAsyncEnumerable(cancellationToken);
         }
 
-        public async Task<IPagedCollection<T>> PagedEnumerableAsync(ILinqSpecification<T> spec, CancellationToken cancellationToken = default) {
+        public async Task<IPagedEnumerable<T>> PagedEnumerableAsync(ILinqSpecification<T> spec, CancellationToken cancellationToken = default) {
             var cursor = Collection.AsQueryable().Apply(spec);
 
             if (spec is IPagingModel model) {
                 return await cursor.ToPagedEnumerableAsync(model, cancellationToken);
             }
-            var list = cursor.ToListAsync(cancellationToken);
-            var count = cursor.CountAsync(cancellationToken);
-            await Task.WhenAll(list, count);
-            return new PagedCollection<T>(await list, await count);
+
+            return await cursor.ToPagedEnumerableAsync(cancellationToken: cancellationToken);
         }
 
         //public Task<IPagedEnumerable<T>> PagedListAsync(IPagingModel<T, object> model, Expression<Func<T, bool>> criteria, CancellationToken cancellationToken) =>

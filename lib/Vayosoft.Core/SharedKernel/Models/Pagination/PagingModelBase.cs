@@ -1,5 +1,6 @@
 ﻿using System;
 using Vayosoft.Core.SharedKernel.Entities;
+using Vayosoft.Core.Utilities;
 
 namespace Vayosoft.Core.SharedKernel.Models.Pagination
 {
@@ -9,7 +10,7 @@ namespace Vayosoft.Core.SharedKernel.Models.Pagination
 
         private int _size;
 
-        protected PagingModelBase(){}
+        protected PagingModelBase() :this(1, IPagingModel.DefaultSize) {}
 
         protected PagingModelBase(int page, int pageSize)
         {
@@ -22,11 +23,7 @@ namespace Vayosoft.Core.SharedKernel.Models.Pagination
             get => _page;
             set
             {
-                if (value <= 0)
-                {
-                    throw new ArgumentException("Page must be >= 0", nameof(value));
-                }
-
+                Guard.Assert(value < 0, "Page must be >= 0");
                 _page = value;
             }
         }
@@ -36,11 +33,7 @@ namespace Vayosoft.Core.SharedKernel.Models.Pagination
             get => _size;
             set
             {
-                if (value <= 0)
-                {
-                    throw new ArgumentException("PageSize must be > 0", nameof(value));
-                }
-
+                Guard.Assert(value < 0, "PageSize must be >= 0");
                 _size = value;
             }
         }
@@ -56,14 +49,12 @@ namespace Vayosoft.Core.SharedKernel.Models.Pagination
             OrderBy = orderBy ?? throw new ArgumentException("OrderBy can't be null", nameof(orderBy));
         }
 
-        protected PagingModelBase(Sorting<TEntity, TOrderKey> orderBy) : base(1, 30)
+        protected PagingModelBase(Sorting<TEntity, TOrderKey> orderBy)
         {
             // ReSharper disable once VirtualMemberCallInConstructor
             OrderBy = orderBy ?? BuildDefaultSorting();
-            if (OrderBy == null)
-            {
-                throw new ArgumentException("OrderBy can't be null", nameof(OrderBy));
-            }
+
+            Guard.NotNull(OrderBy, "OrderBy can't be null");
         }
 
         protected abstract Sorting<TEntity, TOrderKey> BuildDefaultSorting();

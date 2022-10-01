@@ -498,7 +498,7 @@ namespace Vayosoft.Data.MongoDB
 
         #endregion
 
-        public static Task<IPagedCollection<T>> AggregateByPage<T>(
+        public static Task<IPagedEnumerable<T>> AggregateByPage<T>(
             this IMongoCollection<T> collection,
             IPagingModel<T, object> model,
             FilterDefinition<T> filterDefinition,
@@ -512,7 +512,7 @@ namespace Vayosoft.Data.MongoDB
             return collection.AggregateByPage(filterDefinition, sortDefinition, model.Page, model.Size, cancellationToken);
         }
 
-        public static async Task<IPagedCollection<T>> AggregateByPage<T>(
+        public static async Task<IPagedEnumerable<T>> AggregateByPage<T>(
             this IMongoCollection<T> collection,
             FilterDefinition<T> filterDefinition,
             SortDefinition<T> sortDefinition,
