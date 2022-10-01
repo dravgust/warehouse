@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.Specifications;
@@ -38,7 +34,7 @@ namespace Vayosoft.Core.Persistence
         Task<List<TEntity>> ListAsync(ISpecification<TEntity> spec,
             CancellationToken cancellationToken = default);
 
-        Task<IPagedEnumerable<TEntity>> PageAsync(ILinqSpecification<TEntity> spec,
+        Task<IPagedEnumerable<TEntity>> PageAsync(ILinqSpecification<TEntity> spec, int page = 1, int pageSize = IPagingModel.DefaultSize,
             CancellationToken cancellationToken = default);
 
         IAsyncEnumerable<TEntity> StreamAsync(ISpecification<TEntity> spec,

@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Vayosoft.Core.SharedKernel.Entities;
+﻿using Vayosoft.Core.SharedKernel.Entities;
 
 
 namespace Vayosoft.Core.Persistence

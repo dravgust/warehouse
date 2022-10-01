@@ -39,7 +39,7 @@ namespace Warehouse.Core.UseCases.BeaconTracking.Queries
             CancellationToken cancellationToken)
         {
             query.ProviderId = _userContext.User.Identity.GetProviderId();
-            return await _repository.PageAsync(query, cancellationToken);
+            return await _repository.PageAsync(query, query.Page, query.Size, cancellationToken);
         }
     }
 
