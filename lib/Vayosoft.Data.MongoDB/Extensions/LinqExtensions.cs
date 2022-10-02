@@ -1,10 +1,4 @@
-﻿
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading;
-using MongoDB.Driver.Linq;
-using Vayosoft.Core.SharedKernel.Models;
+﻿using MongoDB.Driver.Linq;
 using Vayosoft.Core.Specifications;
 
 namespace Vayosoft.Data.MongoDB.Extensions
