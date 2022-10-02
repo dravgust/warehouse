@@ -1,8 +1,10 @@
-﻿using System.Reactive;
+﻿using System.Diagnostics;
+using System.Reactive;
 using System.Reactive.Disposables;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
+using Vayosoft.Core.Utilities;
 using Vayosoft.Data.Redis;
 
 namespace Vayosoft.Streaming.Redis.Consumers
@@ -58,7 +60,7 @@ namespace Vayosoft.Streaming.Redis.Consumers
             _disposable.Clear();
         }
 
-        private static void CreateMessageSubscriber(IDatabase redisDb, string streamName,
+        private void CreateMessageSubscriber(IDatabase redisDb, string streamName,
             string groupName, string consumerName, IObserver<ConsumeResult<string, string>> o, CancellationToken cancellationToken, int intervalMilliseconds = 500)
         {
             Task.Factory.StartNew(async () =>
@@ -68,23 +70,36 @@ namespace Vayosoft.Streaming.Redis.Consumers
                     if (!(await redisDb.KeyExistsAsync(streamName)) ||
                         (await redisDb.StreamGroupInfoAsync(streamName)).All(x => x.Name != groupName))
                     {
-                        await redisDb.StreamCreateConsumerGroupAsync(streamName, groupName, "0-0", true);
+                        await redisDb.StreamCreateConsumerGroupAsync(streamName, groupName, "0-0");
                     }
 
                     while (!cancellationToken.IsCancellationRequested)
                     {
-                        var streamEntries = await redisDb.StreamReadGroupAsync(streamName, groupName, consumerName, ">", 1, CommandFlags.None);
+                        var streamEntries = await redisDb.StreamReadGroupAsync(streamName, groupName, consumerName, ">", 1);
                         if (!streamEntries.Any())
                             await Task.Delay(intervalMilliseconds, cancellationToken);
                         else
                         {
-                            var streamEntry = streamEntries.First();
+                            //_logger.LogWarning("*******************************************************");
+                            //var pendingInfo = await redisDb.StreamPendingAsync(streamName, groupName);
+
+                            //_logger.LogWarning("COUNT: {Count}\r\nLOW: {Low}\r\nHIGH: {High}\r\nConsumers: {Count} Name: {Name}. Pending mess: {Mess}", 
+                            //    pendingInfo.PendingMessageCount.ToString(), pendingInfo.LowestPendingMessageId, pendingInfo.HighestPendingMessageId, pendingInfo.Consumers.Length, pendingInfo.Consumers.First().Name, pendingInfo.Consumers.First().PendingMessageCount.ToString());
+
+                            //var pendingMessages = await redisDb.StreamPendingMessagesAsync(streamName,
+                            //    groupName, count: 1, consumerName: consumerName, minId: pendingInfo.LowestPendingMessageId);
+
+                            //_logger.LogWarning("Pending - MessageId: {MessId}, Idle: {Idle}", 
+                            //    pendingMessages.Single().MessageId, pendingMessages.Single().IdleTimeInMilliseconds.ToString());
+                            //_logger.LogWarning("*******************************************************");
+
+                            var streamEntry = streamEntries.Last();
                             foreach (var nameValueEntry in streamEntry.Values)
                             {
                                 try
                                 {
-                                    await redisDb.StreamAcknowledgeAsync(streamName, groupName, streamEntry.Id);
                                     o.OnNext(new ConsumeResult<string, string>(streamName, nameValueEntry.Name, nameValueEntry.Value));
+                                    await redisDb.StreamAcknowledgeAsync(streamName, groupName, streamEntry.Id);
                                 }
                                 catch (Exception e) { o.OnError(e); }
                             }
