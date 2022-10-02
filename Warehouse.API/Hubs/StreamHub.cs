@@ -35,15 +35,6 @@ namespace Warehouse.API.Hubs
             Exception localException = null;
             try
             {
-                //while (!cancellationToken.IsCancellationRequested)
-                //{
-                //    await Task.Delay(1000, cancellationToken);
-                //    var item = new NotificationEntity
-                //    {
-                //        TimeStamp = DateTime.UtcNow
-                //    };
-                //    await writer.WriteAsync(item, cancellationToken);
-                //}
                 var lastReadMessage = "0-0";
                 var streamEntries = await _redisDb.StreamReadAsync("IPS-EVENTS", lastReadMessage);
                 if (streamEntries.Any())

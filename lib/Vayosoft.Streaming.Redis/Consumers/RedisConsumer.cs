@@ -47,7 +47,7 @@ namespace Vayosoft.Streaming.Redis.Consumers
                 onCompleted: () => _logger.LogInformation("[{GroupName}.{ConsumerName}] Unsubscribed from stream {Topics}", groupName, consumerName, topics),
                 onError: (e) => _logger.LogError("{Message}\r\n{StackTrace}", e.Message, e.StackTrace));
 
-                var thread = new Thread(() => CreateMessageSubscriber(_database, topic, groupName, consumerName, handler, tokenSource.Token))
+                var thread = new Thread(() => CreateSubscriber(topic, groupName, consumerName, handler, tokenSource.Token))
                 {
                     IsBackground = true,
                 };
@@ -63,22 +63,28 @@ namespace Vayosoft.Streaming.Redis.Consumers
             _disposable.Clear();
         }
 
-        private async void CreateMessageSubscriber(IDatabase redisDb, string streamName, string groupName, string consumerName,
-            IObserver<ConsumeResult<string, string>> o, CancellationToken cancellationToken)
+        private void CreateSubscriber(string streamName, string groupName, string consumerName,
+            IObserver<ConsumeResult<string, string>> handler, CancellationToken token)
+        {
+            _ = CreateMessageSubscriber(streamName, groupName, consumerName, handler, token);
+        }
+
+        private async Task CreateMessageSubscriber(string streamName, string groupName, string consumerName,
+            IObserver<ConsumeResult<string, string>> handler, CancellationToken token)
         {
             try
             {
-                if (!(await redisDb.KeyExistsAsync(streamName)) ||
-                    (await redisDb.StreamGroupInfoAsync(streamName)).All(x => x.Name != groupName))
+                if (!(await _database.KeyExistsAsync(streamName)) ||
+                    (await _database.StreamGroupInfoAsync(streamName)).All(x => x.Name != groupName))
                 {
-                    await redisDb.StreamCreateConsumerGroupAsync(streamName, groupName, "0-0");
+                    await _database.StreamCreateConsumerGroupAsync(streamName, groupName, "0-0");
                 }
 
-                while (!cancellationToken.IsCancellationRequested)
+                while (!token.IsCancellationRequested)
                 {
-                    var streamEntries = await redisDb.StreamReadGroupAsync(streamName, groupName, consumerName, ">", 1);
+                    var streamEntries = await _database.StreamReadGroupAsync(streamName, groupName, consumerName, ">", 1);
                     if (!streamEntries.Any())
-                        await Task.Delay(IntervalMilliseconds, cancellationToken);
+                        await Task.Delay(IntervalMilliseconds, token);
                     else
                     {
                         //_logger.LogWarning("*******************************************************");
@@ -99,20 +105,20 @@ namespace Vayosoft.Streaming.Redis.Consumers
                         {
                             try
                             {
-                                o.OnNext(new ConsumeResult<string, string>(streamName, nameValueEntry.Name, nameValueEntry.Value));
-                                await redisDb.StreamAcknowledgeAsync(streamName, groupName, streamEntry.Id);
+                                handler.OnNext(new ConsumeResult<string, string>(streamName, nameValueEntry.Name, nameValueEntry.Value));
+                                await _database.StreamAcknowledgeAsync(streamName, groupName, streamEntry.Id);
                             }
-                            catch (Exception e) { o.OnError(e); }
+                            catch (Exception e) { handler.OnError(e); }
                         }
                     }
                 }
             }
             catch (TaskCanceledException) { /*ignore*/}
-            catch (Exception e) { o.OnError(e); }
+            catch (Exception e) { handler.OnError(e); }
             finally
             {
-                redisDb.StreamDeleteConsumer(streamName, groupName, consumerName);
-                o.OnCompleted();
+                _database.StreamDeleteConsumer(streamName, groupName, consumerName);
+                handler.OnCompleted();
             }
         }
     }

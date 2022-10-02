@@ -21,8 +21,7 @@ namespace Vayosoft.Streaming.Redis.Consumers
             _logger = logger;
             _serviceProvider = serviceProvider;
 
-            if(configuration == null)
-                throw new ArgumentNullException(nameof(configuration));
+            Guard.NotNull(configuration);
             _config = configuration.GetExternalEventConfig();
         }
 
@@ -31,12 +30,17 @@ namespace Vayosoft.Streaming.Redis.Consumers
             var topics = _config?.Topics ?? new []{ nameof(IExternalEvent) };
 
             var consumer = _serviceProvider.GetRequiredService<IRedisConsumer>();
-            consumer.Subscribe(topics, OnEvent, cancellationToken);
+            consumer.Subscribe(topics, EventHandler, cancellationToken);
 
             return Task.CompletedTask;
         }
 
-        private void OnEvent(ConsumeResult<string, string> message)
+        private void EventHandler(ConsumeResult<string, string> message)
+        {
+            _ = OnEvent(message);
+        }
+
+        private async Task OnEvent(ConsumeResult<string, string> message)
         {
             try
             {
@@ -45,11 +49,11 @@ namespace Vayosoft.Streaming.Redis.Consumers
 
                 using var scope = _serviceProvider.CreateScope();
                 var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
-                eventBus.Publish((IEvent)@event).GetAwaiter().GetResult();
+                await eventBus.Publish((IEvent)@event);
             }
             catch (Exception e)
             {
-                _logger.LogError("Error consuming message: {0} {1}", e.Message, e.StackTrace);
+                _logger.LogError("Error consuming message: {Message} {StackTrace}", e.Message, e.StackTrace);
             }
         }
     }
