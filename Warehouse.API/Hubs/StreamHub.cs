@@ -5,7 +5,6 @@ using StackExchange.Redis;
 using Vayosoft.Core.SharedKernel.Events;
 using Vayosoft.Core.Utilities;
 using Vayosoft.Data.Redis;
-using Warehouse.Core.Entities.Models;
 
 namespace Warehouse.API.Hubs
 {
