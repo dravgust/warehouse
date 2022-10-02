@@ -23,7 +23,7 @@ namespace Vayosoft.Core.SharedKernel.Models.Pagination
             get => _page;
             set
             {
-                Guard.Assert(value < 0, "Page must be >= 0");
+                Guard.Assert(value >= 0, "Page must be >= 0");
                 _page = value;
             }
         }
@@ -33,7 +33,7 @@ namespace Vayosoft.Core.SharedKernel.Models.Pagination
             get => _size;
             set
             {
-                Guard.Assert(value < 0, "PageSize must be >= 0");
+                Guard.Assert(value >= 0, "PageSize must be >= 0");
                 _size = value;
             }
         }
