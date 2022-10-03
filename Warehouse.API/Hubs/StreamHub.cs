@@ -20,5 +20,12 @@ namespace Warehouse.API.Hubs
                 .Configure(options => options.ConsumerId = Context.ConnectionId)
                 .Subscribe(new []{ "IPS-EVENTS" }, cancellationToken);
         }
+
+        //private ChannelReader<IEvent> GetEvents(ChannelReader<ConsumeResult<string, string>> reader, CancellationToken token)
+        //{
+        //    var channel = Channel.CreateUnbounded<IEvent>();
+
+        //    return channel.Reader;
+        //}
     }
 }

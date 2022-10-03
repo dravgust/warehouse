@@ -3,12 +3,11 @@ using System.Threading.Channels;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using StackExchange.Redis;
-using Vayosoft.Core.SharedKernel.Events;
 using Vayosoft.Data.Redis;
 
 namespace Vayosoft.Streaming.Redis.Consumers
 {
-    public class RedisSubscriber : IRedisConsumer
+    public class RedisSubscriber : IRedisConsumer<ConsumeResult<string, string>>
     {
         private readonly ISubscriber _subscriber;
         private readonly ILogger<RedisConsumerGroup> _logger;
@@ -50,7 +49,7 @@ namespace Vayosoft.Streaming.Redis.Consumers
             _subscriber.UnsubscribeAll();
         }
 
-        public ChannelReader<IEvent> Subscribe(string[] topics, CancellationToken cancellationToken)
+        public ChannelReader<ConsumeResult<string, string>> Subscribe(string[] topics, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

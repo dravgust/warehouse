@@ -9,7 +9,7 @@ using Vayosoft.Data.Redis;
 
 namespace Vayosoft.Streaming.Redis.Consumers
 {
-    public sealed class RedisConsumerGroup : IRedisConsumer
+    public sealed class RedisConsumerGroup : IRedisConsumer<IEvent>
     {
         private const int IntervalMilliseconds = 300;
 
@@ -43,7 +43,7 @@ namespace Vayosoft.Streaming.Redis.Consumers
             return channel.Reader;
         }
 
-        public IRedisConsumer Configure(Action<RedisStreamConsumerConfig> configuration)
+        public IRedisConsumer<IEvent> Configure(Action<RedisStreamConsumerConfig> configuration)
         {
             configuration(_config);
             return this;
