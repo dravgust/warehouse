@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using StackExchange.Redis;
 using Vayosoft.Core.SharedKernel.Events.External;
 using Vayosoft.Data.Redis;
@@ -35,11 +35,11 @@ namespace Vayosoft.Streaming.Redis.Producers
 
             var topic = _config.Topic ?? nameof(IExternalEvent);
             int? maxLength = _config.MaxLength > 0 ? _config.MaxLength : null;
-
+            var eventType = @event.GetType();
             _ = await _database.StreamAddAsync(
                 topic,
-                @event.GetType().Name,
-                JsonConvert.SerializeObject(@event),
+                eventType.Name,
+                JsonSerializer.Serialize(@event, eventType),
                 useApproximateMaxLength: maxLength != null,
                 maxLength: maxLength);
         }

@@ -55,7 +55,9 @@ namespace Warehouse.UnitTests
 
             var eventJson = System.Text.Json.JsonSerializer.Serialize(@eventSrc, eventType);
             var @event = (IEvent)System.Text.Json.JsonSerializer.Deserialize(eventJson, eventType);
-            //_logger.WriteLine(eventJson);
+
+            _logger.WriteLine(eventJson);
+
             @event.Should().BeOfType<TrackedItemEntered>();
         }
     }

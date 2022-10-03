@@ -1,8 +1,14 @@
 ﻿using System;
+using System.Buffers.Text;
+using System.Buffers;
+using System.Globalization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace Vayosoft.Core.SharedKernel.ValueObjects
 {
+    [JsonConverter(typeof(MacAddressTypeConverter))]
     public record MacAddress : IComparable<MacAddress>
     {
         private static readonly Regex Pattern = new (@"^([0-9A-Fa-f]{2}[:-]?){5}([0-9A-Fa-f]{2})$");
@@ -31,7 +37,7 @@ namespace Vayosoft.Core.SharedKernel.ValueObjects
         public static MacAddress Empty => new();
         public override string ToString() => InputValue;
 
-        public static implicit operator string(MacAddress mac) => mac.Value;
+        public static implicit operator string(MacAddress mac) => mac.Value;    
 
         public static implicit operator MacAddress(string value) => new(value);
 
@@ -40,6 +46,20 @@ namespace Vayosoft.Core.SharedKernel.ValueObjects
             if (ReferenceEquals(this, other)) return 0;
             if (ReferenceEquals(null, other)) return 1;
             return string.Compare(Value, other.Value, StringComparison.Ordinal);
+        }
+    }
+
+    public class MacAddressTypeConverter : JsonConverter<MacAddress>
+    {
+        public override MacAddress Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            var value = reader.GetString();
+            return !string.IsNullOrEmpty(value) ? MacAddress.Create(value) : MacAddress.Empty;
+        }
+
+        public override void Write(Utf8JsonWriter writer, MacAddress value, JsonSerializerOptions options)
+        {
+            writer.WriteStringValue(value.InputValue ?? string.Empty);
         }
     }
 

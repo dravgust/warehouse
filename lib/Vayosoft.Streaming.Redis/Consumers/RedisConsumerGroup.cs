@@ -1,7 +1,7 @@
-﻿using System.Threading.Channels;
+﻿using System.Text.Json;
+using System.Threading.Channels;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using StackExchange.Redis;
 using Vayosoft.Core.SharedKernel.Events;
 using Vayosoft.Core.Utilities;
@@ -76,7 +76,7 @@ namespace Vayosoft.Streaming.Redis.Consumers
                             try
                             {
                                 var eventType = TypeProvider.GetTypeFromAnyReferencingAssembly(nameValueEntry.Name);
-                                var @event = JsonConvert.DeserializeObject(nameValueEntry.Value, eventType);
+                                var @event = JsonSerializer.Deserialize(nameValueEntry.Value, eventType);
 
                                 await writer.WriteAsync((IEvent)@event, token);
                                 await _database.StreamAcknowledgeAsync(streamName, groupName, streamEntry.Id);

@@ -39,55 +39,55 @@ namespace Warehouse.Benchmarks
                 .Generate(1000);
         }
 
-        [BenchmarkCategory("Stream"), Benchmark]
-        public MemoryStream GeneratedSerializer()
-        {
-            var memoryStream = new MemoryStream();
-            var jsonWriter = new Utf8JsonWriter(memoryStream);
-            JsonSerializer.Serialize(jsonWriter, _persons, PersonJsonContext.Default.IEnumerablePerson);
-            return memoryStream;
-        }
+        //[BenchmarkCategory("Stream"), Benchmark]
+        //public MemoryStream GeneratedSerializer()
+        //{
+        //    var memoryStream = new MemoryStream();
+        //    var jsonWriter = new Utf8JsonWriter(memoryStream);
+        //    JsonSerializer.Serialize(jsonWriter, _persons, PersonJsonContext.Default.IEnumerablePerson);
+        //    return memoryStream;
+        //}
 
-        [BenchmarkCategory("String"), Benchmark]
-        public string GeneratedSerializer_AsString()
-        {
-            var memoryStream = GeneratedSerializer();
-            return Encoding.UTF8.GetString(memoryStream.ToArray());
-        }
+        //[BenchmarkCategory("String"), Benchmark]
+        //public string GeneratedSerializer_AsString()
+        //{
+        //    var memoryStream = GeneratedSerializer();
+        //    return Encoding.UTF8.GetString(memoryStream.ToArray());
+        //}
 
-        [BenchmarkCategory("Stream"), Benchmark(Baseline = true)]
-        public MemoryStream ClassicSerializer()
-        {
-            var memoryStream = new MemoryStream();
-            var jsonWriter = new Utf8JsonWriter(memoryStream);
-            JsonSerializer.Serialize(jsonWriter, _persons, _options);
-            return memoryStream;
-        }
+        //[BenchmarkCategory("Stream"), Benchmark(Baseline = true)]
+        //public MemoryStream ClassicSerializer()
+        //{
+        //    var memoryStream = new MemoryStream();
+        //    var jsonWriter = new Utf8JsonWriter(memoryStream);
+        //    JsonSerializer.Serialize(jsonWriter, _persons, _options);
+        //    return memoryStream;
+        //}
 
-        [BenchmarkCategory("String"), Benchmark]
-        public string ClassicSerializer_AsString()
-        {
-            var memoryStream = ClassicSerializer();
-            return Encoding.UTF8.GetString(memoryStream.ToArray());
-        }
+        //[BenchmarkCategory("String"), Benchmark]
+        //public string ClassicSerializer_AsString()
+        //{
+        //    var memoryStream = ClassicSerializer();
+        //    return Encoding.UTF8.GetString(memoryStream.ToArray());
+        //}
 
-        [Benchmark]
-        public string Serialize_TextJson_SourceGenerator()
-        {
-            return JsonSerializer.Serialize(_persons, PersonJsonContext.Default.IEnumerablePerson);
-        }
+        //[Benchmark]
+        //public string Serialize_TextJson_SourceGenerator()
+        //{
+        //    return JsonSerializer.Serialize(_persons, PersonJsonContext.Default.IEnumerablePerson);
+        //}
 
-        [Benchmark]
-        public string Serialize_TextJson_Options()
-        {
-            return JsonSerializer.Serialize(_persons, _options);
-        }
+        //[Benchmark]
+        //public string Serialize_TextJson_Options()
+        //{
+        //    return JsonSerializer.Serialize(_persons, _options);
+        //}
 
-        [Benchmark]
-        public string Serialize_NewtonsoftJson()
-        {
-            return JsonConvert.SerializeObject(_persons, _newtonsoftOptions);
-        }
+        //[Benchmark]
+        //public string Serialize_NewtonsoftJson()
+        //{
+        //    return JsonConvert.SerializeObject(_persons, _newtonsoftOptions);
+        //}
 
         private static readonly IEvent EventSrc = new TrackedItemEntered(MacAddress.Empty, DateTime.UtcNow, Guid.NewGuid().ToString(), 0);
 

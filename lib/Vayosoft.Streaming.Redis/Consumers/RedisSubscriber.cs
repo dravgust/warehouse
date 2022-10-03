@@ -1,7 +1,7 @@
 ﻿using System.Reactive;
+using System.Text.Json;
 using System.Threading.Channels;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using StackExchange.Redis;
 using Vayosoft.Data.Redis;
 
@@ -33,7 +33,7 @@ namespace Vayosoft.Streaming.Redis.Consumers
                     if (string.IsNullOrEmpty(message)) return;
                     try
                     {
-                        var eventMessage = JsonConvert.DeserializeObject<Message<string, string>>(message);
+                        var eventMessage = JsonSerializer.Deserialize<Message<string, string>>(message);
                         if (eventMessage == null) return;
                         observer.OnNext(new ConsumeResult<string, string>(topic, eventMessage.Key, eventMessage.Value));
                     }
