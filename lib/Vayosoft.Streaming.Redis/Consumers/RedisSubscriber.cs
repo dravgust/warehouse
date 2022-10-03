@@ -1,7 +1,9 @@
 ﻿using System.Reactive;
+using System.Threading.Channels;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using StackExchange.Redis;
+using Vayosoft.Core.SharedKernel.Events;
 using Vayosoft.Data.Redis;
 
 namespace Vayosoft.Streaming.Redis.Consumers
@@ -9,9 +11,9 @@ namespace Vayosoft.Streaming.Redis.Consumers
     public class RedisSubscriber : IRedisConsumer
     {
         private readonly ISubscriber _subscriber;
-        private readonly ILogger<RedisConsumer> _logger;
+        private readonly ILogger<RedisConsumerGroup> _logger;
 
-        public RedisSubscriber(IRedisSubscriberProvider connection, ILogger<RedisConsumer> logger)
+        public RedisSubscriber(IRedisSubscriberProvider connection, ILogger<RedisConsumerGroup> logger)
         {
             _subscriber = connection.Subscriber;
 
@@ -46,6 +48,11 @@ namespace Vayosoft.Streaming.Redis.Consumers
         public void Close()
         {
             _subscriber.UnsubscribeAll();
+        }
+
+        public ChannelReader<IEvent> Subscribe(string[] topics, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
     }
 }

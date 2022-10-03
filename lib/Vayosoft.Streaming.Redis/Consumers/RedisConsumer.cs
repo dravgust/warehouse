@@ -1,124 +1,98 @@
-﻿using System.Diagnostics;
-using System.Reactive;
-using System.Reactive.Disposables;
-using Microsoft.Extensions.Configuration;
+﻿using System.Runtime.CompilerServices;
+using System.Threading.Channels;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using StackExchange.Redis;
+using Vayosoft.Core.SharedKernel.Events;
+using Vayosoft.Core.Utilities;
 using Vayosoft.Data.Redis;
 
 namespace Vayosoft.Streaming.Redis.Consumers
 {
     public sealed class RedisConsumer : IRedisConsumer
     {
-        private const int IntervalMilliseconds = 500;
+        private const int IntervalMilliseconds = 1000;
 
-        private readonly ILogger<RedisConsumer> _logger;
+        private readonly ILogger<RedisConsumerGroup> _logger;
         private readonly RedisStreamConsumerConfig _config;
         private readonly IDatabase _database;
-        private readonly CompositeDisposable _disposable = new();
-  
-        public RedisConsumer(IRedisDatabaseProvider connection, IConfiguration configuration, ILogger<RedisConsumer> logger)
+
+        public RedisConsumer(IRedisDatabaseProvider connection, ILogger<RedisConsumerGroup> logger)
         {
-            if (configuration == null)
-                throw new ArgumentNullException(nameof(configuration));
-            _config = configuration.GetRedisConsumerConfig();
-
             _logger = logger;
-
+            _config = new RedisStreamConsumerConfig();
             _database = connection.Database;
         }
 
-        public void Subscribe(string[] topics, Action<ConsumeResult<string, string>> action, CancellationToken cancellationToken)
+        public ChannelReader<IEvent> Subscribe(string[] topics, CancellationToken cancellationToken)
         {
             var consumerName = _config?.ConsumerId ?? Guid.NewGuid().ToString();
-            var groupName = _config?.GroupId ?? consumerName;
- 
+
+            var channel = Channel.CreateUnbounded<IEvent>();
+
             foreach (var topic in topics)
             {
-                var tokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-                _disposable.Add(Disposable.Create(() =>
-                {
-                    tokenSource.Cancel();
-                    tokenSource.Dispose();
-                }));
+                _ = Producer(channel, topic, cancellationToken);
 
-                var handler = new AnonymousObserver<ConsumeResult<string, string>>(
-                onNext: action,
-                onCompleted: () => _logger.LogInformation("[{GroupName}.{ConsumerName}] Unsubscribed from stream {Topics}", groupName, consumerName, topics),
-                onError: (e) => _logger.LogError("{Message}\r\n{StackTrace}", e.Message, e.StackTrace));
-
-                var thread = new Thread(() => CreateSubscriber(topic, groupName, consumerName, handler, tokenSource.Token))
-                {
-                    IsBackground = true,
-                };
-                thread.Start();
-
-                _logger.LogInformation("[{GroupName}.{ConsumerName}] Subscribed to stream {Topic}", groupName, consumerName, topic);
+                _logger.LogInformation("[{ConsumerName}] Subscribed to stream {Topic}", consumerName, topic);
             }
+
+            return channel.Reader;
         }
 
-        public void Close()
+        public IRedisConsumer Configure(Action<RedisStreamConsumerConfig> configuration)
         {
-            _disposable.Dispose();
-            _disposable.Clear();
+            configuration(_config);
+            return this;
         }
 
-        private void CreateSubscriber(string streamName, string groupName, string consumerName,
-            IObserver<ConsumeResult<string, string>> handler, CancellationToken token)
+        private async Task Producer(ChannelWriter<IEvent> writer, string streamName, CancellationToken cancellationToken)
         {
-            _ = CreateMessageSubscriber(streamName, groupName, consumerName, handler, token);
-        }
-
-        private async Task CreateMessageSubscriber(string streamName, string groupName, string consumerName,
-            IObserver<ConsumeResult<string, string>> handler, CancellationToken token)
-        {
+            Exception localException = null;
             try
             {
-                if (!(await _database.KeyExistsAsync(streamName)) ||
-                    (await _database.StreamGroupInfoAsync(streamName)).All(x => x.Name != groupName))
+                await foreach(var item in FetchItemsAsync(streamName, cancellationToken))
                 {
-                    await _database.StreamCreateConsumerGroupAsync(streamName, groupName, "0-0");
-                }
-
-                while (!token.IsCancellationRequested)
-                {
-                    var streamEntries = await _database.StreamReadGroupAsync(streamName, groupName, consumerName, ">", 1);
-                    if (!streamEntries.Any())
-                        await Task.Delay(IntervalMilliseconds, token);
-                    else
-                    {
-                        //_logger.LogWarning("*******************************************************");
-                        //var pendingInfo = await redisDb.StreamPendingAsync(streamName, groupName);
-
-                        //_logger.LogWarning("COUNT: {Count}\r\nLOW: {Low}\r\nHIGH: {High}\r\nConsumers: {Count} Name: {Name}. Pending mess: {Mess}", 
-                        //    pendingInfo.PendingMessageCount.ToString(), pendingInfo.LowestPendingMessageId, pendingInfo.HighestPendingMessageId, pendingInfo.Consumers.Length, pendingInfo.Consumers.First().Name, pendingInfo.Consumers.First().PendingMessageCount.ToString());
-
-                        //var pendingMessages = await redisDb.StreamPendingMessagesAsync(streamName,
-                        //    groupName, count: 1, consumerName: consumerName, minId: pendingInfo.LowestPendingMessageId);
-
-                        //_logger.LogWarning("Pending - MessageId: {MessId}, Idle: {Idle}", 
-                        //    pendingMessages.Single().MessageId, pendingMessages.Single().IdleTimeInMilliseconds.ToString());
-                        //_logger.LogWarning("*******************************************************");
-
-                        var streamEntry = streamEntries.Last();
-                        foreach (var nameValueEntry in streamEntry.Values)
-                        {
-                            try
-                            {
-                                handler.OnNext(new ConsumeResult<string, string>(streamName, nameValueEntry.Name, nameValueEntry.Value));
-                                await _database.StreamAcknowledgeAsync(streamName, groupName, streamEntry.Id);
-                            }
-                            catch (Exception e) { handler.OnError(e); }
-                        }
-                    }
+                    await writer.WriteAsync(item, cancellationToken);
                 }
             }
-            catch (TaskCanceledException) { /*ignore*/}
-            catch (Exception e) { handler.OnError(e); }
+            catch (TaskCanceledException) { }
+            catch (Exception e)
+            {
+                localException = e;
+            }
             finally
             {
-                _database.StreamDeleteConsumer(streamName, groupName, consumerName);
-                handler.OnCompleted();
+                writer.Complete(localException);
+            }
+        }
+
+        private async IAsyncEnumerable<IEvent> FetchItemsAsync(string streamName, [EnumeratorCancellation] CancellationToken token)
+        {
+            var streamInfo = await _database.StreamInfoAsync(streamName);
+            var lastGeneratedId = streamInfo.LastGeneratedId;
+
+            while (!token.IsCancellationRequested)
+            {
+                var streamEntries = await _database.StreamReadAsync(streamName, lastGeneratedId);
+                if (!streamEntries.Any())
+                    await Task.Delay(IntervalMilliseconds, token);
+                else
+                {
+                    foreach (var streamEntry in streamEntries)
+                    {
+                        foreach (var nameValueEntry in streamEntry.Values)
+                        {
+                            var eventType = TypeProvider.GetTypeFromAnyReferencingAssembly(nameValueEntry.Name);
+                            var @event = JsonConvert.DeserializeObject(nameValueEntry.Value, eventType);
+
+                            yield return (IEvent)@event;
+                        }
+
+                        lastGeneratedId = streamEntry.Id;
+                    }
+
+                }
             }
         }
     }

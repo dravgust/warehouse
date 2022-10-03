@@ -18,7 +18,7 @@ namespace Vayosoft.Streaming.Redis
 
         public static IServiceCollection AddRedisConsumer(this IServiceCollection services)
         {
-            services.TryAddSingleton<IRedisConsumer, RedisConsumer>();
+            services.TryAddSingleton<IRedisConsumer, RedisConsumerGroup>();
             //using TryAdd to support mocking, without that it won't be possible to override in tests
             services.TryAddSingleton<IExternalEventConsumer, ExternalEventConsumer>();
 

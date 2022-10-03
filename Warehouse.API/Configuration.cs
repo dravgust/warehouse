@@ -7,6 +7,7 @@ using Vayosoft.Core;
 using Vayosoft.Core.Queries;
 using Vayosoft.Data.Redis;
 using Vayosoft.Streaming.Redis;
+using Vayosoft.Streaming.Redis.Consumers;
 using Warehouse.API.Services;
 using Warehouse.API.Services.Localization;
 using Warehouse.API.TagHelpers;
@@ -67,6 +68,8 @@ namespace Warehouse.API
                 .AddAppAdministrationServices()
                 .AddAppTrackingServices()
                 .AddAppManagementServices();
+
+            services.AddTransient<RedisConsumer>();
 
             return services;
         }

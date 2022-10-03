@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Threading.Channels;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Vayosoft.Core.SharedKernel.Events;
 using Vayosoft.Core.SharedKernel.Events.External;
 using Vayosoft.Core.Utilities;
@@ -12,41 +12,41 @@ namespace Vayosoft.Streaming.Redis.Consumers
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<ExternalEventConsumer> _logger;
-        private readonly ExternalEventConsumerConfig _config;
-        public ExternalEventConsumer(
-            IServiceProvider serviceProvider,
-            IConfiguration configuration,
-            ILogger<ExternalEventConsumer> logger)
+        private readonly ExternalEventConsumerConfig _externalEventConfig;
+
+        public ExternalEventConsumer(IServiceProvider serviceProvider, IConfiguration configuration, ILogger<ExternalEventConsumer> logger)
         {
             _logger = logger;
             _serviceProvider = serviceProvider;
 
             Guard.NotNull(configuration);
-            _config = configuration.GetExternalEventConfig();
+            _externalEventConfig = configuration.GetExternalEventConfig();
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            var topics = _config?.Topics ?? new []{ nameof(IExternalEvent) };
+            var topics = _externalEventConfig?.Topics ?? new[] { nameof(IExternalEvent) };
 
-            var consumer = _serviceProvider.GetRequiredService<IRedisConsumer>();
-            consumer.Subscribe(topics, EventHandler, cancellationToken);
+            var redisConsumer = _serviceProvider.GetRequiredService<IRedisConsumer>();
+            var consumer = redisConsumer.Subscribe(topics, cancellationToken);
+
+            _ = Consumer(consumer, cancellationToken);
 
             return Task.CompletedTask;
         }
-
-        private void EventHandler(ConsumeResult<string, string> message)
+        
+        private async Task Consumer(ChannelReader<IEvent> reader, CancellationToken cancellationToken)
         {
-            _ = OnEvent(message);
+            while (await reader.WaitToReadAsync(cancellationToken))
+            {
+                await OnEvent(await reader.ReadAsync(cancellationToken));
+            }
         }
 
-        private async Task OnEvent(ConsumeResult<string, string> message)
+        private async Task OnEvent(IEvent @event)
         {
             try
             {
-                var eventType = TypeProvider.GetTypeFromAnyReferencingAssembly(message.Message.Key)!;
-                var @event = JsonConvert.DeserializeObject(message.Message.Value, eventType)!;
-
                 using var scope = _serviceProvider.CreateScope();
                 var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
                 await eventBus.Publish((IEvent)@event);

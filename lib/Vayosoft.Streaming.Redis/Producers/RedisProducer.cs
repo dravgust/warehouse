@@ -31,11 +31,12 @@ namespace Vayosoft.Streaming.Redis.Producers
 
         public async Task Publish(IExternalEvent @event)
         {
+            await Task.Yield();
+
             var topic = _config.Topic ?? nameof(IExternalEvent);
             int? maxLength = _config.MaxLength > 0 ? _config.MaxLength : null;
 
-            await Task.Yield();
-            var result = await _database.StreamAddAsync(
+            _ = await _database.StreamAddAsync(
                 topic,
                 @event.GetType().Name,
                 JsonConvert.SerializeObject(@event),

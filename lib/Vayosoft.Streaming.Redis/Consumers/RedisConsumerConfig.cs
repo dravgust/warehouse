@@ -23,7 +23,7 @@ namespace Vayosoft.Streaming.Redis.Consumers
 
         public static RedisStreamConsumerConfig GetRedisConsumerConfig(this IConfiguration configuration)
         {
-            return configuration.GetSection(nameof(RedisConsumer)).Get<RedisStreamConsumerConfig>();
+            return configuration.GetSection("RedisConsumer").Get<RedisStreamConsumerConfig>();
         }
     }
 }

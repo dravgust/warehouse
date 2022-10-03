@@ -1,8 +1,9 @@
-﻿namespace Vayosoft.Streaming.Redis.Consumers
+﻿using System.Threading.Channels;
+
+namespace Vayosoft.Streaming.Redis.Consumers
 {
-    public interface IConsumer<TKey, TValue>
+    public interface IConsumer<T>
     {
-        public void Subscribe(string[] topics, Action<ConsumeResult<TKey, TValue>> action, CancellationToken cancellationToken);
-        public void Close();
+        public ChannelReader<T> Subscribe(string[] topics, CancellationToken cancellationToken);
     }
 }

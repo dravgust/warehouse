@@ -1,4 +1,6 @@
-﻿namespace Vayosoft.Streaming.Redis.Consumers
+﻿using Vayosoft.Core.SharedKernel.Events;
+
+namespace Vayosoft.Streaming.Redis.Consumers
 {
-    public interface IRedisConsumer : IConsumer<string, string> { }
+    public interface IRedisConsumer : IConsumer<IEvent> { }
 }
