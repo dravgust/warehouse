@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using System.Threading.Channels;
+﻿using System.Threading.Channels;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -50,7 +49,7 @@ namespace Vayosoft.Streaming.Redis.Consumers
             return this;
         }
 
-        private async Task Producer(ChannelWriter<IEvent> writer, string streamName, string groupName, string consumerName, CancellationToken cancellationToken)
+        private async Task Producer(ChannelWriter<IEvent> writer, string streamName, string groupName, string consumerName, CancellationToken token)
         {
             var streamInfo = await _database.StreamInfoAsync(streamName);
             var lastGeneratedId = streamInfo.LastGeneratedId;
@@ -64,45 +63,41 @@ namespace Vayosoft.Streaming.Redis.Consumers
             Exception localException = null;
             try
             {
-                await foreach (var item in FetchItemsAsync(streamName, groupName, consumerName, cancellationToken))
+                while (!token.IsCancellationRequested)
                 {
-                    await writer.WriteAsync(item, cancellationToken);
+                    var streamEntries = await _database.StreamReadGroupAsync(streamName, groupName, consumerName, ">", 1);
+                    if (!streamEntries.Any())
+                        await Task.Delay(IntervalMilliseconds, token);
+                    else
+                    {
+                        var streamEntry = streamEntries.Last();
+                        foreach (var nameValueEntry in streamEntry.Values)
+                        {
+                            try
+                            {
+                                var eventType = TypeProvider.GetTypeFromAnyReferencingAssembly(nameValueEntry.Name);
+                                var @event = JsonConvert.DeserializeObject(nameValueEntry.Value, eventType);
+
+                                await writer.WriteAsync((IEvent)@event, token);
+                                await _database.StreamAcknowledgeAsync(streamName, groupName, streamEntry.Id);
+                            }
+                            catch (Exception e)
+                            {
+                                _logger.LogError("{Message}\r\n{StackTrace}", e.Message, e.StackTrace);
+                            }
+                        }
+                    }
                 }
             }
             catch (TaskCanceledException) { /*ignore*/ }
             catch (Exception e)
             {
                 localException = e;
-                _logger.LogError("{Message}\r\n{StackTrace}", e.Message, e.StackTrace);
             }
             finally
             {
                 _database.StreamDeleteConsumer(streamName, groupName, consumerName);
-
                 writer.Complete(localException);
-            }
-        }
-
-        private async IAsyncEnumerable<IEvent> FetchItemsAsync(string streamName, string groupName, string consumerName, [EnumeratorCancellation] CancellationToken token)
-        {
-            while (!token.IsCancellationRequested)
-            {
-                var streamEntries = await _database.StreamReadGroupAsync(streamName, groupName, consumerName, ">", 1);
-                if (!streamEntries.Any())
-                    await Task.Delay(IntervalMilliseconds, token);
-                else
-                {
-                    var streamEntry = streamEntries.Last();
-                    foreach (var nameValueEntry in streamEntry.Values)
-                    {
-                        await _database.StreamAcknowledgeAsync(streamName, groupName, streamEntry.Id);
-
-                        var eventType = TypeProvider.GetTypeFromAnyReferencingAssembly(nameValueEntry.Name);
-                        var @event = JsonConvert.DeserializeObject(nameValueEntry.Value, eventType);
-
-                        yield return (IEvent)@event;
-                    }
-                }
             }
         }
     }

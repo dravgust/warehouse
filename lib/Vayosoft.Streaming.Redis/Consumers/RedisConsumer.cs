@@ -1,5 +1,5 @@
-﻿using System.Runtime.CompilerServices;
-using System.Threading.Channels;
+﻿using System.Threading.Channels;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using StackExchange.Redis;
@@ -17,10 +17,12 @@ namespace Vayosoft.Streaming.Redis.Consumers
         private readonly RedisStreamConsumerConfig _config;
         private readonly IDatabase _database;
 
-        public RedisConsumer(IRedisDatabaseProvider connection, ILogger<RedisConsumerGroup> logger)
+        public RedisConsumer(IRedisDatabaseProvider connection, IConfiguration configuration, ILogger<RedisConsumerGroup> logger)
         {
+            Guard.NotNull(configuration);
+            _config = configuration.GetRedisConsumerConfig();
+
             _logger = logger;
-            _config = new RedisStreamConsumerConfig();
             _database = connection.Database;
         }
 
@@ -40,23 +42,51 @@ namespace Vayosoft.Streaming.Redis.Consumers
             return channel.Reader;
         }
 
-        public IRedisConsumer Configure(Action<RedisStreamConsumerConfig> configuration)
+        public IRedisConsumer Configure(Action<RedisStreamConsumerConfig> options)
         {
-            configuration(_config);
+            options(_config);
             return this;
         }
 
-        private async Task Producer(ChannelWriter<IEvent> writer, string streamName, CancellationToken cancellationToken)
+        private async Task Producer(ChannelWriter<IEvent> writer, string streamName, CancellationToken token)
         {
             Exception localException = null;
             try
             {
-                await foreach(var item in FetchItemsAsync(streamName, cancellationToken))
+                var streamInfo = await _database.StreamInfoAsync(streamName);
+                var lastGeneratedId = streamInfo.LastGeneratedId;
+
+                while (!token.IsCancellationRequested)
                 {
-                    await writer.WriteAsync(item, cancellationToken);
+                    var streamEntries = await _database.StreamReadAsync(streamName, lastGeneratedId);
+                    if (!streamEntries.Any())
+                        await Task.Delay(IntervalMilliseconds, token);
+                    else
+                    {
+
+                        foreach (var streamEntry in streamEntries)
+                        {
+                            foreach (var nameValueEntry in streamEntry.Values)
+                            {
+                                try
+                                {
+                                    var eventType = TypeProvider.GetTypeFromAnyReferencingAssembly(nameValueEntry.Name);
+                                    var @event = JsonConvert.DeserializeObject(nameValueEntry.Value, eventType);
+
+                                    await writer.WriteAsync((IEvent) @event, token);
+                                }
+                                catch (Exception e)
+                                {
+                                    _logger.LogError("{Message}\r\n{StackTrace}", e.Message, e.StackTrace);
+                                }
+                            }
+
+                            lastGeneratedId = streamEntry.Id;
+                        }
+                    }
                 }
             }
-            catch (TaskCanceledException) { }
+            catch (TaskCanceledException) { /*ignore*/ }
             catch (Exception e)
             {
                 localException = e;
@@ -64,35 +94,6 @@ namespace Vayosoft.Streaming.Redis.Consumers
             finally
             {
                 writer.Complete(localException);
-            }
-        }
-
-        private async IAsyncEnumerable<IEvent> FetchItemsAsync(string streamName, [EnumeratorCancellation] CancellationToken token)
-        {
-            var streamInfo = await _database.StreamInfoAsync(streamName);
-            var lastGeneratedId = streamInfo.LastGeneratedId;
-
-            while (!token.IsCancellationRequested)
-            {
-                var streamEntries = await _database.StreamReadAsync(streamName, lastGeneratedId);
-                if (!streamEntries.Any())
-                    await Task.Delay(IntervalMilliseconds, token);
-                else
-                {
-                    foreach (var streamEntry in streamEntries)
-                    {
-                        foreach (var nameValueEntry in streamEntry.Values)
-                        {
-                            var eventType = TypeProvider.GetTypeFromAnyReferencingAssembly(nameValueEntry.Name);
-                            var @event = JsonConvert.DeserializeObject(nameValueEntry.Value, eventType);
-
-                            yield return (IEvent)@event;
-                        }
-
-                        lastGeneratedId = streamEntry.Id;
-                    }
-
-                }
             }
         }
     }
