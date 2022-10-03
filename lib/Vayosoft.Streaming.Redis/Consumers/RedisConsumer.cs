@@ -86,7 +86,7 @@ namespace Vayosoft.Streaming.Redis.Consumers
                     }
                 }
             }
-            catch (TaskCanceledException) { /*ignore*/ }
+            catch (OperationCanceledException) { /*ignore*/ }
             catch (Exception e)
             {
                 localException = e;
