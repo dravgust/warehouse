@@ -11,8 +11,6 @@ namespace Vayosoft.Streaming.Redis.Consumers
 {
     public sealed class RedisConsumerGroup : IRedisConsumer<IEvent>
     {
-        private const int IntervalMilliseconds = 300;
-
         private readonly ILogger<RedisConsumerGroup> _logger;
         private readonly RedisStreamConsumerConfig _config;
         private readonly IDatabase _database;
@@ -37,7 +35,8 @@ namespace Vayosoft.Streaming.Redis.Consumers
             {
                 _ = Producer(channel, topic, groupName, consumerName, cancellationToken);
 
-                _logger.LogInformation("[{GroupName}.{ConsumerName}] Subscribed to stream {Topic}", groupName, consumerName, topic);
+                _logger.LogInformation("[{GroupName}.{ConsumerName}] Subscribed to stream {Topic}.",
+                    groupName, consumerName, topic);
             }
 
             return channel.Reader;
@@ -53,6 +52,7 @@ namespace Vayosoft.Streaming.Redis.Consumers
         {
             var streamInfo = await _database.StreamInfoAsync(streamName);
             var lastGeneratedId = streamInfo.LastGeneratedId;
+            var intervalMilliseconds = _config.Interval;
 
             if (!(await _database.KeyExistsAsync(streamName)) ||
                 (await _database.StreamGroupInfoAsync(streamName)).All(x => x.Name != groupName))
@@ -67,7 +67,7 @@ namespace Vayosoft.Streaming.Redis.Consumers
                 {
                     var streamEntries = await _database.StreamReadGroupAsync(streamName, groupName, consumerName, ">", 1);
                     if (!streamEntries.Any())
-                        await Task.Delay(IntervalMilliseconds, token);
+                        await Task.Delay(intervalMilliseconds, token);
                     else
                     {
                         var streamEntry = streamEntries.Last();

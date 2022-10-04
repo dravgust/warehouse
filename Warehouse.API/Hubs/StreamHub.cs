@@ -17,7 +17,11 @@ namespace Warehouse.API.Hubs
         public ChannelReader<IEvent> Notifications(CancellationToken cancellationToken)
         {
             return _consumer
-                .Configure(options => options.ConsumerId = Context.ConnectionId)
+                .Configure(options =>
+                {
+                    options.ConsumerId = Context.ConnectionId;
+                    options.Interval = 1000;
+                })
                 .Subscribe(new []{ "IPS-EVENTS" }, cancellationToken);
         }
 

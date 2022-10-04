@@ -11,21 +11,19 @@ namespace Vayosoft.Streaming.Redis.Producers
     public class RedisProducer : IExternalEventProducer
     {
         private readonly IDatabase _database;
-        private readonly RedisProducerConfig _config;
+        private readonly string _topic;
+        private readonly int? _maxLength;
 
         [ActivatorUtilitiesConstructor]
         public RedisProducer(IRedisDatabaseProvider connection, IConfiguration configuration)
-        {
-            if (configuration == null) 
-                throw new ArgumentNullException(nameof(configuration));
-            _config = configuration.GetRedisProducerConfig();
-
-            _database = connection.Database;
-        }
+            : this(connection, configuration.GetRedisProducerConfig())
+        { }
 
         public RedisProducer(IRedisDatabaseProvider connection,[NotNull] RedisProducerConfig config)
         {
-            _config = config;
+            _topic = config.Topic ?? nameof(IExternalEvent);
+            _maxLength = config.MaxLength > 0 ? config.MaxLength : null;
+
             _database = connection.Database;
         }
 
@@ -33,15 +31,14 @@ namespace Vayosoft.Streaming.Redis.Producers
         {
             await Task.Yield();
 
-            var topic = _config.Topic ?? nameof(IExternalEvent);
-            int? maxLength = _config.MaxLength > 0 ? _config.MaxLength : null;
-            var eventType = @event.GetType();
+            var type = @event.GetType();
+
             _ = await _database.StreamAddAsync(
-                topic,
-                eventType.Name,
-                JsonSerializer.Serialize(@event, eventType),
-                useApproximateMaxLength: maxLength != null,
-                maxLength: maxLength);
+                _topic,
+                type.Name,
+                JsonSerializer.Serialize(@event, type),
+                useApproximateMaxLength: true,
+                maxLength: _maxLength);
         }
     }
 }

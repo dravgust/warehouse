@@ -12,23 +12,26 @@ namespace Vayosoft.Streaming.Redis.Consumers
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<ExternalEventConsumer> _logger;
-        private readonly ExternalEventConsumerConfig _externalEventConfig;
+        private readonly ExternalEventConsumerConfig _configuration;
 
-        public ExternalEventConsumer(IServiceProvider serviceProvider, IConfiguration configuration, ILogger<ExternalEventConsumer> logger)
+        public ExternalEventConsumer(
+            IServiceProvider serviceProvider,
+            IConfiguration configuration, 
+            ILogger<ExternalEventConsumer> logger)
         {
             _logger = logger;
             _serviceProvider = serviceProvider;
 
             Guard.NotNull(configuration);
-            _externalEventConfig = configuration.GetExternalEventConfig();
+            _configuration = configuration.GetExternalEventConfig();
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            var topics = _externalEventConfig?.Topics ?? new[] { nameof(IExternalEvent) };
+            var topics = _configuration?.Topics ?? new[] { nameof(IExternalEvent) };
 
-            var redisConsumer = _serviceProvider.GetRequiredService<IRedisConsumer<IEvent>>();
-            var consumer = redisConsumer.Subscribe(topics, cancellationToken);
+            var eventConsumer = _serviceProvider.GetRequiredService<IRedisConsumer<IEvent>>();
+            var consumer = eventConsumer.Subscribe(topics, cancellationToken);
 
             _ = Consumer(consumer, cancellationToken);
 
