@@ -34,12 +34,10 @@ namespace Vayosoft.Streaming.Redis.Consumers
             var eventConsumer = _serviceProvider.GetRequiredService<IRedisConsumer<ConsumeResult>>();
             var consumer = eventConsumer.Subscribe(topics, cancellationToken);
 
-            _ = Consumer(consumer, cancellationToken);
-
-            return Task.CompletedTask;
+            return GetConsumer(consumer, cancellationToken);
         }
         
-        private async Task Consumer(ChannelReader<ConsumeResult> reader, CancellationToken cancellationToken)
+        private async Task GetConsumer(ChannelReader<ConsumeResult> reader, CancellationToken cancellationToken)
         {
             while (await reader.WaitToReadAsync(cancellationToken))
             {
