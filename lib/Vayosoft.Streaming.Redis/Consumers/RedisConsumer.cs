@@ -1,15 +1,13 @@
-﻿using System.Text.Json;
-using System.Threading.Channels;
+﻿using System.Threading.Channels;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
-using Vayosoft.Core.SharedKernel.Events;
 using Vayosoft.Core.Utilities;
 using Vayosoft.Data.Redis;
 
 namespace Vayosoft.Streaming.Redis.Consumers
 {
-    public sealed class RedisConsumer : IRedisConsumer<IEvent>
+    public sealed class RedisConsumer : IRedisConsumer<ConsumeResult>
     {
         private readonly ILogger<RedisConsumerGroup> _logger;
         private readonly RedisStreamConsumerConfig _config;
@@ -24,11 +22,11 @@ namespace Vayosoft.Streaming.Redis.Consumers
             _database = connection.Database;
         }
 
-        public ChannelReader<IEvent> Subscribe(string[] topics, CancellationToken cancellationToken)
+        public ChannelReader<ConsumeResult> Subscribe(string[] topics, CancellationToken cancellationToken)
         {
             var consumerName = _config?.ConsumerId ?? Guid.NewGuid().ToString();
 
-            var channel = Channel.CreateUnbounded<IEvent>();
+            var channel = Channel.CreateUnbounded<ConsumeResult>();
 
             foreach (var topic in topics)
             {
@@ -40,13 +38,13 @@ namespace Vayosoft.Streaming.Redis.Consumers
             return channel.Reader;
         }
 
-        public IRedisConsumer<IEvent> Configure(Action<RedisStreamConsumerConfig> options)
+        public IRedisConsumer<ConsumeResult> Configure(Action<RedisStreamConsumerConfig> options)
         {
             options(_config);
             return this;
         }
 
-        private async Task Producer(ChannelWriter<IEvent> writer, string streamName, CancellationToken token)
+        private async Task Producer(ChannelWriter<ConsumeResult> writer, string streamName, CancellationToken token)
         {
             Exception localException = null;
             try
@@ -69,10 +67,9 @@ namespace Vayosoft.Streaming.Redis.Consumers
                             {
                                 try
                                 {
-                                    var eventType = TypeProvider.GetTypeFromAnyReferencingAssembly(nameValueEntry.Name);
-                                    var @event = JsonSerializer.Deserialize(nameValueEntry.Value, eventType);
-
-                                    await writer.WriteAsync((IEvent) @event, token);
+                                    await writer.WriteAsync(
+                                        ConsumeResult.Create(streamName, nameValueEntry.Name,
+                                            nameValueEntry.Value), token);
                                 }
                                 catch (Exception e)
                                 {

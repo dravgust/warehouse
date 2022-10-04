@@ -32,7 +32,7 @@ namespace Vayosoft.Streaming.Redis.Producers
         {
             var topic = _config.Topic ?? nameof(IExternalEvent);
 
-            var message = new Message<string, string>(@event.GetType().Name, JsonSerializer.Serialize(@event));
+            var message = new Message(@event.GetType().Name, JsonSerializer.Serialize(@event));
 
             await Task.Yield();
             var result = await _subscriber.PublishAsync(

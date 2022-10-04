@@ -7,7 +7,7 @@ using Vayosoft.Data.Redis;
 
 namespace Vayosoft.Streaming.Redis.Consumers
 {
-    public class RedisSubscriber : IRedisConsumer<ConsumeResult<string, string>>
+    public class RedisSubscriber : IRedisConsumer<ConsumeResult>
     {
         private readonly ISubscriber _subscriber;
         private readonly ILogger<RedisConsumerGroup> _logger;
@@ -19,11 +19,11 @@ namespace Vayosoft.Streaming.Redis.Consumers
             this._logger = logger;
         }
 
-        public void Subscribe(string[] topics, Action<ConsumeResult<string, string>> action, CancellationToken cancellationToken)
+        public void Subscribe(string[] topics, Action<ConsumeResult> action, CancellationToken cancellationToken)
         {
             foreach (var topic in topics)
             {
-                var observer = new AnonymousObserver<ConsumeResult<string, string>>(
+                var observer = new AnonymousObserver<ConsumeResult>(
                 onNext: action,
                 onCompleted: () => _logger.LogInformation("Unsubscribed from channel {Topic}", topic),
                 onError: (e) => _logger.LogError("{Message}\r\n{StackTrace}", e.Message, e.StackTrace));
@@ -35,7 +35,7 @@ namespace Vayosoft.Streaming.Redis.Consumers
                     {
                         var eventMessage = JsonSerializer.Deserialize<Message<string, string>>(message);
                         if (eventMessage == null) return;
-                        observer.OnNext(new ConsumeResult<string, string>(topic, eventMessage.Key, eventMessage.Value));
+                        observer.OnNext(ConsumeResult.Create(topic, eventMessage.Key, eventMessage.Value));
                     }
                     catch (Exception ex) { observer.OnError(ex); }
                 });
@@ -49,7 +49,7 @@ namespace Vayosoft.Streaming.Redis.Consumers
             _subscriber.UnsubscribeAll();
         }
 
-        public ChannelReader<ConsumeResult<string, string>> Subscribe(string[] topics, CancellationToken cancellationToken)
+        public ChannelReader<ConsumeResult> Subscribe(string[] topics, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

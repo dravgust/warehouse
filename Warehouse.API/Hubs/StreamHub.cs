@@ -1,6 +1,8 @@
-﻿using System.Threading.Channels;
+﻿using System.Text.Json;
+using System.Threading.Channels;
 using Microsoft.AspNetCore.SignalR;
 using Vayosoft.Core.SharedKernel.Events;
+using Vayosoft.Core.Utilities;
 using Vayosoft.Streaming.Redis.Consumers;
 
 namespace Warehouse.API.Hubs
@@ -16,20 +18,36 @@ namespace Warehouse.API.Hubs
 
         public ChannelReader<IEvent> Notifications(CancellationToken cancellationToken)
         {
-            return _consumer
+            var stream = _consumer
                 .Configure(options =>
                 {
                     options.ConsumerId = Context.ConnectionId;
                     options.Interval = 1000;
                 })
                 .Subscribe(new []{ "IPS-EVENTS" }, cancellationToken);
+
+            return GetEvents(stream, cancellationToken);
         }
 
-        //private ChannelReader<IEvent> GetEvents(ChannelReader<ConsumeResult<string, string>> reader, CancellationToken token)
-        //{
-        //    var channel = Channel.CreateUnbounded<IEvent>();
+        private static ChannelReader<IEvent> GetEvents(ChannelReader<ConsumeResult> reader, CancellationToken token)
+        {
+            var channel = Channel.CreateUnbounded<IEvent>();
 
-        //    return channel.Reader;
-        //}
+            async Task Consumer()
+            {
+                await foreach (var result in reader.ReadAllAsync(token))
+                {
+                    var message = result.Message;
+                    var eventType = TypeProvider.GetTypeFromAnyReferencingAssembly(message.Key);
+                    var @event = JsonSerializer.Deserialize(message.Value, eventType);
+
+                    await channel.Writer.WriteAsync((IEvent) @event, token);
+                }
+            }
+
+            _ = Consumer();
+
+            return channel.Reader;
+        }
     }
 }

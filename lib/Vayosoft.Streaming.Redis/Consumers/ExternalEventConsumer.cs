@@ -1,4 +1,5 @@
-﻿using System.Threading.Channels;
+﻿using System.Text.Json;
+using System.Threading.Channels;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -30,7 +31,7 @@ namespace Vayosoft.Streaming.Redis.Consumers
         {
             var topics = _configuration?.Topics ?? new[] { nameof(IExternalEvent) };
 
-            var eventConsumer = _serviceProvider.GetRequiredService<IRedisConsumer<IEvent>>();
+            var eventConsumer = _serviceProvider.GetRequiredService<IRedisConsumer<ConsumeResult>>();
             var consumer = eventConsumer.Subscribe(topics, cancellationToken);
 
             _ = Consumer(consumer, cancellationToken);
@@ -38,20 +39,25 @@ namespace Vayosoft.Streaming.Redis.Consumers
             return Task.CompletedTask;
         }
         
-        private async Task Consumer(ChannelReader<IEvent> reader, CancellationToken cancellationToken)
+        private async Task Consumer(ChannelReader<ConsumeResult> reader, CancellationToken cancellationToken)
         {
             while (await reader.WaitToReadAsync(cancellationToken))
             {
-                await OnEvent(await reader.ReadAsync(cancellationToken));
+                await OnConsumerResult(await reader.ReadAsync(cancellationToken));
             }
         }
 
-        private async Task OnEvent(IEvent @event)
+        private async Task OnConsumerResult(ConsumeResult<string, string> result)
         {
             try
             {
+                var message = result.Message;
+                var eventType = TypeProvider.GetTypeFromAnyReferencingAssembly(message.Key);
+                var @event = JsonSerializer.Deserialize(message.Value, eventType);
+
                 using var scope = _serviceProvider.CreateScope();
                 var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
+
                 await eventBus.Publish((IEvent)@event);
             }
             catch (Exception e)

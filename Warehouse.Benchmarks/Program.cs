@@ -5,7 +5,7 @@ using Vayosoft.Streaming.Redis.Producers;
 using Warehouse.Benchmarks;
 using Warehouse.Core.Entities.Events;
 
-var redisProvider = new RedisProvider("192.168.10.11:6379,abortConnect=false,ssl=false");
+var redisProvider = new RedisProvider("localhost:6379,abortConnect=false,ssl=false");
 var consumer = new RedisProducer(redisProvider, new RedisProducerConfig() { MaxLength = 10, Topic = "IPS-EVENTS" });
 var cts = new CancellationTokenSource();
 var task = Task.Run(async () =>
