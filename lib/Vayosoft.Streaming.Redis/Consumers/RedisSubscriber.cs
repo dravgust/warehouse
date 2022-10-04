@@ -51,7 +51,9 @@ namespace Vayosoft.Streaming.Redis.Consumers
 
         public ChannelReader<ConsumeResult> Subscribe(string[] topics, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var channel = Channel.CreateUnbounded<ConsumeResult>();
+
+            return channel.Reader;
         }
     }
 }
