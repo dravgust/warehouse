@@ -61,7 +61,7 @@ namespace Vayosoft.Streaming.Redis.Consumers
                 var eventMessage = JsonSerializer.Deserialize<Message>(message);
                 if (eventMessage is null) return;
 
-                await writer.WriteAsync(ConsumeResult.Create(streamName, eventMessage.Key, eventMessage.Value), token);
+                await writer.WriteAsync(new ConsumeResult(streamName, eventMessage.Key, eventMessage.Value), token);
             }
             catch (Exception e)
             {

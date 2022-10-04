@@ -13,7 +13,10 @@ namespace Vayosoft.Streaming.Redis.Consumers
         private readonly RedisStreamConsumerConfig _config;
         private readonly IDatabase _database;
   
-        public RedisConsumerGroup(IRedisDatabaseProvider connection, IConfiguration configuration, ILogger<RedisConsumerGroup> logger)
+        public RedisConsumerGroup(
+            IRedisDatabaseProvider connection,
+            IConfiguration configuration,
+            ILogger<RedisConsumerGroup> logger)
         {
             Guard.NotNull(configuration);
             _config = configuration.GetRedisConsumerConfig();
@@ -48,19 +51,19 @@ namespace Vayosoft.Streaming.Redis.Consumers
 
         private async Task Producer(
             ChannelWriter<ConsumeResult> writer, 
-            string streamName, 
+            string topic, 
             string groupName, 
             string consumerName,
             CancellationToken token)
         {
-            var streamInfo = await _database.StreamInfoAsync(streamName);
+            var streamInfo = await _database.StreamInfoAsync(topic);
             var lastGeneratedId = streamInfo.LastGeneratedId;
-            var intervalMilliseconds = _config.Interval;
+            var interval = _config.Interval;
 
-            if (!(await _database.KeyExistsAsync(streamName)) ||
-                (await _database.StreamGroupInfoAsync(streamName)).All(x => x.Name != groupName))
+            if (!(await _database.KeyExistsAsync(topic)) ||
+                (await _database.StreamGroupInfoAsync(topic)).All(x => x.Name != groupName))
             {
-                await _database.StreamCreateConsumerGroupAsync(streamName, groupName, lastGeneratedId);
+                await _database.StreamCreateConsumerGroupAsync(topic, groupName, lastGeneratedId);
             }
 
             Exception localException = null;
@@ -68,22 +71,23 @@ namespace Vayosoft.Streaming.Redis.Consumers
             {
                 while (!token.IsCancellationRequested)
                 {
-                    var streamEntries = await _database.StreamReadGroupAsync(streamName, groupName, consumerName, ">", 1);
-                    if (!streamEntries.Any())
-                        await Task.Delay(intervalMilliseconds, token);
+                    var entries = await _database.StreamReadGroupAsync(topic, groupName, consumerName, ">", 1);
+                    if (!entries.Any())
+                        await Task.Delay(interval, token);
                     else
                     {
-                        var streamEntry = streamEntries.Last();
-                        foreach (var nameValueEntry in streamEntry.Values)
+                        var entry = entries.Last();
+                        foreach (var valueEntry in entry.Values)
                         {
                             try
                             {
-                                await writer.WriteAsync(ConsumeResult.Create(streamName, nameValueEntry.Name, nameValueEntry.Value), token);
-                                await _database.StreamAcknowledgeAsync(streamName, groupName, streamEntry.Id);
+                                await writer.WriteAsync(new ConsumeResult(topic, valueEntry.Name, valueEntry.Value), token);
+                                await _database.StreamAcknowledgeAsync(topic, groupName, entry.Id);
                             }
                             catch (Exception e)
                             {
-                                _logger.LogError("{Message}\r\n{StackTrace}", e.Message, e.StackTrace);
+                                _logger.LogError("{Message}\r\n{StackTrace}",
+                                    e.Message, e.StackTrace);
                             }
                         }
                     }
@@ -96,7 +100,7 @@ namespace Vayosoft.Streaming.Redis.Consumers
             }
             finally
             {
-                _database.StreamDeleteConsumer(streamName, groupName, consumerName);
+                _database.StreamDeleteConsumer(topic, groupName, consumerName);
                 writer.Complete(localException);
             }
         }

@@ -2,13 +2,10 @@
 {
     public sealed record ConsumeResult : ConsumeResult<string, string>
     {
-        public static ConsumeResult Create(string topic, string name, string value)
+        public ConsumeResult(string topic, string name, string value)
         {
-            return new ConsumeResult
-            {
-                Topic = topic,
-                Message = new Message(name, value)
-            };
+            Topic = topic;
+            Message = new Message(name, value);
         }
     }
 

@@ -13,7 +13,10 @@ namespace Vayosoft.Streaming.Redis.Consumers
         private readonly RedisStreamConsumerConfig _config;
         private readonly IDatabase _database;
 
-        public RedisConsumer(IRedisDatabaseProvider connection, IConfiguration configuration, ILogger<RedisConsumerGroup> logger)
+        public RedisConsumer(
+            IRedisDatabaseProvider connection, 
+            IConfiguration configuration,
+            ILogger<RedisConsumerGroup> logger)
         {
             Guard.NotNull(configuration);
             _config = configuration.GetRedisConsumerConfig();
@@ -32,7 +35,8 @@ namespace Vayosoft.Streaming.Redis.Consumers
             {
                 _ = Producer(channel, topic, cancellationToken);
 
-                _logger.LogInformation("[{ConsumerName}] Subscribed to stream {Topic}.", consumerName, topic);
+                _logger.LogInformation("[{ConsumerName}] Subscribed to stream {Topic}.",
+                    consumerName, topic);
             }
 
             return channel.Reader;
@@ -44,40 +48,42 @@ namespace Vayosoft.Streaming.Redis.Consumers
             return this;
         }
 
-        private async Task Producer(ChannelWriter<ConsumeResult> writer, string streamName, CancellationToken token)
+        private async Task Producer(
+            ChannelWriter<ConsumeResult> writer,
+            string topic, 
+            CancellationToken token)
         {
             Exception localException = null;
             try
             {
-                var streamInfo = await _database.StreamInfoAsync(streamName);
+                var streamInfo = await _database.StreamInfoAsync(topic);
                 var lastGeneratedId = streamInfo.LastGeneratedId;
-                var intervalMilliseconds = _config.Interval;
+                var interval = _config.Interval;
 
                 while (!token.IsCancellationRequested)
                 {
-                    var streamEntries = await _database.StreamReadAsync(streamName, lastGeneratedId);
-                    if (!streamEntries.Any())
-                        await Task.Delay(intervalMilliseconds, token);
+                    var entries = await _database.StreamReadAsync(topic, lastGeneratedId);
+                    if (!entries.Any())
+                        await Task.Delay(interval, token);
                     else
                     {
-
-                        foreach (var streamEntry in streamEntries)
+                        foreach (var entry in entries)
                         {
-                            foreach (var nameValueEntry in streamEntry.Values)
+                            foreach (var valueEntry in entry.Values)
                             {
                                 try
                                 {
-                                    await writer.WriteAsync(
-                                        ConsumeResult.Create(streamName, nameValueEntry.Name,
-                                            nameValueEntry.Value), token);
+                                    await writer.WriteAsync(new ConsumeResult(topic, valueEntry.Name,
+                                            valueEntry.Value), token);
                                 }
                                 catch (Exception e)
                                 {
-                                    _logger.LogError("{Message}\r\n{StackTrace}", e.Message, e.StackTrace);
+                                    _logger.LogError("{Message}\r\n{StackTrace}",
+                                        e.Message, e.StackTrace);
                                 }
                             }
 
-                            lastGeneratedId = streamEntry.Id;
+                            lastGeneratedId = entry.Id;
                         }
                     }
                 }
