@@ -3,7 +3,7 @@ using FluentAssertions;
 
 namespace Warehouse.UnitTests
 {
-    public class ValidationRules
+    public class ValidationRulesTest
     {
         [Fact]
         public void Check_MacAddress()

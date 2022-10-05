@@ -8,7 +8,7 @@ using Warehouse.Core.Services;
 
 namespace Warehouse.Core.UseCases.Management.Queries
 {
-    public record GetRegisteredGwList : IQuery<IEnumerable<string>>;
+    public sealed record GetRegisteredGwList : IQuery<IEnumerable<string>>;
 
     public sealed class RegisteredGwQueryHandler : IQueryHandler<GetRegisteredGwList, IEnumerable<string>>
     {

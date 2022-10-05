@@ -6,7 +6,7 @@ using Warehouse.Core.Entities.Models;
 
 namespace Warehouse.Core.UseCases.Management.Commands
 {
-    public class DeleteAlert : ICommand
+    public sealed class DeleteAlert : ICommand
     {
         public string Id { get; set; }
         public class AlertRequestValidator : AbstractValidator<DeleteAlert>
@@ -18,7 +18,7 @@ namespace Warehouse.Core.UseCases.Management.Commands
         }
     }
 
-    internal class HandleDeleteAlert : ICommandHandler<DeleteAlert>
+    internal sealed class HandleDeleteAlert : ICommandHandler<DeleteAlert>
     {
         private readonly IRepositoryBase<AlertEntity> _repository;
 

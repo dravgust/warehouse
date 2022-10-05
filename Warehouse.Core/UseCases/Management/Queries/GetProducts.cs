@@ -9,7 +9,7 @@ using Warehouse.Core.Services.Security;
 
 namespace Warehouse.Core.UseCases.Management.Queries
 {
-    public class GetProducts : PagingModelBase, IQuery<IPagedEnumerable<ProductEntity>>, ILinqSpecification<ProductEntity>
+    public sealed class GetProducts : PagingModelBase, IQuery<IPagedEnumerable<ProductEntity>>, ILinqSpecification<ProductEntity>
     {
         public string SearchTerm { get; set; }
         public long ProviderId { get; set; }
@@ -22,7 +22,7 @@ namespace Warehouse.Core.UseCases.Management.Queries
         }
     }
     
-    internal class HandleGetProducts : IQueryHandler<GetProducts, IPagedEnumerable<ProductEntity>>
+    internal sealed class HandleGetProducts : IQueryHandler<GetProducts, IPagedEnumerable<ProductEntity>>
     {
         private readonly IReadOnlyRepository<ProductEntity> _repository;
         private readonly IUserContext _userContext;

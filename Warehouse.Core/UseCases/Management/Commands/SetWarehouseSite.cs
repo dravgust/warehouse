@@ -10,7 +10,7 @@ using Warehouse.Core.UseCases.Management.Models;
 
 namespace Warehouse.Core.UseCases.Management.Commands
 {
-    public class SetWarehouseSite : WarehouseSiteDto, ICommand
+    public sealed class SetWarehouseSite : WarehouseSiteDto, ICommand
     {
         public class WarehouseRequestValidator : AbstractValidator<SetWarehouseSite>
         {
@@ -21,7 +21,7 @@ namespace Warehouse.Core.UseCases.Management.Commands
         }
     }
 
-    internal class HandleSetWarehouseSite : ICommandHandler<SetWarehouseSite>
+    internal sealed class HandleSetWarehouseSite : ICommandHandler<SetWarehouseSite>
     {
         private readonly IRepositoryBase<WarehouseSiteEntity> _repository;
         private readonly IMapper _mapper;

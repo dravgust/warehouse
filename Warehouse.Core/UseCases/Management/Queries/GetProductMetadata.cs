@@ -6,10 +6,10 @@ using Warehouse.Core.Entities.Models;
 
 namespace Warehouse.Core.UseCases.Management.Queries
 {
-    public class GetProductMetadata : IQuery<Metadata>
+    public sealed record GetProductMetadata : IQuery<Metadata>
     { }
 
-    internal class HandleGetProductMetadata : IQueryHandler<GetProductMetadata, Metadata>
+    internal sealed class HandleGetProductMetadata : IQueryHandler<GetProductMetadata, Metadata>
     {
         private readonly IDistributedMemoryCache _cache;
         private readonly IRepositoryBase<FileEntity> _fileRepository;

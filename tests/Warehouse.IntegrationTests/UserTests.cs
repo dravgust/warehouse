@@ -1,3 +1,4 @@
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Warehouse.Core.Entities.Models;
 using Xunit.Abstractions;
@@ -42,7 +43,7 @@ namespace Warehouse.IntegrationTests
 
             _logger.LogInformation("userId: {UserId}", user.Id);
 
-            Assert.True(user.Id > 0);
+            user.Id.Should().BeGreaterThan(0);
         }
     }
 }

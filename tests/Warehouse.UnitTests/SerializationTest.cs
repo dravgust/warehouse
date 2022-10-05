@@ -8,11 +8,11 @@ using Xunit.Abstractions;
 
 namespace Warehouse.UnitTests
 {
-    public class Serialization
+    public class SerializationTest
     {
         private readonly ITestOutputHelper _logger;
 
-        public Serialization(ITestOutputHelper logger)
+        public SerializationTest(ITestOutputHelper logger)
         {
             _logger = logger;
         }

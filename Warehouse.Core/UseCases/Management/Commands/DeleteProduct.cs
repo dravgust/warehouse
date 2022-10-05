@@ -9,7 +9,7 @@ using Warehouse.Core.Services;
 
 namespace Warehouse.Core.UseCases.Management.Commands
 {
-    public class DeleteProduct : ICommand
+    public sealed class DeleteProduct : ICommand
     {
         public string Id { get; set; } = null!;
 
@@ -22,7 +22,7 @@ namespace Warehouse.Core.UseCases.Management.Commands
         }
     }
 
-    public class HandleDeleteProduct : ICommandHandler<DeleteProduct>
+    internal sealed class HandleDeleteProduct : ICommandHandler<DeleteProduct>
     {
         private readonly IRepositoryBase<ProductEntity> _repository;
         private readonly IUserContext _userContext;
