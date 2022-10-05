@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Vayosoft.Data.EF.MySQL;
-using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Domain.Entities;
 
 namespace Warehouse.Infrastructure.Persistence
 {

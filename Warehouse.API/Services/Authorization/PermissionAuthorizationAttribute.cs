@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Vayosoft.Core.Utilities;
 using Warehouse.API.Services.Errors.Models;
-using Warehouse.Core.Entities.Enums;
-using Warehouse.Core.Entities.Models.Security;
+using Warehouse.Core.Domain.Entities.Security;
+using Warehouse.Core.Domain.Enums;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Security;
 

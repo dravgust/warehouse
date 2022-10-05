@@ -3,8 +3,8 @@ using MediatR;
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Events;
-using Warehouse.Core.Entities.Events;
-using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Domain.Entities;
+using Warehouse.Core.Domain.Events;
 using Warehouse.Core.Services;
 
 namespace Warehouse.Core.UseCases.Management.Commands

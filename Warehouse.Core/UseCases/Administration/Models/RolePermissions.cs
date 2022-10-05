@@ -1,4 +1,4 @@
-﻿using Warehouse.Core.Entities.Models.Security;
+﻿using Warehouse.Core.Domain.Entities.Security;
 
 namespace Warehouse.Core.UseCases.Administration.Models
 {

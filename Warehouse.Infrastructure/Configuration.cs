@@ -12,7 +12,7 @@ using Vayosoft.Core.SharedKernel.ValueObjects;
 using Vayosoft.Data.Dapper.MySQL;
 using Vayosoft.Data.EF.MySQL;
 using Vayosoft.Data.MongoDB;
-using Warehouse.Core.Entities.Events;
+using Warehouse.Core.Domain.Events;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Serialization;

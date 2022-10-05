@@ -3,12 +3,12 @@ using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Persistence.Queries;
-using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Administration.Commands;
 using Warehouse.Core.UseCases.Administration.Models;
 using Warehouse.Core.UseCases.Administration.Queries;
 using Warehouse.Core.UseCases.Administration.Specifications;
 using Vayosoft.Core.Persistence.Commands;
+using Warehouse.Core.Domain.Entities;
 
 namespace Warehouse.Core.UseCases.Administration
 { 

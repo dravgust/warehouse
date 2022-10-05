@@ -1,12 +1,12 @@
 ﻿using FluentValidation;
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Utilities;
-using Warehouse.Core.Entities.Models;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Security;
 using Warehouse.Core.UseCases.Management.Models;
 using LanguageExt.Common;
+using Warehouse.Core.Domain.Entities;
 
 namespace Warehouse.Core.UseCases.Management.Commands
 {

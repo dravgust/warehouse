@@ -7,17 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Entities\ValueObjects\**" />
+    <Compile Remove="Domain\ValueObjects\**" />
     <Compile Remove="UseCases\Administration\ValueObjects\**" />
     <Compile Remove="UseCases\BeaconTracking\Commands\**" />
     <Compile Remove="UseCases\BeaconTracking\Specifications\**" />
     <Compile Remove="Utilities\**" />
-    <EmbeddedResource Remove="Entities\ValueObjects\**" />
+    <EmbeddedResource Remove="Domain\ValueObjects\**" />
     <EmbeddedResource Remove="UseCases\Administration\ValueObjects\**" />
     <EmbeddedResource Remove="UseCases\BeaconTracking\Commands\**" />
     <EmbeddedResource Remove="UseCases\BeaconTracking\Specifications\**" />
     <EmbeddedResource Remove="Utilities\**" />
-    <None Remove="Entities\ValueObjects\**" />
+    <None Remove="Domain\ValueObjects\**" />
     <None Remove="UseCases\Administration\ValueObjects\**" />
     <None Remove="UseCases\BeaconTracking\Commands\**" />
     <None Remove="UseCases\BeaconTracking\Specifications\**" />

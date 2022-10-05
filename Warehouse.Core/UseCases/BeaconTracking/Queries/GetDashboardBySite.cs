@@ -1,7 +1,7 @@
 ﻿using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.Specifications;
-using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Domain.Entities;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Security;

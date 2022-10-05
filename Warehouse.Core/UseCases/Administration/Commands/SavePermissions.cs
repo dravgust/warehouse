@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Utilities;
-using Warehouse.Core.Entities.Models.Security;
+using Warehouse.Core.Domain.Entities.Security;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
 

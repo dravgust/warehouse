@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Vayosoft.Core.SharedKernel.Events;
 using Vayosoft.Core.SharedKernel.ValueObjects;
-using Warehouse.Core.Entities.Events;
+using Warehouse.Core.Domain.Events;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 

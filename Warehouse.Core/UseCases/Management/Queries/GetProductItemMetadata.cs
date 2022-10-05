@@ -2,7 +2,7 @@
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.Utilities;
-using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Domain.Entities;
 
 namespace Warehouse.Core.UseCases.Management.Queries
 {

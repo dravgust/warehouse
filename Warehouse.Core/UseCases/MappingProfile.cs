@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Domain.Entities;
 using Warehouse.Core.UseCases.Management.Models;
 
 namespace Warehouse.Core.UseCases

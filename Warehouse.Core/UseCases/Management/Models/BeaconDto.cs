@@ -1,4 +1,4 @@
-﻿using Warehouse.Core.Entities.Enums;
+﻿using Warehouse.Core.Domain.Enums;
 
 namespace Warehouse.Core.UseCases.Management.Models
 {

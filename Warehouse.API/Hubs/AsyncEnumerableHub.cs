@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using System.Runtime.CompilerServices;
-using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Domain.Entities;
 
 namespace Warehouse.API.Hubs
 {

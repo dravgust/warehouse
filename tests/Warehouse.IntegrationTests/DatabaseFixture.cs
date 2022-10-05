@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Warehouse.Core.Entities.Models.Security;
+using Warehouse.Core.Domain.Entities.Security;
 using Warehouse.Infrastructure.Persistence;
 
 namespace Warehouse.IntegrationTests

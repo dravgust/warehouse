@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 using System.Security.Principal;
-using Warehouse.Core.Entities.Enums;
+using Warehouse.Core.Domain.Enums;
 
 namespace Warehouse.Core.Services.Security
 {

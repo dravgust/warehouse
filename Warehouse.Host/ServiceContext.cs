@@ -1,5 +1,5 @@
 ﻿using System.Security.Principal;
-using Warehouse.Core.Entities.Models.Security;
+using Warehouse.Core.Domain.Entities.Security;
 using Warehouse.Core.Services;
 
 namespace Warehouse.Host

@@ -2,9 +2,8 @@
 using Microsoft.Extensions.Logging;
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.SharedKernel.Exceptions;
-using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Entities.Models.Security;
-using Warehouse.Core.Exceptions;
+using Warehouse.Core.Domain.Entities.Security;
+using Warehouse.Core.Domain.Exceptions;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Security;

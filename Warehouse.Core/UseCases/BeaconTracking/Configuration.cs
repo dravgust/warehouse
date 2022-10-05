@@ -2,8 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
-using Warehouse.Core.Entities.Events;
-using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Domain.Entities;
+using Warehouse.Core.Domain.Events;
 using Warehouse.Core.UseCases.BeaconTracking.Events;
 using Warehouse.Core.UseCases.BeaconTracking.Models;
 using Warehouse.Core.UseCases.BeaconTracking.Queries;

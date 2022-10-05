@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Vayosoft.Data.EF.MySQL;
-using Warehouse.Core.Entities.Enums;
-using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Domain.Entities;
+using Warehouse.Core.Domain.Enums;
 
 namespace Warehouse.Infrastructure.Persistence.Mapping
 {

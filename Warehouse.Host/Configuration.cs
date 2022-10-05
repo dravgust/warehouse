@@ -2,7 +2,7 @@
 using Vayosoft.Caching;
 using Vayosoft.Core;
 using Vayosoft.Streaming.Redis;
-using Warehouse.Core.Entities.Events;
+using Warehouse.Core.Domain.Events;
 using Warehouse.Core.Services;
 using Warehouse.Infrastructure;
 

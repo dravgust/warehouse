@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Persistence;
-using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Domain.Entities;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Security;
 

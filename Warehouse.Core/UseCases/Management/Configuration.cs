@@ -4,10 +4,10 @@ using Warehouse.Core.UseCases.Management.Models;
 using Warehouse.Core.UseCases.Management.Queries;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.Commands;
-using Warehouse.Core.Entities.Models;
 using Warehouse.Core.UseCases.Management.Commands;
 using ErrorOr;
 using LanguageExt.Common;
+using Warehouse.Core.Domain.Entities;
 
 namespace Warehouse.Core.UseCases.Management
 { 

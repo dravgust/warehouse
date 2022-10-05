@@ -2,7 +2,7 @@
 using MediatR;
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Persistence;
-using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Domain.Entities;
 
 namespace Warehouse.Core.UseCases.Management.Commands
 {

@@ -3,7 +3,7 @@ using Vayosoft.Core.SharedKernel.ValueObjects;
 using Vayosoft.Data.Redis;
 using Vayosoft.Streaming.Redis.Producers;
 using Warehouse.Benchmarks;
-using Warehouse.Core.Entities.Events;
+using Warehouse.Core.Domain.Events;
 
 var redisProvider = new RedisProvider("localhost:6379,abortConnect=false,ssl=false");
 var consumer = new RedisProducer(redisProvider, new RedisProducerConfig() { MaxLength = 10, Topic = "IPS-EVENTS" });

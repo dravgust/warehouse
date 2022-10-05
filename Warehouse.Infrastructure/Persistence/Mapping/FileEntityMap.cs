@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.IdGenerators;
 using Vayosoft.Data.MongoDB;
-using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Domain.Entities;
 
 namespace Warehouse.Infrastructure.Persistence.Mapping
 {

@@ -3,7 +3,7 @@ using Vayosoft.Core.Caching;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.Utilities;
-using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Domain.Entities;
 using Warehouse.Core.Services;
 
 namespace Warehouse.Core.UseCases.Management.Queries

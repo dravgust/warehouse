@@ -1,7 +1,7 @@
 using Vayosoft.Core.Caching;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Specifications;
-using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Domain.Entities;
 using Warehouse.Core.Persistence;
 using Warehouse.Core.UseCases.Administration.Models;
 

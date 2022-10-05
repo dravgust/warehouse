@@ -1,6 +1,6 @@
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Domain.Entities;
 using Xunit.Abstractions;
 
 namespace Warehouse.IntegrationTests

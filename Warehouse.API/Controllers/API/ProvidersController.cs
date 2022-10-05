@@ -5,8 +5,8 @@ using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Persistence.Commands;
 using Vayosoft.Core.Utilities;
 using Warehouse.API.Services.Authorization;
-using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Entities.Models.Security;
+using Warehouse.Core.Domain.Entities;
+using Warehouse.Core.Domain.Entities.Security;
 using Warehouse.Core.Services;
 using Warehouse.Core.Services.Security;
 

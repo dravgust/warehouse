@@ -2,7 +2,7 @@
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel;
-using Warehouse.Core.Entities.Models;
+using Warehouse.Core.Domain.Entities;
 using Warehouse.Core.UseCases.BeaconTracking.Models;
 
 namespace Warehouse.Core.UseCases.BeaconTracking.Queries
