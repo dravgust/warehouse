@@ -8,19 +8,19 @@
 
   <ItemGroup>
     <Compile Remove="Domain\ValueObjects\**" />
-    <Compile Remove="UseCases\Administration\ValueObjects\**" />
-    <Compile Remove="UseCases\BeaconTracking\Commands\**" />
-    <Compile Remove="UseCases\BeaconTracking\Specifications\**" />
+    <Compile Remove="Application\UseCases\Administration\ValueObjects\**" />
+    <Compile Remove="Application\UseCases\BeaconTracking\Commands\**" />
+    <Compile Remove="Application\UseCases\BeaconTracking\Specifications\**" />
     <Compile Remove="Utilities\**" />
     <EmbeddedResource Remove="Domain\ValueObjects\**" />
-    <EmbeddedResource Remove="UseCases\Administration\ValueObjects\**" />
-    <EmbeddedResource Remove="UseCases\BeaconTracking\Commands\**" />
-    <EmbeddedResource Remove="UseCases\BeaconTracking\Specifications\**" />
+    <EmbeddedResource Remove="Application\UseCases\Administration\ValueObjects\**" />
+    <EmbeddedResource Remove="Application\UseCases\BeaconTracking\Commands\**" />
+    <EmbeddedResource Remove="Application\UseCases\BeaconTracking\Specifications\**" />
     <EmbeddedResource Remove="Utilities\**" />
     <None Remove="Domain\ValueObjects\**" />
-    <None Remove="UseCases\Administration\ValueObjects\**" />
-    <None Remove="UseCases\BeaconTracking\Commands\**" />
-    <None Remove="UseCases\BeaconTracking\Specifications\**" />
+    <None Remove="Application\UseCases\Administration\ValueObjects\**" />
+    <None Remove="Application\UseCases\BeaconTracking\Commands\**" />
+    <None Remove="Application\UseCases\BeaconTracking\Specifications\**" />
     <None Remove="Utilities\**" />
   </ItemGroup>
 
@@ -42,7 +42,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="UseCases\Management\Specifications\" />
+    <Folder Include="Application\UseCases\Management\Specifications\" />
   </ItemGroup>
 
 </Project>

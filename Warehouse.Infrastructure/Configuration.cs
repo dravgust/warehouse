@@ -12,12 +12,12 @@ using Vayosoft.Core.SharedKernel.ValueObjects;
 using Vayosoft.Data.Dapper.MySQL;
 using Vayosoft.Data.EF.MySQL;
 using Vayosoft.Data.MongoDB;
+using Warehouse.Core.Application.Persistence;
+using Warehouse.Core.Application.Services;
+using Warehouse.Core.Application.Services.Serialization;
+using Warehouse.Core.Application.UseCases;
+using Warehouse.Core.Application.UseCases.Management.Events;
 using Warehouse.Core.Domain.Events;
-using Warehouse.Core.Persistence;
-using Warehouse.Core.Services;
-using Warehouse.Core.Services.Serialization;
-using Warehouse.Core.UseCases;
-using Warehouse.Core.UseCases.Management.Events;
 using Warehouse.Infrastructure.Persistence;
 
 namespace Warehouse.Infrastructure

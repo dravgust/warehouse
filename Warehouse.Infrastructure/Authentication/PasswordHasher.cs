@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using Vayosoft.Core.Utilities;
-using Warehouse.Core.Services;
+using Warehouse.Core.Application.Services;
 
 namespace Warehouse.Infrastructure.Authentication
 {

@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.Extensions.Options;
-using Warehouse.Core.Services;
-using Warehouse.Core.Services.Authentication;
+using Warehouse.Core.Application.Services;
+using Warehouse.Core.Application.Services.Authentication;
 
 namespace Warehouse.API.Services.Authorization
 {

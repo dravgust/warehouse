@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Vayosoft.Core.Utilities;
 using Warehouse.API.Services.Errors.Models;
+using Warehouse.Core.Application.Services;
+using Warehouse.Core.Application.Services.Security;
 using Warehouse.Core.Domain.Entities.Security;
 using Warehouse.Core.Domain.Enums;
-using Warehouse.Core.Services;
-using Warehouse.Core.Services.Security;
 
 //https://docs.microsoft.com/ru-ru/aspnet/core/fundamentals/app-state?cid=kerryherger&view=aspnetcore-6.0
 //https://metanit.com/sharp/aspnet5/2.26.php?ysclid=l67iov921a229435244

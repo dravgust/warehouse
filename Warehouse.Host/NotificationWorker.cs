@@ -1,9 +1,8 @@
 using Vayosoft.Core.Caching;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Specifications;
+using Warehouse.Core.Application.Persistence;
 using Warehouse.Core.Domain.Entities;
-using Warehouse.Core.Persistence;
-using Warehouse.Core.UseCases.Administration.Models;
 
 namespace Warehouse.Host
 {

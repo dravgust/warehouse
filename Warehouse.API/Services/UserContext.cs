@@ -1,11 +1,11 @@
 ﻿using System.Security.Principal;
 using System.Text.Json;
 using Warehouse.API.Extensions;
+using Warehouse.Core.Application.Persistence;
+using Warehouse.Core.Application.Services;
+using Warehouse.Core.Application.Services.Security;
 using Warehouse.Core.Domain.Entities.Security;
 using Warehouse.Core.Domain.Enums;
-using Warehouse.Core.Persistence;
-using Warehouse.Core.Services;
-using Warehouse.Core.Services.Security;
 
 namespace Warehouse.API.Services
 {

@@ -7,11 +7,11 @@ using Vayosoft.Core.Utilities;
 using Warehouse.API.Contracts.Authentication;
 using Warehouse.API.Resources;
 using Warehouse.API.UseCases.Resources;
-using Warehouse.Core.UseCases.Administration.Models;
 using Warehouse.API.Extensions;
 using Warehouse.API.Services.Authorization;
 using Warehouse.API.Services.Errors.Models;
-using Warehouse.Core.Services.Authentication;
+using Warehouse.Core.Application.Services.Authentication;
+using Warehouse.Core.Application.UseCases.Administration.Models;
 
 
 namespace Warehouse.API.Controllers.API

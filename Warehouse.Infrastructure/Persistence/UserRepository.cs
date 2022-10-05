@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Warehouse.Core.Application.Persistence;
 using Warehouse.Core.Domain.Entities;
 using Warehouse.Core.Domain.Entities.Security;
-using Warehouse.Core.Persistence;
 
 namespace Warehouse.Infrastructure.Persistence
 {

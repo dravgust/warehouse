@@ -5,7 +5,7 @@ using System.Net;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Warehouse.API.Extensions;
 using Warehouse.API.Services.Errors.Models;
-using Warehouse.Core.UseCases.Management.Models;
+using Warehouse.Core.Application.UseCases.Management.Models;
 
 namespace Warehouse.API.Controllers.API
 {

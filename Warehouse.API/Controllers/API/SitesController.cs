@@ -4,9 +4,9 @@ using Vayosoft.Core.Commands;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Queries;
 using Warehouse.API.Services.Authorization;
+using Warehouse.Core.Application.UseCases.Management.Commands;
+using Warehouse.Core.Application.UseCases.Management.Queries;
 using Warehouse.Core.Domain.Entities;
-using Warehouse.Core.UseCases.Management.Commands;
-using Warehouse.Core.UseCases.Management.Queries;
 
 namespace Warehouse.API.Controllers.API
 {
