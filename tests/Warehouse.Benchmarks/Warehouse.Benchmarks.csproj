@@ -18,8 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\lib\Vayosoft.Streaming.Redis\Vayosoft.Streaming.Redis.csproj" />
-    <ProjectReference Include="..\Warehouse.Core\Warehouse.Core.csproj" />
+    <ProjectReference Include="..\..\lib\Vayosoft.Streaming.Redis\Vayosoft.Streaming.Redis.csproj" />
+    <ProjectReference Include="..\..\Warehouse.Core\Warehouse.Core.csproj" />
   </ItemGroup>
 
 </Project>

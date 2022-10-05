@@ -36,9 +36,9 @@
   <ItemGroup>
     <ProjectReference Include="..\lib\Vayosoft.AutoMapper\Vayosoft.AutoMapper.csproj" />
     <ProjectReference Include="..\lib\Vayosoft.Core\Vayosoft.Core.csproj" />
-    <ProjectReference Include="..\lib\Vayosoft.Data.MongoDB\Vayosoft.Data.MongoDB.csproj" />
-    <ProjectReference Include="..\lib\Vayosoft.Data.Redis\Vayosoft.Data.Redis.csproj" />
     <ProjectReference Include="..\lib\Vayosoft.IPS\Vayosoft.IPS.csproj" />
+    <ProjectReference Include="..\lib\Vayosoft.MongoDB\Vayosoft.MongoDB.csproj" />
+    <ProjectReference Include="..\lib\Vayosoft.Redis\Vayosoft.Redis.csproj" />
   </ItemGroup>
 
   <ItemGroup>
