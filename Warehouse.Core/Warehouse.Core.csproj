@@ -42,7 +42,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\UseCases\Management\Specifications\" />
+    <Folder Include="Application\UseCases\SiteManagement\Specifications\" />
   </ItemGroup>
 
 </Project>
