@@ -4,7 +4,7 @@ using Vayosoft.Core.Queries;
 using Vayosoft.Core.Utilities;
 using Warehouse.Core.Domain.Entities;
 
-namespace Warehouse.Core.Application.UseCases.Management.Queries
+namespace Warehouse.Core.Application.UseCases.SiteManagement.Queries
 {
     public sealed record GetProductMetadata : IQuery<Metadata>
     { }

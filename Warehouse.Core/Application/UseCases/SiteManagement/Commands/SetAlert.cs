@@ -5,7 +5,7 @@ using Warehouse.Core.Application.Services;
 using Warehouse.Core.Application.Services.Security;
 using Warehouse.Core.Domain.Entities;
 
-namespace Warehouse.Core.Application.UseCases.Management.Commands
+namespace Warehouse.Core.Application.UseCases.SiteManagement.Commands
 {
     public class SetAlert : AlertEntity, ICommand
     { }

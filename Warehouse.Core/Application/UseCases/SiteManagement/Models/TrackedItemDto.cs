@@ -1,7 +1,7 @@
 ﻿using Vayosoft.Core.SharedKernel.Entities;
 using Warehouse.Core.Domain.Entities;
 
-namespace Warehouse.Core.Application.UseCases.Management.Models
+namespace Warehouse.Core.Application.UseCases.SiteManagement.Models
 {
     public class TrackedItemDto : IEntity<string>
     {

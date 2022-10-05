@@ -3,12 +3,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
-using Warehouse.Core.Application.UseCases.Management.Commands;
-using Warehouse.Core.Application.UseCases.Management.Models;
-using Warehouse.Core.Application.UseCases.Management.Queries;
+using Warehouse.Core.Application.UseCases.SiteManagement.Commands;
+using Warehouse.Core.Application.UseCases.SiteManagement.Models;
+using Warehouse.Core.Application.UseCases.SiteManagement.Queries;
 using Warehouse.Core.Domain.Entities;
 
-namespace Warehouse.Core.Application.UseCases.Management
+namespace Warehouse.Core.Application.UseCases.SiteManagement
 { 
     public static class Configuration
     {

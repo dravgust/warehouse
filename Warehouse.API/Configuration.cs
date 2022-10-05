@@ -17,7 +17,7 @@ using Warehouse.Core.Application.Services;
 using Warehouse.Core.Application.Services.Authentication;
 using Warehouse.Core.Application.UseCases.Administration;
 using Warehouse.Core.Application.UseCases.BeaconTracking;
-using Warehouse.Core.Application.UseCases.Management;
+using Warehouse.Core.Application.UseCases.SiteManagement;
 using Warehouse.Infrastructure;
 using Warehouse.Infrastructure.Authentication;
 using Warehouse.Infrastructure.Persistence;

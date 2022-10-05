@@ -6,7 +6,7 @@ using Vayosoft.Core.Utilities;
 using Warehouse.Core.Application.Services;
 using Warehouse.Core.Domain.Entities;
 
-namespace Warehouse.Core.Application.UseCases.Management.Queries
+namespace Warehouse.Core.Application.UseCases.SiteManagement.Queries
 {
     public sealed record GetRegisteredGwList : IQuery<IEnumerable<string>>;
 

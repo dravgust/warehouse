@@ -4,7 +4,7 @@ using Vayosoft.Core.Commands;
 using Vayosoft.Core.Persistence;
 using Warehouse.Core.Domain.Entities;
 
-namespace Warehouse.Core.Application.UseCases.Management.Commands
+namespace Warehouse.Core.Application.UseCases.SiteManagement.Commands
 {
     public sealed class DeleteAlert : ICommand
     {

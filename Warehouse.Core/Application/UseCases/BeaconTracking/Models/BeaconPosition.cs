@@ -1,4 +1,4 @@
-﻿using Warehouse.Core.Application.UseCases.Management.Models;
+﻿using Warehouse.Core.Application.UseCases.SiteManagement.Models;
 
 namespace Warehouse.Core.Application.UseCases.BeaconTracking.Models
 {

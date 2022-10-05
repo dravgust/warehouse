@@ -6,7 +6,7 @@ using Warehouse.Core.Application.Persistence;
 using Warehouse.Core.Application.Services;
 using Warehouse.Core.Application.Services.Security;
 using Warehouse.Core.Application.UseCases.BeaconTracking.Models;
-using Warehouse.Core.Application.UseCases.Management.Models;
+using Warehouse.Core.Application.UseCases.SiteManagement.Models;
 using Warehouse.Core.Domain.Entities;
 using static System.String;
 

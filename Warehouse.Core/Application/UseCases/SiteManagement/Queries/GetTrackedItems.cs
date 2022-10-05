@@ -5,10 +5,10 @@ using Vayosoft.Core.Utilities;
 using Warehouse.Core.Application.Persistence;
 using Warehouse.Core.Application.Services;
 using Warehouse.Core.Application.Services.Security;
-using Warehouse.Core.Application.UseCases.Management.Models;
+using Warehouse.Core.Application.UseCases.SiteManagement.Models;
 using Warehouse.Core.Domain.Entities;
 
-namespace Warehouse.Core.Application.UseCases.Management.Queries
+namespace Warehouse.Core.Application.UseCases.SiteManagement.Queries
 {
     public sealed class GetTrackedItems : PagingModelBase, IQuery<IPagedEnumerable<TrackedItemDto>>, ILinqSpecification<TrackedItem>
     {

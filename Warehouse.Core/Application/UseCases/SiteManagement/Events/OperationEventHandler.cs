@@ -8,7 +8,7 @@ using Warehouse.Core.Domain.Entities;
 using Warehouse.Core.Domain.Enums;
 using Warehouse.Core.Domain.Events;
 
-namespace Warehouse.Core.Application.UseCases.Management.Events
+namespace Warehouse.Core.Application.UseCases.SiteManagement.Events
 {
     public sealed class OperationEventHandler : IEventHandler<UserOperation>
     {

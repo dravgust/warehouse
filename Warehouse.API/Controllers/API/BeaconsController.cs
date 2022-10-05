@@ -2,8 +2,8 @@
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Queries;
 using Warehouse.API.Services.Authorization;
-using Warehouse.Core.Application.UseCases.Management.Commands;
-using Warehouse.Core.Application.UseCases.Management.Queries;
+using Warehouse.Core.Application.UseCases.SiteManagement.Commands;
+using Warehouse.Core.Application.UseCases.SiteManagement.Queries;
 
 namespace Warehouse.API.Controllers.API
 {

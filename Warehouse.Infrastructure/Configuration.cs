@@ -16,7 +16,7 @@ using Warehouse.Core.Application.Persistence;
 using Warehouse.Core.Application.Services;
 using Warehouse.Core.Application.Services.Serialization;
 using Warehouse.Core.Application.UseCases;
-using Warehouse.Core.Application.UseCases.Management.Events;
+using Warehouse.Core.Application.UseCases.SiteManagement.Events;
 using Warehouse.Core.Domain.Events;
 using Warehouse.Infrastructure.Persistence;
 

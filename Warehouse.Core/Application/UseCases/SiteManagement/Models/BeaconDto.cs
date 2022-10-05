@@ -1,6 +1,6 @@
 ﻿using Warehouse.Core.Domain.Enums;
 
-namespace Warehouse.Core.Application.UseCases.Management.Models
+namespace Warehouse.Core.Application.UseCases.SiteManagement.Models
 {
     public class BeaconDto
     {

@@ -5,7 +5,7 @@ using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Utilities;
 using Warehouse.Core.Domain.Entities;
 
-namespace Warehouse.Core.Application.UseCases.Management.Commands
+namespace Warehouse.Core.Application.UseCases.SiteManagement.Commands
 {
     public class RemoveGatewayFromSite : ICommand
     {
