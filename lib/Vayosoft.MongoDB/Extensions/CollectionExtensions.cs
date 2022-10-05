@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
 using MongoDB.Driver;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.SharedKernel.Models;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 
-namespace Vayosoft.Data.MongoDB
+namespace Vayosoft.MongoDB.Extensions
 {
     using static String;
     public static class CollectionExtensions

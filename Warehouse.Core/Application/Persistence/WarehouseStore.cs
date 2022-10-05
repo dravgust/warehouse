@@ -4,7 +4,7 @@ using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.SharedKernel.Events;
 using Vayosoft.Core.Utilities;
-using Vayosoft.Data.MongoDB;
+using Vayosoft.MongoDB;
 using Warehouse.Core.Domain.Entities;
 
 namespace Warehouse.Core.Application.Persistence

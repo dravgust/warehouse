@@ -1,9 +1,9 @@
 ﻿using Vayosoft.Core.SharedKernel.Entities;
-using Vayosoft.Data.MongoDB;
 using Vayosoft.IPS;
 using Vayosoft.IPS.Configuration;
 using Vayosoft.IPS.Filters;
 using Vayosoft.IPS.Methods;
+using Vayosoft.MongoDB;
 
 namespace Warehouse.Core.Domain.Entities
 {

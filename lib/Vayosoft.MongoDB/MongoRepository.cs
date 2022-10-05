@@ -6,9 +6,9 @@ using Vayosoft.Core.SharedKernel;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.Specifications;
-using Vayosoft.Data.MongoDB.Extensions;
+using Vayosoft.MongoDB.Extensions;
 
-namespace Vayosoft.Data.MongoDB
+namespace Vayosoft.MongoDB
 {
     public class MongoRepositoryBase<T> : IRepositoryBase<T> where T : class, IEntity
     {

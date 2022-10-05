@@ -1,8 +1,8 @@
-﻿using MongoDB.Driver.Linq;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 
-namespace Vayosoft.Data.MongoDB.Extensions
+namespace Vayosoft.MongoDB.Extensions
 {
     internal static class PagingExtensions
     {

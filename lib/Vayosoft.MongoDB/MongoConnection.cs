@@ -5,8 +5,9 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Core.Events;
 using Vayosoft.Core.SharedKernel.Entities;
+using Vayosoft.MongoDB.Extensions;
 
-namespace Vayosoft.Data.MongoDB
+namespace Vayosoft.MongoDB
 {
     public sealed class MongoConnection : IMongoConnection
     {

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 
-namespace Vayosoft.Data.MongoDB
+namespace Vayosoft.MongoDB
 {
     public class AutoRegistration
     {

@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
 using Vayosoft.Core.SharedKernel.Events.External;
-using Vayosoft.Data.Redis;
+using Vayosoft.Redis;
 
 namespace Vayosoft.Streaming.Redis.Producers
 {

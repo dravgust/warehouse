@@ -1,9 +1,8 @@
-﻿using System.Linq;
-using MongoDB.Driver.Linq;
+﻿using MongoDB.Driver.Linq;
 using Vayosoft.Core.SharedKernel.Models;
 using Vayosoft.Core.Specifications;
 
-namespace Vayosoft.Data.MongoDB.Extensions
+namespace Vayosoft.MongoDB.Extensions
 {
     public static class SpecificationExtensions
     {

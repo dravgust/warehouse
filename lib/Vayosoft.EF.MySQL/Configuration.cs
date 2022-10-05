@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Vayosoft.Data.EF.MySQL
+namespace Vayosoft.EF.MySQL
 {
     public static class Configuration
     {

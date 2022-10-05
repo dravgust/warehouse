@@ -1,6 +1,6 @@
 ﻿using MongoDB.Driver;
 using Vayosoft.Core.Queries;
-using Vayosoft.Data.MongoDB;
+using Vayosoft.MongoDB;
 using Warehouse.Core.Application.UseCases.BeaconTracking.Models;
 using Warehouse.Core.Domain.Entities;
 

@@ -1,6 +1,6 @@
 ﻿using BenchmarkDotNet.Running;
 using Vayosoft.Core.SharedKernel.ValueObjects;
-using Vayosoft.Data.Redis;
+using Vayosoft.Redis;
 using Vayosoft.Streaming.Redis.Producers;
 using Warehouse.Benchmarks;
 using Warehouse.Core.Domain.Events;

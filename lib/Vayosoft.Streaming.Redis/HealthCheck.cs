@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Vayosoft.Data.Redis;
+using Vayosoft.Redis;
 
 namespace Vayosoft.Streaming.Redis
 {

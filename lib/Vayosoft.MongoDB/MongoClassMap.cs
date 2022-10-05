@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson.Serialization;
 
-namespace Vayosoft.Data.MongoDB
+namespace Vayosoft.MongoDB
 {
     public abstract class MongoClassMap<T>
     {

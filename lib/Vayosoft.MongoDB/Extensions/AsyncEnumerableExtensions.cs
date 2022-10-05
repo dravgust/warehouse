@@ -1,10 +1,7 @@
-﻿
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Threading;
+﻿using System.Runtime.CompilerServices;
 using MongoDB.Driver.Linq;
 
-namespace Vayosoft.Data.MongoDB.Extensions
+namespace Vayosoft.MongoDB.Extensions
 {
     public static class AsyncEnumerableExtensions
     {

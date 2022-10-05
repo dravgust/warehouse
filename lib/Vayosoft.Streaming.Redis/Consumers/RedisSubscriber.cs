@@ -2,7 +2,7 @@
 using System.Threading.Channels;
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
-using Vayosoft.Data.Redis;
+using Vayosoft.Redis;
 
 namespace Vayosoft.Streaming.Redis.Consumers
 {

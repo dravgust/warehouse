@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Vayosoft.Data.Redis
+namespace Vayosoft.Redis
 {
-    public static class Config
+    public static class Configuration
     {
         public static IServiceCollection AddRedisConnection(this IServiceCollection services)
         {

@@ -1,7 +1,7 @@
 ﻿using MongoDB.Driver.Linq;
 using Vayosoft.Core.Specifications;
 
-namespace Vayosoft.Data.MongoDB.Extensions
+namespace Vayosoft.MongoDB.Extensions
 {
     public static class LinqExtensions
     {

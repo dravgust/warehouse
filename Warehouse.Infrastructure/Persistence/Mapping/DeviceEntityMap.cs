@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Vayosoft.Core.SharedKernel.ValueObjects;
-using Vayosoft.Data.EF.MySQL;
+using Vayosoft.EF.MySQL;
 using Warehouse.Core.Domain.Entities;
 
 namespace Warehouse.Infrastructure.Persistence.Mapping

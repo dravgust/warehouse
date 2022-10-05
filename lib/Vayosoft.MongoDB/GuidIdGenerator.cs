@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using Vayosoft.Core.Utilities;
 
-namespace Vayosoft.Data.MongoDB
+namespace Vayosoft.MongoDB
 {
     public class IdGenerator<T> : IIdGenerator
     {

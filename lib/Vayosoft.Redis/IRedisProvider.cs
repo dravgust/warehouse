@@ -1,7 +1,7 @@
 ﻿using System;
 using StackExchange.Redis;
 
-namespace Vayosoft.Data.Redis
+namespace Vayosoft.Redis
 {
     public interface IRedisProvider : IRedisConnectionProvider, IRedisDatabaseProvider, IRedisSubscriberProvider
     { }

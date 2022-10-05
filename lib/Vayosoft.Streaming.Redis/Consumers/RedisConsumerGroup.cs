@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 using Vayosoft.Core.Utilities;
-using Vayosoft.Data.Redis;
+using Vayosoft.Redis;
 
 namespace Vayosoft.Streaming.Redis.Consumers
 {

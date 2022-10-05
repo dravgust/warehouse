@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
 
-namespace Vayosoft.Data.Redis
+namespace Vayosoft.Redis
 {
     public class RedisProvider : IRedisProvider
     {

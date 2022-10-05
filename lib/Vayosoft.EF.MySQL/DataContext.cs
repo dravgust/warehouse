@@ -5,7 +5,7 @@ using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.SharedKernel.Exceptions;
 using Vayosoft.Core.Specifications;
 
-namespace Vayosoft.Data.EF.MySQL
+namespace Vayosoft.EF.MySQL
 {
     public class DataContext : DbContext, ILinqProvider, IUnitOfWork
     {

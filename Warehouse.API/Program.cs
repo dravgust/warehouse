@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Options;
 using Serilog;
-using Vayosoft.Data.MongoDB;
+using Vayosoft.MongoDB;
 using Warehouse.API;
 using Warehouse.API.Hubs;
 using Warehouse.API.Resources;

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Caching;
 using Vayosoft.Core;
 using Vayosoft.Core.Queries;
-using Vayosoft.Data.Redis;
+using Vayosoft.Redis;
 using Vayosoft.Streaming.Redis;
 using Vayosoft.Streaming.Redis.Consumers;
 using Warehouse.API.Services;

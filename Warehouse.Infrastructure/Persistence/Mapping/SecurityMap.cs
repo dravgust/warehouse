@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Vayosoft.Data.EF.MySQL;
+using Vayosoft.EF.MySQL;
 using Warehouse.Core.Domain.Entities.Security;
 
 namespace Warehouse.Infrastructure.Persistence.Mapping

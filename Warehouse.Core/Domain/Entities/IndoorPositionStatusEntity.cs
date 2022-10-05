@@ -1,5 +1,5 @@
 ﻿using Vayosoft.Core.SharedKernel.Entities;
-using Vayosoft.Data.MongoDB;
+using Vayosoft.MongoDB;
 
 namespace Warehouse.Core.Domain.Entities
 {

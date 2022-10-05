@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Vayosoft.Data.MongoDB
+﻿namespace Vayosoft.MongoDB
 {
     public class CollectionNameAttribute : Attribute
     {

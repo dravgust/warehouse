@@ -1,8 +1,7 @@
-using System;
 using Pluralize.NET.Core;
 using Vayosoft.Core.Utilities;
 
-namespace Vayosoft.Data.MongoDB
+namespace Vayosoft.MongoDB
 {
     using static String;
 

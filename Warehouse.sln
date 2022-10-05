@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Redis", "lib\Vayos
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Caching", "lib\Vayosoft.Caching\Vayosoft.Caching.csproj", "{4994F452-9E0E-4F6F-A71E-2B16CE0E4164}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.MySQL", "lib\Vayosoft.Dapper.MySQL\Vayosoft.MySQL.csproj", "{7C374C51-AECF-460E-B3CD-00F9AFE31F64}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Dapper.MySQL", "lib\Vayosoft.Dapper.MySQL\Vayosoft.Dapper.MySQL.csproj", "{7C374C51-AECF-460E-B3CD-00F9AFE31F64}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.RestClient", "lib\Vayosoft.RestClient\Vayosoft.RestClient.csproj", "{BD29A8C2-9BFB-4A35-B710-DF74D7013EF9}"
 EndProject
@@ -56,7 +56,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		initial.sql = initial.sql
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Core.Testing", "lib\Vayosoft.Core.Testing\Vayosoft.Core.Testing.csproj", "{B336C548-CE83-4B1C-B2E6-595C3CAC13A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vayosoft.Testing", "lib\Vayosoft.Testing\Vayosoft.Testing.csproj", "{B336C548-CE83-4B1C-B2E6-595C3CAC13A0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse.FunctionalTests", "tests\Warehouse.FunctionalTests\Warehouse.FunctionalTests.csproj", "{12662D88-6CF0-497D-AF5C-9A6D9FB2DFB2}"
 EndProject

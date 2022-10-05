@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 using Vayosoft.Core.Caching;
 using Vayosoft.Core.Utilities;
-using Vayosoft.Data.Redis;
+using Vayosoft.Redis;
 
 namespace Vayosoft.Caching.Redis
 {
