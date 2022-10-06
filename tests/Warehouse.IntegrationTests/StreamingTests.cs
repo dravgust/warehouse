@@ -1,6 +1,9 @@
 ﻿using System.Text.Json;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
+using Vayosoft.Core.SharedKernel.Events;
 using Vayosoft.Core.SharedKernel.ValueObjects;
+using Vayosoft.Streaming.Redis.Consumers;
 using Vayosoft.Testing;
 using Warehouse.Core.Domain.Events;
 using Xunit.Abstractions;
@@ -12,6 +15,8 @@ namespace Warehouse.IntegrationTests
         private readonly ILogger<StreamingTests> _logger;
 
         public RedisFixture Fixture { get; }
+        private readonly List<ConsumeResult> _consumedEvents = new();
+        private readonly List<IEvent> _producedEvents = new();
 
         public StreamingTests(RedisFixture fixture, ITestOutputHelper outputHelper)
         {
@@ -29,24 +34,26 @@ namespace Warehouse.IntegrationTests
         public async Task ConsumerProducerStreamTest()
         {
             using var cts = new CancellationTokenSource();
-
             try
             {
                 var consumer = RunConsumer(cts.Token, "TEST-EVENTS");
-                await RunProducer(cts.Token, "TEST-EVENTS");
+                await RunProducer(cts.Token, "TEST-EVENTS", 100);
                 await Task.Delay(1000, cts.Token);
                 cts.Cancel();
                 await consumer;
             }
             catch (OperationCanceledException) { }
+
+            _logger.LogInformation("Sent {ProducedCount} events. Read {ConsumedCount} messages.", _producedEvents.Count, _consumedEvents.Count);
+
+            Assert.Equal(_producedEvents.Count, _consumedEvents.Count);
         }
 
         [Fact]
         public async Task ProduceMessages()
         {
-            await RunProducer(CancellationToken.None, "IPS-EVENTS");
+            await RunProducer(CancellationToken.None, "IPS-EVENTS", 1000);
         }
-
 
         [Fact]
         public async Task ConsumeMessages()
@@ -60,24 +67,26 @@ namespace Warehouse.IntegrationTests
             catch (OperationCanceledException) { }
         }
 
-        private async Task RunProducer(CancellationToken token, string topic, int interval = 500)
+        private async Task RunProducer(CancellationToken token, string topic, int interval = 0)
         {
+            _producedEvents.Clear();
             await Task.Run(async () =>
             {
-                var redisProducer = Fixture.GetProducer(topic);
-                for (var i = 0; i < 10; i++)
+                var redisProducer = Fixture.GetProducer(topic, 100);
+                for (var i = 0; i < 100; i++)
                 {
-                    await redisProducer.Publish(new TrackedItemEntered(MacAddress.Empty, DateTime.UtcNow, "", i));
-
-                    _logger.LogInformation("SENT ProviderId: {ProviderId}", i);
+                    var item = new TrackedItemEntered(MacAddress.Empty, DateTime.UtcNow, "", i);
+                    await redisProducer.Publish(item);
+                    _producedEvents.Add(item);
 
                     await Task.Delay(interval, token);
                 }
             }, token);
-        } 
-        
+        }
+
         private Task RunConsumer(CancellationToken token, string topic, int? interval = null)
         {
+            _consumedEvents.Clear();
             return Task.Run(async () =>
             {
                 var producer = Fixture.GetConsumerGroup()
@@ -92,10 +101,7 @@ namespace Warehouse.IntegrationTests
 
                 while (await producer.WaitToReadAsync(token))
                 {
-                    var result = await producer.ReadAsync(token);
-                    var item = JsonSerializer.Deserialize<TrackedItemEntered>(result.Message.Value);
-
-                    _logger.LogInformation("GET {Timestamp} ProviderId: {ProviderId}", item?.Timestamp, item?.ProviderId);
+                    _consumedEvents.Add(await producer.ReadAsync(token));
                 }
             }, token);
         }

@@ -20,9 +20,9 @@ namespace Warehouse.IntegrationTests
             _dbProvider = new RedisProvider(Options.ConnectionString);
         }
 
-        public RedisProducer GetProducer(string topic)
+        public RedisProducer GetProducer(string topic, int maxLength = 100)
         {
-            return new RedisProducer(_dbProvider, new RedisProducerConfig { MaxLength = 10, Topic = topic });
+            return new RedisProducer(_dbProvider, new RedisProducerConfig { MaxLength = maxLength, Topic = topic });
         }
 
         public RedisConsumer GetConsumer()
