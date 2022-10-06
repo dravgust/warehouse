@@ -1,6 +1,6 @@
 ﻿using Vayosoft.Core.SharedKernel.Events.External;
 
-namespace Vayosoft.Core.Testing;
+namespace Vayosoft.Testing;
 
 public class DummyExternalEventConsumer : IExternalEventConsumer
 {

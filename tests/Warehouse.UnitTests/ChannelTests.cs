@@ -3,11 +3,11 @@ using Xunit.Abstractions;
 
 namespace Warehouse.UnitTests
 {
-    public class ChannelTest
+    public class ChannelTests
     {
         private readonly ITestOutputHelper _logger;
 
-        public ChannelTest(ITestOutputHelper helper)
+        public ChannelTests(ITestOutputHelper helper)
         {
             _logger = helper;
         }

@@ -1,6 +1,6 @@
 ﻿using Vayosoft.Core.SharedKernel.Events;
 
-namespace Vayosoft.Core.Testing;
+namespace Vayosoft.Testing;
 
 public class EventsLog
 {

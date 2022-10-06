@@ -1,7 +1,7 @@
 ﻿using Vayosoft.Core.Commands;
 using Vayosoft.Core.Commands.External;
 
-namespace Vayosoft.Core.Testing;
+namespace Vayosoft.Testing;
 
 public class DummyExternalCommandBus : IExternalCommandBus
 {

@@ -7,7 +7,7 @@ namespace Vayosoft.Streaming.Redis.Consumers
         public string GroupId { set; get; }
         public string ConsumerId { set; get; }
         public string[] BootstrapServers { set; get; }
-        public int Interval { set; get; } = 300;
+        public int Interval { set; get; } = 500;
     }
 
     public class ExternalEventConsumerConfig

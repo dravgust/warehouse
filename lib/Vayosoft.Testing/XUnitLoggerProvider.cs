@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 
-namespace Warehouse.IntegrationTests
+namespace Vayosoft.Testing
 {
-    internal sealed class XUnitLoggerProvider : ILoggerProvider
+    public sealed class XUnitLoggerProvider : ILoggerProvider
     {
         private readonly ITestOutputHelper _testOutputHelper;
         private readonly LoggerExternalScopeProvider _scopeProvider = new();

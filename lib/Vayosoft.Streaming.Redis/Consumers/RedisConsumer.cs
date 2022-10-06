@@ -2,25 +2,24 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
-using Vayosoft.Core.Utilities;
 using Vayosoft.Redis;
 
 namespace Vayosoft.Streaming.Redis.Consumers
 {
     public sealed class RedisConsumer : IRedisConsumer<ConsumeResult>
     {
-        private readonly ILogger<RedisConsumerGroup> _logger;
+        private readonly ILogger<RedisConsumer> _logger;
         private readonly RedisStreamConsumerConfig _config;
         private readonly IDatabase _database;
 
         public RedisConsumer(
             IRedisDatabaseProvider connection, 
             IConfiguration configuration,
-            ILogger<RedisConsumerGroup> logger)
+            ILogger<RedisConsumer> logger)
         {
-            Guard.NotNull(configuration);
-            _config = configuration.GetRedisConsumerConfig();
-
+            _config = configuration.GetRedisConsumerConfig()
+                      ?? new RedisStreamConsumerConfig();
+            
             _logger = logger;
             _database = connection.Database;
         }

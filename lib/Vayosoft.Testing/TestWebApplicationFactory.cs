@@ -7,7 +7,7 @@ using Vayosoft.Core.Commands.External;
 using Vayosoft.Core.SharedKernel.Events;
 using Vayosoft.Core.SharedKernel.Events.External;
 
-namespace Vayosoft.Core.Testing
+namespace Vayosoft.Testing
 {
     public class TestWebApplicationFactory<TProject> : WebApplicationFactory<TProject> where TProject : class
     {

@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
-using Vayosoft.Core.Utilities;
 using Vayosoft.Redis;
 
 namespace Vayosoft.Streaming.Redis.Consumers
@@ -18,9 +17,9 @@ namespace Vayosoft.Streaming.Redis.Consumers
             IConfiguration configuration,
             ILogger<RedisConsumerGroup> logger)
         {
-            Guard.NotNull(configuration);
-            _config = configuration.GetRedisConsumerConfig();
-
+            _config = configuration.GetRedisConsumerConfig() 
+                      ?? new RedisStreamConsumerConfig();
+ 
             _logger = logger;
             _database = connection.Database;
         }
@@ -56,19 +55,19 @@ namespace Vayosoft.Streaming.Redis.Consumers
             string consumerName,
             CancellationToken token)
         {
-            var streamInfo = await _database.StreamInfoAsync(topic);
-            var lastGeneratedId = streamInfo.LastGeneratedId;
-            var interval = _config.Interval;
-
-            if (!(await _database.KeyExistsAsync(topic)) ||
-                (await _database.StreamGroupInfoAsync(topic)).All(x => x.Name != groupName))
-            {
-                await _database.StreamCreateConsumerGroupAsync(topic, groupName, lastGeneratedId);
-            }
-
             Exception localException = null;
             try
             {
+                var streamInfo = await _database.StreamInfoAsync(topic);
+                var lastGeneratedId = streamInfo.LastGeneratedId;
+                var interval = _config.Interval;
+
+                if (!(await _database.KeyExistsAsync(topic)) ||
+                    (await _database.StreamGroupInfoAsync(topic)).All(x => x.Name != groupName))
+                {
+                    await _database.StreamCreateConsumerGroupAsync(topic, groupName, lastGeneratedId);
+                }
+
                 while (!token.IsCancellationRequested)
                 {
                     var entries = await _database.StreamReadGroupAsync(topic, groupName, consumerName, ">", 1);

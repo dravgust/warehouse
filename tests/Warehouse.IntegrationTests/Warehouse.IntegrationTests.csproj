@@ -22,6 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\lib\Vayosoft.Streaming.Redis\Vayosoft.Streaming.Redis.csproj" />
+    <ProjectReference Include="..\..\lib\Vayosoft.Testing\Vayosoft.Testing.csproj" />
     <ProjectReference Include="..\..\Warehouse.Infrastructure\Warehouse.Infrastructure.csproj" />
   </ItemGroup>
 

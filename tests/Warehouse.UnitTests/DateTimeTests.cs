@@ -4,7 +4,7 @@ using Vayosoft.Core.Utilities;
 
 namespace Warehouse.UnitTests
 {
-    public class DateTimeTest
+    public class DateTimeTests
     {
         private readonly IDateTimeProvider _dateTimeProvider = Substitute.For<IDateTimeProvider>();
 

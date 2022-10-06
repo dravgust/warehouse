@@ -2,16 +2,16 @@
 using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 
-namespace Warehouse.IntegrationTests
+namespace Vayosoft.Testing
 {
-    internal class XUnitLogger<T> : XUnitLogger, ILogger<T>
+    public class XUnitLogger<T> : XUnitLogger, ILogger<T>
     {
         public XUnitLogger(ITestOutputHelper testOutputHelper, LoggerExternalScopeProvider scopeProvider) 
             : base(testOutputHelper, scopeProvider, typeof(T).FullName!)
         { }
     }
 
-    internal class XUnitLogger : ILogger
+    public class XUnitLogger : ILogger
     {
         private readonly string _categoryName;
         private readonly ITestOutputHelper _testOutputHelper;

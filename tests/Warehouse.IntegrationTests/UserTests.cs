@@ -2,6 +2,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Warehouse.Core.Domain.Entities;
 using Xunit.Abstractions;
+using Vayosoft.Testing;
 
 namespace Warehouse.IntegrationTests
 {
