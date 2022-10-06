@@ -36,8 +36,8 @@ namespace Warehouse.IntegrationTests
             using var cts = new CancellationTokenSource();
             try
             {
-                var consumer = RunConsumer(cts.Token, "TEST-EVENTS");
-                await RunProducer(cts.Token, "TEST-EVENTS", 100);
+                var consumer = RunConsumer( "TEST-EVENTS", token: cts.Token);
+                await RunProducer( "TEST-EVENTS", 100, token: cts.Token);
                 await Task.Delay(1000, cts.Token);
                 cts.Cancel();
                 await consumer;
@@ -52,7 +52,7 @@ namespace Warehouse.IntegrationTests
         [Fact]
         public async Task ProduceMessages()
         {
-            await RunProducer(CancellationToken.None, "IPS-EVENTS", 1000);
+            await RunProducer( "IPS-EVENTS", 1000, token: CancellationToken.None);
         }
 
         [Fact]
@@ -62,12 +62,12 @@ namespace Warehouse.IntegrationTests
 
             try
             {
-                await RunConsumer(cts.Token, "IPS-EVENTS");
+                await RunConsumer( "IPS-EVENTS", token: CancellationToken.None);
             }
             catch (OperationCanceledException) { }
         }
 
-        private async Task RunProducer(CancellationToken token, string topic, int interval = 0)
+        private async Task RunProducer( string topic, int interval = 0, CancellationToken token = default)
         {
             _producedEvents.Clear();
             await Task.Run(async () =>
@@ -84,7 +84,7 @@ namespace Warehouse.IntegrationTests
             }, token);
         }
 
-        private Task RunConsumer(CancellationToken token, string topic, int? interval = null)
+        private Task RunConsumer(string topic, int? interval = null, CancellationToken token = default)
         {
             _consumedEvents.Clear();
             return Task.Run(async () =>
