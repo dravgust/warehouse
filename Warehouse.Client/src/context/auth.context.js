@@ -10,7 +10,7 @@ async function bootstrapAppData(dispatch) {
   let user = null;
   const token = await auth.getToken();
   if (token) {
-    const data = await client("account/bootstrap", { token });
+    const data = await client("bootstrap", { token });
     console.log("bootstrap", data);
     setResources(dispatch, data.resources);
     /*queryCache.setQueryData('list-items', data.listItems, {

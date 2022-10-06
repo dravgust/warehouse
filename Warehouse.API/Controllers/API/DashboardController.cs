@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Drawing;
 using Vayosoft.Core.Queries;
-using Warehouse.API.Contracts;
 using Warehouse.API.Services.Authorization;
 using Warehouse.Core.Application.UseCases.BeaconTracking.Queries;
 

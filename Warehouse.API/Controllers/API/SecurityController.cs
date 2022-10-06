@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Queries;
-using Warehouse.API.Services;
 using Warehouse.API.Services.Authorization;
 using Warehouse.Core.Application.Persistence;
 using Warehouse.Core.Application.Services.Security;

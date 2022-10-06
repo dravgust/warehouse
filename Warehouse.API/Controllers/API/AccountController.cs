@@ -25,26 +25,12 @@ namespace Warehouse.API.Controllers.API
     public class AccountController : ControllerBase
     {
         private readonly IAuthenticationService _authService;
-        private readonly IQueryBus _queryBus;
         private readonly IDistributedMemoryCache _cache;
 
         public AccountController(IAuthenticationService authService, IQueryBus queryBus, IDistributedMemoryCache cache)
         {
             _authService = authService;
-            _queryBus = queryBus;
             _cache = cache;
-        }
-
-        [ProducesResponseType(typeof(HttpErrorWrapper), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [HttpGet("bootstrap")]
-        public async Task<IActionResult> Get(CancellationToken token)
-        {
-            var user = new {username = HttpContext.User.Identity?.Name};
-            var resourceNames = new List<string> { nameof(SharedResources) };
-            var resources = await _queryBus.Send(new GetResources(resourceNames), token);
-
-            return Ok(new { user, resources });
         }
 
         [ProducesResponseType(typeof(AuthenticationResponse), StatusCodes.Status200OK)]

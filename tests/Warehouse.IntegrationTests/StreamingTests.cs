@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-using FluentAssertions;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Vayosoft.Core.SharedKernel.Events;
 using Vayosoft.Core.SharedKernel.ValueObjects;
 using Vayosoft.Streaming.Redis.Consumers;
