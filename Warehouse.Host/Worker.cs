@@ -51,7 +51,7 @@ namespace Warehouse.Host
                 var statusRepository = scope.ServiceProvider.GetRequiredService<IRepositoryBase<IndoorPositionStatusEntity>>();
                 var telemetryRepository = scope.ServiceProvider.GetRequiredService<IRepositoryBase<BeaconTelemetryEntity>>();
                 var trackedItems = scope.ServiceProvider.GetRequiredService<IRepositoryBase<TrackedItem>>();
-                var store = scope.ServiceProvider.GetRequiredService<WarehouseStore>();
+                var store = scope.ServiceProvider.GetRequiredService<IWarehouseStore>();
 
                 try
                 {

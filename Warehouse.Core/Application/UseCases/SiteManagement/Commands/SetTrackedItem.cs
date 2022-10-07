@@ -27,11 +27,11 @@ namespace Warehouse.Core.Application.UseCases.SiteManagement.Commands
 
     internal sealed class HandleSetBeacon : ICommandHandler<SetTrackedItem, Result<TrackedItem>>
     {
-        private readonly WarehouseStore _store;
+        private readonly IWarehouseStore _store;
         private readonly IUserContext _userContext;
         private readonly IValidator<SetTrackedItem> _validator;
 
-        public HandleSetBeacon(WarehouseStore store, IUserContext userContext, IValidator<SetTrackedItem> validator)
+        public HandleSetBeacon(IWarehouseStore store, IUserContext userContext, IValidator<SetTrackedItem> validator)
         {
             _userContext = userContext;
             _validator = validator;

@@ -32,10 +32,10 @@ namespace Warehouse.Core.Application.UseCases.BeaconTracking.Queries
 
     internal sealed class HandleDashboardByBeacon : IQueryHandler<GetDashboardByBeacon, IPagedEnumerable<DashboardByBeacon>>
     {
-        private readonly WarehouseStore _store;
+        private readonly IWarehouseStore _store;
         private readonly IUserContext _userContext;
 
-        public HandleDashboardByBeacon(WarehouseStore store, IUserContext userContext)
+        public HandleDashboardByBeacon(IWarehouseStore store, IUserContext userContext)
         {
             _store = store;
             _userContext = userContext;

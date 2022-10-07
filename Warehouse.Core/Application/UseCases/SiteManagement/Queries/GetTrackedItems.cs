@@ -25,11 +25,11 @@ namespace Warehouse.Core.Application.UseCases.SiteManagement.Queries
 
     internal sealed class HandleGetProductItems : IQueryHandler<GetTrackedItems, IPagedEnumerable<TrackedItemDto>>
     {
-        private readonly WarehouseStore _store;
+        private readonly IWarehouseStore _store;
         private readonly IUserContext _userContext;
 
         public HandleGetProductItems(
-            WarehouseStore store,
+            IWarehouseStore store,
             IUserContext userContext)
         {
             _store = store;

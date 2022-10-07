@@ -3,13 +3,15 @@ using MongoDB.Driver;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.SharedKernel.Events;
+using Vayosoft.Core.SharedKernel.ValueObjects;
 using Vayosoft.Core.Utilities;
 using Vayosoft.MongoDB;
+using Warehouse.Core.Application.Persistence;
 using Warehouse.Core.Domain.Entities;
 
-namespace Warehouse.Core.Application.Persistence
+namespace Warehouse.Infrastructure.Persistence
 {
-    public sealed class WarehouseStore : IDisposable
+    public sealed class WarehouseStore : IWarehouseStore, IDisposable
     {
         private readonly IMongoConnection _connection;
         private readonly IServiceScope _scope;
@@ -83,6 +85,24 @@ namespace Warehouse.Core.Application.Persistence
             {
                 await publisher.Publish(@event, cancellationToken);
             }
+        }
+
+        public async Task<dynamic> GetBeaconTelemetryAsync(MacAddress macAddress, CancellationToken cancellationToken)
+        {
+            return await _connection.Collection<BeaconTelemetryEntity>().Aggregate()
+                .Match(t => t.MacAddress == macAddress.Value && t.ReceivedAt > DateTime.UtcNow.AddHours(-12))
+                .Group(k =>
+                        new DateTime(k.ReceivedAt.Year, k.ReceivedAt.Month, k.ReceivedAt.Day,
+                            k.ReceivedAt.Hour - (k.ReceivedAt.Hour % 1), 0, 0),
+                    g => new
+                    {
+                        _id = g.Key,
+                        humidity = g.Where(entity => entity.Humidity > 0).Average(entity => entity.Humidity),
+                        temperatrue = g.Where(entity => entity.Temperature > 0).Average(entity => entity.Temperature)
+                    }
+                )
+                .SortBy(d => d._id)
+                .ToListAsync(cancellationToken: cancellationToken);
         }
 
         public void Dispose()

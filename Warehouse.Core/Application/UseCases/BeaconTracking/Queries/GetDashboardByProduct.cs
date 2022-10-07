@@ -15,14 +15,14 @@ namespace Warehouse.Core.Application.UseCases.BeaconTracking.Queries
     {
         private readonly IReadOnlyRepository<IndoorPositionStatusEntity> _statuses;
         private readonly IReadOnlyRepository<WarehouseSiteEntity> _sites;
-        private readonly WarehouseStore _store;
+        private readonly IWarehouseStore _store;
         private readonly IReadOnlyRepository<ProductEntity> _products;
         private readonly IUserContext _userContext;
 
         public HandleGetDashboardByProduct(
             IReadOnlyRepository<IndoorPositionStatusEntity> statuses,
             IReadOnlyRepository<WarehouseSiteEntity> sites,
-            WarehouseStore store,
+            IWarehouseStore store,
             IReadOnlyRepository<ProductEntity> products,
             IUserContext userContext)
         {

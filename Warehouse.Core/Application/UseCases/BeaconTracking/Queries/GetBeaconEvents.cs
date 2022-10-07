@@ -27,12 +27,12 @@ namespace Warehouse.Core.Application.UseCases.BeaconTracking.Queries
     internal sealed class HandleGetBeaconEvents : IQueryHandler<GetBeaconEvents, IPagedEnumerable<BeaconEventDto>>
     {
         private readonly IReadOnlyRepository<BeaconEventEntity> _events;
-        private readonly WarehouseStore _store;
+        private readonly IWarehouseStore _store;
         private readonly IUserContext _userContext;
 
         public HandleGetBeaconEvents(
             IReadOnlyRepository<BeaconEventEntity> events,
-            WarehouseStore store,
+            IWarehouseStore store,
             IUserContext userContext)
 
         {

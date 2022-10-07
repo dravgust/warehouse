@@ -38,7 +38,7 @@ namespace Warehouse.Host
                 var alertRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<AlertEntity>>();
                 var notifyReadRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<NotificationEntity>>();
                 var notificationRepository = scope.ServiceProvider.GetRequiredService<IRepositoryBase<NotificationEntity>>();
-                var store = scope.ServiceProvider.GetRequiredService<WarehouseStore>();
+                var store = scope.ServiceProvider.GetRequiredService<IWarehouseStore>();
                 
                 try
                 {

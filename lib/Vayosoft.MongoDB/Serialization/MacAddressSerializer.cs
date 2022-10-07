@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson.Serialization;
 using Vayosoft.Core.SharedKernel.ValueObjects;
 
-namespace Warehouse.Core.Application.Services.Serialization
+namespace Vayosoft.MongoDB.Serialization
 {
     public class MacAddressSerializer : IBsonSerializer<MacAddress>
     {

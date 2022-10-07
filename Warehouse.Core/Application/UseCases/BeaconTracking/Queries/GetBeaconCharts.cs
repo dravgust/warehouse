@@ -1,8 +1,6 @@
-﻿using MongoDB.Driver;
-using Vayosoft.Core.Queries;
-using Vayosoft.MongoDB;
+﻿using Vayosoft.Core.Queries;
+using Warehouse.Core.Application.Persistence;
 using Warehouse.Core.Application.UseCases.BeaconTracking.Models;
-using Warehouse.Core.Domain.Entities;
 
 namespace Warehouse.Core.Application.UseCases.BeaconTracking.Queries
 {
@@ -18,30 +16,16 @@ namespace Warehouse.Core.Application.UseCases.BeaconTracking.Queries
 
     public class HandleGetBeaconCharts : IQueryHandler<GetBeaconCharts, BeaconCharts>
     {
-        private readonly IMongoConnection _connection;
+        private readonly IWarehouseStore _store;
 
-        public HandleGetBeaconCharts(IMongoConnection connection)
+        public HandleGetBeaconCharts(IWarehouseStore store)
         {
-            _connection = connection;
+            _store = store;
         }
 
         public async Task<BeaconCharts> Handle(GetBeaconCharts request, CancellationToken cancellationToken)
         {
-            var data = _connection.Collection<BeaconTelemetryEntity>().Aggregate()
-                .Match(t => t.MacAddress == request.MacAddress && t.ReceivedAt > DateTime.UtcNow.AddHours(-12))
-                .Group(k =>
-                        new DateTime(k.ReceivedAt.Year, k.ReceivedAt.Month, k.ReceivedAt.Day,
-                            k.ReceivedAt.Hour - (k.ReceivedAt.Hour % 1), 0, 0),
-                    g => new
-                    {
-                        _id = g.Key,
-                        humidity = g.Where(entity => entity.Humidity > 0).Average(entity => entity.Humidity),
-                        temperatrue = g.Where(entity => entity.Temperature > 0).Average(entity => entity.Temperature)
-                    }
-                )
-                .SortBy(d => d._id)
-                .ToList();
-
+            var data = await _store.GetBeaconTelemetryAsync(request.MacAddress, cancellationToken);
             var result = new BeaconCharts
             {
                 MacAddress = request.MacAddress,

@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using AutoMapper;
-using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,9 +11,9 @@ using Vayosoft.Core.SharedKernel.ValueObjects;
 using Vayosoft.Dapper.MySQL;
 using Vayosoft.EF.MySQL;
 using Vayosoft.MongoDB;
+using Vayosoft.MongoDB.Serialization;
 using Warehouse.Core.Application.Persistence;
 using Warehouse.Core.Application.Services;
-using Warehouse.Core.Application.Services.Serialization;
 using Warehouse.Core.Application.UseCases;
 using Warehouse.Core.Application.UseCases.SiteManagement.Events;
 using Warehouse.Core.Domain.Events;
@@ -59,7 +58,7 @@ namespace Warehouse.Infrastructure
                 .AddScoped(typeof(IRepositoryBase<>), typeof(MongoRepositoryBase<>))
                 .AddScoped(typeof(IReadOnlyRepository<>), typeof(MongoRepositoryBase<>))
                 .AddScoped(typeof(IRepository<>), typeof(AggregateRepository<>))
-                .AddScoped<WarehouseStore>();
+                .AddScoped<IWarehouseStore, WarehouseStore>();
 
             services
                 .AddDefaultProvider();
