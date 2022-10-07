@@ -1,4 +1,5 @@
 using Pluralize.NET.Core;
+using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Utilities;
 
 namespace Vayosoft.MongoDB
@@ -25,7 +26,7 @@ namespace Vayosoft.MongoDB
 
         public static CollectionName For(Type type, string prefix = null)
         {
-            var attributeName = type.GetAttributeValue((CollectionNameAttribute entity) => entity.Name);
+            var attributeName = type.GetAttributeValue((MetadataAttribute entity) => entity.Name);
             if (!IsNullOrWhiteSpace(attributeName))
                 return new CollectionName(attributeName);
 

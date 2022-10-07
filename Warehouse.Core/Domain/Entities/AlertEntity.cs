@@ -1,9 +1,9 @@
-﻿using Vayosoft.Core.SharedKernel.Entities;
-using Vayosoft.MongoDB;
+﻿using Vayosoft.Core.Persistence;
+using Vayosoft.Core.SharedKernel.Entities;
 
 namespace Warehouse.Core.Domain.Entities
 {
-    [CollectionName("dolav_alerts")]
+    [Metadata("dolav_alerts")]
     public class AlertEntity : EntityBase<string>, IProvider<long>
     {
         public string Name { get; set; }

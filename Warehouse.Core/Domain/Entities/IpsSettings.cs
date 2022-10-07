@@ -1,13 +1,13 @@
-﻿using Vayosoft.Core.SharedKernel.Entities;
+﻿using Vayosoft.Core.Persistence;
+using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.IPS;
 using Vayosoft.IPS.Configuration;
 using Vayosoft.IPS.Filters;
 using Vayosoft.IPS.Methods;
-using Vayosoft.MongoDB;
 
 namespace Warehouse.Core.Domain.Entities
 {
-    [CollectionName("dolav_settings")]
+    [Metadata("dolav_settings")]
     public class IpsSettings : EntityBase<string>
     {
         public int CalcMethod { set; get; }

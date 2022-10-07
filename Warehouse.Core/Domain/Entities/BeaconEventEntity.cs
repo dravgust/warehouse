@@ -1,9 +1,9 @@
-﻿using Vayosoft.Core.SharedKernel.Entities;
-using Vayosoft.MongoDB;
+﻿using Vayosoft.Core.Persistence;
+using Vayosoft.Core.SharedKernel.Entities;
 
 namespace Warehouse.Core.Domain.Entities
 {
-    [CollectionName("dolav_beacons_events")]
+    [Metadata("dolav_beacons_events")]
     public class BeaconEventEntity : EntityBase<string>
     {
         public string MacAddress { set; get; }

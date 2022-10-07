@@ -1,9 +1,9 @@
-﻿using Vayosoft.Core.SharedKernel.Entities;
-using Vayosoft.MongoDB;
+﻿using Vayosoft.Core.Persistence;
+using Vayosoft.Core.SharedKernel.Entities;
 
 namespace Warehouse.Core.Domain.Entities.Payloads
 {
-    [CollectionName("dolav")]
+    [Metadata("dolav")]
     public class GatewayPayload : CustomPayload, IEntity<string>
     {
         object IEntity.Id => Id;

@@ -1,10 +1,10 @@
-﻿using Vayosoft.Core.SharedKernel.Entities;
-using Vayosoft.MongoDB;
+﻿using Vayosoft.Core.Persistence;
+using Vayosoft.Core.SharedKernel.Entities;
 using Warehouse.Core.Domain.Enums;
 
 namespace Warehouse.Core.Domain.Entities
 {
-    [CollectionName("operation_history")]
+    [Metadata("operation_history")]
     public class UserOperationEntity : EntityBase<string>
     {
         public string SourceId { get; set; }

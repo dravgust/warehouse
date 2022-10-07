@@ -13,6 +13,7 @@
     <ProjectReference Include="..\lib\Vayosoft.Core\Vayosoft.Core.csproj" />
     <ProjectReference Include="..\lib\Vayosoft.Dapper.MySQL\Vayosoft.Dapper.MySQL.csproj" />
     <ProjectReference Include="..\lib\Vayosoft.EF.MySQL\Vayosoft.EF.MySQL.csproj" />
+    <ProjectReference Include="..\lib\Vayosoft.MongoDB\Vayosoft.MongoDB.csproj" />
     <ProjectReference Include="..\Warehouse.Core\Warehouse.Core.csproj" />
   </ItemGroup>
 
