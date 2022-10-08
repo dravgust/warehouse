@@ -97,11 +97,11 @@ namespace Warehouse.Core.Application.UseCases.BeaconTracking.Queries
                 if (string.IsNullOrEmpty(gauge?.MAC)) continue;
 
                 var payload = await repository.FirstOrDefaultAsync(g => g.MacAddress == gateway.MacAddress);
-                if (payload == null) continue;
+                if (payload is null) continue;
 
                 var pGauge =
                     payload.Beacons.FirstOrDefault(p => p.MacAddress.Equals(gauge.MAC, StringComparison.Ordinal));
-                if (pGauge == null) continue;
+                if (pGauge is null) continue;
 
                 var gGateway = new GenericGateway(gateway.MacAddress)
                 {
@@ -119,7 +119,7 @@ namespace Warehouse.Core.Application.UseCases.BeaconTracking.Queries
                 };
 
                 var b = payload.Beacons.FirstOrDefault(b => b.MacAddress.Equals(macAddress, StringComparison.Ordinal));
-                if (b != null)
+                if (b is not null)
                 {
                     gGateway.AddBeacon(new TelemetryBeacon(b.MacAddress, b.RSSIs)
                     {
