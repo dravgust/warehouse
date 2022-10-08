@@ -28,7 +28,7 @@ namespace Warehouse.API.Controllers.API
         }
 
         [HttpGet("beacons")]
-        public async Task<IActionResult> GetBeacons([FromQuery] GetTrakedItems query, CancellationToken token = default) {
+        public async Task<IActionResult> GetBeacons([FromQuery] GetTrackedItems query, CancellationToken token = default) {
             return Paged(await _queryBus.Send(query, token), query.Size);
         }
 
