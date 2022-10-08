@@ -1,10 +1,8 @@
-using System.Threading;
-using System.Threading.Tasks;
 using RestSharp;
 
 namespace Vayosoft.Core.Commands.External
 {
-    public class ExternalCommandBus: IExternalCommandBus
+    public sealed class ExternalCommandBus: IExternalCommandBus
     {
         public Task Post<T>(string url, string path, T command, CancellationToken cancellationToken = default) where T: class, ICommand
         {
