@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Vayosoft.Core.SharedKernel.Events.External;
 using Vayosoft.Redis;
+using Vayosoft.Streaming.Consumers;
 using Vayosoft.Streaming.Redis.Consumers;
 using Vayosoft.Streaming.Redis.Producers;
 
@@ -20,7 +21,7 @@ namespace Vayosoft.Streaming.Redis
         {
             services.TryAddSingleton<IRedisConsumer<ConsumeResult>, RedisConsumerGroup>();
             //using TryAdd to support mocking, without that it won't be possible to override in tests
-            services.TryAddSingleton<IExternalEventConsumer, ExternalEventConsumer>();
+            services.TryAddSingleton<IExternalEventConsumer, RedisExternalEventConsumer>();
 
             return services.AddExternalEventConsumerBackgroundWorker();
         }

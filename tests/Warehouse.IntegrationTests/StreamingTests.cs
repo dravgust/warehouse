@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Vayosoft.Core.SharedKernel.Events;
 using Vayosoft.Core.SharedKernel.ValueObjects;
-using Vayosoft.Streaming.Redis.Consumers;
+using Vayosoft.Streaming.Consumers;
 using Vayosoft.Testing;
 using Warehouse.Core.Domain.Events;
 using Xunit.Abstractions;

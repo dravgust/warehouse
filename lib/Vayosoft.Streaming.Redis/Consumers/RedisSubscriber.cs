@@ -3,6 +3,7 @@ using System.Threading.Channels;
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 using Vayosoft.Redis;
+using Vayosoft.Streaming.Consumers;
 
 namespace Vayosoft.Streaming.Redis.Consumers
 {

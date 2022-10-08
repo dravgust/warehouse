@@ -3,6 +3,7 @@ using System.Threading.Channels;
 using Microsoft.AspNetCore.SignalR;
 using Vayosoft.Core.SharedKernel.Events;
 using Vayosoft.Core.Utilities;
+using Vayosoft.Streaming.Consumers;
 using Vayosoft.Streaming.Redis.Consumers;
 
 namespace Warehouse.API.Hubs

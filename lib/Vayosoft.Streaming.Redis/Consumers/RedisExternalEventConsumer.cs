@@ -6,19 +6,20 @@ using Microsoft.Extensions.Logging;
 using Vayosoft.Core.SharedKernel.Events;
 using Vayosoft.Core.SharedKernel.Events.External;
 using Vayosoft.Core.Utilities;
+using Vayosoft.Streaming.Consumers;
 
 namespace Vayosoft.Streaming.Redis.Consumers
 {
-    public sealed class ExternalEventConsumer : IExternalEventConsumer
+    public sealed class RedisExternalEventConsumer : IExternalEventConsumer
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly ILogger<ExternalEventConsumer> _logger;
+        private readonly ILogger<RedisExternalEventConsumer> _logger;
         private readonly ExternalEventConsumerConfig _configuration;
 
-        public ExternalEventConsumer(
+        public RedisExternalEventConsumer(
             IServiceProvider serviceProvider,
             IConfiguration configuration, 
-            ILogger<ExternalEventConsumer> logger)
+            ILogger<RedisExternalEventConsumer> logger)
         {
             _logger = logger;
             _serviceProvider = serviceProvider;

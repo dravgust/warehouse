@@ -19,7 +19,7 @@ namespace Vayosoft.Streaming.Redis.Consumers
     {
         public static ExternalEventConsumerConfig GetExternalEventConfig(this IConfiguration configuration)
         {
-            return configuration.GetSection(nameof(ExternalEventConsumer)).Get<ExternalEventConsumerConfig>();
+            return configuration.GetSection(nameof(RedisExternalEventConsumer)).Get<ExternalEventConsumerConfig>();
         }
 
         public static RedisStreamConsumerConfig GetRedisConsumerConfig(this IConfiguration configuration)

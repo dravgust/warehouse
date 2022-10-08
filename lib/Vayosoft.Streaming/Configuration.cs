@@ -3,7 +3,7 @@ using Vayosoft.Streaming.Consumers;
 
 namespace Vayosoft.Streaming
 {
-    public static class Config
+    public static class Configuration
     {
         public static IServiceCollection AddExternalEventConsumerBackgroundWorker(this IServiceCollection services)
         {

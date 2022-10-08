@@ -1,6 +1,6 @@
 ﻿using System.Threading.Channels;
 
-namespace Vayosoft.Streaming.Redis.Consumers
+namespace Vayosoft.Streaming.Consumers
 {
     public interface IConsumer<T>
     {

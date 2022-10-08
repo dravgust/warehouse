@@ -1,4 +1,4 @@
-﻿namespace Vayosoft.Streaming.Redis.Consumers
+﻿namespace Vayosoft.Streaming.Consumers
 {
     public sealed record ConsumeResult : ConsumeResult<string, string>
     {

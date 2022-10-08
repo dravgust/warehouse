@@ -1,4 +1,4 @@
-﻿namespace Vayosoft.Streaming.Redis
+﻿namespace Vayosoft.Streaming
 {
     public sealed record Message(string Key, string Value) 
         : Message<string, string>(Key, Value)

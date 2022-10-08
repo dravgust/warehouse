@@ -17,8 +17,8 @@ namespace Vayosoft.Streaming.Consumers
             ILogger<ExternalEventConsumerBackgroundWorker> logger
         )
         {
-            this.externalEventConsumer = externalEventConsumer ?? throw new ArgumentNullException(nameof(externalEventConsumer));
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.externalEventConsumer = externalEventConsumer;
+            this.logger = logger;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
