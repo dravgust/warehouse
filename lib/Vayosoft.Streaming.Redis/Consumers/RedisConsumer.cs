@@ -33,7 +33,7 @@ namespace Vayosoft.Streaming.Redis.Consumers
 
             foreach (var topic in topics)
             {
-                _ = Producer(channel, topic, cancellationToken);
+                _ = StreamReader(channel, topic, cancellationToken);
 
                 _logger.LogInformation("[{ConsumerName}] Subscribed to stream {Topic}.",
                     consumerName, topic);
@@ -48,7 +48,7 @@ namespace Vayosoft.Streaming.Redis.Consumers
             return this;
         }
 
-        private async Task Producer(
+        private async Task StreamReader(
             ChannelWriter<ConsumeResult> writer,
             string topic, 
             CancellationToken token)
