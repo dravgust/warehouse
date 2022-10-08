@@ -1,17 +1,5 @@
-﻿using Warehouse.Core.Application.UseCases.SiteManagement.Models;
-
-namespace Warehouse.Core.Application.UseCases.BeaconTracking.Models
+﻿namespace Warehouse.Core.Application.UseCases.BeaconTracking.Models
 {
-    public class TrackedItemViewModel
-    {
-        public DateTime TimeStamp { get; set; }
-        public string MacAddress { set; get; }
-        public string SiteId { set; get; }
-        public WarehouseSiteDto Site { set; get; }
-        public ProductDto Product { set; get; }
-    }
-
-
     public class TrackedItemByProductDto
     {
         public string Id { set; get; }

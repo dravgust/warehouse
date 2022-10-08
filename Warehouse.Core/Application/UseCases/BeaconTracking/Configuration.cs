@@ -19,7 +19,7 @@ namespace Warehouse.Core.Application.UseCases.BeaconTracking
 
         private static IServiceCollection AddQueryHandlers(this IServiceCollection services) =>
             services
-                .AddQueryHandler<GetTrackedItems, IPagedEnumerable<TrackedItemViewModel>, HandleDashboardByBeacon>()
+                .AddQueryHandler<GetTrackedItems, IPagedEnumerable<TrackedItemData>, HandleDashboardByBeacon>()
                 .AddQueryHandler<GetBeaconEvents, IPagedEnumerable<BeaconEventDto>, HandleGetBeaconEvents>()
                 .AddQueryHandler<GetTrackedItemsByProduct, IEnumerable<TrackedItemByProductDto>, HandleGetDashboardByProduct>()
                 .AddQueryHandler<GetTrackedItemsBySite, IEnumerable<TrackedItemBySiteDto>, HandleGetDashboardBySite>()
