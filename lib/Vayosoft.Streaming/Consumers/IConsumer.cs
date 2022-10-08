@@ -2,8 +2,8 @@
 
 namespace Vayosoft.Streaming.Consumers
 {
-    public interface IConsumer<T>
+    public interface IConsumer<out TResult>
     {
-        public ChannelReader<T> Subscribe(string[] topics, CancellationToken cancellationToken);
+        public TResult Subscribe(string[] topics, CancellationToken cancellationToken);
     }
 }

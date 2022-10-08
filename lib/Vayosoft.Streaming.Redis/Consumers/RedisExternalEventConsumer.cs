@@ -32,7 +32,7 @@ namespace Vayosoft.Streaming.Redis.Consumers
         {
             var topics = _configuration?.Topics ?? new[] { nameof(IExternalEvent) };
 
-            var eventConsumer = _serviceProvider.GetRequiredService<IRedisConsumer<ConsumeResult>>();
+            var eventConsumer = _serviceProvider.GetRequiredService<IChannelConsumer<ConsumeResult>>();
             var consumer = eventConsumer.Subscribe(topics, cancellationToken);
 
             return GetConsumer(consumer, cancellationToken);

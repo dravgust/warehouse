@@ -7,7 +7,7 @@ using Vayosoft.Streaming.Consumers;
 
 namespace Vayosoft.Streaming.Redis.Consumers
 {
-    public sealed class RedisSubscriber : IRedisConsumer<ConsumeResult>
+    public sealed class RedisSubscriber : IChannelConsumer<ConsumeResult>
     {
         private readonly ISubscriber _subscriber;
         private readonly ILogger<RedisConsumerGroup> _logger;
