@@ -9,9 +9,9 @@ using Warehouse.Core.Domain.Entities;
 
 namespace Warehouse.Core.Application.UseCases.BeaconTracking.Queries
 {
-    public record GetDashboardByProduct : IQuery<IEnumerable<DashboardByProduct>>;
+    public record GetTrackedItemsByProduct : IQuery<IEnumerable<TrackedItemByProductDto>>;
 
-    internal sealed class HandleGetDashboardByProduct : IQueryHandler<GetDashboardByProduct, IEnumerable<DashboardByProduct>>
+    internal sealed class HandleGetDashboardByProduct : IQueryHandler<GetTrackedItemsByProduct, IEnumerable<TrackedItemByProductDto>>
     {
         private readonly IReadOnlyRepository<IndoorPositionStatusEntity> _statuses;
         private readonly IReadOnlyRepository<WarehouseSiteEntity> _sites;
@@ -33,9 +33,9 @@ namespace Warehouse.Core.Application.UseCases.BeaconTracking.Queries
             _userContext = userContext;
         }
 
-        public async Task<IEnumerable<DashboardByProduct>> Handle(GetDashboardByProduct request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<TrackedItemByProductDto>> Handle(GetTrackedItemsByProduct request, CancellationToken cancellationToken)
         {
-            var result = new List<DashboardByProduct>();
+            var result = new List<TrackedItemByProductDto>();
 
             var items = new Dictionary<(string, string), SiteItem>();
             var providerId = _userContext.User.Identity.GetProviderId();
@@ -79,7 +79,7 @@ namespace Warehouse.Core.Application.UseCases.BeaconTracking.Queries
                 var product = await _products.FirstOrDefaultAsync(p => p.Id == productGroup.Key, cancellationToken);
                 if (product != null)
                 {
-                    var dashboardByProduct = new DashboardByProduct
+                    var dashboardByProduct = new TrackedItemByProductDto
                     {
                         Id = product.Id,
                         Name = product.Name,

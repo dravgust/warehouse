@@ -12,7 +12,7 @@ using static System.String;
 
 namespace Warehouse.Core.Application.UseCases.BeaconTracking.Queries
 {
-    public sealed class GetDashboardByBeacon : PagingModelBase, ILinqSpecification<TrackedItem>, IQuery<IPagedEnumerable<DashboardByBeacon>>
+    public sealed class GetTrakedItems : PagingModelBase, ILinqSpecification<TrackedItem>, IQuery<IPagedEnumerable<Models.TrackedItemDto>>
     {
         public string SearchTerm { set; get; }
         public string SiteId { set; get; }
@@ -30,7 +30,7 @@ namespace Warehouse.Core.Application.UseCases.BeaconTracking.Queries
         }
     }
 
-    internal sealed class HandleDashboardByBeacon : IQueryHandler<GetDashboardByBeacon, IPagedEnumerable<DashboardByBeacon>>
+    internal sealed class HandleDashboardByBeacon : IQueryHandler<GetTrakedItems, IPagedEnumerable<Models.TrackedItemDto>>
     {
         private readonly IWarehouseStore _store;
         private readonly IUserContext _userContext;
@@ -41,16 +41,16 @@ namespace Warehouse.Core.Application.UseCases.BeaconTracking.Queries
             _userContext = userContext;
         }
 
-        public async Task<IPagedEnumerable<DashboardByBeacon>> Handle(GetDashboardByBeacon query, CancellationToken cancellationToken)
+        public async Task<IPagedEnumerable<Models.TrackedItemDto>> Handle(GetTrakedItems query, CancellationToken cancellationToken)
         {
             query.ProviderId = _userContext.User.Identity.GetProviderId();
 
             var beacons = await _store.TrackedItems.PageAsync(query, query.Page, query.Size, cancellationToken);
             
-            var data = new List<DashboardByBeacon>();
+            var data = new List<Models.TrackedItemDto>();
             foreach (var b in beacons)
             {
-                var asset = new DashboardByBeacon
+                var asset = new Models.TrackedItemDto
                 {
                     MacAddress = b.Id,
                     TimeStamp = b.ReceivedAt,
@@ -70,7 +70,7 @@ namespace Warehouse.Core.Application.UseCases.BeaconTracking.Queries
                 data.Add(asset);
             }
 
-            return new PagedCollection<DashboardByBeacon>(data, beacons.TotalCount);
+            return new PagedCollection<Models.TrackedItemDto>(data, beacons.TotalCount);
         }
     }
 }

@@ -19,16 +19,16 @@ namespace Warehouse.API.Controllers.API
 
         [HttpGet("sites")]
         public async Task<IActionResult> GetSites(CancellationToken token) {
-            return Ok(await _queryBus.Send(new GetDashboardBySite(), token));
+            return Ok(await _queryBus.Send(new GetTrackedItemsBySite(), token));
         }
 
         [HttpGet("products")]
         public async Task<IActionResult> GetProducts(CancellationToken token) {
-            return Ok(await _queryBus.Send(new GetDashboardByProduct(), token));
+            return Ok(await _queryBus.Send(new GetTrackedItemsByProduct(), token));
         }
 
         [HttpGet("beacons")]
-        public async Task<IActionResult> GetBeacons([FromQuery] GetDashboardByBeacon query, CancellationToken token = default) {
+        public async Task<IActionResult> GetBeacons([FromQuery] GetTrakedItems query, CancellationToken token = default) {
             return Paged(await _queryBus.Send(query, token), query.Size);
         }
 

@@ -1,6 +1,6 @@
 ﻿namespace Warehouse.Core.Application.UseCases.BeaconTracking.Models
 {
-    public class DashboardBySite
+    public class TrackedItemBySiteDto
     {
         public string Id { set; get; }
         public string Name { set; get; }

@@ -2,7 +2,7 @@
 
 namespace Warehouse.Core.Application.UseCases.BeaconTracking.Models
 {
-    public class DashboardByBeacon
+    public class TrackedItemDto
     {
         public DateTime TimeStamp { get; set; }
         public string MacAddress { set; get; }
@@ -12,7 +12,7 @@ namespace Warehouse.Core.Application.UseCases.BeaconTracking.Models
     }
 
 
-    public class DashboardByProduct
+    public class TrackedItemByProductDto
     {
         public string Id { set; get; }
         public string Name { set; get; }

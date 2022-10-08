@@ -9,10 +9,10 @@ using Warehouse.Core.Domain.Entities;
 
 namespace Warehouse.Core.Application.UseCases.BeaconTracking.Queries;
 
-public record GetDashboardBySite : IQuery<IEnumerable<DashboardBySite>>
+public record GetTrackedItemsBySite : IQuery<IEnumerable<TrackedItemBySiteDto>>
 { }
 
-internal sealed class HandleGetDashboardBySite : IQueryHandler<GetDashboardBySite, IEnumerable<DashboardBySite>>
+internal sealed class HandleGetDashboardBySite : IQueryHandler<GetTrackedItemsBySite, IEnumerable<TrackedItemBySiteDto>>
 {
     private readonly IReadOnlyRepository<IndoorPositionStatusEntity> _statuses;
     private readonly IReadOnlyRepository<WarehouseSiteEntity> _sites;
@@ -34,16 +34,16 @@ internal sealed class HandleGetDashboardBySite : IQueryHandler<GetDashboardBySit
         _userContext = userContext;
     }
 
-    public async Task<IEnumerable<DashboardBySite>> Handle(GetDashboardBySite request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<TrackedItemBySiteDto>> Handle(GetTrackedItemsBySite request, CancellationToken cancellationToken)
     {
-        var result = new List<DashboardBySite>();
+        var result = new List<TrackedItemBySiteDto>();
 
         var providerId = _userContext.User.Identity.GetProviderId();
         var spec = new Specification<WarehouseSiteEntity>(s => s.ProviderId == providerId);
         var sites = await _sites.ListAsync(spec, cancellationToken);
         foreach (var site in sites)
         {
-            var dashboardBySite = new DashboardBySite
+            var dashboardBySite = new TrackedItemBySiteDto
             {
                 Id = site.Id,
                 Name = site.Name,

@@ -7,10 +7,10 @@ using Warehouse.Core.Domain.Entities;
 
 namespace Warehouse.Core.Application.UseCases.BeaconTracking.Queries
 {
-    public class GetDashboardSite : IQuery<DashboardBySite>
+    public class GetTrackedItemBySite : IQuery<TrackedItemBySiteDto>
     {
         public string SiteId { set; get; }
-        public class AlertRequestValidator : AbstractValidator<GetDashboardSite>
+        public class AlertRequestValidator : AbstractValidator<GetTrackedItemBySite>
         {
             public AlertRequestValidator()
             {
@@ -19,7 +19,7 @@ namespace Warehouse.Core.Application.UseCases.BeaconTracking.Queries
         }
     }
 
-    internal class HandleGetIpsStatus : IQueryHandler<GetDashboardSite, DashboardBySite>
+    internal class HandleGetIpsStatus : IQueryHandler<GetTrackedItemBySite, TrackedItemBySiteDto>
     {
         private readonly IReadOnlyRepository<IndoorPositionStatusEntity> _repository;
         private readonly IMapper _mapper;
@@ -30,10 +30,10 @@ namespace Warehouse.Core.Application.UseCases.BeaconTracking.Queries
             _mapper = mapper;
         }
 
-        public async Task<DashboardBySite> Handle(GetDashboardSite request, CancellationToken cancellationToken)
+        public async Task<TrackedItemBySiteDto> Handle(GetTrackedItemBySite request, CancellationToken cancellationToken)
         {
             var result = await _repository.GetAsync(request.SiteId, cancellationToken);
-            return _mapper.Map<DashboardBySite>(result);
+            return _mapper.Map<TrackedItemBySiteDto>(result);
         }
     }
 }

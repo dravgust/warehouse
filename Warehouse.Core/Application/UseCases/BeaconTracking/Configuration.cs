@@ -19,11 +19,11 @@ namespace Warehouse.Core.Application.UseCases.BeaconTracking
 
         private static IServiceCollection AddQueryHandlers(this IServiceCollection services) =>
             services
-                .AddQueryHandler<GetDashboardByBeacon, IPagedEnumerable<DashboardByBeacon>, HandleDashboardByBeacon>()
+                .AddQueryHandler<GetTrakedItems, IPagedEnumerable<TrackedItemDto>, HandleDashboardByBeacon>()
                 .AddQueryHandler<GetBeaconEvents, IPagedEnumerable<BeaconEventDto>, HandleGetBeaconEvents>()
-                .AddQueryHandler<GetDashboardByProduct, IEnumerable<DashboardByProduct>, HandleGetDashboardByProduct>()
-                .AddQueryHandler<GetDashboardBySite, IEnumerable<DashboardBySite>, HandleGetDashboardBySite>()
-                .AddQueryHandler<GetDashboardSite, DashboardBySite, HandleGetIpsStatus>()
+                .AddQueryHandler<GetTrackedItemsByProduct, IEnumerable<TrackedItemByProductDto>, HandleGetDashboardByProduct>()
+                .AddQueryHandler<GetTrackedItemsBySite, IEnumerable<TrackedItemBySiteDto>, HandleGetDashboardBySite>()
+                .AddQueryHandler<GetTrackedItemBySite, TrackedItemBySiteDto, HandleGetIpsStatus>()
                 .AddQueryHandler<GetBeaconCharts, BeaconCharts, HandleGetBeaconCharts>()
                 .AddQueryHandler<GetBeaconPosition, ICollection<BeaconPosition>, HandleGetBeaconPosition>()
                 .AddQueryHandler<GetBeaconTelemetry, BeaconTelemetryDto, HandleGetBeaconTelemetry>()
