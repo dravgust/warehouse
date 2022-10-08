@@ -23,7 +23,6 @@ namespace Warehouse.Core.Application.UseCases.BeaconTracking
                 .AddQueryHandler<GetBeaconEvents, IPagedEnumerable<BeaconEventDto>, HandleGetBeaconEvents>()
                 .AddQueryHandler<GetTrackedItemsByProduct, IEnumerable<TrackedItemByProductDto>, HandleGetDashboardByProduct>()
                 .AddQueryHandler<GetTrackedItemsBySite, IEnumerable<TrackedItemBySiteDto>, HandleGetDashboardBySite>()
-                .AddQueryHandler<GetTrackedItemBySite, TrackedItemBySiteDto, HandleGetIpsStatus>()
                 .AddQueryHandler<GetBeaconCharts, BeaconCharts, HandleGetBeaconCharts>()
                 .AddQueryHandler<GetBeaconPosition, ICollection<BeaconPosition>, HandleGetBeaconPosition>()
                 .AddQueryHandler<GetBeaconTelemetry, BeaconTelemetryDto, HandleGetBeaconTelemetry>()

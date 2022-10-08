@@ -22,7 +22,7 @@ namespace Warehouse.API.Controllers.API
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> Get([FromQuery] GetAlerts query, CancellationToken token = default) {
+        public async Task<IActionResult> Get([FromQuery] GetAlerts query, CancellationToken token) {
             return Paged(await _queryBus.Send(query, token), query.Size);
         }
 
