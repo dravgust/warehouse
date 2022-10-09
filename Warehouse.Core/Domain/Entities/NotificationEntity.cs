@@ -1,9 +1,9 @@
-﻿using Vayosoft.Core.Persistence;
+﻿using Vayosoft.Core.Mapping;
 using Vayosoft.Core.SharedKernel.Entities;
 
 namespace Warehouse.Core.Domain.Entities
 {
-    [Metadata("dolav_notifications")]
+    [CollectionName("dolav_notifications")]
     public class NotificationEntity : EntityBase<string>
     {
         public DateTime TimeStamp { get; set; }

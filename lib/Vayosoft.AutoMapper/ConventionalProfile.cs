@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using AutoMapper;
+using Vayosoft.Core.Mapping;
 
 namespace Vayosoft.AutoMapper
 {

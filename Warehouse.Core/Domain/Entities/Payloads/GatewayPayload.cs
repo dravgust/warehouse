@@ -1,9 +1,9 @@
-﻿using Vayosoft.Core.Persistence;
+﻿using Vayosoft.Core.Mapping;
 using Vayosoft.Core.SharedKernel.Entities;
 
 namespace Warehouse.Core.Domain.Entities.Payloads
 {
-    [Metadata("dolav")]
+    [CollectionName("dolav")]
     public class GatewayPayload : CustomPayload, IEntity<string>
     {
         object IEntity.Id => Id;

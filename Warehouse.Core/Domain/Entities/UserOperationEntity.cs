@@ -1,10 +1,10 @@
-﻿using Vayosoft.Core.Persistence;
+﻿using Vayosoft.Core.Mapping;
 using Vayosoft.Core.SharedKernel.Entities;
 using Warehouse.Core.Domain.Enums;
 
 namespace Warehouse.Core.Domain.Entities
 {
-    [Metadata("operation_history")]
+    [CollectionName("operation_history")]
     public class UserOperationEntity : EntityBase<string>
     {
         public string SourceId { get; set; }

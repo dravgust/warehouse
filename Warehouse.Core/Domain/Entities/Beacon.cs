@@ -1,4 +1,4 @@
-﻿using Vayosoft.Core.Persistence;
+﻿using Vayosoft.Core.Mapping;
 using Vayosoft.Core.SharedKernel.Entities;
 using Warehouse.Core.Domain.Enums;
 
@@ -16,7 +16,7 @@ namespace Warehouse.Core.Domain.Entities
         public LocationAnchor Location { set; get; } = LocationAnchor.Unknown;
     }
 
-    [Metadata("dolav_beacons_telemetry")]
+    [CollectionName("dolav_beacons_telemetry")]
     public class BeaconTelemetryEntity : EntityBase<string>
     {
         public string MacAddress { get; set; }

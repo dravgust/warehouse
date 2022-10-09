@@ -1,13 +1,12 @@
-﻿using System;
-
-namespace Vayosoft.AutoMapper
+﻿namespace Vayosoft.Core.Mapping
 {
     public enum MapDirection
     {
         EntityToDto, DtoToEntity, Both
     }
 
-    public class ConventionalMapAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Class)]
+    public sealed class ConventionalMapAttribute : Attribute
     {
         public MapDirection Direction { get; set; }
 

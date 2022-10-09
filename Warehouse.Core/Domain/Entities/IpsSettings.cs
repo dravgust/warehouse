@@ -1,4 +1,4 @@
-﻿using Vayosoft.Core.Persistence;
+﻿using Vayosoft.Core.Mapping;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.IPS;
 using Vayosoft.IPS.Configuration;
@@ -7,7 +7,7 @@ using Vayosoft.IPS.Methods;
 
 namespace Warehouse.Core.Domain.Entities
 {
-    [Metadata("dolav_settings")]
+    [CollectionName("dolav_settings")]
     public class IpsSettings : EntityBase<string>
     {
         public int CalcMethod { set; get; }
