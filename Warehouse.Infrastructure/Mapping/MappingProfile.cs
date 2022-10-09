@@ -2,7 +2,7 @@
 using Warehouse.Core.Application.UseCases.SiteManagement.Models;
 using Warehouse.Core.Domain.Entities;
 
-namespace Warehouse.Core.Application.UseCases
+namespace Warehouse.Infrastructure.Mapping
 {
     public class MappingProfile : Profile
     {

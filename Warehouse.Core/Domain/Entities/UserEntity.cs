@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using Vayosoft.AutoMapper;
 using Vayosoft.Core.Mapping;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.Utilities;

@@ -34,7 +34,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\lib\Vayosoft.AutoMapper\Vayosoft.AutoMapper.csproj" />
     <ProjectReference Include="..\lib\Vayosoft.Core\Vayosoft.Core.csproj" />
     <ProjectReference Include="..\lib\Vayosoft.IPS\Vayosoft.IPS.csproj" />
   </ItemGroup>

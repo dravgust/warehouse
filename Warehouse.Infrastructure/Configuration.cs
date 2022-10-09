@@ -17,6 +17,7 @@ using Warehouse.Core.Application.Services;
 using Warehouse.Core.Application.UseCases;
 using Warehouse.Core.Application.UseCases.SiteManagement.Events;
 using Warehouse.Core.Domain.Events;
+using Warehouse.Infrastructure.Mapping;
 using Warehouse.Infrastructure.Persistence;
 
 namespace Warehouse.Infrastructure
