@@ -21,6 +21,7 @@ import TabOutlinedIcon from "@mui/icons-material/TabOutlined";
 import UserNotifications from "./components/notifications";
 import { useStoreController, setSite, setProduct, setBeacon } from "../../context/store.context";
 import Beacons from "./components/beacons/index2";
+import NotificationBar from "../../examples/Notifications";
 
 function Dashboard() {
   const [controller, dispatch] = useStoreController();
@@ -110,6 +111,7 @@ function Dashboard() {
         </Grid>
       </SuiBox>
       <Footer />
+      <NotificationBar />
     </DashboardLayout>
   );
 }

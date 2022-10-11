@@ -47,10 +47,11 @@ namespace Warehouse.IntegrationTests
             Assert.Equal(_producedEvents.Count, _consumedEvents.Count);
         }
 
-        [Fact]
-        public async Task ProduceMessages()
+        [Theory]
+        [InlineData(2, 1000)]
+        public async Task ProduceMessages(int messageCount, int interval)
         {
-            await RunProducer( "IPS-EVENTS", 1000, token: CancellationToken.None);
+            await RunProducer( "IPS-EVENTS", messageCount, interval, token: CancellationToken.None);
         }
 
         [Fact]
@@ -65,13 +66,13 @@ namespace Warehouse.IntegrationTests
             catch (OperationCanceledException) { }
         }
 
-        private async Task RunProducer( string topic, int interval = 0, CancellationToken token = default)
+        private async Task RunProducer(string topic, int messageCount, int interval = 0, CancellationToken token = default)
         {
             _producedEvents.Clear();
             await Task.Run(async () =>
             {
                 var redisProducer = Fixture.GetProducer(topic, 100);
-                for (var i = 0; i < 100; i++)
+                for (var i = 0; i < messageCount; i++)
                 {
                     var item = new TrackedItemEntered(MacAddress.Empty, DateTime.UtcNow, "", i);
                     await redisProducer.Publish(item);

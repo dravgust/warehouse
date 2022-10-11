@@ -43,49 +43,16 @@ import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import gradientLineChartData from "layouts/dashboard/data/gradientLineChartData";
 import { useEffect, useState } from "react";
 import { streamClient } from "../../utils/stream-client";
-import { HubConnectionBuilder } from "@microsoft/signalr";
 
 function Dashboard() {
   const { size } = typography;
   const { chart, items } = reportsBarChartData;
 
-  useEffect(() => {
+  /*useEffect(() => {
     streamClient("notifications/stream", (value) => {
       console.log(value);
     });
-  }, []);
-
-  const [connection, setConnection] = useState(null);
-  useEffect(() => {
-    const newConnection = new HubConnectionBuilder()
-      .withUrl("http://localhost:5243/stream/notifications")
-      .withAutomaticReconnect()
-      .build();
-
-    setConnection(newConnection);
-  }, []);
-
-  useEffect(() => {
-    if (connection) {
-      connection
-        .start()
-        .then(() => {
-          console.log("Connected!");
-          connection.stream("Notifications").subscribe({
-            next: (item) => {
-              console.log("item", item);
-            },
-            complete: () => {
-              console.log("completed");
-            },
-            error: (err) => {
-              console.log("error", err);
-            },
-          });
-        })
-        .catch((e) => console.log("Connection failed: ", e));
-    }
-  }, [connection]);
+  }, []);*/
 
   return (
     <DashboardLayout>
