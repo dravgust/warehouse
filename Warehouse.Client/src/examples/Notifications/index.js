@@ -39,8 +39,13 @@ const NotificationBar = () => {
           console.log("Connected!");
           connection.stream("Notifications").subscribe({
             next: (item) => {
-              setNotification({ open: true, message: item.timestamp });
               console.log("item", item);
+              let message = "";
+              switch (item) {
+                default:
+                  message = item.message;
+              }
+              setNotification({ open: true, message: message });
             },
             complete: () => {
               console.log("completed");

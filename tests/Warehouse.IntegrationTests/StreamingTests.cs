@@ -74,7 +74,7 @@ namespace Warehouse.IntegrationTests
                 var redisProducer = Fixture.GetProducer(topic, 100);
                 for (var i = 0; i < messageCount; i++)
                 {
-                    var item = new TrackedItemEntered(MacAddress.Empty, DateTime.UtcNow, "", i);
+                    var item = new TrackedItemMoved("AC233FF15749", DateTime.UtcNow, "62dd41f35c5aa88dcd3c76b5", "62690483963d12edd88667c6", 1000);
                     await redisProducer.Publish(item);
                     _producedEvents.Add(item);
 
