@@ -279,11 +279,11 @@ namespace Warehouse.Host
                 if (string.IsNullOrEmpty(gauge?.MAC)) continue;
 
                 var payload = await repository.FirstOrDefaultAsync(g => g.MacAddress == gateway.MacAddress);
-                if (payload == null) continue;
+                if (payload is null) continue;
 
                 var pGauge = payload.Beacons.FirstOrDefault(p => p.MacAddress.Equals(gauge.MAC, StringComparison.Ordinal));
                 IBeacon beacon;
-                if (pGauge == null)
+                if (pGauge is null)
                 {
                     if (gauge.TxPower >= 0) continue;
 

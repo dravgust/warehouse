@@ -101,13 +101,16 @@ namespace Warehouse.Core.Application.UseCases.BeaconTracking.Queries
 
                 var pGauge =
                     payload.Beacons.FirstOrDefault(p => p.MacAddress.Equals(gauge.MAC, StringComparison.Ordinal));
-                if (pGauge is null) continue;
-
-                var gGateway = new GenericGateway(gateway.MacAddress)
+                IBeacon beacon;
+                if (pGauge is null)
                 {
-                    EnvFactor = gateway.EnvFactor,
-                    Location = (LocationAnchor) gateway.Location,
-                    Gauge = new TelemetryBeacon(gauge.MAC, pGauge.RSSIs, gauge.TxPower, gauge.Radius)
+                    if(gauge.TxPower >= 0) continue;
+
+                    beacon = new TelemetryBeacon(MacAddress.Empty, new List<double>(), gauge.TxPower, gauge.Radius);
+                }
+                else
+                {
+                    beacon = new TelemetryBeacon(gauge.MAC, pGauge.RSSIs, gauge.TxPower, gauge.Radius)
                     {
                         Battery = pGauge.Battery,
                         Temperature = pGauge.Temperature,
@@ -115,7 +118,14 @@ namespace Warehouse.Core.Application.UseCases.BeaconTracking.Queries
                         X0 = pGauge.X0,
                         Y0 = pGauge.Y0,
                         Z0 = pGauge.Z0,
-                    }
+                    };
+                }
+
+                var gGateway = new GenericGateway(gateway.MacAddress)
+                {
+                    EnvFactor = gateway.EnvFactor,
+                    Location = (LocationAnchor) gateway.Location,
+                    Gauge = beacon
                 };
 
                 var b = payload.Beacons.FirstOrDefault(b => b.MacAddress.Equals(macAddress, StringComparison.Ordinal));
