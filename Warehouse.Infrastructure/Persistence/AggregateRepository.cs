@@ -2,7 +2,7 @@
 using Vayosoft.Core.SharedKernel.Aggregates;
 using Vayosoft.Core.SharedKernel.Events;
 using Vayosoft.MongoDB;
-using Warehouse.Core.Application.Persistence;
+using Warehouse.Core.Application.Common.Persistence;
 
 namespace Warehouse.Infrastructure.Persistence
 {

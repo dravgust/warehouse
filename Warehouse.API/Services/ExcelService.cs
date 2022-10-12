@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-using Warehouse.Core.Application.UseCases.SiteManagement.Commands;
+using Warehouse.Core.Application.SiteManagement.Commands;
 
 namespace Warehouse.API.Services
 {

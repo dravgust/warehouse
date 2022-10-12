@@ -10,8 +10,8 @@ using Warehouse.API.UseCases.Resources;
 using Warehouse.API.Extensions;
 using Warehouse.API.Services.Authorization;
 using Warehouse.API.Services.Errors.Models;
-using Warehouse.Core.Application.Services.Authentication;
-using Warehouse.Core.Application.UseCases.Administration.Models;
+using Warehouse.Core.Application.Common.Services.Authentication;
+using Warehouse.Core.Application.SystemAdministration.Models;
 
 
 namespace Warehouse.API.Controllers.API

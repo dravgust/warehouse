@@ -5,7 +5,7 @@ using Vayosoft.Core.SharedKernel.ValueObjects;
 using Vayosoft.Core.Specifications;
 using Vayosoft.Core.Utilities;
 using Vayosoft.IPS.Domain;
-using Warehouse.Core.Application.Persistence;
+using Warehouse.Core.Application.Common.Persistence;
 using Warehouse.Core.Domain.Entities;
 using Warehouse.Core.Domain.Entities.Payloads;
 using LocationAnchor = Vayosoft.IPS.Domain.LocationAnchor;

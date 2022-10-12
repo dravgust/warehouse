@@ -6,7 +6,7 @@ using Vayosoft.Core.SharedKernel.Events;
 using Vayosoft.Core.SharedKernel.ValueObjects;
 using Vayosoft.Core.Utilities;
 using Vayosoft.MongoDB;
-using Warehouse.Core.Application.Persistence;
+using Warehouse.Core.Application.Common.Persistence;
 using Warehouse.Core.Domain.Entities;
 
 namespace Warehouse.Infrastructure.Persistence

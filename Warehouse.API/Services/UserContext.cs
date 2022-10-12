@@ -1,9 +1,9 @@
 ﻿using System.Security.Principal;
 using System.Text.Json;
 using Warehouse.API.Extensions;
-using Warehouse.Core.Application.Persistence;
-using Warehouse.Core.Application.Services;
-using Warehouse.Core.Application.Services.Security;
+using Warehouse.Core.Application.Common.Persistence;
+using Warehouse.Core.Application.Common.Services;
+using Warehouse.Core.Application.Common.Services.Security;
 using Warehouse.Core.Domain.Entities.Security;
 using Warehouse.Core.Domain.Enums;
 

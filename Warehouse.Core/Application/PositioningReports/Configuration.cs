@@ -1,0 +1,40 @@
+﻿using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using Vayosoft.Core.Queries;
+using Vayosoft.Core.SharedKernel.Models.Pagination;
+using Warehouse.Core.Application.PositioningReports.Events;
+using Warehouse.Core.Application.PositioningReports.Models;
+using Warehouse.Core.Application.PositioningReports.Queries;
+using Warehouse.Core.Domain.Entities;
+using Warehouse.Core.Domain.Events;
+
+namespace Warehouse.Core.Application.PositioningReports
+{
+    public static class Configuration
+    {
+        public static IServiceCollection AddAppTrackingServices(this IServiceCollection services) =>
+            services
+                .AddQueryHandlers()
+                .AddEventHandlers();
+
+        private static IServiceCollection AddQueryHandlers(this IServiceCollection services) =>
+            services
+                .AddQueryHandler<GetTrackedItems, IPagedEnumerable<TrackedItemData>, HandleDashboardByBeacon>()
+                .AddQueryHandler<GetEventNotifications, IPagedEnumerable<EventNotification>, HandleGetEventNotifications>()
+                .AddQueryHandler<GetTrackedItemsByProduct, IEnumerable<TrackedItemByProductDto>, HandleGetDashboardByProduct>()
+                .AddQueryHandler<GetTrackedItemsBySite, IEnumerable<TrackedItemBySiteDto>, HandleGetDashboardBySite>()
+                .AddQueryHandler<GetBeaconCharts, BeaconCharts, HandleGetBeaconCharts>()
+                .AddQueryHandler<GetBeaconPosition, ICollection<BeaconPosition>, HandleGetBeaconPosition>()
+                .AddQueryHandler<GetBeaconTelemetry, BeaconTelemetryDto, HandleGetBeaconTelemetry>()
+
+                .AddQueryHandler<GetUserNotifications, IPagedEnumerable<UserNotification>, HandleGetUserNotifications>()
+                .AddStreamQueryHandler<GetUserNotificationStream, AlertEventEntity, NotificationStreamQueryHandler>();
+
+        private static IServiceCollection AddEventHandlers(this IServiceCollection services) =>
+                services
+                    .AddScoped<INotificationHandler<TrackedItemRegistered>, TrackedItemEventHandler>()
+                    .AddScoped<INotificationHandler<TrackedItemMoved>, TrackedItemEventHandler>()
+                    .AddScoped<INotificationHandler<TrackedItemGotOut>, TrackedItemEventHandler>()
+                    .AddScoped<INotificationHandler<TrackedItemEntered>, TrackedItemEventHandler>();
+    }
+}

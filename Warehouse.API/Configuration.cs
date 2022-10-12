@@ -12,15 +12,15 @@ using Warehouse.API.Services;
 using Warehouse.API.Services.Localization;
 using Warehouse.API.TagHelpers;
 using Warehouse.API.UseCases.Resources;
-using Warehouse.Core.Application.Persistence;
-using Warehouse.Core.Application.Services;
-using Warehouse.Core.Application.Services.Authentication;
-using Warehouse.Core.Application.UseCases.Administration;
-using Warehouse.Core.Application.UseCases.BeaconTracking;
-using Warehouse.Core.Application.UseCases.SiteManagement;
 using Warehouse.Infrastructure;
-using Warehouse.Infrastructure.Authentication;
+using Warehouse.Infrastructure.Identity;
 using Warehouse.Infrastructure.Persistence;
+using Warehouse.Core.Application.PositioningReports;
+using Warehouse.Core.Application.SiteManagement;
+using Warehouse.Core.Application.Common.Persistence;
+using Warehouse.Core.Application.Common.Services;
+using Warehouse.Core.Application.Common.Services.Authentication;
+using Warehouse.Core.Application.SystemAdministration;
 
 namespace Warehouse.API
 {

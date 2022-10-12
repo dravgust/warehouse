@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Queries;
 using Warehouse.API.Services.Authorization;
-using Warehouse.Core.Application.UseCases.BeaconTracking.Queries;
+using Warehouse.Core.Application.PositioningReports.Queries;
 using Warehouse.Core.Domain.Entities;
 
 namespace Warehouse.API.Controllers.API

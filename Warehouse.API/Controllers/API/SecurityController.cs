@@ -2,10 +2,10 @@
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Queries;
 using Warehouse.API.Services.Authorization;
-using Warehouse.Core.Application.Persistence;
-using Warehouse.Core.Application.Services.Security;
-using Warehouse.Core.Application.UseCases.Administration.Commands;
-using Warehouse.Core.Application.UseCases.Administration.Queries;
+using Warehouse.Core.Application.Common.Persistence;
+using Warehouse.Core.Application.Common.Services.Security;
+using Warehouse.Core.Application.SystemAdministration.Commands;
+using Warehouse.Core.Application.SystemAdministration.Queries;
 using Warehouse.Core.Domain.Entities.Security;
 
 namespace Warehouse.API.Controllers.API

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.SignalR;
 using Vayosoft.Core.Utilities;
 using Vayosoft.Streaming.Consumers;
 using Vayosoft.Streaming.Redis.Consumers;
-using Warehouse.Core.Application.Persistence;
+using Warehouse.Core.Application.Common.Persistence;
 using Warehouse.Core.Domain.Entities;
 using Warehouse.Core.Domain.Events;
 

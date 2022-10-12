@@ -7,11 +7,11 @@ using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.Utilities;
 using Warehouse.API.Services.Authorization;
 using Warehouse.API.Services.Errors.Models;
-using Warehouse.Core.Application.Services;
-using Warehouse.Core.Application.Services.Security;
-using Warehouse.Core.Application.UseCases.Administration.Commands;
-using Warehouse.Core.Application.UseCases.Administration.Specifications;
-using Warehouse.Core.Application.UseCases.SiteManagement.Models;
+using Warehouse.Core.Application.Common.Services;
+using Warehouse.Core.Application.Common.Services.Security;
+using Warehouse.Core.Application.SiteManagement.Models;
+using Warehouse.Core.Application.SystemAdministration.Commands;
+using Warehouse.Core.Application.SystemAdministration.Specifications;
 using Warehouse.Core.Domain.Entities;
 using Warehouse.Core.Domain.Entities.Security;
 
