@@ -7,37 +7,40 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Entities\ValueObjects\**" />
-    <Compile Remove="UseCases\Administration\ValueObjects\**" />
-    <Compile Remove="UseCases\BeaconTracking\Commands\**" />
-    <Compile Remove="UseCases\Management\Specifications\**" />
-    <EmbeddedResource Remove="Entities\ValueObjects\**" />
-    <EmbeddedResource Remove="UseCases\Administration\ValueObjects\**" />
-    <EmbeddedResource Remove="UseCases\BeaconTracking\Commands\**" />
-    <EmbeddedResource Remove="UseCases\Management\Specifications\**" />
-    <None Remove="Entities\ValueObjects\**" />
-    <None Remove="UseCases\Administration\ValueObjects\**" />
-    <None Remove="UseCases\BeaconTracking\Commands\**" />
-    <None Remove="UseCases\Management\Specifications\**" />
+    <Compile Remove="Domain\ValueObjects\**" />
+    <Compile Remove="Application\UseCases\Administration\ValueObjects\**" />
+    <Compile Remove="Application\UseCases\BeaconTracking\Commands\**" />
+    <Compile Remove="Application\UseCases\BeaconTracking\Specifications\**" />
+    <Compile Remove="Utilities\**" />
+    <EmbeddedResource Remove="Domain\ValueObjects\**" />
+    <EmbeddedResource Remove="Application\UseCases\Administration\ValueObjects\**" />
+    <EmbeddedResource Remove="Application\UseCases\BeaconTracking\Commands\**" />
+    <EmbeddedResource Remove="Application\UseCases\BeaconTracking\Specifications\**" />
+    <EmbeddedResource Remove="Utilities\**" />
+    <None Remove="Domain\ValueObjects\**" />
+    <None Remove="Application\UseCases\Administration\ValueObjects\**" />
+    <None Remove="Application\UseCases\BeaconTracking\Commands\**" />
+    <None Remove="Application\UseCases\BeaconTracking\Specifications\**" />
+    <None Remove="Utilities\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.2.0" />
+    <PackageReference Include="ErrorOr" Version="1.0.1" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.2.2" />
+    <PackageReference Include="LanguageExt.Core" Version="4.2.9" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.9" />
+    <PackageReference Include="Throw" Version="1.3.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Vayosoft.AutoMapper\Vayosoft.AutoMapper.csproj" />
-    <ProjectReference Include="..\Vayosoft.Core\Vayosoft.Core.csproj" />
-    <ProjectReference Include="..\Vayosoft.Data.Dapper.MySQL\Vayosoft.Data.Dapper.MySQL.csproj" />
-    <ProjectReference Include="..\Vayosoft.Data.EF.MySQL\Vayosoft.Data.EF.MySQL.csproj" />
-    <ProjectReference Include="..\Vayosoft.Data.MongoDB\Vayosoft.Data.MongoDB.csproj" />
-    <ProjectReference Include="..\Vayosoft.Data.Redis\Vayosoft.Data.Redis.csproj" />
-    <ProjectReference Include="..\Vayosoft.IPS\Vayosoft.IPS.csproj" />
+    <ProjectReference Include="..\lib\Vayosoft.Core\Vayosoft.Core.csproj" />
+    <ProjectReference Include="..\lib\Vayosoft.IPS\Vayosoft.IPS.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="UseCases\BeaconTracking\Specifications\" />
+    <Folder Include="Application\Services\Serialization\" />
+    <Folder Include="Application\UseCases\SiteManagement\Specifications\" />
   </ItemGroup>
 
 </Project>

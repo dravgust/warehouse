@@ -1,15 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Queries;
-using Warehouse.API.Services.Authorization.Attributes;
-using Warehouse.Core.UseCases.BeaconTracking.Queries;
-using Warehouse.Core.Utilities;
+using Warehouse.API.Services.Authorization;
+using Warehouse.Core.Application.UseCases.BeaconTracking.Queries;
 
 namespace Warehouse.API.Controllers.API
 {
     [PermissionAuthorization]
     [Route("api/[controller]")]
     [ApiController]
-    public class DashboardController : ControllerBase
+    public class DashboardController : ApiControllerBase
     {
         private readonly IQueryBus _queryBus;
 
@@ -20,23 +19,22 @@ namespace Warehouse.API.Controllers.API
 
         [HttpGet("sites")]
         public async Task<IActionResult> GetSites(CancellationToken token) {
-            return Ok(await _queryBus.Send(new GetDashboardBySite(), token));
+            return Ok(await _queryBus.Send(new GetTrackedItemsBySite(), token));
         }
 
         [HttpGet("products")]
         public async Task<IActionResult> GetProducts(CancellationToken token) {
-            return Ok(await _queryBus.Send(new GetDashboardByProduct(), token));
+            return Ok(await _queryBus.Send(new GetTrackedItemsByProduct(), token));
         }
 
         [HttpGet("beacons")]
-        public async Task<IActionResult> GetBeacons(int page, int size, string searchTerm = null, CancellationToken token = default) {
-            var query = GetDashboardByBeacon.Create(page, size, searchTerm);
-            return Ok((await _queryBus.Send(query, token)).ToPagedResponse(size));
+        public async Task<IActionResult> GetBeacons([FromQuery] GetTrackedItems query, CancellationToken token = default) {
+            return Paged(await _queryBus.Send(query, token), query.Size);
         }
 
         [HttpGet("beacon/{id}")]
         public async Task<IActionResult> GetBeacon(string id, CancellationToken token) {
-            return Ok(await _queryBus.Send(new GetBeaconTelemetry(id), token));
+            return Ok((object) await _queryBus.Send(new GetBeaconTelemetry(id), token) ?? new { });
         }
 
         [HttpGet("beacon/position/{id}")]

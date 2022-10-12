@@ -20,9 +20,9 @@ axios.interceptors.request.use(
 );
 
 axios.interceptors.response.use(
-  (response) => Promise.resolve(response),
+  (response) => Promise.resolve(response?.data),
   (error) => {
-    return new Promise(async (resolve) => {
+    return new Promise(async (resolve, reject) => {
       const originalRequest = error.config;
       if (error.response && error.response.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
@@ -33,9 +33,9 @@ axios.interceptors.response.use(
         queryClient.clear();
         await auth.logout();
         window.location.assign(window.location);
-        return Promise.reject({ message: "Please re-authenticate." });
+        return reject({ message: "Please re-authenticate." });
       }
-      return Promise.reject(error);
+      return reject(error);
     });
   }
 );

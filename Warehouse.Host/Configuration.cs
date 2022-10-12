@@ -1,8 +1,10 @@
-﻿using Vayosoft.Caching;
+﻿using MediatR;
+using Vayosoft.Caching;
 using Vayosoft.Core;
 using Vayosoft.Streaming.Redis;
-using Warehouse.Core;
-using Warehouse.Core.Services;
+using Warehouse.Core.Application.Services;
+using Warehouse.Core.Domain.Events;
+using Warehouse.Infrastructure;
 
 namespace Warehouse.Host
 {
@@ -11,13 +13,15 @@ namespace Warehouse.Host
         public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
         {
             services
-                .AddCoreServices()
+                .AddCaching(configuration)
                 .AddRedisProducerAndConsumer()
-                .AddCaching(configuration);
+                .AddCoreServices();
+
+            services.AddEventHandlers();
 
             services.AddScoped<IUserContext, ServiceContext>();
 
-            services.AddWarehouseDependencies(configuration);
+            services.AddInfrastructure(configuration);
 
             services.AddHostedService<Worker>();
             services.AddHostedService<NotificationWorker>();
@@ -25,5 +29,11 @@ namespace Warehouse.Host
 
             return services;
         }
+
+        private static IServiceCollection AddEventHandlers(this IServiceCollection services) =>
+            services
+                .AddScoped<INotificationHandler<TrackedItemMoved>, TrackedItemEventHandler>()
+                .AddScoped<INotificationHandler<TrackedItemGotOut>, TrackedItemEventHandler>()
+                .AddScoped<INotificationHandler<TrackedItemEntered>, TrackedItemEventHandler>();
     }
 }

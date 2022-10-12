@@ -44,7 +44,7 @@ export default function SiteInfo({
     setExpanded(newExpanded ? panel : false);
     setPattern("");
     onProductSelect(null);
-    onSiteSelect(row);
+    newExpanded ? onSiteSelect(row) : onSiteSelect(null);
   };
 
   const {
@@ -67,22 +67,35 @@ export default function SiteInfo({
       })) ||
     [];
 
+  const handleClick = (e, index) => {
+    onProductSelect(assets[index]);
+    switch (e.detail) {
+      case 2:
+        navigate("/warehouse");
+        break;
+    }
+  };
+
   const Row = ({ index, style }) => (
     <ListItem
       key={`b_${index}`}
       style={style}
       component="div"
       disablePadding
-      onClick={() => onProductSelect(assets[index])}
+      onClick={(e) => handleClick(e, index)}
+      onDoubleClick={(e) => handleClick(e, index)}
       sx={{
         borderBottom: ({ borders: { borderWidth, borderColor } }) =>
           `${borderWidth[1]} solid ${borderColor}`,
       }}
       selected={selectedProduct && assets[index].id === selectedProduct.id}
       secondaryAction={
-        <IconButton edge="start" onClick={() => navigate("/warehouse")}>
-          <OpenInNewIcon />
-        </IconButton>
+        selectedProduct &&
+        assets[index].id === selectedProduct.id && (
+          <IconButton edge="start" onClick={() => navigate("/warehouse")}>
+            <OpenInNewIcon />
+          </IconButton>
+        )
       }
     >
       <ListItemButton dir={direction}>
@@ -115,7 +128,7 @@ export default function SiteInfo({
           </IconButton>
         </SuiBox>
       </SuiBox>
-      <SuiBox pb={3}>
+      <SuiBox pb={3} px={2}>
         {isSuccess &&
           response.map((item, index) => (
             <Accordion

@@ -36,25 +36,21 @@ function WarehouseAlerts() {
     <DashboardLayout>
       <DashboardNavbar onSearch={onSearch} />
       <SuiBox mb={3} py={3}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} lg={selectedItem ? 5 : 12}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} lg={selectedItem ? 6 : 12}>
             <AlertList
               searchTerm={searchTerm}
               selectedItem={selectedItem}
               onRowSelect={onSelectItem}
               onAdd={resetToDefault}
+              onDelete={handleDelete}
               refresh={refresh}
             />
           </Grid>
           <Zoom in={Boolean(selectedItem)}>
-            <Grid item xs={12} lg={7}>
+            <Grid item xs={12} lg={6}>
               {Boolean(selectedItem) && (
-                <SelectedAlert
-                  item={selectedItem}
-                  onSave={handleSave}
-                  onDelete={handleDelete}
-                  onClose={resetToNull}
-                />
+                <SelectedAlert item={selectedItem} onSave={handleSave} onClose={resetToNull} />
               )}
             </Grid>
           </Zoom>

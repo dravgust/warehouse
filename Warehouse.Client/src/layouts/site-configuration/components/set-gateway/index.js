@@ -19,7 +19,6 @@ import SuiAlert from "components/SuiAlert";
 import SuiButton from "components/SuiButton";
 import { useMutation } from "react-query";
 import * as yup from "yup";
-import * as auth from "services/auth-provider";
 import PropTypes from "prop-types";
 import { setSiteGw } from "api/warehouse";
 
@@ -82,7 +81,7 @@ export default function SetGateway({
       name: item ? item.name : "",
       circumscribedRadius: item ? item.circumscribedRadius : 0,
       location: item ? item.location : 0,
-      envFactor: item ? item.envFactor : 0,
+      envFactor: item ? item.envFactor : 1,
       macG: item && item.gauge ? item.gauge.mac : "",
       radiusG: item && item.gauge ? item.gauge.radius : 0,
       txPowerG: item && item.gauge ? item.gauge.txPower : 0,
@@ -185,7 +184,12 @@ export default function SetGateway({
                 helperText={formik.touched.envFactor && formik.errors.envFactor}
               />
 
-              <FormControl fullWidth>
+              <FormControl
+                fullWidth
+                sx={{
+                  "& .MuiInputBase-input": { width: "100% !important" },
+                }}
+              >
                 <InputLabel id="location-label">Location</InputLabel>
                 <Select
                   labelId="location-label"
@@ -259,6 +263,9 @@ export default function SetGateway({
             </Stack>
 
             <Stack my={2} px={1} direction="row" spacing={1} justifyContent="end">
+              <SuiButton color="secondary" variant="contained" onClick={onClose}>
+                cancel
+              </SuiButton>
               <SuiButton color="success" variant="contained" type="submit">
                 {mutation.isLoading ? (
                   "Loading..."

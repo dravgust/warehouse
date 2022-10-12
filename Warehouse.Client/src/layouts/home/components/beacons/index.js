@@ -12,7 +12,7 @@ import { fetchAssets } from "../../../../utils/query-keys";
 import { getAssets } from "../../../../api/warehouse";
 import SuiInput from "../../../../components/SuiInput";
 
-function Assets({ selectedItem, onRowSelect = () => {} }) {
+function Assets({ selectedItem, selectedSite, selectedProduct, onRowSelect = () => {} }) {
   const [page, setPage] = useState(1);
   const [pattern, setPattern] = useState("");
   const onSearchBeacon = (beacon) => setPattern(beacon);
@@ -21,7 +21,7 @@ function Assets({ selectedItem, onRowSelect = () => {} }) {
     error,
     data: response,
     isSuccess,
-  } = useQuery([fetchAssets, page, pattern], getAssets);
+  } = useQuery([fetchAssets, page, selectedSite, selectedProduct, pattern], getAssets);
   function Beacon({ name, product }) {
     return (
       <SuiBox display="flex" alignItems="center" px={1} py={0.5}>

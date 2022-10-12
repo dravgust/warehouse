@@ -127,12 +127,12 @@ const CanvasListByProduct = ({
                 display="flex"
                 flexDirection="column"
                 sx={{
-                  height: "350px",
+                  height: "541px",
                 }}
               >
                 <FixedSizeList
                   className="List"
-                  height={350}
+                  height={541}
                   itemCount={assets.length}
                   itemSize={65}
                 >

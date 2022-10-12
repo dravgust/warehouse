@@ -1,4 +1,5 @@
 export const fetchUsers = "FETCH_USERS";
+export const fetchProviders = "FETCH_PROVIDERS";
 export const fetchProducts = "FETCH_PRODUCTS";
 export const fetchBeacons = "FETCH_BEACONS";
 export const fetchAlerts = "FETCH_ALERTS";
@@ -17,5 +18,6 @@ export const fetchRegisteredGw = "FETCH_REG_GW";
 export const fetchProductMetadata = "PRODUCT_METADATA";
 export const fetchBeaconMetadata = "BEACON_METADATA";
 export const fetchRoles = "SEC_ROLES";
+export const fetchUserRoles = "FETCH_USER_ROLES";
 export const fetchObjects = "SEC_OBJECTS";
 export const fetchPermissions = "SEC_PERMISSIONS";

@@ -20,16 +20,17 @@ import { getBeaconPosition } from "api/warehouse";
 
 const colors = [
   "aqua",
+  "purple",
+  "pink",
+  "lime",
   "black",
   "blue",
   "fuchsia",
   "green",
   "cyan",
-  "lime",
   "maroon",
   "navy",
   "olive",
-  "purple",
   "red",
   "silver",
   "teal",
@@ -37,7 +38,6 @@ const colors = [
   "azure",
   "gold",
   "bisque",
-  "pink",
   "orange",
 ];
 
@@ -57,8 +57,8 @@ const Site = ({ x, y, topW, leftH }) => {
       <Arrow
         points={[x + 5, y - 20, tW - 4, y - 20]}
         pointerAtBeginning="true"
-        pointerLength={30}
-        pointerWidth={15}
+        pointerLength={10}
+        pointerWidth={10}
         fill="black"
         stroke="black"
         opacity={0.2}
@@ -96,8 +96,8 @@ const Site = ({ x, y, topW, leftH }) => {
       <Arrow
         points={[x - 20, y + 5, x - 20, lH - 4]}
         pointerAtBeginning="true"
-        pointerLength={30}
-        pointerWidth={15}
+        pointerLength={10}
+        pointerWidth={10}
         fill="black"
         stroke="black"
         opacity={0.2}
@@ -233,7 +233,7 @@ const CanvasSite = ({ width = 1680, height = 780, site, beacon }) => {
       }
     }
 
-    site.gateways.map((gw) => {
+    site.gateways.map((gw, index) => {
       const locationAnchor = [
         [0, 0],
         [topLength / 2, leftLength / 2],
@@ -263,7 +263,7 @@ const CanvasSite = ({ width = 1680, height = 780, site, beacon }) => {
             width={100}
             height={100}
             fill="white"
-            stroke="#89b717"
+            stroke={colors[index]}
             strokeWidth={1}
             opacity={1}
             shadowColor="black"
@@ -284,14 +284,14 @@ const CanvasSite = ({ width = 1680, height = 780, site, beacon }) => {
         gw.length > 0 &&
           elements.push(
             <Circle
-              key={b.mac}
-              id={b.mac}
+              key={`${b.mac}_${index}`}
+              id={`${b.mac}_${index}`}
               x={gw[0].props.x}
               y={gw[0].props.y}
               radius={b.radius * 72}
               stroke={colors[index]}
               strokeWidth={5}
-              opacity={0.5}
+              opacity={0.6}
             />
           );
       });

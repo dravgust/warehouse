@@ -1,4 +1,4 @@
-import { createContext, useReducer, useMemo, useContext } from "react";
+import { createContext, useReducer, useMemo, useContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 const SecurityContext = createContext(null);
@@ -36,4 +36,22 @@ SecurityControllerProvider.prototype = {
 
 const setRoles = (dispatch, value) => dispatch({ type: "ROLES", value });
 
-export { SecurityControllerProvider, useSecurityController, setRoles };
+const SupervisorID = "f6694d71d26e40f5a2abb357177c9bdz";
+const AdministratorID = "f6694d71d26e40f5a2abb357177c9bdx";
+
+function useUserContext() {
+  const [isSupervisor, setIsSupervisor] = useState(false);
+  const [isAdministrator, setIsAdministrator] = useState(false);
+  const [controller] = useSecurityController();
+  const { roles } = controller;
+  useEffect(() => {
+    if (roles) {
+      setIsSupervisor(Boolean(roles.find((role) => role.id === SupervisorID)));
+      setIsAdministrator(Boolean(roles.find((role) => role.id === AdministratorID)));
+    }
+  }, [roles]);
+
+  return { isSupervisor, isAdministrator };
+}
+
+export { SecurityControllerProvider, useSecurityController, setRoles, useUserContext };

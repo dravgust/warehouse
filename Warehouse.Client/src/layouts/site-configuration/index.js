@@ -47,7 +47,7 @@ const SiteConfiguration = () => {
       name: "",
       circumscribedRadius: 0,
       location: 0,
-      envFactor: 0,
+      envFactor: 1,
     });
   const onSiteSave = () => resetPage();
   const resetPage = () => {
@@ -67,9 +67,9 @@ const SiteConfiguration = () => {
     <DashboardLayout>
       <DashboardNavbar onSearch={onSearch} />
       <SuiBox mb={3} py={3}>
-        <Grid container spacing={3}>
+        <Grid container spacing={2}>
           <Grid item xs={12} md={5}>
-            <Grid container spacing={siteForEdit ? 3 : 0}>
+            <Grid container spacing={siteForEdit ? 2 : 0}>
               <Zoom in={Boolean(siteForEdit)}>
                 <Grid item xs={12}>
                   {Boolean(siteForEdit) && (
@@ -93,7 +93,7 @@ const SiteConfiguration = () => {
             </Grid>
           </Grid>
           <Grid item xs={12} md={7}>
-            <Grid container spacing={gwForEdit ? 3 : 0}>
+            <Grid container spacing={gwForEdit ? 2 : 0}>
               <Zoom in={Boolean(gwForEdit)}>
                 <Grid item xs={12}>
                   {Boolean(gwForEdit) && (

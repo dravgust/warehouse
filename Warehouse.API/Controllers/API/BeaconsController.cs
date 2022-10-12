@@ -1,31 +1,28 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Queries;
-using Warehouse.API.Services.Authorization.Attributes;
-using Warehouse.Core.Services;
-using Warehouse.Core.UseCases.Management.Commands;
-using Warehouse.Core.UseCases.Management.Queries;
-using Warehouse.Core.Utilities;
+using Warehouse.API.Services.Authorization;
+using Warehouse.Core.Application.UseCases.SiteManagement.Commands;
+using Warehouse.Core.Application.UseCases.SiteManagement.Queries;
 
 namespace Warehouse.API.Controllers.API
 {
     [PermissionAuthorization]
     [Route("api/[controller]")]
-    [ApiController]
-    public class BeaconsController : ControllerBase
+    public sealed class BeaconsController : ApiControllerBase
     {
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
 
-        public BeaconsController(IQueryBus queryBus, ICommandBus commandBus, IUserContext session)
+        public BeaconsController(IQueryBus queryBus, ICommandBus commandBus)
         {
             _queryBus = queryBus;
             _commandBus = commandBus;
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> Get(int page, int size, string searchTerm = null, CancellationToken token = default) {
-            return Ok((await _queryBus.Send(GetBeacons.Create(page, size, searchTerm), token)).ToPagedResponse(size));
+        public async Task<IActionResult> Get([FromQuery] GetTrackedItems query, CancellationToken token = default) {
+            return Paged(await _queryBus.Send(query, token), query.Size);
         }
 
         [HttpGet("registered")]
@@ -34,15 +31,14 @@ namespace Warehouse.API.Controllers.API
         }
 
         [HttpPost("delete")]
-        public async Task<IActionResult> Delete([FromBody] DeleteBeacon query, CancellationToken token) {
+        public async Task<IActionResult> Delete([FromBody] DeleteTrackedItem query, CancellationToken token) {
             await _commandBus.Send(query, token);
             return Ok(new { query.MacAddress });
         }
 
         [HttpPost("set")]
-        public async Task<IActionResult> Post([FromBody] SetBeacon command, CancellationToken token) {
-            await _commandBus.Send(command, token);
-            return Ok(new { });
+        public async Task<IActionResult> Post([FromBody] SetTrackedItem command, CancellationToken token) {
+            return Result(await _commandBus.Send(command, token));
         }
     }
 }

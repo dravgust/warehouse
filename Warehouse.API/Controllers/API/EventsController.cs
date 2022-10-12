@@ -1,15 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Queries;
-using Warehouse.API.Services.Authorization.Attributes;
-using Warehouse.Core.UseCases.BeaconTracking.Queries;
-using Warehouse.Core.Utilities;
+using Warehouse.API.Services.Authorization;
+using Warehouse.Core.Application.UseCases.BeaconTracking.Queries;
 
 namespace Warehouse.API.Controllers.API
 {
     [PermissionAuthorization]
     [Route("api/[controller]")]
     [ApiController]
-    public class EventsController : ControllerBase
+    public class EventsController : ApiControllerBase
     {
         private readonly IQueryBus _queryBus;
 
@@ -19,10 +18,8 @@ namespace Warehouse.API.Controllers.API
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> Get(int page, int size, string searchTerm = null, CancellationToken token = default)
-        {
-            var query = GetBeaconEvents.Create(page, size, searchTerm);
-            return Ok((await _queryBus.Send(query, token)).ToPagedResponse(size));
+        public async Task<IActionResult> Get([FromQuery] GetEventNotifications query, CancellationToken token = default) {
+            return Paged(await _queryBus.Send(query, token), query.Size);
         }
     }
 }

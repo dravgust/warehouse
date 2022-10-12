@@ -5,18 +5,22 @@ using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Caching;
 using Vayosoft.Core;
 using Vayosoft.Core.Queries;
-using Vayosoft.Data.Redis;
+using Vayosoft.Redis;
 using Vayosoft.Streaming.Redis;
+using Vayosoft.Streaming.Redis.Consumers;
 using Warehouse.API.Services;
-using Warehouse.API.Services.Authorization;
 using Warehouse.API.Services.Localization;
 using Warehouse.API.TagHelpers;
 using Warehouse.API.UseCases.Resources;
-using Warehouse.Core;
-using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Persistence;
-using Warehouse.Core.Services;
-using Warehouse.Core.UseCases.Administration.Models;
+using Warehouse.Core.Application.Persistence;
+using Warehouse.Core.Application.Services;
+using Warehouse.Core.Application.Services.Authentication;
+using Warehouse.Core.Application.UseCases.Administration;
+using Warehouse.Core.Application.UseCases.BeaconTracking;
+using Warehouse.Core.Application.UseCases.SiteManagement;
+using Warehouse.Infrastructure;
+using Warehouse.Infrastructure.Authentication;
+using Warehouse.Infrastructure.Persistence;
 
 namespace Warehouse.API
 {
@@ -49,16 +53,23 @@ namespace Warehouse.API
             IConfiguration configuration)
         {
             services
-                .AddCoreServices()
                 .AddRedisConnection()
-                .AddRedisProducer()
-                .AddCaching(configuration);
+                .AddCaching(configuration)
+                .AddRedisConsumer()
+                .AddCoreServices();
             //builder.Services.AddRedisCache(configuration);
 
             services.AddHttpContextAccessor()
                 .AddScoped<IUserContext, UserContext>();
 
-            services.AddWarehouseDependencies(configuration);
+            services.AddInfrastructure(configuration);
+
+            services
+                .AddAppAdministrationServices()
+                .AddAppTrackingServices()
+                .AddAppManagementServices();
+
+            services.AddTransient<RedisConsumer>();
 
             return services;
         }
@@ -71,8 +82,8 @@ namespace Warehouse.API
             // configure DI for application services
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IPasswordHasher, MD5PasswordHasher>();
-            services.AddScoped<IUserStore<UserEntity>, UserStore>();
-            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
 
             //builder.Services.AddAuthorization(options =>
             //{

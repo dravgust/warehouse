@@ -15,7 +15,7 @@ const SecurityRoles = ({ onEdit = () => {} }) => {
   return (
     <Card>
       <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-        <SuiTypography variant="h6">Roles</SuiTypography>
+        <SuiTypography variant="h6">Security Roles</SuiTypography>
       </SuiBox>
       <SuiBox
         sx={{

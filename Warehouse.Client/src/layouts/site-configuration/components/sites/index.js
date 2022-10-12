@@ -1,10 +1,10 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { ButtonGroup, Card, Icon } from "@mui/material";
 import SuiBox from "components/SuiBox";
 import SuiButton from "components/SuiButton";
 import SuiTypography from "components/SuiTypography";
 import Table from "examples/Tables/Table";
-import DeletePromt from "../delete-promt";
+import DeletePrompt from "../delete-promt";
 import * as auth from "services/auth-provider";
 import { client } from "utils/api-client";
 import { useQuery } from "react-query";
@@ -37,6 +37,10 @@ export default function Sites({
       console.log("delete-item", err);
     }
   };
+
+  React.useEffect(() => {
+    isSuccess && data.items.length > 0 && onSelect(data.items[0], `row-${0}`);
+  }, [isSuccess]);
 
   return (
     <Card>
@@ -104,9 +108,9 @@ export default function Sites({
               "": (
                 <ButtonGroup variant="text" aria-label="text button group" color="text">
                   <SuiButton variant="text" color="dark" onClick={onEdit}>
-                    <Icon>edit</Icon>
+                    <Icon>border_color</Icon>
                   </SuiButton>
-                  <DeletePromt
+                  <DeletePrompt
                     renderButton={(handleClickOpen) => (
                       <SuiButton
                         variant="text"

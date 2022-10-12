@@ -2,17 +2,16 @@
 using Vayosoft.Core.Commands;
 using Vayosoft.Core.Queries;
 using Warehouse.API.Services;
-using Warehouse.API.Services.Authorization.Attributes;
-using Warehouse.Core.UseCases.Management.Commands;
-using Warehouse.Core.UseCases.Management.Queries;
-using Warehouse.Core.Utilities;
+using Warehouse.API.Services.Authorization;
+using Warehouse.Core.Application.UseCases.SiteManagement.Commands;
+using Warehouse.Core.Application.UseCases.SiteManagement.Queries;
 
 namespace Warehouse.API.Controllers.API
 {
     [PermissionAuthorization]
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductsController : ControllerBase
+    public class ProductsController : ApiControllerBase
     {
         private readonly IQueryBus _queryBus;
         private readonly ICommandBus _commandBus;
@@ -34,10 +33,8 @@ namespace Warehouse.API.Controllers.API
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> Get(int page, int size, string searchTerm = null, CancellationToken token = default)
-        {
-            var query = GetProducts.Create(page, size, searchTerm);
-            return Ok((await _queryBus.Send(query, token)).ToPagedResponse(size));
+        public async Task<IActionResult> Get([FromQuery] GetProducts query, CancellationToken token = default) {
+            return Paged(await _queryBus.Send(query, token), query.Size);
         }
 
         [HttpPost("delete")]

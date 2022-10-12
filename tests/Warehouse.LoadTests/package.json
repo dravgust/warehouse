@@ -1,0 +1,15 @@
+{
+  "name": "warehouse.loadtests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "cmd.exe /C k6 run script.js --insecure-skip-tls-verify",
+    "generate": "npx @openapitools/openapi-generator-cli generate -i swagger.json -g k6 -o k6-test/ --skip-validate-spec"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+
+  }
+}

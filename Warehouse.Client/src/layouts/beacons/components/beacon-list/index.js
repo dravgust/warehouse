@@ -1,4 +1,4 @@
-import { Card, Icon } from "@mui/material";
+import { ButtonGroup, Card, Icon } from "@mui/material";
 import SuiBox from "components/SuiBox";
 import SuiTypography from "components/SuiTypography";
 import SuiButton from "components/SuiButton";
@@ -8,13 +8,15 @@ import { useQuery } from "react-query";
 import SuiAvatar from "components/SuiAvatar";
 import beaconIcon from "assets/images/hotspot-tower.png";
 import { fetchBeacons } from "utils/query-keys";
-import { getBeacons } from "api/warehouse";
+import { deleteBeacon, getBeacons } from "api/warehouse";
+import DeletePrompt from "../../../site-configuration/components/delete-promt";
 
 const BeaconList = ({
   searchTerm,
   selectedItem,
   onRowSelect = (item) => {},
   onAdd = () => {},
+  onDelete = () => {},
   refresh,
 }) => {
   const [page, setPage] = useState(1);
@@ -22,6 +24,15 @@ const BeaconList = ({
     [fetchBeacons, page, searchTerm, refresh],
     getBeacons
   );
+
+  const handleDelete = async (item) => {
+    try {
+      await deleteBeacon(item);
+      return onDelete();
+    } catch (err) {
+      console.log("delete-beacon", err);
+    }
+  };
 
   return (
     <Card>
@@ -53,10 +64,11 @@ const BeaconList = ({
           <Table
             columns={[
               { name: "mac", align: "left" },
-              { name: "name", align: "left" },
+              { name: "name", align: "center" },
               { name: "product name", align: "center" },
+              { name: "", align: "center" },
             ]}
-            rows={data.items.map((item) => ({
+            rows={data.items.map((item, index) => ({
               selectedItem: selectedItem,
               item: item,
               mac: (
@@ -79,11 +91,37 @@ const BeaconList = ({
                   {item.product ? item.product.name : "n/a"}
                 </SuiTypography>
               ),
+              "": (
+                <ButtonGroup variant="text" aria-label="text button group" color="text">
+                  <SuiButton
+                    variant="text"
+                    color="dark"
+                    onClick={() => onRowSelect(item, `row-${index}`)}
+                  >
+                    <Icon>border_color</Icon>
+                  </SuiButton>
+                  <DeletePrompt
+                    renderButton={(handleClickOpen) => (
+                      <SuiButton
+                        variant="text"
+                        color="error"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleClickOpen();
+                          e.preventDefault();
+                        }}
+                      >
+                        <Icon>delete</Icon>
+                      </SuiButton>
+                    )}
+                    onDelete={() => handleDelete(item)}
+                  />
+                </ButtonGroup>
+              ),
             }))}
             page={page}
             totalPages={data.totalPages}
             onPageChange={(event, value) => setPage(value)}
-            onSelect={onRowSelect}
             selectedKey={selectedItem ? selectedItem.key : ""}
           />
         )}

@@ -1,13 +1,8 @@
 using Vayosoft.Core.Caching;
 using Vayosoft.Core.Persistence;
-using Vayosoft.Core.SharedKernel.Entities;
-using Vayosoft.Core.SharedKernel.Events;
-using Vayosoft.Core.SharedKernel.ValueObjects;
-using Vayosoft.Core.Utilities;
-using Vayosoft.Data.MongoDB;
-using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Persistence;
-using Warehouse.Core.UseCases.BeaconTracking.Events;
+using Vayosoft.Core.Specifications;
+using Warehouse.Core.Application.Persistence;
+using Warehouse.Core.Domain.Entities;
 
 namespace Warehouse.Host
 {
@@ -33,50 +28,63 @@ namespace Warehouse.Host
 
         protected override async Task ExecuteAsync(CancellationToken token)
         {
+            var providers = new List<long> { 2, 1000 };
+
             while (!token.IsCancellationRequested)
             {
-                _logger.LogInformation("Event worker running at: {time}", DateTimeOffset.Now);
+                _logger.LogDebug("Event worker running at: {time}", DateTimeOffset.Now);
 
                 using var scope = _serviceProvider.CreateScope(); 
                 var alertRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<AlertEntity>>();
-                var beaconReceivedRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<BeaconReceivedEntity>>();
-                var notifyReadRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<NotificationEntity>>();
-                var notificationRepository = scope.ServiceProvider.GetRequiredService<IRepository<NotificationEntity>>();
+                var notifyReadRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<AlertEventEntity>>();
+                var notificationRepository = scope.ServiceProvider.GetRequiredService<IRepositoryBase<AlertEventEntity>>();
+                var store = scope.ServiceProvider.GetRequiredService<IWarehouseStore>();
                 
                 try
                 {
-                    //var registeredBeacons = await store.ListAsync<BeaconRegisteredEntity>(cancellationToken: token);
-                    var alerts = await alertRepository.ListAsync(cancellationToken: token);
-
-                    foreach (var alert in alerts.Where(a => a.Enabled))
+                    foreach (var providerId in providers)
                     {
-                        var result = await beaconReceivedRepository.ListAsync(b => 
-                            b.ReceivedAt < DateTime.UtcNow.AddSeconds(-alert.CheckPeriod), token);
+                        //var registeredBeacons = await store.ListAsync<BeaconRegisteredEntity>(cancellationToken: token);
+                        var alertSpec = new Specification<AlertEntity>(s => s.ProviderId == providerId);
+                        var alerts = await alertRepository.ListAsync(alertSpec, token);
 
-                        if (result.Any())
+                        foreach (var alert in alerts.Where(a => a.Enabled))
                         {
-                            //var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
-                            foreach (var beacon in result)
-                            {
-                                //await eventBus.Publish(UserNotification.Create);
-                                var notified = await notifyReadRepository.SingleOrDefaultAsync(n => 
-                                    n.AlertId == alert.Id && n.MacAddress == beacon.MacAddress, token);
-                                if(notified != null) continue;
+                            var beaconSpec = new Specification<TrackedItem>(b =>
+                                b.ReceivedAt < DateTime.UtcNow.AddSeconds(-alert.CheckPeriod) &&
+                                b.ProviderId == providerId);
 
-                                var notification = new NotificationEntity
+                            var result = await store.TrackedItems.ListAsync(beaconSpec, token);
+
+                            if (result.Any())
+                            {
+                                //var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
+                                foreach (var beacon in result)
                                 {
-                                    TimeStamp = DateTime.UtcNow,
-                                    AlertId = alert.Id,
-                                    MacAddress = beacon.Id,
-                                    SourceId = beacon.SourceId,
-                                    ProviderId = alert.ProviderId,
-                                    ReceivedAt = beacon.ReceivedAt
-                                };
-                                await notificationRepository.AddAsync(notification, token);
+                                    var beaconItem = await store.TrackedItems
+                                        .FirstOrDefaultAsync(q => q.Id.Equals(beacon.Id), token);
+                                    if (beaconItem == null) continue;
+
+                                    //await eventBus.Publish(UserNotification.Create);
+                                    var notified = await notifyReadRepository.FirstOrDefaultAsync(n =>
+                                        n.AlertId == alert.Id && n.MacAddress == beacon.Id, token);
+                                    if (notified != null) continue;
+
+                                    var notification = new AlertEventEntity
+                                    {
+                                        TimeStamp = DateTime.UtcNow,
+                                        AlertId = alert.Id,
+                                        MacAddress = beacon.Id,
+                                        SourceId = beacon.SourceId,
+                                        ProviderId = alert.ProviderId,
+                                        ReceivedAt = beacon.ReceivedAt
+                                    };
+                                    await notificationRepository.AddAsync(notification, token);
+                                }
                             }
                         }
                     }
-                    
+
                     await Task.Delay(Interval, token);
                 }
                 catch (OperationCanceledException)

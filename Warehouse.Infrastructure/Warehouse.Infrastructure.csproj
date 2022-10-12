@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.23.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\lib\Vayosoft.AutoMapper\Vayosoft.AutoMapper.csproj" />
+    <ProjectReference Include="..\lib\Vayosoft.Core\Vayosoft.Core.csproj" />
+    <ProjectReference Include="..\lib\Vayosoft.Dapper.MySQL\Vayosoft.Dapper.MySQL.csproj" />
+    <ProjectReference Include="..\lib\Vayosoft.EF.MySQL\Vayosoft.EF.MySQL.csproj" />
+    <ProjectReference Include="..\lib\Vayosoft.MongoDB\Vayosoft.MongoDB.csproj" />
+    <ProjectReference Include="..\lib\Vayosoft.Streaming.Redis\Vayosoft.Streaming.Redis.csproj" />
+    <ProjectReference Include="..\Warehouse.Core\Warehouse.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="D:\Sources\warehouse\Warehouse.Infrastructure\.editorconfig" />
+  </ItemGroup>
+
+</Project>

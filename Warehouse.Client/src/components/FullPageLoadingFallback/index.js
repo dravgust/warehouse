@@ -1,4 +1,3 @@
-import CircularProgress from "@mui/material/CircularProgress";
 import Backdrop from "@mui/material/Backdrop";
 import { ScaleLoader } from "react-spinners";
 

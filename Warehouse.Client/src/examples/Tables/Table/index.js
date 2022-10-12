@@ -91,7 +91,6 @@ function Table({
 
   const renderRows = rows.map((row, key) => {
     const rowKey = row.key || `row-${key}`;
-
     const tableRow = columns.map(({ name, align }) => {
       let template;
 
@@ -147,13 +146,11 @@ function Table({
         }}
         selected={rowKey === selectedKey}
         style={{ cursor: onSelect ? "pointer" : "default" }}
-        sx={
-          onSelect && {
-            "&:hover": {
-              backgroundColor: "rgba(0, 0, 0, 0.04)",
-            },
-          }
-        }
+        sx={{
+          "&:hover": {
+            backgroundColor: "rgba(0, 0, 0, 0.04)",
+          },
+        }}
       >
         {tableRow}
       </TableRow>
@@ -162,7 +159,7 @@ function Table({
 
   return useMemo(
     () => (
-      <TableContainer>
+      <TableContainer sx={{ paddingX: 2 }}>
         <MuiTable>
           <SuiBox component="thead">
             <TableRow>{renderColumns}</TableRow>

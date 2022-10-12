@@ -7,7 +7,6 @@ import { Icon, TextField, Box } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import SuiAlert from "components/SuiAlert";
 import SuiButton from "components/SuiButton";
-import DeletePromt from "./delete-promt";
 import CircularProgress from "@mui/material/CircularProgress";
 import { getProducts, setBeacon, deleteBeacon } from "api/warehouse";
 
@@ -17,22 +16,13 @@ const validationSchema = yup.object({
     .min(12, "MAC address should be of minimum 12 characters length"),
 });
 
-export default function BeaconForm({ onSave = () => {}, onDelete = () => {}, item = {} }) {
+export default function BeaconForm({ onSave = () => {}, onClose = () => {}, item = {} }) {
   const mutation = useMutation(setBeacon, {
     onSuccess: () => {
       formik.resetForm();
       return onSave();
     },
   });
-
-  const handleDelete = async (item) => {
-    try {
-      await deleteBeacon(item);
-      return onDelete();
-    } catch (err) {
-      console.log("delete-beacon", err);
-    }
-  };
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -198,19 +188,9 @@ export default function BeaconForm({ onSave = () => {}, onDelete = () => {}, ite
         ))}
 
       <Stack my={2} py={2} direction="row" spacing={1} justifyContent="end">
-        <DeletePromt
-          renderButton={(handleClickOpen) => (
-            <SuiButton
-              variant="text"
-              color="error"
-              onClick={handleClickOpen}
-              disabled={!item.macAddress}
-            >
-              <Icon>delete</Icon>&nbsp;delete
-            </SuiButton>
-          )}
-          onDelete={() => handleDelete(item)}
-        />
+        <SuiButton color="secondary" variant="contained" onClick={onClose}>
+          cancel
+        </SuiButton>
         <SuiButton color="success" variant="contained" type="submit">
           {mutation.isLoading ? (
             "Loading..."

@@ -9,10 +9,6 @@ import React from "react";
 import { fetchNotifications } from "utils/query-keys";
 import { getNotifications } from "api/warehouse";
 
-function renderEvent({ macAddress, receivedAt }) {
-  return `"${macAddress}" was last available at ${format(new Date(receivedAt), "dd MMM HH:mm:ss")}`;
-}
-
 function UserNotifications({ searchTerm = "" }) {
   const [reload, updateReloadState] = useState(null);
   const forceUpdate = () => updateReloadState(Date.now());
@@ -42,7 +38,7 @@ function UserNotifications({ searchTerm = "" }) {
           </IconButton>
         </SuiBox>
       </SuiBox>
-      <SuiBox p={2}>
+      <SuiBox p={2} sx={{ height: "100%", display: "grid" }}>
         {isSuccess &&
           response.items.map((item, index) => (
             <TimelineItem
@@ -51,7 +47,7 @@ function UserNotifications({ searchTerm = "" }) {
               icon={"location_off"}
               title={
                 <SuiTypography variant="caption" fontWeight="medium">
-                  {renderEvent(item)}
+                  {item.message}
                 </SuiTypography>
               }
               dateTime={format(new Date(item.timeStamp), "HH:mm:ss dd/MM/y")}

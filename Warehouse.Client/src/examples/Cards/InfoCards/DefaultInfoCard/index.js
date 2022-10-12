@@ -64,7 +64,7 @@ function DefaultInfoCard({ color, icon, title, description, value, isLoading }) 
         <ScaleLoader
           loading={isLoading}
           color={"#17c1e8"}
-          cssOverride={{ position: "absolute", display: "inherit", top: "78%", left: "42%" }}
+          cssOverride={{ position: "absolute", display: "inherit", top: "74%", left: "42%" }}
         />
       </SuiBox>
     </Card>

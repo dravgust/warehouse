@@ -29,9 +29,14 @@ function Beacons({ items, selectedItem, onItemSelect = () => {} }) {
       })) ||
     [];
 
-  useEffect(() => {
-    !Boolean(selectedItem) && assets.length > 0 && onItemSelect(assets[0]);
-  }, [items]);
+  const handleClick = (e, index) => {
+    onItemSelect(assets[index]);
+    switch (e.detail) {
+      case 2:
+        navigate("/warehouse");
+        break;
+    }
+  };
 
   const Row = ({ index, style }) => (
     <ListItem
@@ -39,16 +44,20 @@ function Beacons({ items, selectedItem, onItemSelect = () => {} }) {
       style={style}
       component="div"
       disablePadding
-      onClick={() => onItemSelect(assets[index])}
+      onClick={(e) => handleClick(e, index)}
+      onDoubleClick={(e) => handleClick(e, index)}
       sx={{
         borderBottom: ({ borders: { borderWidth, borderColor } }) =>
           `${borderWidth[1]} solid ${borderColor}`,
       }}
       selected={Boolean(selectedItem) && assets[index].macAddress === selectedItem.macAddress}
       secondaryAction={
-        <IconButton edge="start" onClick={() => navigate("/warehouse")}>
-          <OpenInNewIcon />
-        </IconButton>
+        Boolean(selectedItem) &&
+        assets[index].macAddress === selectedItem.macAddress && (
+          <IconButton edge="start" onClick={() => navigate("/warehouse")}>
+            <OpenInNewIcon />
+          </IconButton>
+        )
       }
     >
       <ListItemButton dir={direction}>
@@ -105,10 +114,10 @@ function Beacons({ items, selectedItem, onItemSelect = () => {} }) {
         display="flex"
         flexDirection="column"
         sx={{
-          height: "525px",
+          height: "660px",
         }}
       >
-        <FixedSizeList className="List" height={525} itemCount={assets.length} itemSize={65}>
+        <FixedSizeList className="List" height={660} itemCount={assets.length} itemSize={65}>
           {Row}
         </FixedSizeList>
       </SuiBox>

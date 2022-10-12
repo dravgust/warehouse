@@ -1,12 +1,11 @@
 ﻿using System.Security.Principal;
 using System.Text.Json;
 using Warehouse.API.Extensions;
-using Warehouse.Core.Entities.Enums;
-using Warehouse.Core.Entities.Models;
-using Warehouse.Core.Entities.Models.Security;
-using Warehouse.Core.Persistence;
-using Warehouse.Core.Services;
-using Warehouse.Core.Utilities;
+using Warehouse.Core.Application.Persistence;
+using Warehouse.Core.Application.Services;
+using Warehouse.Core.Application.Services.Security;
+using Warehouse.Core.Domain.Entities.Security;
+using Warehouse.Core.Domain.Enums;
 
 namespace Warehouse.API.Services
 {
@@ -38,9 +37,9 @@ namespace Warehouse.API.Services
             List<RoleDTO> userRoles;
             if ((userRoles = await context.Session.GetAsync<List<RoleDTO>>("_roles")) == null)
             {
-                var userService = context.RequestServices.GetRequiredService<IUserStore<UserEntity>>();
+                var userRepository = context.RequestServices.GetRequiredService<IUserRepository>();
                 var cancellationToken = context.RequestAborted;
-                userRoles = await ((IUserRoleStore)userService).
+                userRoles = await userRepository.
                     GetUserRolesAsync(context.User.Identity.GetUserId(), cancellationToken);
                 await context.Session.SetAsync("_roles", userRoles);
             }

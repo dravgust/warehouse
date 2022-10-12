@@ -4,13 +4,15 @@ using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Core.Caching;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.Utilities;
+using Warehouse.API.Contracts.Authentication;
 using Warehouse.API.Resources;
 using Warehouse.API.UseCases.Resources;
-using Warehouse.Core.Services;
-using Warehouse.Core.UseCases.Administration.Models;
-using Warehouse.API.Services.Authorization.Attributes;
 using Warehouse.API.Extensions;
-using Warehouse.API.Services.ExceptionHandling.Models;
+using Warehouse.API.Services.Authorization;
+using Warehouse.API.Services.Errors.Models;
+using Warehouse.Core.Application.Services.Authentication;
+using Warehouse.Core.Application.UseCases.Administration.Models;
+
 
 namespace Warehouse.API.Controllers.API
 {
@@ -22,41 +24,32 @@ namespace Warehouse.API.Controllers.API
     [ApiVersion("1.0")]
     public class AccountController : ControllerBase
     {
-        private readonly IUserService _userService;
-        private readonly IQueryBus _queryBus;
+        private readonly IAuthenticationService _authService;
         private readonly IDistributedMemoryCache _cache;
 
-        public AccountController(IUserService userService, IQueryBus queryBus, IDistributedMemoryCache cache)
+        public AccountController(IAuthenticationService authService, IQueryBus queryBus, IDistributedMemoryCache cache)
         {
-            _userService = userService;
-            _queryBus = queryBus;
+            _authService = authService;
             _cache = cache;
         }
 
-        [ProducesResponseType(typeof(HttpExceptionWrapper), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [HttpGet("bootstrap")]
-        public async Task<IActionResult> Get(CancellationToken token)
-        {
-            var user = new {username = HttpContext.User.Identity?.Name};
-            var resourceNames = new List<string> { nameof(SharedResources) };
-            var resources = await _queryBus.Send(new GetResources(resourceNames), token);
-
-            return Ok(new { user, resources });
-        }
-
-        [ProducesResponseType(typeof(AuthenticateResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AuthenticationResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<ActionResult<AuthenticateResponse>> Post([FromBody] AuthenticateRequest model, CancellationToken cancellationToken)
+        public async Task<ActionResult<AuthenticationResponse>> Post([FromBody] LoginRequest model, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var result = await _userService.AuthenticateAsync(model, IpAddress(), cancellationToken);
-            await HttpContext.Session.SetAsync("_roles", result.Roles);
-            SetTokenCookie(result.RefreshToken);
-            return Ok(new AuthenticateResponse(result.User.Username, result.Token, result.TokenExpirationTime));
+            var authResult = await _authService.AuthenticateAsync(model.Email, model.Password, IpAddress(), cancellationToken);
+            await HttpContext.Session.SetAsync("_roles", authResult.Roles);
+            SetTokenCookie(authResult.RefreshToken);
+            var response = new AuthenticationResponse(
+                authResult.User.Username,
+                authResult.Token,
+                authResult.TokenExpirationTime);
+
+            return Ok(response);
         }
 
         [AllowAnonymous]
@@ -69,28 +62,33 @@ namespace Warehouse.API.Controllers.API
             return Ok();
         }
 
-        [ProducesResponseType(typeof(AuthenticateResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AuthenticationResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [AllowAnonymous]
         [HttpPost("refresh-token")]
-        public async Task<ActionResult<AuthenticateResponse>> RefreshToken(TokenRequest model, CancellationToken cancellationToken)
+        public async Task<ActionResult<AuthenticationResponse>> RefreshToken(TokenRequest model, CancellationToken cancellationToken)
         {
             var refreshToken = model.Token ?? Request.Cookies["refreshToken"];
             if (string.IsNullOrEmpty(refreshToken))
-                return BadRequest(new HttpExceptionWrapper(StatusCodes.Status400BadRequest, "Token is required"));
+                return BadRequest(new HttpErrorWrapper(StatusCodes.Status400BadRequest, "Token is required"));
 
-            var result = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<TokenRequest>(model.Token), async options =>
+            var authResult = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<TokenRequest>(model.Token), async options =>
             {
                 options.AbsoluteExpirationRelativeToNow = TimeSpans.Minute;
-                var response = await _userService.RefreshTokenAsync(refreshToken, IpAddress(), cancellationToken);
+                var response = await _authService.RefreshTokenAsync(refreshToken, IpAddress(), cancellationToken);
                 return response;
             });
 
-            SetTokenCookie(result.RefreshToken);
-            return Ok(new AuthenticateResponse(result.User.Username, result.Token, result.TokenExpirationTime));
+            SetTokenCookie(authResult.RefreshToken);
+            var response = new AuthenticationResponse(
+                authResult.User.Username,
+                authResult.Token,
+                authResult.TokenExpirationTime);
+
+            return Ok(response);
         }
 
-        [ProducesResponseType(typeof(HttpExceptionWrapper), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(HttpErrorWrapper), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("revoke-token")]
@@ -100,9 +98,9 @@ namespace Warehouse.API.Controllers.API
             var refreshToken = model.Token ?? Request.Cookies["refreshToken"];
 
             if (string.IsNullOrEmpty(refreshToken))
-                return BadRequest(new HttpExceptionWrapper(StatusCodes.Status400BadRequest, "Token is required"));
+                return BadRequest(new HttpErrorWrapper(StatusCodes.Status400BadRequest, "Token is required"));
 
-            await _userService.RevokeTokenAsync(refreshToken, IpAddress(), cancellationToken);
+            await _authService.RevokeTokenAsync(refreshToken, IpAddress(), cancellationToken);
             return Ok(new { message = "Token revoked" });
         }
 
