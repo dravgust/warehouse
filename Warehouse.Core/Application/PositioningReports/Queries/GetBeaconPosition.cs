@@ -4,10 +4,10 @@ using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.ValueObjects;
 using Vayosoft.Core.Utilities;
-using Vayosoft.IPS.Domain;
 using Warehouse.Core.Application.Common.Services;
 using Warehouse.Core.Application.Common.Services.Security;
 using Warehouse.Core.Application.PositioningReports.Models;
+using Warehouse.Core.Application.PositioningSystem.Domain;
 using Warehouse.Core.Domain.Entities;
 using Warehouse.Core.Domain.Entities.Payloads;
 

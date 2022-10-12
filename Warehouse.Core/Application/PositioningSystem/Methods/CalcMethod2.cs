@@ -1,5 +1,5 @@
 ﻿
-namespace Vayosoft.IPS.Methods
+namespace Warehouse.Core.Application.PositioningSystem.Methods
 {
     public class CalcMethod2 : ICalculationMethod
     {

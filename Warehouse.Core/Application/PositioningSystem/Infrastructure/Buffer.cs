@@ -1,4 +1,4 @@
-﻿namespace Vayosoft.IPS.Infrastructure
+﻿namespace Warehouse.Core.Application.PositioningSystem.Infrastructure
 {
     [Serializable]
     public class Buffer<T> : LinkedList<T>

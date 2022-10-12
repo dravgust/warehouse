@@ -1,6 +1,6 @@
-﻿using Vayosoft.IPS.Methods;
+﻿using Warehouse.Core.Application.PositioningSystem.Methods;
 
-namespace Vayosoft.IPS.Configuration
+namespace Warehouse.Core.Application.PositioningSystem.Configuration
 {
     public class CalculationSettings : ICalculationSettings
     {

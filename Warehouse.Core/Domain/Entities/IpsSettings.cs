@@ -1,9 +1,9 @@
 ﻿using Vayosoft.Core.Mapping;
 using Vayosoft.Core.SharedKernel.Entities;
-using Vayosoft.IPS;
-using Vayosoft.IPS.Configuration;
-using Vayosoft.IPS.Filters;
-using Vayosoft.IPS.Methods;
+using Warehouse.Core.Application.PositioningSystem;
+using Warehouse.Core.Application.PositioningSystem.Configuration;
+using Warehouse.Core.Application.PositioningSystem.Filters;
+using Warehouse.Core.Application.PositioningSystem.Methods;
 
 namespace Warehouse.Core.Domain.Entities
 {

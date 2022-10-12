@@ -1,4 +1,4 @@
-﻿namespace Vayosoft.IPS.Filters
+﻿namespace Warehouse.Core.Application.PositioningSystem.Filters
 {
     public interface IRssiFilter
     {

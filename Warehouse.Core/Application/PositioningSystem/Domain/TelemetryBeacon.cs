@@ -1,6 +1,6 @@
 ﻿using Vayosoft.Core.SharedKernel.ValueObjects;
 
-namespace Vayosoft.IPS.Domain
+namespace Warehouse.Core.Application.PositioningSystem.Domain
 {
     public class TelemetryBeacon : GenericBeacon
     {

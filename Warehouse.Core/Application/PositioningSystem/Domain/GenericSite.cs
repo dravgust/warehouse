@@ -1,7 +1,7 @@
 ﻿using Vayosoft.Core.SharedKernel.ValueObjects;
-using Vayosoft.IPS.Configuration;
+using Warehouse.Core.Application.PositioningSystem.Configuration;
 
-namespace Vayosoft.IPS.Domain
+namespace Warehouse.Core.Application.PositioningSystem.Domain
 {
     public class GenericSite
     {

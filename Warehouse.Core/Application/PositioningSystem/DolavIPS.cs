@@ -1,9 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using MathNet.Numerics.Statistics;
 using Vayosoft.Core.Utilities;
-using Vayosoft.IPS.Filters;
+using Warehouse.Core.Application.PositioningSystem.Filters;
 
-namespace Vayosoft.IPS
+namespace Warehouse.Core.Application.PositioningSystem
 {
     /*
          Broadcasting Power

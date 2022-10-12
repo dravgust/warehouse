@@ -1,4 +1,4 @@
-﻿namespace Vayosoft.IPS.Methods
+﻿namespace Warehouse.Core.Application.PositioningSystem.Methods
 {
     public interface ICalculationMethod
     {

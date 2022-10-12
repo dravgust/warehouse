@@ -1,7 +1,7 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 
-namespace Vayosoft.IPS.Filters
+namespace Warehouse.Core.Application.PositioningSystem.Filters
 {
     /*
       Kalman Filter
