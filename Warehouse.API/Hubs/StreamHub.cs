@@ -4,12 +4,15 @@ using Microsoft.AspNetCore.SignalR;
 using Vayosoft.Core.Utilities;
 using Vayosoft.Streaming.Consumers;
 using Vayosoft.Streaming.Redis.Consumers;
+using Warehouse.API.Services.Authorization;
 using Warehouse.Core.Application.Common.Persistence;
+using Warehouse.Core.Application.Common.Services.Security;
 using Warehouse.Core.Domain.Entities;
 using Warehouse.Core.Domain.Events;
 
 namespace Warehouse.API.Hubs
 {
+    [PermissionAuthorization]
     public sealed class StreamHub : Hub
     {
         private readonly RedisConsumer _consumer;
@@ -23,6 +26,8 @@ namespace Warehouse.API.Hubs
 
         public ChannelReader<Notification> Notifications(CancellationToken cancellationToken)
         {
+            var providerId = Context.User?.Identity.GetProviderId();
+
             var eventStream = _consumer
                 .Configure(options =>
                 {

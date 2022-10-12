@@ -3,6 +3,7 @@ import { HubConnectionBuilder } from "@microsoft/signalr";
 import { STREAM_SERVER } from "config/constant";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
+import * as auth from "services/auth-provider";
 
 const STREAM_URL = process.env.REACT_APP_STREAM_URL || STREAM_SERVER;
 
@@ -14,7 +15,10 @@ const NotificationBar = () => {
   const [connection, setConnection] = useState(null);
   useEffect(() => {
     const newConnection = new HubConnectionBuilder()
-      .withUrl(`${STREAM_URL}/stream/notifications`)
+      .withUrl(`${STREAM_URL}/stream/notifications`, {
+        withCredentials: false,
+        accessTokenFactory: () => auth.getToken() ?? Promise.reject("No user is logged in."),
+      })
       .withAutomaticReconnect()
       .build();
 

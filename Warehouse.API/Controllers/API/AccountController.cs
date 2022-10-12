@@ -5,8 +5,6 @@ using Vayosoft.Core.Caching;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.Utilities;
 using Warehouse.API.Contracts.Authentication;
-using Warehouse.API.Resources;
-using Warehouse.API.UseCases.Resources;
 using Warehouse.API.Extensions;
 using Warehouse.API.Services.Authorization;
 using Warehouse.API.Services.Errors.Models;

@@ -18,7 +18,16 @@ namespace Warehouse.API.Services.Authorization
 
         public async Task Invoke(HttpContext context, IJwtService jwtUtils)
         {
-            var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            string token;
+            if (context.Request.Path.ToString().StartsWith("/stream/"))
+            {
+                token = context.Request.Query["access_token"];
+            }
+            else
+            {
+                token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            }
+
             if (token != null)
             {
                 var principal = jwtUtils.GetPrincipalFromJwtToken(token);
