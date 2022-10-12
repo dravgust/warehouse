@@ -44,7 +44,7 @@ namespace Warehouse.Core.Application.PositioningReports.Queries
                 }
             }
 
-            return await Task.FromResult(result);
+            return result;
         }
     }
 }
