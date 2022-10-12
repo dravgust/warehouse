@@ -2,6 +2,8 @@ import { queryClient } from "context/app.context";
 import * as auth from "services/auth-provider";
 import { API_SERVER } from "../config/constant";
 
+const API_URL = process.env.REACT_APP_API_URL || API_SERVER;
+
 async function client(
   endpoint,
   { data, formData, token, headers: customHeaders, ...customConfig } = {}
@@ -21,7 +23,7 @@ async function client(
     delete config.headers["Content-Type"];
   }
 
-  return window.fetch(`${API_SERVER}/${endpoint}`, config).then(async (response) => {
+  return window.fetch(`${API_URL}/${endpoint}`, config).then(async (response) => {
     if (response.status === 201 || response.status === 204) {
       return Promise.resolve();
     }

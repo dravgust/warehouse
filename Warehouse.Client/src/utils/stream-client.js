@@ -1,6 +1,6 @@
-import { queryClient } from "context/app.context";
-import * as auth from "services/auth-provider";
 import { API_SERVER } from "../config/constant";
+
+const API_URL = process.env.REACT_APP_API_URL || API_SERVER;
 
 async function streamClient(
   endpoint,
@@ -22,7 +22,7 @@ async function streamClient(
     delete config.headers["Content-Type"];
   }
 
-  return window.fetch(`${API_SERVER}/${endpoint}`, config).then(async (response) => {
+  return window.fetch(`${API_URL}/${endpoint}`, config).then(async (response) => {
     const reader = response.body?.getReader();
     if (!reader) {
       throw new Error("Failed to read response");
