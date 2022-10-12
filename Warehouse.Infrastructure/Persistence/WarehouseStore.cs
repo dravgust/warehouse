@@ -8,6 +8,7 @@ using Vayosoft.Core.Utilities;
 using Vayosoft.MongoDB;
 using Warehouse.Core.Application.Common.Persistence;
 using Warehouse.Core.Domain.Entities;
+using Warehouse.Core.Domain.Entities.Payloads;
 
 namespace Warehouse.Infrastructure.Persistence
 {
@@ -35,11 +36,15 @@ namespace Warehouse.Infrastructure.Persistence
             return r;
         }
 
+        //SiteManagementContext
         public IRepositoryBase<WarehouseSiteEntity> Sites => Repository<WarehouseSiteEntity>();
         public IRepositoryBase<TrackedItem> TrackedItems => Repository<TrackedItem>();
         public IRepositoryBase<ProductEntity> Products => Repository<ProductEntity>();
         public IRepositoryBase<BeaconEventEntity> BeaconEvents => Repository<BeaconEventEntity>();
         public IRepositoryBase<AlertEventEntity> AlertEvents => Repository<AlertEventEntity>();
+
+        //PositioningSystem Context
+        public IRepositoryBase<GatewayPayload> Payloads => Repository<GatewayPayload>();
 
         public IQueryable<T> Set<T>() where T : class, IEntity => 
             _connection.Collection<T>().AsQueryable();
@@ -100,7 +105,7 @@ namespace Warehouse.Infrastructure.Persistence
                     {
                         _id = g.Key,
                         humidity = g.Where(entity => entity.Humidity > 0).Average(entity => entity.Humidity),
-                        temperatrue = g.Where(entity => entity.Temperature > 0).Average(entity => entity.Temperature)
+                        temperature = g.Where(entity => entity.Temperature > 0).Average(entity => entity.Temperature)
                     }
                 )
                 .SortBy(d => d._id)

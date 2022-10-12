@@ -1,6 +1,6 @@
 ﻿using Warehouse.Core.Application.PositioningSystem.Methods;
 
-namespace Warehouse.Core.Application.PositioningSystem.Configuration
+namespace Warehouse.Core.Application.PositioningSystem.Settings
 {
     public class CalculationSettings : ICalculationSettings
     {

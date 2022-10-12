@@ -20,6 +20,7 @@ using Warehouse.Core.Application.SiteManagement;
 using Warehouse.Core.Application.Common.Persistence;
 using Warehouse.Core.Application.Common.Services;
 using Warehouse.Core.Application.Common.Services.Authentication;
+using Warehouse.Core.Application.PositioningSystem;
 using Warehouse.Core.Application.SystemAdministration;
 
 namespace Warehouse.API
@@ -67,7 +68,8 @@ namespace Warehouse.API
             services
                 .AddAppAdministrationServices()
                 .AddAppTrackingServices()
-                .AddAppManagementServices();
+                .AddAppManagementServices()
+                .AddPositioningSystemServices();
 
             services.AddTransient<RedisConsumer>();
 

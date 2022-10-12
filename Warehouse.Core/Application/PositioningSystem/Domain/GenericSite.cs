@@ -1,5 +1,5 @@
 ﻿using Vayosoft.Core.SharedKernel.ValueObjects;
-using Warehouse.Core.Application.PositioningSystem.Configuration;
+using Warehouse.Core.Application.PositioningSystem.Settings;
 
 namespace Warehouse.Core.Application.PositioningSystem.Domain
 {

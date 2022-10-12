@@ -1,7 +1,7 @@
 ﻿using Vayosoft.Core.Mapping;
 using Vayosoft.Core.SharedKernel.Entities;
 using Warehouse.Core.Application.PositioningSystem;
-using Warehouse.Core.Application.PositioningSystem.Configuration;
+using Warehouse.Core.Application.PositioningSystem.Settings;
 using Warehouse.Core.Application.PositioningSystem.Filters;
 using Warehouse.Core.Application.PositioningSystem.Methods;
 

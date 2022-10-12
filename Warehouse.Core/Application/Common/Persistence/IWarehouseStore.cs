@@ -2,6 +2,7 @@
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.SharedKernel.ValueObjects;
 using Warehouse.Core.Domain.Entities;
+using Warehouse.Core.Domain.Entities.Payloads;
 
 namespace Warehouse.Core.Application.Common.Persistence
 {
@@ -14,6 +15,9 @@ namespace Warehouse.Core.Application.Common.Persistence
         public IRepositoryBase<ProductEntity> Products { get; }
         public IRepositoryBase<BeaconEventEntity> BeaconEvents { get; }
         public IRepositoryBase<AlertEventEntity> AlertEvents { get; }
+
+
+        public IRepositoryBase<GatewayPayload> Payloads { get; }
 
         
         public Task<string> SetWarehouseSite(WarehouseSiteEntity entity, 
