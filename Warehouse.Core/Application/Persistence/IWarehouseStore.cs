@@ -12,6 +12,8 @@ namespace Warehouse.Core.Application.Persistence
         public IRepositoryBase<WarehouseSiteEntity> Sites { get; }
         public IRepositoryBase<TrackedItem> TrackedItems { get; }
         public IRepositoryBase<ProductEntity> Products { get; }
+        public IRepositoryBase<BeaconEventEntity> BeaconEvents { get; }
+        public IRepositoryBase<AlertEventEntity> AlertEvents { get; }
 
         
         public Task<string> SetWarehouseSite(WarehouseSiteEntity entity, 

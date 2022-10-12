@@ -3,17 +3,18 @@ using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.Specifications;
 using Vayosoft.Core.Utilities;
+using Warehouse.Core.Application.Persistence;
 using Warehouse.Core.Application.Services;
 using Warehouse.Core.Application.Services.Security;
 using Warehouse.Core.Domain.Entities;
 
 namespace Warehouse.Core.Application.UseCases.BeaconTracking.Queries
 {
-    public class GetUserNotifications : PagingModelBase, IQuery<IPagedEnumerable<NotificationEntity>>, ILinqSpecification<NotificationEntity>
+    public class GetUserNotifications : PagingModelBase, IQuery<IPagedEnumerable<UserNotification>>, ILinqSpecification<AlertEventEntity>
     {
         public string SearchTerm { get; set; }
         public long ProviderId { get; set; }
-        public IQueryable<NotificationEntity> Apply(IQueryable<NotificationEntity> query)
+        public IQueryable<AlertEventEntity> Apply(IQueryable<AlertEventEntity> query)
         {
             return query
                 .Where(e => e.ProviderId == ProviderId)
@@ -23,45 +24,67 @@ namespace Warehouse.Core.Application.UseCases.BeaconTracking.Queries
         }
     }
     
-    internal class HandleGetNotifications : IQueryHandler<GetUserNotifications, IPagedEnumerable<NotificationEntity>>
+    internal class HandleGetUserNotifications : IQueryHandler<GetUserNotifications, IPagedEnumerable<UserNotification>>
     {
-        private readonly IReadOnlyRepository<NotificationEntity> _repository;
+        private readonly IWarehouseStore _store;
         private readonly IUserContext _userContext;
 
-        public HandleGetNotifications(IReadOnlyRepository<NotificationEntity> repository, IUserContext userContext)
+        public HandleGetUserNotifications(IWarehouseStore store, IUserContext userContext)
         {
-            _repository = repository;
+            _store = store;
             _userContext = userContext;
         }
 
-        public async Task<IPagedEnumerable<NotificationEntity>> Handle(GetUserNotifications query,
+        public async Task<IPagedEnumerable<UserNotification>> Handle(GetUserNotifications query,
             CancellationToken cancellationToken)
         {
             query.ProviderId = _userContext.User.Identity.GetProviderId();
-            return await _repository.PageAsync(query, query.Page, query.Size, cancellationToken);
+            var data = await _store.AlertEvents.PageAsync(query, query.Page, query.Size, cancellationToken);
+
+            var list = new List<UserNotification>();
+            foreach (var e in data)
+            {
+                list.Add(new UserNotification(e.TimeStamp)
+                {
+                    Message = $"'{await GetTrackedItemName(e.MacAddress, cancellationToken)}'" +
+                              $" was last available at {e.ReceivedAt:hh:mm:ss dd/MM/yy}" +
+                              $" in '{await GetSiteName(e.SourceId, cancellationToken)}'"
+                });
+            }
+            return new PagedCollection<UserNotification>(list, data.TotalCount);
+        }
+
+        private async Task<string> GetTrackedItemName(string id, CancellationToken token)
+        {
+            return (await _store.TrackedItems.FirstOrDefaultAsync(q => q.Id.Equals(id), token))?.Name ?? id;
+        }
+
+        private async Task<string> GetSiteName(string siteId, CancellationToken token)
+        {
+            return (await _store.Sites.FindAsync(siteId, token))?.Name ?? siteId;
         }
     }
 
     //dapper
     //https://stackoverflow.com/questions/59956623/using-iasyncenumerable-with-dapper
-    public record GetUserNotificationStream : IStreamQuery<NotificationEntity>
+    public record GetUserNotificationStream : IStreamQuery<AlertEventEntity>
     { }
 
-    internal sealed class NotificationStreamQueryHandler : IStreamQueryHandler<GetUserNotificationStream, NotificationEntity>
+    internal sealed class NotificationStreamQueryHandler : IStreamQueryHandler<GetUserNotificationStream, AlertEventEntity>
     {
-        private readonly IReadOnlyRepository<NotificationEntity> _notifications;
+        private readonly IReadOnlyRepository<AlertEventEntity> _notifications;
         private readonly IUserContext _userContext;
 
-        public NotificationStreamQueryHandler(IReadOnlyRepository<NotificationEntity> notifications, IUserContext userContext)
+        public NotificationStreamQueryHandler(IReadOnlyRepository<AlertEventEntity> notifications, IUserContext userContext)
         {
             _notifications = notifications;
             _userContext = userContext;
         }
 
-        public IAsyncEnumerable<NotificationEntity> Handle(GetUserNotificationStream query, CancellationToken cancellationToken)
+        public IAsyncEnumerable<AlertEventEntity> Handle(GetUserNotificationStream query, CancellationToken cancellationToken)
         {
             var providerId = _userContext.User.Identity.GetProviderId();
-            return _notifications.StreamAsync(new Specification<NotificationEntity>(n => n.ProviderId == providerId), cancellationToken);
+            return _notifications.StreamAsync(new Specification<AlertEventEntity>(n => n.ProviderId == providerId), cancellationToken);
         }
     }
 }

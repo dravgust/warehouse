@@ -9,22 +9,6 @@ import React from "react";
 import { fetchEvents } from "utils/query-keys";
 import { getEvents } from "api/warehouse";
 
-function renderEvent({ type, beacon, source, destination }) {
-  let name = beacon.name ? beacon.name : beacon.macAddress;
-  switch (type) {
-    case 1:
-      return `"${name}" entered "${destination ? destination.name : "n/a"}"`;
-    case 2:
-      return `"${name}" out of "${source ? source.name : "n/a"}"`;
-    case 3:
-      return `"${name}" moved from "${source ? source.name : "n/a"}" to "${
-        destination ? destination.name : "n/a"
-      }"`;
-    default:
-      return "n/a";
-  }
-}
-
 function PositionEvents({ searchTerm = "" }) {
   const [reload, updateReloadState] = useState(null);
   const forceUpdate = () => updateReloadState(Date.now());
@@ -69,7 +53,7 @@ function PositionEvents({ searchTerm = "" }) {
               }
               title={
                 <SuiTypography variant="caption" fontWeight="medium">
-                  {renderEvent(item)}
+                  {item.message}
                 </SuiTypography>
               }
               dateTime={format(new Date(item.timeStamp), "HH:mm:ss dd/MM/y")}

@@ -38,6 +38,8 @@ namespace Warehouse.Infrastructure.Persistence
         public IRepositoryBase<WarehouseSiteEntity> Sites => Repository<WarehouseSiteEntity>();
         public IRepositoryBase<TrackedItem> TrackedItems => Repository<TrackedItem>();
         public IRepositoryBase<ProductEntity> Products => Repository<ProductEntity>();
+        public IRepositoryBase<BeaconEventEntity> BeaconEvents => Repository<BeaconEventEntity>();
+        public IRepositoryBase<AlertEventEntity> AlertEvents => Repository<AlertEventEntity>();
 
         public IQueryable<T> Set<T>() where T : class, IEntity => 
             _connection.Collection<T>().AsQueryable();

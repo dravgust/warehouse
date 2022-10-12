@@ -18,7 +18,7 @@ namespace Warehouse.API.Controllers.API
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> Get([FromQuery] GetBeaconEvents query, CancellationToken token = default) {
+        public async Task<IActionResult> Get([FromQuery] GetEventNotifications query, CancellationToken token = default) {
             return Paged(await _queryBus.Send(query, token), query.Size);
         }
     }
