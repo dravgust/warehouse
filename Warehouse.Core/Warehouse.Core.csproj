@@ -7,10 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Application\Common\Services\Serialization\**" />
     <Compile Remove="Domain\ValueObjects\**" />
     <Compile Remove="Utilities\**" />
+    <EmbeddedResource Remove="Application\Common\Services\Serialization\**" />
     <EmbeddedResource Remove="Domain\ValueObjects\**" />
     <EmbeddedResource Remove="Utilities\**" />
+    <None Remove="Application\Common\Services\Serialization\**" />
     <None Remove="Domain\ValueObjects\**" />
     <None Remove="Utilities\**" />
   </ItemGroup>
@@ -27,10 +30,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\lib\Vayosoft.Core\Vayosoft.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Application\Common\Services\Serialization\" />
   </ItemGroup>
 
 </Project>
