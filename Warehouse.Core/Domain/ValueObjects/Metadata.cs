@@ -1,4 +1,4 @@
-﻿namespace Warehouse.Core.Domain.Entities
+﻿namespace Warehouse.Core.Domain.ValueObjects
 {
     public sealed class Metadata : List<MetadataItem>
     { }

@@ -7,8 +7,8 @@ using Vayosoft.Streaming.Redis.Consumers;
 using Warehouse.API.Services.Authorization;
 using Warehouse.Core.Application.Common.Persistence;
 using Warehouse.Core.Application.Common.Services.Security;
-using Warehouse.Core.Domain.Entities;
 using Warehouse.Core.Domain.Events;
+using Warehouse.Core.Domain.ValueObjects;
 
 namespace Warehouse.API.Hubs
 {

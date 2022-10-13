@@ -3,6 +3,7 @@ using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.Utilities;
 using Warehouse.Core.Domain.Entities;
+using Warehouse.Core.Domain.ValueObjects;
 
 namespace Warehouse.Core.Application.SiteManagement.Queries
 {

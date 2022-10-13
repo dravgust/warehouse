@@ -16,7 +16,7 @@ namespace Warehouse.Core.Domain.Entities
         public LocationAnchor Location { set; get; } = LocationAnchor.Unknown;
     }
 
-    [CollectionName("dolav_beacons_telemetry")]
+    [AggregateName("dolav_beacons_telemetry")]
     public class BeaconTelemetryEntity : EntityBase<string>
     {
         public string MacAddress { get; set; }

@@ -3,7 +3,7 @@ using Vayosoft.Core.SharedKernel.Entities;
 
 namespace Warehouse.Core.Domain.Entities
 {
-    [CollectionName("dolav_site_ip")]
+    [AggregateName("dolav_site_ip")]
     public class IndoorPositionStatusEntity : EntityBase<string>
     {
         public DateTime TimeStamp { get; set; }

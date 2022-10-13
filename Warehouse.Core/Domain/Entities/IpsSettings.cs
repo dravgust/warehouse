@@ -7,7 +7,7 @@ using Warehouse.Core.Application.PositioningSystem.Methods;
 
 namespace Warehouse.Core.Domain.Entities
 {
-    [CollectionName("dolav_settings")]
+    [AggregateName("dolav_settings")]
     public class IpsSettings : EntityBase<string>
     {
         public int CalcMethod { set; get; }

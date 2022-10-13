@@ -7,6 +7,7 @@ using Warehouse.Core.Application.SiteManagement.Commands;
 using Warehouse.Core.Application.SiteManagement.Models;
 using Warehouse.Core.Application.SiteManagement.Queries;
 using Warehouse.Core.Domain.Entities;
+using Warehouse.Core.Domain.ValueObjects;
 
 namespace Warehouse.Core.Application.SiteManagement
 {

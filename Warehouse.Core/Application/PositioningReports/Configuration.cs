@@ -7,6 +7,7 @@ using Warehouse.Core.Application.PositioningReports.Models;
 using Warehouse.Core.Application.PositioningReports.Queries;
 using Warehouse.Core.Domain.Entities;
 using Warehouse.Core.Domain.Events;
+using Warehouse.Core.Domain.ValueObjects;
 
 namespace Warehouse.Core.Application.PositioningReports
 {

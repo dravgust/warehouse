@@ -4,6 +4,7 @@ using Vayosoft.Core.SharedKernel.Aggregates;
 using Vayosoft.Core.SharedKernel.ValueObjects;
 using Warehouse.Core.Domain.Enums;
 using Warehouse.Core.Domain.Events;
+using Warehouse.Core.Domain.ValueObjects;
 
 namespace Warehouse.Core.Domain.Entities
 {

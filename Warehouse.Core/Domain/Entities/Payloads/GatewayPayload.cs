@@ -3,7 +3,7 @@ using Vayosoft.Core.SharedKernel.Entities;
 
 namespace Warehouse.Core.Domain.Entities.Payloads
 {
-    [CollectionName("dolav")]
+    [AggregateName("dolav")]
     public class GatewayPayload : CustomPayload, IEntity<string>
     {
         object IEntity.Id => Id;

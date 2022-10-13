@@ -3,7 +3,7 @@ using Vayosoft.Core.SharedKernel.Entities;
 
 namespace Warehouse.Core.Domain.Entities
 {
-    [CollectionName("dolav_beacons_events")]
+    [AggregateName("dolav_beacons_events")]
     public class BeaconEventEntity : EntityBase<string>
     {
         public string MacAddress { set; get; }

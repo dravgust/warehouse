@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Warehouse.Core.Domain.Entities;
+using Warehouse.Core.Domain.ValueObjects;
 
 namespace Warehouse.Core.Application.SiteManagement.Models
 {
