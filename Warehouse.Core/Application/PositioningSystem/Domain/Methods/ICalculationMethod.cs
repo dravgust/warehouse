@@ -1,4 +1,4 @@
-﻿namespace Warehouse.Core.Application.PositioningSystem.Methods
+﻿namespace Warehouse.Core.Application.PositioningSystem.Domain.Methods
 {
     public interface ICalculationMethod
     {

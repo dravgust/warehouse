@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using System.Net.Mail;
 using Vayosoft.Core.Caching;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Queries;
@@ -8,7 +7,7 @@ using Vayosoft.Core.Utilities;
 using Warehouse.Core.Application.Common.Services;
 using Warehouse.Core.Application.Common.Services.Security;
 using Warehouse.Core.Application.PositioningReports.Models;
-using Warehouse.Core.Application.PositioningSystem.UseCases;
+using Warehouse.Core.Application.PositioningSystem.UseCases.Queries;
 using Warehouse.Core.Domain.Entities;
 
 namespace Warehouse.Core.Application.PositioningReports.Queries
@@ -68,7 +67,7 @@ namespace Warehouse.Core.Application.PositioningReports.Queries
                        new IpsSettings();
             });
 
-            var gSite = await _queryBus.Send(new GetGenericSite(site, settings), cancellationToken);
+            var gSite = await _queryBus.Send(new CreateGenericSite(site, settings), cancellationToken);
             gSite.CalcBeaconsPosition();
 
             return (from gw in gSite.Gateways

@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace Warehouse.Core.Application.PositioningSystem.Entities
+namespace Warehouse.Core.Application.PositioningSystem.Domain.Entities
 {
     public class KSensor
     {

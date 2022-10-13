@@ -1,9 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using MathNet.Numerics.Statistics;
 using Vayosoft.Core.Utilities;
-using Warehouse.Core.Application.PositioningSystem.Filters;
+using Warehouse.Core.Application.PositioningSystem.Domain.Filters;
 
-namespace Warehouse.Core.Application.PositioningSystem
+namespace Warehouse.Core.Application.PositioningSystem.Services
 {
     /*
          Broadcasting Power
@@ -62,7 +62,7 @@ namespace Warehouse.Core.Application.PositioningSystem
          the calibration value, you need to configure it inside your beacon per the manufacturer's instructions. 
          This will give you more accurate distance estimates. 
     */
-    public sealed class DolavIPS
+    public sealed class PositioningService
     {
         public int CalculationMethod { set; get; }
         public SmoothAlgorithm SmoothAlgorithm { set; get; }
@@ -104,12 +104,12 @@ namespace Warehouse.Core.Application.PositioningSystem
                     break;
                 case 2:
                 default:
-                {
-                    result = Math.Round(Math.Pow(Math.Pow(rssi, 10.0) / radius, 0.1), 1);
-                    if (Math.Abs(rssi) / Math.Abs(result) >= 1.0)
-                        result = Math.Round(rssi / Math.Exp(Math.Log10((radius - 0.111) / 0.89976) / 7.7095), 1);
-                    break;
-                }
+                    {
+                        result = Math.Round(Math.Pow(Math.Pow(rssi, 10.0) / radius, 0.1), 1);
+                        if (Math.Abs(rssi) / Math.Abs(result) >= 1.0)
+                            result = Math.Round(rssi / Math.Exp(Math.Log10((radius - 0.111) / 0.89976) / 7.7095), 1);
+                        break;
+                    }
             }
             if (result > 0) result *= -1;
             return result;
@@ -169,7 +169,7 @@ namespace Warehouse.Core.Application.PositioningSystem
                     continue;
 
                 //return input.Skip(i).ToList();
-                return input.Skip(i).Take(count - (i * 2)).ToList().AsReadOnly();
+                return input.Skip(i).Take(count - i * 2).ToList().AsReadOnly();
             }
 
             return input.Skip(count / 2).ToList().AsReadOnly();

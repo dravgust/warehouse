@@ -1,10 +1,10 @@
 ﻿using Vayosoft.Core.Mapping;
 using Vayosoft.Core.SharedKernel.Entities;
-using Warehouse.Core.Application.PositioningSystem;
-using Warehouse.Core.Application.PositioningSystem.Settings;
-using Warehouse.Core.Application.PositioningSystem.Filters;
-using Warehouse.Core.Application.PositioningSystem.Methods;
 using Vayosoft.Core.SharedKernel.Aggregates;
+using Warehouse.Core.Application.PositioningSystem.Domain.Filters;
+using Warehouse.Core.Application.PositioningSystem.Domain.Methods;
+using Warehouse.Core.Application.PositioningSystem.Domain.Settings;
+using Warehouse.Core.Application.PositioningSystem.Services;
 
 namespace Warehouse.Core.Domain.Entities
 {

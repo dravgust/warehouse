@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Vayosoft.Core.Queries;
-using Warehouse.Core.Application.PositioningSystem.Entities;
-using Warehouse.Core.Application.PositioningSystem.UseCases;
+using Warehouse.Core.Application.PositioningSystem.Domain.Entities;
+using Warehouse.Core.Application.PositioningSystem.UseCases.Queries;
 
-namespace Warehouse.Core.Application.PositioningSystem
+namespace Warehouse.Core.Application.PositioningSystem.UseCases
 {
     public static class Configuration
     {
@@ -14,7 +14,7 @@ namespace Warehouse.Core.Application.PositioningSystem
 
         private static IServiceCollection AddQueryHandlers(this IServiceCollection services) =>
             services
-                .AddQueryHandler<GetGenericSite, GenericSite, HandleGetGenericSite>()
+                .AddQueryHandler<CreateGenericSite, GenericSite, HandleGetGenericSite>()
                 ;
 
 

@@ -20,8 +20,8 @@ using Warehouse.Core.Application.SiteManagement;
 using Warehouse.Core.Application.Common.Persistence;
 using Warehouse.Core.Application.Common.Services;
 using Warehouse.Core.Application.Common.Services.Authentication;
-using Warehouse.Core.Application.PositioningSystem;
 using Warehouse.Core.Application.SystemAdministration;
+using Warehouse.Core.Application.PositioningSystem.UseCases;
 
 namespace Warehouse.API
 {

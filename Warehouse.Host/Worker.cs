@@ -5,8 +5,8 @@ using Vayosoft.Core.Queries;
 using Vayosoft.Core.Specifications;
 using Vayosoft.Core.Utilities;
 using Warehouse.Core.Application.Common.Persistence;
-using Warehouse.Core.Application.PositioningSystem.Entities;
-using Warehouse.Core.Application.PositioningSystem.UseCases;
+using Warehouse.Core.Application.PositioningSystem.Domain.Entities;
+using Warehouse.Core.Application.PositioningSystem.UseCases.Queries;
 using Warehouse.Core.Domain.Entities;
 using Warehouse.Core.Domain.ValueObjects;
 
@@ -67,7 +67,7 @@ namespace Warehouse.Host
                                 return await settingsRepository.FirstOrDefaultAsync(e => true, cancellationToken: token) ?? new IpsSettings();
                             });
 
-                            var gSite = await queryBus.Send(new GetGenericSite(site, settings), token);
+                            var gSite = await queryBus.Send(new CreateGenericSite(site, settings), token);
                             gSite.CalcBeaconsPosition();
 
                             if (_logger.IsEnabled(LogLevel.Debug))

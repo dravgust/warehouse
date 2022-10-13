@@ -1,6 +1,6 @@
 ﻿using MathNet.Numerics.Statistics;
 
-namespace Warehouse.Core.Application.PositioningSystem.Filters
+namespace Warehouse.Core.Application.PositioningSystem.Domain.Filters
 {
     public class MedianRssiFilter : IRssiFilter
     {

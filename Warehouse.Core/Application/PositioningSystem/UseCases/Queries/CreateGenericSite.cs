@@ -1,14 +1,14 @@
 ﻿using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.ValueObjects;
 using Warehouse.Core.Application.Common.Persistence;
-using Warehouse.Core.Application.PositioningSystem.Entities;
+using Warehouse.Core.Application.PositioningSystem.Domain.Entities;
 using Warehouse.Core.Domain.Entities;
 
-namespace Warehouse.Core.Application.PositioningSystem.UseCases
+namespace Warehouse.Core.Application.PositioningSystem.UseCases.Queries
 {
-    public sealed record GetGenericSite(WarehouseSiteEntity Site, IpsSettings Settings) : IQuery<GenericSite>;
+    public sealed record CreateGenericSite(WarehouseSiteEntity Site, IpsSettings Settings) : IQuery<GenericSite>;
 
-    internal sealed class HandleGetGenericSite : IQueryHandler<GetGenericSite, GenericSite>
+    internal sealed class HandleGetGenericSite : IQueryHandler<CreateGenericSite, GenericSite>
     {
         private readonly IWarehouseStore _store;
 
@@ -17,7 +17,7 @@ namespace Warehouse.Core.Application.PositioningSystem.UseCases
             _store = store;
         }
 
-        public async Task<GenericSite> Handle(GetGenericSite request, CancellationToken cancellationToken)
+        public async Task<GenericSite> Handle(CreateGenericSite request, CancellationToken cancellationToken)
         {
             var gSite = new GenericSite(request.Site.Id)
             {

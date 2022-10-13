@@ -1,8 +1,8 @@
 ﻿using Vayosoft.Core.SharedKernel.ValueObjects;
-using Warehouse.Core.Application.PositioningSystem.Filters;
-using Warehouse.Core.Application.PositioningSystem.Settings;
+using Warehouse.Core.Application.PositioningSystem.Domain.Filters;
+using Warehouse.Core.Application.PositioningSystem.Domain.Settings;
 
-namespace Warehouse.Core.Application.PositioningSystem.Entities
+namespace Warehouse.Core.Application.PositioningSystem.Domain.Entities
 {
     public class GenericGateway : IComparable<GenericGateway>
     {

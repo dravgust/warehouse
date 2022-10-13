@@ -1,4 +1,4 @@
-﻿namespace Warehouse.Core.Application.PositioningSystem.Infrastructure
+﻿namespace Warehouse.Core.Application.PositioningSystem.UseCases.Models
 {
     [Serializable]
     public class Buffer<T> : LinkedList<T>

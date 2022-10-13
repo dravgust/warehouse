@@ -1,4 +1,4 @@
-﻿namespace Warehouse.Core.Application.PositioningSystem.Filters
+﻿namespace Warehouse.Core.Application.PositioningSystem.Domain.Filters
 {
     public interface IRssiFilter
     {
