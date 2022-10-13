@@ -4,7 +4,7 @@ using Warehouse.Core.Application.PositioningReports.Models;
 
 namespace Warehouse.Core.Application.PositioningReports.Queries
 {
-    public class GetBeaconCharts : IQuery<BeaconCharts>
+    public class GetBeaconCharts : IQuery<TelemetryViewModel>
     {
         public GetBeaconCharts(string macAddress)
         {
@@ -14,7 +14,7 @@ namespace Warehouse.Core.Application.PositioningReports.Queries
         public string MacAddress { set; get; }
     }
 
-    public class HandleGetBeaconCharts : IQueryHandler<GetBeaconCharts, BeaconCharts>
+    public class HandleGetBeaconCharts : IQueryHandler<GetBeaconCharts, TelemetryViewModel>
     {
         private readonly IWarehouseStore _store;
 
@@ -23,24 +23,25 @@ namespace Warehouse.Core.Application.PositioningReports.Queries
             _store = store;
         }
 
-        public async Task<BeaconCharts> Handle(GetBeaconCharts request, CancellationToken cancellationToken)
+        public async Task<TelemetryViewModel> Handle(GetBeaconCharts request, CancellationToken cancellationToken)
         {
             var data = await _store.GetBeaconTelemetryAsync(request.MacAddress, cancellationToken);
-            var result = new BeaconCharts
+            var result = new TelemetryViewModel
             {
                 MacAddress = request.MacAddress,
                 Humidity = new Dictionary<DateTime, double>(),
                 Temperature = new Dictionary<DateTime, double>(),
             };
+
             foreach (var r in data)
             {
-                if (r.humidity != null)
+                if (r.Humidity != null)
                 {
-                    result.Humidity.Add(r._id, Math.Round(r.humidity.Value, 2));
+                    result.Humidity.Add(r.DateTime, Math.Round(r.Humidity.Value, 2));
                 }
-                if (r.temperatrue != null)
+                if (r.Temperature != null)
                 {
-                    result.Temperature.Add(r._id, Math.Round(r.temperatrue.Value, 2));
+                    result.Temperature.Add(r.DateTime, Math.Round(r.Temperature.Value, 2));
                 }
             }
 

@@ -13,11 +13,4 @@
         public double? Y0 { get; set; }
         public double? Z0 { get; set; }
     }
-
-    public class BeaconCharts
-    {
-        public string MacAddress { get; set; }
-        public Dictionary<DateTime, double> Temperature { get; set; }
-        public Dictionary<DateTime, double>  Humidity { get; set; }
-    }
 }

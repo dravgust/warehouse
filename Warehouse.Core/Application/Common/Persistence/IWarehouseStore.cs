@@ -1,6 +1,7 @@
 ﻿using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.SharedKernel.ValueObjects;
+using Warehouse.Core.Application.PositioningReports.Models;
 using Warehouse.Core.Domain.Entities;
 using Warehouse.Core.Domain.Entities.Payloads;
 
@@ -26,7 +27,7 @@ namespace Warehouse.Core.Application.Common.Persistence
         public Task UpdateTrackedItemAsync(TrackedItem aggregate,
             CancellationToken cancellationToken);
 
-        public Task<dynamic> GetBeaconTelemetryAsync(MacAddress macAddress,
+        public Task<ICollection<TelemetryReport>> GetBeaconTelemetryAsync(MacAddress macAddress,
             CancellationToken cancellationToken);
     }
 }
