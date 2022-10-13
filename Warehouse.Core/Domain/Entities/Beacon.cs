@@ -1,4 +1,5 @@
 ﻿using Vayosoft.Core.Mapping;
+using Vayosoft.Core.SharedKernel.Aggregates;
 using Vayosoft.Core.SharedKernel.Entities;
 using Warehouse.Core.Domain.Enums;
 
@@ -17,7 +18,7 @@ namespace Warehouse.Core.Domain.Entities
     }
 
     [AggregateName("dolav_beacons_telemetry")]
-    public class BeaconTelemetryEntity : EntityBase<string>
+    public class BeaconTelemetryEntity : EntityBase<string>, IAggregateRoot
     {
         public string MacAddress { get; set; }
         public DateTime ReceivedAt { get; set; }

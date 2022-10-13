@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 using Vayosoft.Core.Persistence;
+using Vayosoft.Core.SharedKernel.Aggregates;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.SharedKernel.Events;
 using Vayosoft.Core.SharedKernel.ValueObjects;
@@ -25,7 +26,7 @@ namespace Warehouse.Infrastructure.Persistence
             _scope = serviceProvider.CreateScope();
         }
 
-        private IRepositoryBase<T> Repository<T>() where T : class, IEntity
+        private IRepositoryBase<T> Repository<T>() where T : class, IAggregateRoot
         {
             var key = typeof(T).Name;
             if (_repositories.ContainsKey(key))

@@ -3,14 +3,14 @@ using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel;
-using Vayosoft.Core.SharedKernel.Entities;
+using Vayosoft.Core.SharedKernel.Aggregates;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.Specifications;
 using Vayosoft.MongoDB.Extensions;
 
 namespace Vayosoft.MongoDB
 {
-    public class MongoRepositoryBase<T> : IRepositoryBase<T> where T : class, IEntity
+    public class MongoRepositoryBase<T> : IRepositoryBase<T> where T : class, IAggregateRoot
     {
         private readonly IMapper mapper;
         protected readonly IMongoCollection<T> Collection;

@@ -1,11 +1,12 @@
 ﻿using Vayosoft.Core.Mapping;
+using Vayosoft.Core.SharedKernel.Aggregates;
 using Vayosoft.Core.SharedKernel.Entities;
 using Warehouse.Core.Domain.Enums;
 
 namespace Warehouse.Core.Domain.Entities
 {
     [AggregateName("operation_history")]
-    public class UserOperationEntity : EntityBase<string>
+    public class UserOperationEntity : EntityBase<string>, IAggregateRoot
     {
         public string SourceId { get; set; }
 

@@ -1,8 +1,5 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using MediatR;
-using Vayosoft.Core.SharedKernel.Entities;
+using Vayosoft.Core.SharedKernel.Aggregates;
 using Vayosoft.Core.SharedKernel.Exceptions;
 
 namespace Vayosoft.Core.Persistence
@@ -10,7 +7,7 @@ namespace Vayosoft.Core.Persistence
     public static class RepositoryExtensions
     {
         public static async Task<T> GetAsync<T, TId>(this IReadOnlyRepository<T> repository, TId id, CancellationToken cancellationToken = default)
-            where T : class, IEntity
+            where T : class, IAggregateRoot
         {
             var entity = await repository.FindAsync(id, cancellationToken);
 
@@ -18,7 +15,7 @@ namespace Vayosoft.Core.Persistence
         }
 
         public static async Task<Unit> GetAndUpdateAsync<T, TId>(this IRepositoryBase<T> repository, TId id, Action<T> action, CancellationToken cancellationToken = default)
-            where T : class, IEntity
+            where T : class, IAggregateRoot
         {
             var entity = await repository.GetAsync(id, cancellationToken);
             action(entity);

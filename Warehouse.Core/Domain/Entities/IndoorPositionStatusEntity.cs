@@ -1,10 +1,11 @@
 ﻿using Vayosoft.Core.Mapping;
+using Vayosoft.Core.SharedKernel.Aggregates;
 using Vayosoft.Core.SharedKernel.Entities;
 
 namespace Warehouse.Core.Domain.Entities
 {
     [AggregateName("dolav_site_ip")]
-    public class IndoorPositionStatusEntity : EntityBase<string>
+    public class IndoorPositionStatusEntity : EntityBase<string>, IAggregateRoot
     {
         public DateTime TimeStamp { get; set; }
         public List<IndoorPositionSnapshot> Snapshots { set; get; }

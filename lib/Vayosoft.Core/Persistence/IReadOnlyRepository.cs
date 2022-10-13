@@ -1,11 +1,11 @@
 ﻿using System.Linq.Expressions;
-using Vayosoft.Core.SharedKernel.Entities;
+using Vayosoft.Core.SharedKernel.Aggregates;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.Specifications;
 
 namespace Vayosoft.Core.Persistence
 {
-    public interface IReadOnlyRepository<TEntity> where TEntity : class, IEntity
+    public interface IReadOnlyRepository<TEntity> where TEntity : class, IAggregateRoot
     {
         Task<TEntity> FindAsync<TId>(TId id, CancellationToken cancellationToken = default) where TId : notnull;
         Task<TResult> FindAsync<TId, TResult>(TId id, CancellationToken cancellationToken = default) where TId : notnull;

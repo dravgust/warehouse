@@ -1,10 +1,11 @@
 ﻿using Vayosoft.Core.Mapping;
+using Vayosoft.Core.SharedKernel.Aggregates;
 using Vayosoft.Core.SharedKernel.Entities;
 
 namespace Warehouse.Core.Domain.Entities.Payloads
 {
     [AggregateName("dolav")]
-    public class GatewayPayload : CustomPayload, IEntity<string>
+    public class GatewayPayload : CustomPayload, IEntity<string>, IAggregateRoot
     {
         object IEntity.Id => Id;
         public string Id { get; set; }

@@ -1,9 +1,9 @@
-﻿using Vayosoft.Core.SharedKernel.Entities;
+﻿using Vayosoft.Core.SharedKernel.Aggregates;
 
 
 namespace Vayosoft.Core.Persistence
 {
-    public interface IRepositoryBase<T> : IReadOnlyRepository<T> where T : class, IEntity
+    public interface IRepositoryBase<T> : IReadOnlyRepository<T> where T : class, IAggregateRoot
     {
         Task AddAsync(T entity, CancellationToken cancellationToken = default);
         Task UpdateAsync(T entity, CancellationToken cancellationToken = default);

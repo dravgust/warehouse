@@ -4,11 +4,12 @@ using Warehouse.Core.Application.PositioningSystem;
 using Warehouse.Core.Application.PositioningSystem.Settings;
 using Warehouse.Core.Application.PositioningSystem.Filters;
 using Warehouse.Core.Application.PositioningSystem.Methods;
+using Vayosoft.Core.SharedKernel.Aggregates;
 
 namespace Warehouse.Core.Domain.Entities
 {
     [AggregateName("dolav_settings")]
-    public class IpsSettings : EntityBase<string>
+    public class IpsSettings : EntityBase<string>, IAggregateRoot
     {
         public int CalcMethod { set; get; }
         public int BufferLength { set; get; }

@@ -1,9 +1,10 @@
-﻿using Vayosoft.Core.SharedKernel.Entities;
+﻿using Vayosoft.Core.SharedKernel.Aggregates;
+using Vayosoft.Core.SharedKernel.Entities;
 using Warehouse.Core.Domain.ValueObjects;
 
 namespace Warehouse.Core.Domain.Entities
 {
-    public class ProductEntity : EntityBase<string>, IProvider<long>
+    public class ProductEntity : EntityBase<string>, IAggregateRoot, IProvider<long>
     {
         public string Name { get; set; }
         public string Description { get; set; }
