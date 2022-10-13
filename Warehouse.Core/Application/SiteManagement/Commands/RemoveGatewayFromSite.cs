@@ -23,9 +23,9 @@ namespace Warehouse.Core.Application.SiteManagement.Commands
 
     internal class HandleRemoveGatewayFromSite : ICommandHandler<RemoveGatewayFromSite>
     {
-        private readonly IRepositoryBase<WarehouseSiteEntity> _repository;
+        private readonly IRepository<WarehouseSiteEntity> _repository;
 
-        public HandleRemoveGatewayFromSite(IRepositoryBase<WarehouseSiteEntity> repository)
+        public HandleRemoveGatewayFromSite(IRepository<WarehouseSiteEntity> repository)
         {
             _repository = repository;
         }

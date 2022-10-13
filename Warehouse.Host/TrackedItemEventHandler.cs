@@ -11,9 +11,9 @@ namespace Warehouse.Host
         IEventHandler<TrackedItemMoved>
     {
         private readonly ILogger<TrackedItemEventHandler> _logger;
-        private readonly IRepositoryBase<BeaconEventEntity> _repository;
+        private readonly IRepository<BeaconEventEntity> _repository;
 
-        public TrackedItemEventHandler(IRepositoryBase<BeaconEventEntity> repository, ILogger<TrackedItemEventHandler> logger)
+        public TrackedItemEventHandler(IRepository<BeaconEventEntity> repository, ILogger<TrackedItemEventHandler> logger)
         {
             _repository = repository;
             _logger = logger;

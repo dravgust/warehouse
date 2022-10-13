@@ -18,6 +18,7 @@ using Warehouse.Core.Application.SiteManagement.Events;
 using Warehouse.Core.Domain.Events;
 using Warehouse.Infrastructure.Mapping;
 using Warehouse.Infrastructure.Persistence;
+using IMapper = Vayosoft.Core.SharedKernel.IMapper;
 
 namespace Warehouse.Infrastructure
 {
@@ -41,7 +42,7 @@ namespace Warehouse.Infrastructure
             });
 
             services.AddSingleton(typeof(IProjector), provider => provider.GetRequiredService<AutoMapperWrapper>());
-            services.AddSingleton(typeof(Vayosoft.Core.SharedKernel.IMapper),
+            services.AddSingleton(typeof(IMapper),
                 provider => provider.GetRequiredService<AutoMapperWrapper>());
 
 
@@ -55,9 +56,9 @@ namespace Warehouse.Infrastructure
                     AutoRegistration.RegisterClassMap(Assembly.GetExecutingAssembly());
                     BsonSerializer.RegisterSerializer(typeof(MacAddress), new MacAddressSerializer());
                 })
-                .AddScoped(typeof(IRepositoryBase<>), typeof(MongoRepositoryBase<>))
-                .AddScoped(typeof(IReadOnlyRepository<>), typeof(MongoRepositoryBase<>))
-                .AddScoped(typeof(IRepository<>), typeof(AggregateRepository<>))
+                .AddScoped(typeof(IRepository<>), typeof(MongoRepository<>))
+                .AddScoped(typeof(IReadOnlyRepository<>), typeof(MongoRepository<>))
+                .AddScoped(typeof(IAggregateRepository<>), typeof(AggregateRepository<>))
                 .AddScoped<IWarehouseStore, WarehouseStore>();
 
             services

@@ -12,10 +12,10 @@ namespace Warehouse.Core.Application.SiteManagement.Commands
 
     public class HandleSetAlert : ICommandHandler<SetAlert>
     {
-        private readonly IRepositoryBase<AlertEntity> _store;
+        private readonly IRepository<AlertEntity> _store;
         private readonly IUserContext _userContext;
 
-        public HandleSetAlert(IRepositoryBase<AlertEntity> store, IUserContext userContext)
+        public HandleSetAlert(IRepository<AlertEntity> store, IUserContext userContext)
         {
             _store = store;
             _userContext = userContext;

@@ -14,7 +14,7 @@ namespace Vayosoft.Core.Persistence
             return entity ?? throw EntityNotFoundException.For<T>(id);
         }
 
-        public static async Task<Unit> GetAndUpdateAsync<T, TId>(this IRepositoryBase<T> repository, TId id, Action<T> action, CancellationToken cancellationToken = default)
+        public static async Task<Unit> GetAndUpdateAsync<T, TId>(this IRepository<T> repository, TId id, Action<T> action, CancellationToken cancellationToken = default)
             where T : class, IAggregateRoot
         {
             var entity = await repository.GetAsync(id, cancellationToken);

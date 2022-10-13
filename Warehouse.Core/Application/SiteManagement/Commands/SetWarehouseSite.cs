@@ -23,11 +23,11 @@ namespace Warehouse.Core.Application.SiteManagement.Commands
 
     internal sealed class HandleSetWarehouseSite : ICommandHandler<SetWarehouseSite>
     {
-        private readonly IRepositoryBase<WarehouseSiteEntity> _repository;
+        private readonly IRepository<WarehouseSiteEntity> _repository;
         private readonly IMapper _mapper;
         private readonly IUserContext _userContext;
 
-        public HandleSetWarehouseSite(IRepositoryBase<WarehouseSiteEntity> repository, IMapper mapper, IUserContext userContext)
+        public HandleSetWarehouseSite(IRepository<WarehouseSiteEntity> repository, IMapper mapper, IUserContext userContext)
         {
             _repository = repository;
             _mapper = mapper;

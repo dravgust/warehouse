@@ -13,10 +13,10 @@ namespace Warehouse.Core.Application.PositioningReports.Events
         IEventHandler<TrackedItemGotOut>,
         IEventHandler<TrackedItemMoved>
     {
-        private readonly IRepositoryBase<BeaconEventEntity> _repository;
+        private readonly IRepository<BeaconEventEntity> _repository;
         private readonly ILogger<TrackedItemEventHandler> _logger;
 
-        public TrackedItemEventHandler(IRepositoryBase<BeaconEventEntity> repository, ILogger<TrackedItemEventHandler> logger)
+        public TrackedItemEventHandler(IRepository<BeaconEventEntity> repository, ILogger<TrackedItemEventHandler> logger)
         {
             _repository = repository;
             _logger = logger;

@@ -11,14 +11,14 @@ namespace Warehouse.Core.Application.Common.Persistence
     {
         public IQueryable<T> Set<T>() where T : class, IEntity;
 
-        public IRepositoryBase<WarehouseSiteEntity> Sites { get; }
-        public IRepositoryBase<TrackedItem> TrackedItems { get; }
-        public IRepositoryBase<ProductEntity> Products { get; }
-        public IRepositoryBase<BeaconEventEntity> BeaconEvents { get; }
-        public IRepositoryBase<AlertEventEntity> AlertEvents { get; }
+        public IRepository<WarehouseSiteEntity> Sites { get; }
+        public IRepository<TrackedItem> TrackedItems { get; }
+        public IRepository<ProductEntity> Products { get; }
+        public IRepository<BeaconEventEntity> BeaconEvents { get; }
+        public IRepository<AlertEventEntity> AlertEvents { get; }
 
 
-        public IRepositoryBase<GatewayPayload> Payloads { get; }
+        public IRepository<GatewayPayload> Payloads { get; }
 
         
         public Task<string> SetWarehouseSite(WarehouseSiteEntity entity, 

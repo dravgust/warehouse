@@ -2,15 +2,12 @@ using System.Text.Json;
 using Vayosoft.Core.Caching;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.Queries;
-using Vayosoft.Core.SharedKernel.ValueObjects;
 using Vayosoft.Core.Specifications;
 using Vayosoft.Core.Utilities;
 using Warehouse.Core.Application.Common.Persistence;
 using Warehouse.Core.Application.PositioningSystem.Domain;
 using Warehouse.Core.Application.PositioningSystem.UseCases;
 using Warehouse.Core.Domain.Entities;
-using Warehouse.Core.Domain.Entities.Payloads;
-using LocationAnchor = Warehouse.Core.Application.PositioningSystem.Domain.LocationAnchor;
 
 namespace Warehouse.Host
 {
@@ -49,9 +46,9 @@ namespace Warehouse.Host
                 using var scope = _serviceProvider.CreateScope();
                 var siteRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<WarehouseSiteEntity>>();
                 var settingsRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<IpsSettings>>();
-                var statusRepository = scope.ServiceProvider.GetRequiredService<IRepositoryBase<IndoorPositionStatusEntity>>();
-                var telemetryRepository = scope.ServiceProvider.GetRequiredService<IRepositoryBase<BeaconTelemetryEntity>>();
-                var trackedItems = scope.ServiceProvider.GetRequiredService<IRepositoryBase<TrackedItem>>();
+                var statusRepository = scope.ServiceProvider.GetRequiredService<IRepository<IndoorPositionStatusEntity>>();
+                var telemetryRepository = scope.ServiceProvider.GetRequiredService<IRepository<BeaconTelemetryEntity>>();
+                var trackedItems = scope.ServiceProvider.GetRequiredService<IRepository<TrackedItem>>();
                 var store = scope.ServiceProvider.GetRequiredService<IWarehouseStore>();
                 var queryBus = scope.ServiceProvider.GetRequiredService<IQueryBus>();
 

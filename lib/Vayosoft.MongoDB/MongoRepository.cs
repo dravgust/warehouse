@@ -10,12 +10,12 @@ using Vayosoft.MongoDB.Extensions;
 
 namespace Vayosoft.MongoDB
 {
-    public class MongoRepositoryBase<T> : IRepositoryBase<T> where T : class, IAggregateRoot
+    public class MongoRepository<T> : IRepository<T> where T : class, IAggregateRoot
     {
         private readonly IMapper mapper;
         protected readonly IMongoCollection<T> Collection;
 
-        public MongoRepositoryBase(IMongoConnection connection, IMapper mapper)
+        public MongoRepository(IMongoConnection connection, IMapper mapper)
         {
             this.mapper = mapper;
             Collection = connection.Collection<T>(CollectionName.For<T>());

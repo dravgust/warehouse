@@ -13,9 +13,9 @@ namespace Warehouse.Core.Application.SiteManagement.Queries
     internal sealed class HandleGetProductMetadata : IQueryHandler<GetProductMetadata, Metadata>
     {
         private readonly IDistributedMemoryCache _cache;
-        private readonly IRepositoryBase<FileEntity> _fileRepository;
+        private readonly IRepository<FileEntity> _fileRepository;
 
-        public HandleGetProductMetadata(IRepositoryBase<FileEntity> fileRepository, IDistributedMemoryCache cache)
+        public HandleGetProductMetadata(IRepository<FileEntity> fileRepository, IDistributedMemoryCache cache)
         {
             _fileRepository = fileRepository;
             _cache = cache;

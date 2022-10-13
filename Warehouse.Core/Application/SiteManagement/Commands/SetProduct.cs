@@ -22,11 +22,11 @@ namespace Warehouse.Core.Application.SiteManagement.Commands
     }
     internal class HandleSetProduct : ICommandHandler<SetProduct>
     {
-        private readonly IRepositoryBase<ProductEntity> _repository;
+        private readonly IRepository<ProductEntity> _repository;
         private readonly IMapper _mapper;
         private readonly IUserContext _userContext;
 
-        public HandleSetProduct(IRepositoryBase<ProductEntity> repository, IMapper mapper, IUserContext userContext)
+        public HandleSetProduct(IRepository<ProductEntity> repository, IMapper mapper, IUserContext userContext)
         {
             _repository = repository;
             _mapper = mapper;

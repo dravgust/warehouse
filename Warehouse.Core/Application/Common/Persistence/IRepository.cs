@@ -3,6 +3,6 @@ using Vayosoft.Core.SharedKernel.Aggregates;
 
 namespace Warehouse.Core.Application.Common.Persistence
 {
-    public interface IRepository<T> : IRepositoryBase<T> where T : class, IAggregate<string>
+    public interface IAggregateRepository<T> : IRepository<T> where T : class, IAggregate<string>
     { }
 }

@@ -20,9 +20,9 @@ namespace Warehouse.Core.Application.SiteManagement.Commands
 
     internal sealed class HandleDeleteTrackedItem : ICommandHandler<DeleteTrackedItem>
     {
-        private readonly IRepositoryBase<TrackedItem> _repository;
+        private readonly IRepository<TrackedItem> _repository;
 
-        public HandleDeleteTrackedItem(IRepositoryBase<TrackedItem> repository)
+        public HandleDeleteTrackedItem(IRepository<TrackedItem> repository)
         {
             _repository = repository;
         }

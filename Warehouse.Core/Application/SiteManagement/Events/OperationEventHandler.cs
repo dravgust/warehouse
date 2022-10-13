@@ -57,7 +57,7 @@ namespace Warehouse.Core.Application.SiteManagement.Events
                 Status = @event.Status
             };
 
-            var repository = scope.ServiceProvider.GetRequiredService<IRepositoryBase<UserOperationEntity>>();
+            var repository = scope.ServiceProvider.GetRequiredService<IRepository<UserOperationEntity>>();
             await repository.AddAsync(operationHistory, cancellationToken);
         }
     }

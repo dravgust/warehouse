@@ -26,27 +26,27 @@ namespace Warehouse.Infrastructure.Persistence
             _scope = serviceProvider.CreateScope();
         }
 
-        private IRepositoryBase<T> Repository<T>() where T : class, IAggregateRoot
+        private IRepository<T> Repository<T>() where T : class, IAggregateRoot
         {
             var key = typeof(T).Name;
             if (_repositories.ContainsKey(key))
-                return (IRepositoryBase<T>) _repositories[key];
+                return (IRepository<T>) _repositories[key];
 
-            var r = _scope.ServiceProvider.GetRequiredService<IRepositoryBase<T>>();
+            var r = _scope.ServiceProvider.GetRequiredService<IRepository<T>>();
             _repositories.Add(key, r);
 
             return r;
         }
 
         //SiteManagementContext
-        public IRepositoryBase<WarehouseSiteEntity> Sites => Repository<WarehouseSiteEntity>();
-        public IRepositoryBase<TrackedItem> TrackedItems => Repository<TrackedItem>();
-        public IRepositoryBase<ProductEntity> Products => Repository<ProductEntity>();
-        public IRepositoryBase<BeaconEventEntity> BeaconEvents => Repository<BeaconEventEntity>();
-        public IRepositoryBase<AlertEventEntity> AlertEvents => Repository<AlertEventEntity>();
+        public IRepository<WarehouseSiteEntity> Sites => Repository<WarehouseSiteEntity>();
+        public IRepository<TrackedItem> TrackedItems => Repository<TrackedItem>();
+        public IRepository<ProductEntity> Products => Repository<ProductEntity>();
+        public IRepository<BeaconEventEntity> BeaconEvents => Repository<BeaconEventEntity>();
+        public IRepository<AlertEventEntity> AlertEvents => Repository<AlertEventEntity>();
 
         //PositioningSystem Context
-        public IRepositoryBase<GatewayPayload> Payloads => Repository<GatewayPayload>();
+        public IRepository<GatewayPayload> Payloads => Repository<GatewayPayload>();
 
         public IQueryable<T> Set<T>() where T : class, IEntity => 
             _connection.Collection<T>().AsQueryable();
