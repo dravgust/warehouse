@@ -16,6 +16,8 @@
 
         public T Dequeue()
         {
+            if (First is null) return default;
+
             // todo: add synchronization mechanism
             var first = First.Value;
             RemoveFirst();
