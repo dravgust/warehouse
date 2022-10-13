@@ -44,11 +44,9 @@ namespace Warehouse.Host
                 _logger.LogDebug("Worker running at: {Time}", DateTimeOffset.Now);
 
                 using var scope = _serviceProvider.CreateScope();
-                var siteRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<WarehouseSiteEntity>>();
                 var settingsRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<IpsSettings>>();
                 var statusRepository = scope.ServiceProvider.GetRequiredService<IRepository<IndoorPositionStatusEntity>>();
                 var telemetryRepository = scope.ServiceProvider.GetRequiredService<IRepository<BeaconTelemetryEntity>>();
-                var trackedItems = scope.ServiceProvider.GetRequiredService<IRepository<TrackedItem>>();
                 var store = scope.ServiceProvider.GetRequiredService<IWarehouseStore>();
                 var queryBus = scope.ServiceProvider.GetRequiredService<IQueryBus>();
 
@@ -59,7 +57,7 @@ namespace Warehouse.Host
                         Dictionary<string, string[]> beaconsIn = new();
                         HashSet<string> beaconsOut = new();
                         var spec = new Specification<WarehouseSiteEntity>(s => s.ProviderId == providerId);
-                        var sites = await siteRepository.ListAsync(spec, token);
+                        var sites = await store.Sites.ListAsync(spec, token);
                         foreach (var site in sites)
                         {
                             var settings = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<IpsSettings>(), async options =>
@@ -182,7 +180,7 @@ namespace Warehouse.Host
                         foreach (var (macAddress, site) in beaconsIn)
                         {
                             //******************* events
-                            var trackedItem = await trackedItems.FindAsync(macAddress, token);
+                            var trackedItem = await store.TrackedItems.FindAsync(macAddress, token);
                             if (site[0] == null)
                             {
                                 trackedItem?.EnterTheSite(site[1]);
