@@ -27,7 +27,7 @@ namespace Warehouse.Core.Application.Common.Persistence
         public Task UpdateTrackedItemAsync(TrackedItem aggregate,
             CancellationToken cancellationToken);
 
-        public Task<ICollection<TelemetryReport>> GetBeaconTelemetryAsync(MacAddress macAddress,
+        public Task<ICollection<TelemetryTickReport>> GetBeaconTelemetryAsync(MacAddress macAddress,
             CancellationToken cancellationToken);
     }
 }

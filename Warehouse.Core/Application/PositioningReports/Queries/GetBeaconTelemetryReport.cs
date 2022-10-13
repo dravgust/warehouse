@@ -4,9 +4,9 @@ using Warehouse.Core.Application.PositioningReports.Models;
 
 namespace Warehouse.Core.Application.PositioningReports.Queries
 {
-    public class GetBeaconCharts : IQuery<TelemetryViewModel>
+    public class GetBeaconTelemetryReport : IQuery<BeaconTelemetryReport>
     {
-        public GetBeaconCharts(string macAddress)
+        public GetBeaconTelemetryReport(string macAddress)
         {
             MacAddress = macAddress;
         }
@@ -14,21 +14,20 @@ namespace Warehouse.Core.Application.PositioningReports.Queries
         public string MacAddress { set; get; }
     }
 
-    public class HandleGetBeaconCharts : IQueryHandler<GetBeaconCharts, TelemetryViewModel>
+    internal sealed class HandleGetBeaconTelemetryReport : IQueryHandler<GetBeaconTelemetryReport, BeaconTelemetryReport>
     {
         private readonly IWarehouseStore _store;
 
-        public HandleGetBeaconCharts(IWarehouseStore store)
+        public HandleGetBeaconTelemetryReport(IWarehouseStore store)
         {
             _store = store;
         }
 
-        public async Task<TelemetryViewModel> Handle(GetBeaconCharts request, CancellationToken cancellationToken)
+        public async Task<BeaconTelemetryReport> Handle(GetBeaconTelemetryReport request, CancellationToken cancellationToken)
         {
             var data = await _store.GetBeaconTelemetryAsync(request.MacAddress, cancellationToken);
-            var result = new TelemetryViewModel
+            var result = new BeaconTelemetryReport(request.MacAddress)
             {
-                MacAddress = request.MacAddress,
                 Humidity = new Dictionary<DateTime, double>(),
                 Temperature = new Dictionary<DateTime, double>(),
             };

@@ -23,7 +23,7 @@ namespace Warehouse.Core.Application.PositioningReports
                 .AddQueryHandler<GetEventNotifications, IPagedEnumerable<EventNotification>, HandleGetEventNotifications>()
                 .AddQueryHandler<GetTrackedItemsByProduct, IEnumerable<TrackedItemByProductDto>, HandleGetDashboardByProduct>()
                 .AddQueryHandler<GetTrackedItemsBySite, IEnumerable<TrackedItemBySiteDto>, HandleGetDashboardBySite>()
-                .AddQueryHandler<GetBeaconCharts, TelemetryViewModel, HandleGetBeaconCharts>()
+                .AddQueryHandler<GetBeaconTelemetryReport, BeaconTelemetryReport, HandleGetBeaconTelemetryReport>()
                 .AddQueryHandler<GetBeaconPosition, ICollection<BeaconPosition>, HandleGetBeaconPosition>()
                 .AddQueryHandler<GetBeaconTelemetry, BeaconTelemetryDto, HandleGetBeaconTelemetry>()
 

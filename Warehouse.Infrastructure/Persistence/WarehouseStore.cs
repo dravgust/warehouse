@@ -95,14 +95,14 @@ namespace Warehouse.Infrastructure.Persistence
             }
         }
 
-        public async Task<ICollection<TelemetryReport>> GetBeaconTelemetryAsync(MacAddress macAddress, CancellationToken cancellationToken)
+        public async Task<ICollection<TelemetryTickReport>> GetBeaconTelemetryAsync(MacAddress macAddress, CancellationToken cancellationToken)
         {
             return await _connection.Collection<BeaconTelemetryEntity>().Aggregate()
                 .Match(t => t.MacAddress == macAddress.Value && t.ReceivedAt > DateTime.UtcNow.AddHours(-12))
                 .Group(k =>
                         new DateTime(k.ReceivedAt.Year, k.ReceivedAt.Month, k.ReceivedAt.Day,
                             k.ReceivedAt.Hour - (k.ReceivedAt.Hour % 1), 0, 0),
-                    g => new TelemetryReport(g.Key)
+                    g => new TelemetryTickReport(g.Key)
                     {
                         Humidity = g.Where(entity => entity.Humidity > 0).Average(entity => entity.Humidity),
                         Temperature = g.Where(entity => entity.Temperature > 0).Average(entity => entity.Temperature)

@@ -45,7 +45,7 @@ namespace Warehouse.API.Controllers.API
 
         [HttpGet("beacon/charts/{id}")]
         public async Task<IActionResult> GetBeaconTelemetry(string id, CancellationToken token) {
-            return Ok(await _queryBus.Send(new GetBeaconCharts(id), token));
+            return Ok(await _queryBus.Send(new GetBeaconTelemetryReport(id), token));
         }
     }
 }
