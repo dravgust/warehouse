@@ -6,9 +6,9 @@ using Warehouse.Core.Domain.Entities;
 
 namespace Warehouse.Core.Application.PositioningSystem.UseCases.Queries
 {
-    public sealed record CreateGenericSite(WarehouseSiteEntity Site, IpsSettings Settings) : IQuery<GenericSite>;
+    public sealed record GetGenericSite(WarehouseSiteEntity Site, IpsSettings Settings) : IQuery<GenericSite>;
 
-    internal sealed class HandleGetGenericSite : IQueryHandler<CreateGenericSite, GenericSite>
+    internal sealed class HandleGetGenericSite : IQueryHandler<GetGenericSite, GenericSite>
     {
         private readonly IWarehouseStore _store;
 
@@ -17,7 +17,7 @@ namespace Warehouse.Core.Application.PositioningSystem.UseCases.Queries
             _store = store;
         }
 
-        public async Task<GenericSite> Handle(CreateGenericSite request, CancellationToken cancellationToken)
+        public async Task<GenericSite> Handle(GetGenericSite request, CancellationToken cancellationToken)
         {
             var gSite = new GenericSite(request.Site.Id)
             {
