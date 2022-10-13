@@ -67,7 +67,7 @@ namespace Warehouse.Core.Application.PositioningReports.Queries
                        new IpsSettings();
             });
 
-            var gSite = await _queryBus.Send(new CreateGenericSite(site, settings), cancellationToken);
+            var gSite = await _queryBus.Send(new GetGenericSite(site, settings), cancellationToken);
             gSite.CalcBeaconsPosition();
 
             return (from gw in gSite.Gateways

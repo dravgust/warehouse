@@ -67,7 +67,7 @@ namespace Warehouse.Host
                                 return await settingsRepository.FirstOrDefaultAsync(e => true, cancellationToken: token) ?? new IpsSettings();
                             });
 
-                            var gSite = await queryBus.Send(new CreateGenericSite(site, settings), token);
+                            var gSite = await queryBus.Send(new GetGenericSite(site, settings), token);
                             gSite.CalcBeaconsPosition();
 
                             if (_logger.IsEnabled(LogLevel.Debug))

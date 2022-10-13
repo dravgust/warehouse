@@ -14,7 +14,7 @@ namespace Warehouse.Core.Application.PositioningSystem.UseCases
 
         private static IServiceCollection AddQueryHandlers(this IServiceCollection services) =>
             services
-                .AddQueryHandler<CreateGenericSite, GenericSite, HandleGetGenericSite>()
+                .AddQueryHandler<GetGenericSite, GenericSite, HandleGetGenericSite>()
                 ;
 
 
