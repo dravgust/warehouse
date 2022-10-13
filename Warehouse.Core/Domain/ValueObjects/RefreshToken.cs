@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Serialization;
+using Warehouse.Core.Domain.Entities.Identity;
 
-namespace Warehouse.Core.Domain.Entities
+namespace Warehouse.Core.Domain.ValueObjects
 {
     public class RefreshToken
     {

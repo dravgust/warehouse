@@ -14,14 +14,14 @@ public record GetTrackedItemsBySite : IQuery<IEnumerable<TrackedItemBySiteDto>>
 
 internal sealed class HandleGetDashboardBySite : IQueryHandler<GetTrackedItemsBySite, IEnumerable<TrackedItemBySiteDto>>
 {
-    private readonly IReadOnlyRepository<IndoorPositionStatusEntity> _statuses;
+    private readonly IReadOnlyRepository<PositionStatus> _statuses;
     private readonly IReadOnlyRepository<WarehouseSiteEntity> _sites;
     private readonly IWarehouseStore _store;
     private readonly IReadOnlyRepository<ProductEntity> _products;
     private readonly IUserContext _userContext;
 
     public HandleGetDashboardBySite(
-        IReadOnlyRepository<IndoorPositionStatusEntity> statuses,
+        IReadOnlyRepository<PositionStatus> statuses,
         IReadOnlyRepository<WarehouseSiteEntity> sites,
         IWarehouseStore store,
         IReadOnlyRepository<ProductEntity> products,

@@ -11,9 +11,9 @@ namespace Warehouse.Host
         IEventHandler<TrackedItemMoved>
     {
         private readonly ILogger<TrackedItemEventHandler> _logger;
-        private readonly IRepository<BeaconEventEntity> _repository;
+        private readonly IRepository<BeaconEvent> _repository;
 
-        public TrackedItemEventHandler(IRepository<BeaconEventEntity> repository, ILogger<TrackedItemEventHandler> logger)
+        public TrackedItemEventHandler(IRepository<BeaconEvent> repository, ILogger<TrackedItemEventHandler> logger)
         {
             _repository = repository;
             _logger = logger;
@@ -21,7 +21,7 @@ namespace Warehouse.Host
 
         public async Task Handle(TrackedItemEntered @event, CancellationToken cancellationToken)
         {
-            await _repository.AddAsync(new BeaconEventEntity
+            await _repository.AddAsync(new BeaconEvent
             {
                 MacAddress = @event.Id,
                 TimeStamp = DateTime.UtcNow,
@@ -33,7 +33,7 @@ namespace Warehouse.Host
 
         public async Task Handle(TrackedItemGotOut @event, CancellationToken cancellationToken)
         {
-            await _repository.AddAsync(new BeaconEventEntity
+            await _repository.AddAsync(new BeaconEvent
             {
                 MacAddress = @event.Id,
                 TimeStamp = DateTime.UtcNow,
@@ -45,7 +45,7 @@ namespace Warehouse.Host
 
         public async Task Handle(TrackedItemMoved @event, CancellationToken cancellationToken)
         {
-            await _repository.AddAsync(new BeaconEventEntity
+            await _repository.AddAsync(new BeaconEvent
             {
                 MacAddress = @event.Id,
                 TimeStamp = DateTime.UtcNow,

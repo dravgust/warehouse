@@ -1,6 +1,7 @@
 ﻿using Vayosoft.Core.Mapping;
 using Vayosoft.Core.SharedKernel.Aggregates;
 using Vayosoft.Core.SharedKernel.Entities;
+using Warehouse.Core.Domain.Entities.Identity;
 
 namespace Warehouse.Core.Domain.Entities
 {

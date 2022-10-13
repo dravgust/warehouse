@@ -1,4 +1,4 @@
-﻿using Warehouse.Core.Domain.Entities;
+﻿using Warehouse.Core.Domain.Entities.Identity;
 
 namespace Warehouse.Core.Application.Common.Persistence
 {

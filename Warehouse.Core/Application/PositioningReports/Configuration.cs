@@ -29,7 +29,7 @@ namespace Warehouse.Core.Application.PositioningReports
                 .AddQueryHandler<GetBeaconTelemetry, BeaconTelemetryDto, HandleGetBeaconTelemetry>()
 
                 .AddQueryHandler<GetUserNotifications, IPagedEnumerable<UserNotification>, HandleGetUserNotifications>()
-                .AddStreamQueryHandler<GetUserNotificationStream, AlertEventEntity, NotificationStreamQueryHandler>();
+                .AddStreamQueryHandler<GetUserNotificationStream, AlertEvent, NotificationStreamQueryHandler>();
 
         private static IServiceCollection AddEventHandlers(this IServiceCollection services) =>
                 services

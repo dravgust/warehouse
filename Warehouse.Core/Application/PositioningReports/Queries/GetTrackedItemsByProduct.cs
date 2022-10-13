@@ -13,14 +13,14 @@ namespace Warehouse.Core.Application.PositioningReports.Queries
 
     internal sealed class HandleGetDashboardByProduct : IQueryHandler<GetTrackedItemsByProduct, IEnumerable<TrackedItemByProductDto>>
     {
-        private readonly IReadOnlyRepository<IndoorPositionStatusEntity> _statuses;
+        private readonly IReadOnlyRepository<PositionStatus> _statuses;
         private readonly IReadOnlyRepository<WarehouseSiteEntity> _sites;
         private readonly IWarehouseStore _store;
         private readonly IReadOnlyRepository<ProductEntity> _products;
         private readonly IUserContext _userContext;
 
         public HandleGetDashboardByProduct(
-            IReadOnlyRepository<IndoorPositionStatusEntity> statuses,
+            IReadOnlyRepository<PositionStatus> statuses,
             IReadOnlyRepository<WarehouseSiteEntity> sites,
             IWarehouseStore store,
             IReadOnlyRepository<ProductEntity> products,

@@ -11,8 +11,12 @@ namespace Warehouse.Infrastructure.Mapping
             CreateMap<ProductDto, ProductEntity>()
                 .ForMember(p => p.ProviderId, des => des.Ignore());
 
-            CreateMap<GatewayDto, Gateway>();
-            CreateMap<BeaconDto, Beacon>();
+            CreateMap<GatewayDto, Gateway>()
+                .ForMember(m => m.Id, dest => dest.Ignore());
+
+            CreateMap<BeaconDto, Beacon>()
+                .ForMember(m => m.Id, dest => dest.Ignore());
+
             CreateMap<WarehouseSiteDto, WarehouseSiteEntity>()
                 .ForMember(m => m.Gateways,
                     des =>

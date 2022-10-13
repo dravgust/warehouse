@@ -5,7 +5,7 @@ using Vayosoft.Core.SharedKernel.Entities;
 namespace Warehouse.Core.Domain.Entities
 {
     [AggregateName("dolav_notifications")]
-    public class AlertEventEntity : EntityBase<string>, IAggregateRoot
+    public class AlertEvent : EntityBase<string>, IAggregateRoot
     {
         public DateTime TimeStamp { get; set; }
         public string AlertId { get; set; }

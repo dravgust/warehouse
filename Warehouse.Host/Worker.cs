@@ -8,6 +8,7 @@ using Warehouse.Core.Application.Common.Persistence;
 using Warehouse.Core.Application.PositioningSystem.Entities;
 using Warehouse.Core.Application.PositioningSystem.UseCases;
 using Warehouse.Core.Domain.Entities;
+using Warehouse.Core.Domain.ValueObjects;
 
 namespace Warehouse.Host
 {
@@ -45,8 +46,8 @@ namespace Warehouse.Host
 
                 using var scope = _serviceProvider.CreateScope();
                 var settingsRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<IpsSettings>>();
-                var statusRepository = scope.ServiceProvider.GetRequiredService<IRepository<IndoorPositionStatusEntity>>();
-                var telemetryRepository = scope.ServiceProvider.GetRequiredService<IRepository<BeaconTelemetryEntity>>();
+                var statusRepository = scope.ServiceProvider.GetRequiredService<IRepository<PositionStatus>>();
+                var telemetryRepository = scope.ServiceProvider.GetRequiredService<IRepository<BeaconTelemetry>>();
                 var store = scope.ServiceProvider.GetRequiredService<IWarehouseStore>();
                 var queryBus = scope.ServiceProvider.GetRequiredService<IQueryBus>();
 
@@ -112,7 +113,7 @@ namespace Warehouse.Host
                                 if (beacon.Humidity == null && beacon.Temperature == null) continue;
                                 try
                                 {
-                                    var beaconReceived = new BeaconTelemetryEntity
+                                    var beaconReceived = new BeaconTelemetry
                                     {
                                         MacAddress = beacon.MacAddress,
                                         ReceivedAt = DateTime.UtcNow,
@@ -218,12 +219,12 @@ namespace Warehouse.Host
             }
         }
 
-        private static IndoorPositionStatusEntity GetIndoorPositionStatus(GenericSite gSite, IndoorPositionStatusEntity prevStatus)
+        private static PositionStatus GetIndoorPositionStatus(GenericSite gSite, PositionStatus prevStatus)
         {
             var timeStamp = DateTime.UtcNow;
             var checkingPeriod = timeStamp.AddSeconds(-CheckingInterval * CheckingPeriod);
 
-            List<IndoorPositionSnapshot> snapshots;
+            List<PositionSnapshot> snapshots;
             if (prevStatus is { Snapshots: { } })
             {
                 snapshots = prevStatus.Snapshots
@@ -231,10 +232,10 @@ namespace Warehouse.Host
             }
             else
             {
-                snapshots = new List<IndoorPositionSnapshot>(1);
+                snapshots = new List<PositionSnapshot>(1);
             }
 
-            snapshots.Add(new IndoorPositionSnapshot
+            snapshots.Add(new PositionSnapshot
             {
                 TimeStamp = timeStamp,
                 In = gSite.Status.In,
@@ -251,7 +252,7 @@ namespace Warehouse.Host
                     @in.Add(bMacAddress);
                 }
             }
-            return new IndoorPositionStatusEntity
+            return new PositionStatus
             {
                 Id = gSite.Id,
                 TimeStamp = timeStamp,

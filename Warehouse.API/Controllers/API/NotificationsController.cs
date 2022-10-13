@@ -24,7 +24,7 @@ namespace Warehouse.API.Controllers.API
         }
 
         [HttpGet("stream")]
-        public IAsyncEnumerable<AlertEventEntity> GetStream(CancellationToken token = default)
+        public IAsyncEnumerable<AlertEvent> GetStream(CancellationToken token = default)
         {
             var query = new GetUserNotificationStream();
             return _queryBus.Send(query, token);

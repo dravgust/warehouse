@@ -7,9 +7,10 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Warehouse.Core.Application.Common.Services;
 using Warehouse.Core.Application.Common.Services.Authentication;
-using Warehouse.Core.Domain.Entities;
+using Warehouse.Core.Domain.Entities.Identity;
 using Warehouse.Core.Domain.Entities.Security;
 using Warehouse.Core.Domain.Enums;
+using Warehouse.Core.Domain.ValueObjects;
 
 namespace Warehouse.Infrastructure.Identity
 {

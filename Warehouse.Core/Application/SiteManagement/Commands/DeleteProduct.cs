@@ -42,7 +42,7 @@ namespace Warehouse.Core.Application.SiteManagement.Commands
         {
             await _repository.DeleteAsync(new ProductEntity { Id = request.Id }, cancellationToken);
 
-            await _eventBus.Publish(UserOperation.Delete(request, _userContext.User), cancellationToken);
+            await _eventBus.Publish(UserOperationEvent.Delete(request, _userContext.User), cancellationToken);
             return Unit.Value;
         }
     }

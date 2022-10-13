@@ -6,7 +6,7 @@ using Warehouse.Core.Domain.Enums;
 namespace Warehouse.Core.Domain.Entities
 {
     [AggregateName("operation_history")]
-    public class UserOperationEntity : EntityBase<string>, IAggregateRoot
+    public class UserOperation : EntityBase<string>, IAggregateRoot
     {
         public string SourceId { get; set; }
 

@@ -10,7 +10,7 @@ using Warehouse.Core.Domain.Events;
 
 namespace Warehouse.Core.Application.SiteManagement.Events
 {
-    public sealed class OperationEventHandler : IEventHandler<UserOperation>
+    public sealed class OperationEventHandler : IEventHandler<UserOperationEvent>
     {
         private readonly IServiceProvider _serviceProvider;
         //private readonly ProviderFactory _providerFactory;
@@ -26,7 +26,7 @@ namespace Warehouse.Core.Application.SiteManagement.Events
             _logger = logger;
         }
 
-        public async Task Handle(UserOperation @event, CancellationToken cancellationToken)
+        public async Task Handle(UserOperationEvent @event, CancellationToken cancellationToken)
         {
             if (_logger.IsEnabled(LogLevel.Debug))
             {
@@ -42,7 +42,7 @@ namespace Warehouse.Core.Application.SiteManagement.Events
             //((Provider)@event.ProviderName).Id
             using var scope = _serviceProvider.CreateScope();
 
-            var operationHistory = new UserOperationEntity
+            var operationHistory = new UserOperation
             {
                 SourceId = sourceId,
                 UserId = user.GetUserId(),
@@ -57,7 +57,7 @@ namespace Warehouse.Core.Application.SiteManagement.Events
                 Status = @event.Status
             };
 
-            var repository = scope.ServiceProvider.GetRequiredService<IRepository<UserOperationEntity>>();
+            var repository = scope.ServiceProvider.GetRequiredService<IRepository<UserOperation>>();
             await repository.AddAsync(operationHistory, cancellationToken);
         }
     }

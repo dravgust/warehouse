@@ -14,8 +14,8 @@ namespace Warehouse.Core.Application.Common.Persistence
         public IRepository<WarehouseSiteEntity> Sites { get; }
         public IRepository<TrackedItem> TrackedItems { get; }
         public IRepository<ProductEntity> Products { get; }
-        public IRepository<BeaconEventEntity> BeaconEvents { get; }
-        public IRepository<AlertEventEntity> AlertEvents { get; }
+        public IRepository<BeaconEvent> BeaconEvents { get; }
+        public IRepository<AlertEvent> AlertEvents { get; }
 
 
         public IRepository<GatewayPayload> Payloads { get; }

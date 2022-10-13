@@ -1,5 +1,6 @@
 ﻿using Vayosoft.Core.SharedKernel.Aggregates;
 using Vayosoft.Core.SharedKernel.Entities;
+using Warehouse.Core.Domain.Entities.Identity;
 using Warehouse.Core.Domain.ValueObjects;
 
 namespace Warehouse.Core.Domain.Entities

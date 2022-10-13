@@ -10,12 +10,12 @@ using Warehouse.Core.Domain.ValueObjects;
 
 namespace Warehouse.Core.Application.PositioningReports.Queries
 {
-    public sealed class GetEventNotifications : PagingModelBase, IQuery<IPagedEnumerable<EventNotification>>, ILinqSpecification<BeaconEventEntity>
+    public sealed class GetEventNotifications : PagingModelBase, IQuery<IPagedEnumerable<EventNotification>>, ILinqSpecification<BeaconEvent>
     {
         public string SearchTerm { get; init; }
         public long ProviderId { get; set; }
 
-        public IQueryable<BeaconEventEntity> Apply(IQueryable<BeaconEventEntity> query)
+        public IQueryable<BeaconEvent> Apply(IQueryable<BeaconEvent> query)
         {
             return query.Where(e => e.ProviderId == ProviderId)
                 .WhereIf(!string.IsNullOrEmpty(SearchTerm), e => e.MacAddress.ToLower().Contains(SearchTerm.ToLower()))

@@ -11,11 +11,11 @@ using Warehouse.Core.Domain.ValueObjects;
 
 namespace Warehouse.Core.Application.PositioningReports.Queries
 {
-    public class GetUserNotifications : PagingModelBase, IQuery<IPagedEnumerable<UserNotification>>, ILinqSpecification<AlertEventEntity>
+    public class GetUserNotifications : PagingModelBase, IQuery<IPagedEnumerable<UserNotification>>, ILinqSpecification<AlertEvent>
     {
         public string SearchTerm { get; set; }
         public long ProviderId { get; set; }
-        public IQueryable<AlertEventEntity> Apply(IQueryable<AlertEventEntity> query)
+        public IQueryable<AlertEvent> Apply(IQueryable<AlertEvent> query)
         {
             return query
                 .Where(e => e.ProviderId == ProviderId)
@@ -68,24 +68,24 @@ namespace Warehouse.Core.Application.PositioningReports.Queries
 
     //dapper
     //https://stackoverflow.com/questions/59956623/using-iasyncenumerable-with-dapper
-    public record GetUserNotificationStream : IStreamQuery<AlertEventEntity>
+    public record GetUserNotificationStream : IStreamQuery<AlertEvent>
     { }
 
-    internal sealed class NotificationStreamQueryHandler : IStreamQueryHandler<GetUserNotificationStream, AlertEventEntity>
+    internal sealed class NotificationStreamQueryHandler : IStreamQueryHandler<GetUserNotificationStream, AlertEvent>
     {
-        private readonly IReadOnlyRepository<AlertEventEntity> _notifications;
+        private readonly IReadOnlyRepository<AlertEvent> _notifications;
         private readonly IUserContext _userContext;
 
-        public NotificationStreamQueryHandler(IReadOnlyRepository<AlertEventEntity> notifications, IUserContext userContext)
+        public NotificationStreamQueryHandler(IReadOnlyRepository<AlertEvent> notifications, IUserContext userContext)
         {
             _notifications = notifications;
             _userContext = userContext;
         }
 
-        public IAsyncEnumerable<AlertEventEntity> Handle(GetUserNotificationStream query, CancellationToken cancellationToken)
+        public IAsyncEnumerable<AlertEvent> Handle(GetUserNotificationStream query, CancellationToken cancellationToken)
         {
             var providerId = _userContext.User.Identity.GetProviderId();
-            return _notifications.StreamAsync(new Specification<AlertEventEntity>(n => n.ProviderId == providerId), cancellationToken);
+            return _notifications.StreamAsync(new Specification<AlertEvent>(n => n.ProviderId == providerId), cancellationToken);
         }
     }
 }

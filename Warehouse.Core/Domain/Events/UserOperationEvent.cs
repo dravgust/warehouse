@@ -6,7 +6,7 @@ using Warehouse.Core.Domain.Enums;
 
 namespace Warehouse.Core.Domain.Events
 {
-    public record UserOperation(
+    public record UserOperationEvent(
         string SourceId,
         OperationType Type,
         IPrincipal User,
@@ -19,7 +19,7 @@ namespace Warehouse.Core.Domain.Events
         public DateTimeOffset End { get; set; }
         public OperationStatus Status { get; set; } = OperationStatus.Complete;
 
-        public static UserOperation Create(string sourceId, OperationType type, IPrincipal user,
+        public static UserOperationEvent Create(string sourceId, OperationType type, IPrincipal user,
             OperationStatus status = OperationStatus.NotStarted, string info = null, string error = null)
         {
             if (string.IsNullOrWhiteSpace(sourceId))
@@ -29,14 +29,14 @@ namespace Warehouse.Core.Domain.Events
             if (user == default)
                 throw new ArgumentException($"{nameof(user)} needs to be defined.");
 
-            return new UserOperation(sourceId, type, user, DateTimeOffset.UtcNow)
+            return new UserOperationEvent(sourceId, type, user, DateTimeOffset.UtcNow)
             {
                 Info = info ?? string.Empty,
                 Status = status
             };
         }
 
-        public static UserOperation Delete<T>(T request, IPrincipal user,
+        public static UserOperationEvent Delete<T>(T request, IPrincipal user,
             OperationStatus status = OperationStatus.Complete, Exception error = null) where T : class, IRequest {
             return Create(nameof(T), OperationType.Delete, user, status, request.ToJson(), error?.Message);
         }

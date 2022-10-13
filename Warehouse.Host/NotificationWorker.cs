@@ -36,8 +36,8 @@ namespace Warehouse.Host
 
                 using var scope = _serviceProvider.CreateScope(); 
                 var alertRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<AlertEntity>>();
-                var notifyReadRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<AlertEventEntity>>();
-                var notificationRepository = scope.ServiceProvider.GetRequiredService<IRepository<AlertEventEntity>>();
+                var notifyReadRepository = scope.ServiceProvider.GetRequiredService<IReadOnlyRepository<AlertEvent>>();
+                var notificationRepository = scope.ServiceProvider.GetRequiredService<IRepository<AlertEvent>>();
                 var store = scope.ServiceProvider.GetRequiredService<IWarehouseStore>();
                 
                 try
@@ -70,7 +70,7 @@ namespace Warehouse.Host
                                         n.AlertId == alert.Id && n.MacAddress == beacon.Id, token);
                                     if (notified != null) continue;
 
-                                    var notification = new AlertEventEntity
+                                    var notification = new AlertEvent
                                     {
                                         TimeStamp = DateTime.UtcNow,
                                         AlertId = alert.Id,

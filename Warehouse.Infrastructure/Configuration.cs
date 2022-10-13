@@ -64,7 +64,7 @@ namespace Warehouse.Infrastructure
             services
                 .AddDefaultProvider();
 
-            services.AddScoped<INotificationHandler<UserOperation>, OperationEventHandler>();
+            services.AddScoped<INotificationHandler<UserOperationEvent>, OperationEventHandler>();
 
             services.AddValidation();
 

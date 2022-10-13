@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
 using Warehouse.Core.Application.Common.Persistence;
-using Warehouse.Core.Domain.Entities;
+using Warehouse.Core.Domain.Entities.Identity;
 using Warehouse.Core.Domain.Entities.Security;
+using Warehouse.Core.Domain.ValueObjects;
 
 namespace Warehouse.Core.Application.Common.Services.Authentication
 {

@@ -7,7 +7,7 @@ using Warehouse.Core.Domain.Entities;
 
 namespace Warehouse.Core.Application.PositioningReports.Queries
 {
-    public sealed class GetBeaconTelemetry : IQuery<BeaconTelemetryDto>, ILinqSpecification<BeaconTelemetryEntity>
+    public sealed class GetBeaconTelemetry : IQuery<BeaconTelemetryDto>, ILinqSpecification<BeaconTelemetry>
     {
         public GetBeaconTelemetry(MacAddress macAddress)
         {
@@ -16,7 +16,7 @@ namespace Warehouse.Core.Application.PositioningReports.Queries
 
         public MacAddress MacAddress { get; }
 
-        public IQueryable<BeaconTelemetryEntity> Apply(IQueryable<BeaconTelemetryEntity> query)
+        public IQueryable<BeaconTelemetry> Apply(IQueryable<BeaconTelemetry> query)
         {
             return query
                 .Where(t => t.MacAddress == MacAddress)
@@ -26,9 +26,9 @@ namespace Warehouse.Core.Application.PositioningReports.Queries
 
     internal sealed class HandleGetBeaconTelemetry : IQueryHandler<GetBeaconTelemetry, BeaconTelemetryDto>
     {
-        private readonly IReadOnlyRepository<BeaconTelemetryEntity> _repository;
+        private readonly IReadOnlyRepository<BeaconTelemetry> _repository;
 
-        public HandleGetBeaconTelemetry(IReadOnlyRepository<BeaconTelemetryEntity> repository)
+        public HandleGetBeaconTelemetry(IReadOnlyRepository<BeaconTelemetry> repository)
         {
             _repository = repository;
         }

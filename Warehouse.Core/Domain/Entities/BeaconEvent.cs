@@ -5,7 +5,7 @@ using Vayosoft.Core.SharedKernel.Entities;
 namespace Warehouse.Core.Domain.Entities
 {
     [AggregateName("dolav_beacons_events")]
-    public class BeaconEventEntity : EntityBase<string>, IAggregateRoot
+    public class BeaconEvent : EntityBase<string>, IAggregateRoot
     {
         public string MacAddress { set; get; }
         public DateTime TimeStamp { get; set; }

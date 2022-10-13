@@ -1,5 +1,5 @@
 ﻿using System.Text.Json.Serialization;
-using Warehouse.Core.Domain.Entities;
+using Warehouse.Core.Domain.Entities.Identity;
 using Warehouse.Core.Domain.Entities.Security;
 
 namespace Warehouse.Core.Application.Common.Services.Authentication

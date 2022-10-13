@@ -39,7 +39,7 @@ namespace Warehouse.Core.Application.SiteManagement.Commands
             var entity = new WarehouseSiteEntity {Id = request.Id};
             await _repository.DeleteAsync(entity, cancellationToken);
 
-            await _eventBus.Publish(UserOperation.Delete(request, _userContext.User), cancellationToken);
+            await _eventBus.Publish(UserOperationEvent.Delete(request, _userContext.User), cancellationToken);
             return Unit.Value;
         }
     }
