@@ -24,7 +24,7 @@ namespace Warehouse.Core.Application.PositioningReports.Queries
         }
     }
     
-    internal class HandleGetUserNotifications : IQueryHandler<GetUserNotifications, IPagedEnumerable<UserNotification>>
+    internal sealed class HandleGetUserNotifications : IQueryHandler<GetUserNotifications, IPagedEnumerable<UserNotification>>
     {
         private readonly IWarehouseStore _store;
         private readonly IUserContext _userContext;

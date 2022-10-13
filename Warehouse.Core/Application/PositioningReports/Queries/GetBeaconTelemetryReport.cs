@@ -1,4 +1,5 @@
 ﻿using Vayosoft.Core.Queries;
+using Vayosoft.Core.SharedKernel.ValueObjects;
 using Warehouse.Core.Application.Common.Persistence;
 using Warehouse.Core.Application.PositioningReports.Models;
 
@@ -6,12 +7,12 @@ namespace Warehouse.Core.Application.PositioningReports.Queries
 {
     public class GetBeaconTelemetryReport : IQuery<BeaconTelemetryReport>
     {
-        public GetBeaconTelemetryReport(string macAddress)
+        public GetBeaconTelemetryReport(MacAddress macAddress)
         {
             MacAddress = macAddress;
         }
 
-        public string MacAddress { set; get; }
+        public MacAddress MacAddress { set; get; }
     }
 
     internal sealed class HandleGetBeaconTelemetryReport : IQueryHandler<GetBeaconTelemetryReport, BeaconTelemetryReport>

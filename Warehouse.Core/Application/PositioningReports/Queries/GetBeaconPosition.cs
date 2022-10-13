@@ -33,7 +33,7 @@ namespace Warehouse.Core.Application.PositioningReports.Queries
         }
     }
 
-    public class HandleGetBeaconPosition : IQueryHandler<GetBeaconPosition, ICollection<BeaconPosition>>
+    internal sealed class HandleGetBeaconPosition : IQueryHandler<GetBeaconPosition, ICollection<BeaconPosition>>
     {
         private readonly IReadOnlyRepository<WarehouseSiteEntity> _sites;
         private readonly IQueryBus _queryBus;
