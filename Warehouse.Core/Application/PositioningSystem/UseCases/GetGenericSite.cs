@@ -1,7 +1,7 @@
 ﻿using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.ValueObjects;
 using Warehouse.Core.Application.Common.Persistence;
-using Warehouse.Core.Application.PositioningSystem.Domain;
+using Warehouse.Core.Application.PositioningSystem.Entities;
 using Warehouse.Core.Domain.Entities;
 
 namespace Warehouse.Core.Application.PositioningSystem.UseCases

@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace Warehouse.Core.Application.PositioningSystem.Domain
+namespace Warehouse.Core.Application.PositioningSystem.Entities
 {
     public class BeaconList : KeyedCollection<string, IBeacon>
     {

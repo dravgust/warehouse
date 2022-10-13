@@ -2,7 +2,7 @@
 using Warehouse.Core.Application.PositioningSystem.Filters;
 using Warehouse.Core.Application.PositioningSystem.Methods;
 
-namespace Warehouse.Core.Application.PositioningSystem.Domain
+namespace Warehouse.Core.Application.PositioningSystem.Entities
 {
     public class GenericBeacon : IBeacon, IComparable<GenericBeacon>
     {

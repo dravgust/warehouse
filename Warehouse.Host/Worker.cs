@@ -5,7 +5,7 @@ using Vayosoft.Core.Queries;
 using Vayosoft.Core.Specifications;
 using Vayosoft.Core.Utilities;
 using Warehouse.Core.Application.Common.Persistence;
-using Warehouse.Core.Application.PositioningSystem.Domain;
+using Warehouse.Core.Application.PositioningSystem.Entities;
 using Warehouse.Core.Application.PositioningSystem.UseCases;
 using Warehouse.Core.Domain.Entities;
 

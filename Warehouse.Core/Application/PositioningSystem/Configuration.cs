@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Vayosoft.Core.Queries;
-using Warehouse.Core.Application.PositioningSystem.Domain;
+using Warehouse.Core.Application.PositioningSystem.Entities;
 using Warehouse.Core.Application.PositioningSystem.UseCases;
 
 namespace Warehouse.Core.Application.PositioningSystem
