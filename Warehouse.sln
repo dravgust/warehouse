@@ -66,6 +66,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{A0789A2C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse.Benchmarks", "tests\Warehouse.Benchmarks\Warehouse.Benchmarks.csproj", "{E336DA45-6828-45C5-91A8-71855CB6A509}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warehouse.PositioningSystem", "Warehouse.PositioningSystem\Warehouse.PositioningSystem.csproj", "{0228BEEC-44A8-4BAC-95FC-EC4569694AC6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -164,6 +166,10 @@ Global
 		{E336DA45-6828-45C5-91A8-71855CB6A509}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E336DA45-6828-45C5-91A8-71855CB6A509}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E336DA45-6828-45C5-91A8-71855CB6A509}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0228BEEC-44A8-4BAC-95FC-EC4569694AC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0228BEEC-44A8-4BAC-95FC-EC4569694AC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0228BEEC-44A8-4BAC-95FC-EC4569694AC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0228BEEC-44A8-4BAC-95FC-EC4569694AC6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -192,6 +198,7 @@ Global
 		{95A9FF25-93B1-455B-A6E6-104E19A5D5BE} = {1C76B171-C55B-49F6-B269-16B8CF027FF2}
 		{C27E9B81-EB7F-4045-9E93-73E42E795B01} = {A0789A2C-1DB3-4DA7-8770-2BD7EDD50FCC}
 		{E336DA45-6828-45C5-91A8-71855CB6A509} = {A0789A2C-1DB3-4DA7-8770-2BD7EDD50FCC}
+		{0228BEEC-44A8-4BAC-95FC-EC4569694AC6} = {1C76B171-C55B-49F6-B269-16B8CF027FF2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {428A41C0-7C0D-4D74-908D-EE1CF6554A29}

@@ -5,10 +5,10 @@ using Vayosoft.Core.Queries;
 using Vayosoft.Core.Specifications;
 using Vayosoft.Core.Utilities;
 using Warehouse.Core.Application.Common.Persistence;
-using Warehouse.Core.Application.PositioningSystem.Domain.Entities;
-using Warehouse.Core.Application.PositioningSystem.UseCases.Queries;
+using Warehouse.Core.Application.ItemTracking.UseCases.Queries;
 using Warehouse.Core.Domain.Entities;
 using Warehouse.Core.Domain.ValueObjects;
+using Warehouse.PositioningSystem.Entities;
 
 namespace Warehouse.Host
 {

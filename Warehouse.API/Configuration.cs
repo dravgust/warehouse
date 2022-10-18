@@ -15,13 +15,13 @@ using Warehouse.API.UseCases.Resources;
 using Warehouse.Infrastructure;
 using Warehouse.Infrastructure.Identity;
 using Warehouse.Infrastructure.Persistence;
-using Warehouse.Core.Application.PositioningReports;
 using Warehouse.Core.Application.SiteManagement;
 using Warehouse.Core.Application.Common.Persistence;
 using Warehouse.Core.Application.Common.Services;
 using Warehouse.Core.Application.Common.Services.Authentication;
+using Warehouse.Core.Application.ItemTracking.UseCases;
 using Warehouse.Core.Application.SystemAdministration;
-using Warehouse.Core.Application.PositioningSystem.UseCases;
+using Warehouse.Core.Application.TrackingReports;
 
 namespace Warehouse.API
 {

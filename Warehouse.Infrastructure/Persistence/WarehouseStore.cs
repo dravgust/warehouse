@@ -9,7 +9,7 @@ using Vayosoft.Core.SharedKernel.ValueObjects;
 using Vayosoft.Core.Utilities;
 using Vayosoft.MongoDB;
 using Warehouse.Core.Application.Common.Persistence;
-using Warehouse.Core.Application.PositioningReports.Models;
+using Warehouse.Core.Application.TrackingReports.Models;
 using Warehouse.Core.Domain.Entities;
 using Warehouse.Core.Domain.Entities.Payloads;
 
