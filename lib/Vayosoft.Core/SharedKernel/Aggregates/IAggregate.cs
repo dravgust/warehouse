@@ -1,4 +1,3 @@
-using System;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.SharedKernel.Events;
 

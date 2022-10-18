@@ -1,6 +1,4 @@
-﻿using System;
-using System.Buffers.Text;
-using System.Buffers;
+﻿using System.ComponentModel;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -8,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace Vayosoft.Core.SharedKernel.ValueObjects
 {
-    [JsonConverter(typeof(MacAddressTypeConverter))]
+    [JsonConverter(typeof(MacAddressJsonConverter))]
     public record MacAddress : IComparable<MacAddress>
     {
         private static readonly Regex Pattern = new (@"^([0-9A-Fa-f]{2}[:-]?){5}([0-9A-Fa-f]{2})$");
@@ -49,7 +47,7 @@ namespace Vayosoft.Core.SharedKernel.ValueObjects
         }
     }
 
-    public class MacAddressTypeConverter : JsonConverter<MacAddress>
+    public class MacAddressJsonConverter : JsonConverter<MacAddress>
     {
         public override MacAddress Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
@@ -63,41 +61,20 @@ namespace Vayosoft.Core.SharedKernel.ValueObjects
         }
     }
 
-    //public class ServerDateTimeConverter : JsonConverter
-    //{
-    //    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-    //    {
-    //        writer.WriteValue(value is ServerDateTime dt ? dt.ToDouble(DateTimeKind.Utc) : string.Empty);
-    //    }
+    public class MacAddressTypeConverter : TypeConverter
+    {
+        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+        {
+            return sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
+        }
 
-    //    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-    //    {
-    //        if (reader.Value == null || !double.TryParse($"{reader.Value}", out var value))
-    //            return null;
-
-    //        return ServerDateTime.FromDouble(value, DateTimeKind.Utc);
-    //    }
-
-    //    public override bool CanConvert(Type objectType)
-    //    {
-    //        return objectType == typeof(ServerDateTime);
-    //    }
-    //}
-
-    //public class MacAddressTypeConverter : TypeConverter
-    //{
-    //    public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
-    //    {
-    //        return sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
-    //    }
-
-    //    public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
-    //    {
-    //        if (value is string)
-    //        {
-    //            return MacAddress.Create(value);
-    //        }
-    //        return base.ConvertFrom(context, culture, value);
-    //    }
-    //}
+        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+        {
+            if (value is string str)
+            {
+                return MacAddress.Create(str);
+            }
+            return base.ConvertFrom(context, culture, value);
+        }
+    }
 }

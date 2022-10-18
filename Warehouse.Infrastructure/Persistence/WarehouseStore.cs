@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Vayosoft.Core.Persistence;
 using Vayosoft.Core.SharedKernel.Aggregates;
@@ -78,6 +79,8 @@ namespace Warehouse.Infrastructure.Persistence
             var collection = _connection.Collection<TrackedItem>();
             var filter = Builders<TrackedItem>.Filter.Where(e => e.Id == aggregate.Id);
             var update = Builders<TrackedItem>.Update
+                .Inc(fs => fs.Version, 1)
+
                 .Set(fs => fs.SourceId, aggregate.SourceId)
                 .Set(fs => fs.DestinationId, aggregate.DestinationId)
                 .Set(fs => fs.Status, aggregate.Status)
