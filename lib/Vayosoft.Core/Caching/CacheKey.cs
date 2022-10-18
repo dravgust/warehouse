@@ -1,5 +1,4 @@
-﻿using System;
-using Vayosoft.Core.Utilities;
+﻿using Vayosoft.Core.Utilities;
 
 namespace Vayosoft.Core.Caching
 {

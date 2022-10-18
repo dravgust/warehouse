@@ -48,7 +48,7 @@ namespace Warehouse.IntegrationTests
         }
 
         [Theory]
-        [InlineData(2, 1000)]
+        [InlineData(12, 1000)]
         public async Task ProduceMessages(int messageCount, int interval)
         {
             await RunProducer( "IPS-EVENTS", messageCount, interval, token: CancellationToken.None);

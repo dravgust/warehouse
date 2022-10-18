@@ -2,7 +2,6 @@
 using Newtonsoft.Json;
 using Vayosoft.Core.SharedKernel.Events;
 using Vayosoft.Core.SharedKernel.ValueObjects;
-using Vayosoft.Core.Utilities;
 using Warehouse.Core.Domain.Events;
 using Xunit.Abstractions;
 

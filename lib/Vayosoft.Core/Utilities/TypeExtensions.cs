@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Linq;
+﻿using System.Collections.Concurrent;
 using System.Reflection;
 
 namespace Vayosoft.Core.Utilities
@@ -8,7 +6,7 @@ namespace Vayosoft.Core.Utilities
     public static class TypeExtensions
     {
         private static readonly ConcurrentDictionary<Type, string> TypeCacheKeys = new();
-        public static string GetCacheKey(this Type type) => TypeCacheKeys.GetOrAdd(type, t => $"{t.PrettyPrint()}");
+        public static string GetCacheKey(this Type type) => TypeCacheKeys.GetOrAdd(type, t => t.PrettyPrint());
 
         private static readonly ConcurrentDictionary<Type, string> PrettyPrintCache = new();
         public static string PrettyPrint(this Type type)

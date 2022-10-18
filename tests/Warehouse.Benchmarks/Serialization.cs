@@ -1,5 +1,4 @@
-﻿using System.Text;
-using BenchmarkDotNet.Attributes;
+﻿using BenchmarkDotNet.Attributes;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Bogus;
