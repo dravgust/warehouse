@@ -116,7 +116,7 @@ namespace Warehouse.API
                 options.ApplyCurrentCultureToResponseHeaders = true;
             });
 
-            services.AddQueryHandler<GetResources, IEnumerable<ResourceGroup>, GetResources.ResourcesQueryHandler>();
+            services.AddQueryHandler<GetResources, IEnumerable<ResourceGroup>, ResourcesQueryHandler>();
 
             return services;
         }

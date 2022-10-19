@@ -18,15 +18,15 @@ namespace Warehouse.Benchmarks
         [Benchmark]
         public string ShortUID()
         {
-            return ShortUID(_guid);
+            return ShortUid(_guid);
         }
 
-        public static string ShortUID(Guid? id = null, bool fixedLength = true)
+        public static string ShortUid(Guid? id = null, bool fixedLength = true)
         {
             var guid = id ?? Guid.NewGuid();
             var byteArray = guid.ToByteArray();
             return fixedLength
-                ? Base64Utils.EncodeBase64URL(byteArray).Substring(0, 22)
+                ? Base64Utils.EncodeBase64URL(byteArray)[..22]
                 : Regex.Replace(Base64Utils.EncodeBase64(byteArray), "[/+=]", "");
         }
     }

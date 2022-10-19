@@ -26,10 +26,13 @@ namespace Warehouse.Core.Application.SiteManagement.Queries
             var data = await _cache.GetOrCreateExclusiveAsync(CacheKey.With<Metadata>(), async options =>
             {
                 options.SlidingExpiration = TimeSpans.FiveMinutes;
+
                 var entity = await _fileRepository.FindAsync("product_metadata", cancellationToken);
                 Metadata data = null;
                 if (!string.IsNullOrEmpty(entity?.Content))
+                {
                     data = entity.Content.FromJson<Metadata>();
+                }
 
                 return data;
             });

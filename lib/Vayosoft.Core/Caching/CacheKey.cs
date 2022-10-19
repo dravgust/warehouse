@@ -2,18 +2,14 @@
 
 namespace Vayosoft.Core.Caching
 {
-    public class CacheKey
+    public static class CacheKey
     {
-        public static string With(params string[] keys) =>
-            string.Join("-", keys);
-
         public static string With(string key) => key;
 
-        public static string With(string key1, string key2) =>
-            $"{key1}-{key2}";
+        public static string With(string key1, string key2) => $"{key1}-{key2}";
 
-        public static string With<T>(params string[] keys) =>
-            With(typeof(T), keys);
+        public static string With(params string[] keys) => string.Join("-", keys);
+
 
         public static string With<T>() =>
             With(typeof(T), string.Empty);
@@ -23,6 +19,9 @@ namespace Vayosoft.Core.Caching
 
         public static string With<T>(string key1, string key2) =>
             With(typeof(T), key1, key2);
+
+        public static string With<T>(params string[] keys) =>
+            With(typeof(T), keys);
 
         public static string With(Type ownerType, string key) =>
             With($"{ownerType.GetCacheKey()}:{key}");
