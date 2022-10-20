@@ -91,7 +91,7 @@ namespace Vayosoft.Threading.Channels.Producers
             return _channel.Writer.TryWrite(t);
         }
 
-        private string ConsumerName => $"{_channelName}Consumer: {Guid.NewGuid().ToShortUID()}";
+        private string ConsumerName => $"Consumer{_channelName}: {Guid.NewGuid().ToShortUID()}";
 
         protected virtual void OnItemDropped(T item)
         {
