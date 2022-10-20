@@ -17,12 +17,12 @@ namespace Vayosoft.Threading.Channels.Handlers
 
         public long OpCount { private set; get; }
 
-        public void Start()
+        public void StartMeasurement()
         {
             _startDate = DateTime.Now;
         }
 
-        public void Stop()
+        public void StopMeasurement()
         {
             var timeSpan = (long)(DateTime.Now - _startDate).TotalMilliseconds;
             if (timeSpan >= MaxTime)

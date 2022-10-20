@@ -4,14 +4,14 @@ using System.Runtime.InteropServices;
 
 namespace Vayosoft.Threading.Utilities
 {
-    public static class GuidUtils
+    public static class GuidExtensions
     {
         private const char Underscore = '_';
         private const char Hyphen = '-';
         private const byte SlashByte = (byte)'/';
         private const byte PlusByte = (byte)'+';
 
-        public static string ToStringFromGuid(Guid id)
+        public static string ToShortUID(this Guid id)
         {
             Span<byte> idBytes = stackalloc byte[16];
             Span<byte> base64Bytes = stackalloc byte[24];

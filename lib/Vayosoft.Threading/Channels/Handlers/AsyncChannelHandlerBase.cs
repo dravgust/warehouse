@@ -1,25 +1,26 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Vayosoft.Threading.Attributes;
 using Vayosoft.Threading.Utilities;
 
 namespace Vayosoft.Threading.Channels.Handlers
 {
-    public abstract class ChannelHandler<T> : IDisposable
+    public abstract class AsyncChannelHandlerBase<T> : IDisposable
     {
         protected const int DefaultIdleTimeout = 1000 * 60 * 30;// 30 min
         private const int MaxIdleTimeout = 1000 * 60 * 60 * 8;  // 8 hours
         private volatile int _idleTimeout = DefaultIdleTimeout;
         private DateTime _lastActivityTime = DateTime.Now;
 
-        protected abstract void Handle(T item, CancellationToken token = default);
+        protected abstract ValueTask Handle(T item, CancellationToken token = default);
 
-        public void HandleAction(T item, CancellationToken token = default)
+        public async ValueTask HandleAction(T item, CancellationToken token = default)
         {
             try
             {
                 _lastActivityTime = DateTime.Now;
-                Handle(item, token);
+                await Handle(item, token);
             }
             catch (Exception e)
             {

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Vayosoft.Threading.Channels.Models;
 
 namespace Vayosoft.Threading.Channels
 {

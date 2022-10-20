@@ -2,8 +2,8 @@
 {
     public interface IMeasurement
     {
-        void Start();
-        void Stop();
+        void StartMeasurement();
+        void StopMeasurement();
 
         IMetricsSnapshot GetSnapshot();
     }

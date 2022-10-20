@@ -1,105 +1,42 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 
 namespace Vayosoft.Threading.Channels.Consumers
 {
-    public abstract class Consumer<T>
+    public class Consumer<T> : ConsumerBase<T>
     {
-        protected readonly ChannelReader<T> ChannelReader;
+        private readonly Action<T, CancellationToken> _consumeAction;
 
-        protected string WorkerName;
-
-        protected readonly CancellationTokenSource Cts;
-
-        protected readonly Task WorkerThread;
-
-        protected bool StopRequested;
-
-        protected Consumer(ChannelReader<T> channelReader, string workerName, CancellationToken token)
+        public Consumer(ChannelReader<T> channelReader, string workerName, Action<T, CancellationToken> consumeAction, CancellationToken globalCancellationToken)
+            : base(channelReader, workerName, globalCancellationToken)
         {
-            ChannelReader = channelReader;
-
-            WorkerName = workerName ?? GetType().Name;
-
-            Cts = new CancellationTokenSource();
-            token.Register(() => { Cts.Cancel(); });
-
-            StopRequested = false;
-
-            WorkerThread = new Task<ValueTask>(Consume, Cts.Token);
-            WorkerThread.ConfigureAwait(false);
+            _consumeAction = consumeAction ?? throw new ArgumentNullException(nameof(consumeAction));
         }
 
-        public void StartConsume()
+        public override void OnDataReceived(T item, CancellationToken token, string _)
         {
-            WorkerThread.Start();
+            _consumeAction.Invoke(item, token);
+        }
+    }
+
+    public class ConsumerAsync<T> : AsyncConsumerBase<T>
+    {
+        private readonly Func<T, CancellationToken, ValueTask> _consumeAction;
+
+
+        public ConsumerAsync(ChannelReader<T> channelReader, string workerName, Func<T, CancellationToken, ValueTask> consumeAction, CancellationToken globalCancellationToken)
+            : base(channelReader, workerName, globalCancellationToken)
+        {
+            _consumeAction = consumeAction ?? throw new ArgumentNullException(nameof(consumeAction));
         }
 
-        public void Shutdown()
+        public override ValueTask OnDataReceived(T item, CancellationToken token, string _)
         {
-            Debug.WriteLine($"[{this.WorkerName}]: Shutdown called");
-
-            WorkerThread.Wait(Cts.Token);
+            return _consumeAction.Invoke(item, token);
         }
 
-        public Task GetTask()
-        {
-            return WorkerThread;
-        }
-
-        public void StopRequest(bool raiseCancel = true)
-        {
-            Debug.WriteLine($"[{this.WorkerName}]: Stop called");
-
-            StopRequested = true;
-            if (raiseCancel)
-                Cts.Cancel();
-        }
-
-        public abstract void OnDataReceived(T item, CancellationToken token);
-
-        private async ValueTask Consume()
-        {
-            try
-            {
-                while (await ChannelReader.WaitToReadAsync(Cts.Token).ConfigureAwait(false))
-                {
-                    if (StopRequested)
-                        break;
-                    try
-                    {
-                        if (ChannelReader.TryRead(out var item))
-                        {
-                            OnDataReceived(item, Cts.Token);
-                        }
-                    }
-                    catch (ChannelClosedException)
-                    {
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        Debug.WriteLine($"[{WorkerName}]: task cancel");
-                    }
-                    catch (Exception exception)
-                    {
-                        Trace.TraceError("[{0}]: Exception occurred: {1}", WorkerName, exception);
-                    }
-                }
-
-                Debug.WriteLine($"[{WorkerName}]: Shutdown gracefully");
-            }
-            catch (OperationCanceledException)
-            {
-                Debug.WriteLine($"[{WorkerName}]: Shutdown due to cancel");
-            }
-            catch (Exception e)
-            {
-                Trace.TraceError("[{0}]: Shutdown error: {1}", WorkerName, e.Message);
-            }
-        }
 
     }
 }

@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Channels;
+using System.Threading.Tasks;
 using Vayosoft.Threading.Channels.Diagnostics;
 using Vayosoft.Threading.Channels.Models;
 
 namespace Vayosoft.Threading.Channels.Consumers
 {
-    public class TelemetryConsumer<T> : ConsumerBase<Metric<T>>, IMeasurement
+    public class AsyncTelemetryConsumer<T> : AsyncConsumerBase<Metric<T>>, IMeasurement
     {
-        private readonly Action<T, CancellationToken, string> _consumeAction;
+        private readonly Func<T, CancellationToken, ValueTask> _consumeAction;
 
         private bool _isTelemetryEnabled;
         private int MaxTimeMs { set; get; }
@@ -17,21 +18,21 @@ namespace Vayosoft.Threading.Channels.Consumers
         private int TotalMessagesConsumed { set; get; }
 
 
-        public TelemetryConsumer(ChannelReader<Metric<T>> channelReader, string workerName, Action<T, CancellationToken, string> consumeAction, CancellationToken globalCancellationToken)
+        public AsyncTelemetryConsumer(ChannelReader<Metric<T>> channelReader, string workerName, Func<T, CancellationToken, ValueTask> consumeAction, CancellationToken globalCancellationToken)
         : base(channelReader, workerName, globalCancellationToken)
         {
             _consumeAction = consumeAction;
             ResetStatistic();
         }
 
-        public override void OnDataReceived(Metric<T> item, CancellationToken token, string workerName)
+        public override ValueTask OnDataReceived(Metric<T> item, CancellationToken token, string workerName)
         {
             if (_isTelemetryEnabled)
             {
                 item.EndTime = DateTime.Now;
                 RegisterMessageTiming(item.HandleDuration);
             }
-            _consumeAction.Invoke(item.Data, token, workerName);
+            return _consumeAction.Invoke(item.Data, token);
         }
 
         public void StartMeasurement()

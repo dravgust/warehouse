@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace Vayosoft.Threading.Channels
+namespace Vayosoft.Threading.Channels.Models
 {
     public class Measurements
     {
@@ -21,7 +21,7 @@ namespace Vayosoft.Threading.Channels
     {
         public DateTimeConverter()
         {
-            base.DateTimeFormat = "dd-MM-yyyy HH:mm:ss";
+            DateTimeFormat = "dd-MM-yyyy HH:mm:ss";
         }
     }
 
@@ -49,7 +49,7 @@ namespace Vayosoft.Threading.Channels
     {
         public OperationTelemetryData Operation { set; get; }
         public int HandlersCount { set; get; }
-        
+
     }
 
     public class QueueHandlerTelemetryReport : QueueTelemetryReport

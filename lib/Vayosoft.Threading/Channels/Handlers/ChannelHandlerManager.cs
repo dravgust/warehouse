@@ -3,20 +3,25 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using Vayosoft.Threading.Channels.Handlers;
+using Vayosoft.Threading.Channels.Diagnostics;
+using Vayosoft.Threading.Channels.Models;
 
-namespace Vayosoft.Threading.Channels
+namespace Vayosoft.Threading.Channels.Handlers
 {
-    public class ChannelHandlerManager<T, TIdent, TH> where TH : ChannelHandler<T>, new()
+    public class ChannelHandlerManager<T, TIdent, TH> where TH : ChannelHandlerBase<T>, new()
     {
         private const int ChannelManagementIntervalMin = 35 * 60 * 1000;
 
-        private readonly ConcurrentDictionary<TIdent, MeasuredChannel<T, TH>> _channels = new ConcurrentDictionary<TIdent, MeasuredChannel<T, TH>>();
+        private readonly ConcurrentDictionary<TIdent, MeasuredChannel<T, TH>> _channels = new();
         private Timer _timer;
+        private readonly bool _singleWriter;
 
-        public ChannelHandlerManager()
+        public ChannelHandlerManager(bool singleWriter = true, CancellationToken cancellationToken = default)
         {
             _timer = new Timer(OnTimerCallback, null, ChannelManagementIntervalMin, ChannelManagementIntervalMin);
+            _singleWriter = singleWriter;
+            if (cancellationToken != default)
+                cancellationToken.Register(Shutdown);
         }
 
         private void OnTimerCallback(object state)
@@ -64,7 +69,7 @@ namespace Vayosoft.Threading.Channels
             var constructor = type.GetConstructor(new[] { typeof(string), typeof(uint), typeof(bool) });
             if (constructor != null)
             {
-                return (MeasuredChannel<T, TH>)Activator.CreateInstance(type, key, (uint)1, false);
+                return (MeasuredChannel<T, TH>)Activator.CreateInstance(type, key, (uint)1, false, _singleWriter, CancellationToken.None);
             }
 
             return Activator.CreateInstance<MeasuredChannel<T, TH>>();
@@ -106,6 +111,9 @@ namespace Vayosoft.Threading.Channels
         {
             _timer.Dispose();
             _timer = null;
+
+            foreach (var channel in _channels)
+                ClearChannel(channel.Key);
         }
     }
 }
