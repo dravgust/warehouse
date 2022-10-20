@@ -2,37 +2,41 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using Vayosoft.Threading.Channels.Consumers;
+using Vayosoft.Threading.Channels.Diagnostics;
+using Vayosoft.Threading.Channels.Models;
 using Vayosoft.Threading.Utilities;
 
 namespace Vayosoft.Threading.Channels.Producers
 {
-    public abstract class AsyncProducerConsumerChannelBase<T>
+    public abstract class AsyncTelemetryProducerConsumerChannelBase<T>
     {
         private const BindingFlags BindFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.GetProperty;
 
-        private readonly ConcurrentBag<ConsumerAsync<T>> _workers = new();
+        private readonly ConcurrentBag<AsyncTelemetryConsumer<T>> _workers = new();
 
         private const int MAX_WORKERS = 100;
         private const int MAX_QUEUE = 100000;
         private const int CONSUMER_MANAGEMENT_TIMEOUT_MS = 2000;
 
-        private readonly Channel<T> _channel;
+        private readonly Channel<Metric<T>> _channel;
 
         private readonly PropertyInfo _itemsCountForDebuggerOfReader;
         private readonly CancellationTokenSource _cancellationSource;
         private readonly CancellationToken _cancellationToken;
         private readonly System.Timers.Timer _timer;
         private readonly string _channelName;
+        private int _droppedItems;
 
         private readonly bool _enableTaskManagement;
 
-        protected AsyncProducerConsumerChannelBase(string channelName = null, uint startedNumberOfWorkerThreads = 1,
-            bool enableTaskManagement = false, CancellationToken globalCancellationToken = default)
+        protected AsyncTelemetryProducerConsumerChannelBase(string channelName, uint startedNumberOfWorkerThreads = 1,
+            bool enableTaskManagement = false, bool singleWriter = true, CancellationToken globalCancellationToken = default)
         {
             if (startedNumberOfWorkerThreads == 0)
                 throw new ArgumentException($"{nameof(startedNumberOfWorkerThreads)} must be > 0");
@@ -42,20 +46,26 @@ namespace Vayosoft.Threading.Channels.Producers
 
             var options = new BoundedChannelOptions(MAX_QUEUE)
             {
-                SingleWriter = true,
+                SingleWriter = singleWriter,
                 SingleReader = false,
                 FullMode = BoundedChannelFullMode.DropOldest
             };
-            _channel = Channel.CreateBounded<T>(options);
+
+            _channel = Channel.CreateBounded<Metric<T>>(options, droppedItem =>
+            {
+                _droppedItems++;
+                OnItemDropped(droppedItem.Data);
+            });
             _itemsCountForDebuggerOfReader = _channel.Reader.GetType().GetProperty("ItemsCountForDebugger", BindFlags);
             _cancellationSource = new CancellationTokenSource();
             _cancellationToken = _cancellationSource.Token;
 
             for (var i = 0; i < startedNumberOfWorkerThreads; i++)
             {
-                var w = new ConsumerAsync<T>(_channel, ConsumerName, OnDataReceivedAsync, _cancellationToken);
+                var w = new AsyncTelemetryConsumer<T>(_channel, ConsumerName, OnDataReceived, _cancellationToken);
 
                 _workers.Add(w);
+                w.StartMeasurement();
                 w.StartConsume();
             }
 
@@ -73,14 +83,19 @@ namespace Vayosoft.Threading.Channels.Producers
                 _timer.Start();
         }
 
-        protected abstract ValueTask OnDataReceivedAsync(T item, CancellationToken token);
+        protected abstract ValueTask OnDataReceived(T item, CancellationToken token);
 
         public bool Enqueue(T item)
         {
-            return _channel.Writer.TryWrite(item);
+            var t = new Metric<T>(item) { StartTime = DateTime.Now };
+            return _channel.Writer.TryWrite(t);
         }
 
         private string ConsumerName => $"{_channelName}Consumer: {Guid.NewGuid().ToShortUID()}";
+
+        protected virtual void OnItemDropped(T item)
+        {
+        }
 
         private void ManageWorkers()
         {
@@ -128,7 +143,7 @@ namespace Vayosoft.Threading.Channels.Producers
                         if (_workers.Count >= MAX_WORKERS)
                             break;
 
-                        var w = new ConsumerAsync<T>(_channel.Reader, ConsumerName, OnDataReceivedAsync, _cancellationToken);
+                        var w = new AsyncTelemetryConsumer<T>(_channel.Reader, ConsumerName, OnDataReceived, _cancellationToken);
                         _workers.Add(w);
                         w.StartConsume();
                         processedWorkers++;
@@ -151,6 +166,7 @@ namespace Vayosoft.Threading.Channels.Producers
             {
                 _channel.Writer.Complete();
                 _cancellationSource.Cancel();
+                StopMeasurement();
                 var consumerTasks = new List<Task>();
                 while (!_workers.IsEmpty)
                 {
@@ -163,12 +179,28 @@ namespace Vayosoft.Threading.Channels.Producers
             }
             catch (Exception e)
             {
-                Trace.TraceInformation($"[{_channelName}.Shutdown]: {e.Message}");
+                Trace.TraceWarning($"[{_channelName}.Shutdown]: {e.Message}");
             }
             finally
             {
                 _cancellationSource.Dispose();
             }
+        }
+
+        public virtual void StopMeasurement()
+        {
+            foreach (var telemetryConsumer in _workers)
+                telemetryConsumer.StopMeasurement();
+        }
+
+        public virtual IMetricsSnapshot GetSnapshot()
+        {
+            var snapshots = _workers.Select(w => w.GetSnapshot()).Cast<ChannelMetricsSnapshot>().ToList();
+            var result = new ChannelMeasurementsBuilder<ChannelMetricsSnapshot>(snapshots, Count).Build();
+            result.DroppedItems = _droppedItems;
+            _droppedItems = 0;
+
+            return result;
         }
     }
 }

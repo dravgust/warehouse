@@ -1,5 +1,8 @@
-﻿using System.Threading.Channels;
+﻿using LanguageExt;
+using System.Threading.Channels;
+using Vayosoft.Core.Utilities;
 using Vayosoft.Threading.Channels;
+using Vayosoft.Threading.Channels.Handlers;
 using Xunit.Abstractions;
 
 namespace Warehouse.UnitTests
@@ -11,6 +14,76 @@ namespace Warehouse.UnitTests
         public ChannelTests(ITestOutputHelper helper)
         {
             _logger = helper;
+        }
+
+        [Fact]
+        public async Task CreateDefaultAsyncChannel()
+        {
+            const int count = 10;
+            const int delay = 1000;
+
+            var ch = new AsyncDefaultChannel<string>(async (str, token) =>
+            {
+                _logger.WriteLine("Got message: {0}", str);
+                await Task.Delay(delay, token);
+            }, startedNumberOfWorkerThreads: 2);
+
+            var producer = Task.Run(() =>
+            {
+                for (var i = 0; i < count; i++)
+                {
+                    ch.Enqueue($"Message {i}");
+                }
+            });
+
+            await producer;
+            await Task.Delay(count * delay);
+            ch.Shutdown();
+        }
+
+        [Fact]
+        public async Task CreateHandlerAsyncChannel()
+        {
+            const int count = 10;
+            const int delay = 1000;
+
+            var ch = new AsyncHandlerChannel<string, Handler>();
+
+            var producer = Task.Run(() =>
+            {
+                for (var i = 0; i < count; i++)
+                {
+                    ch.Enqueue($"Message {i}");
+                }
+            });
+
+            await producer;
+            await Task.Delay(count * delay);
+            _logger.WriteLine(ch.GetSnapshot().ToJson());
+            ch.Shutdown();
+        }
+
+
+        [Fact]
+        public async Task CreateHandlerAsyncChannelManager()
+        {
+            const int count = 10;
+            const int delay = 1000;
+
+            var ch = new AsyncMultiHandlerChannel<string, string, Handler>();
+
+            var producer = Task.Run(() =>
+            {
+                for (var i = 0; i < count; i++)
+                {
+                    ch.Queue((i % 2).ToString(), $"Message {i}");
+                }
+            });
+
+            await producer;
+            await Task.Delay(count * delay);
+            _logger.WriteLine(ch.GeTelemetryReport().ToJson());
+            ch.Shutdown();
         }
 
         [Fact]
@@ -88,6 +161,15 @@ namespace Warehouse.UnitTests
             });
 
             return ch.Reader;
+        }
+    }
+
+    internal class Handler : AsyncChannelHandlerBase<string>
+    {
+        protected override async ValueTask Handle(string item, CancellationToken token = default)
+        {
+            //_logger.WriteLine("Got message: {0}", item);
+            await Task.Delay(1000, token);
         }
     }
 }
