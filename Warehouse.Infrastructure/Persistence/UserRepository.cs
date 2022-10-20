@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Vayosoft.Core.Utilities;
 using Warehouse.Core.Application.Common.Persistence;
 using Warehouse.Core.Domain.Entities;
 using Warehouse.Core.Domain.Entities.Security;
@@ -11,7 +12,7 @@ namespace Warehouse.Infrastructure.Persistence
 
         public UserRepository(AppDbContext context)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _context = Guard.NotNull(context);
         }
 
         public async Task<List<SecurityRoleEntity>> GetRolesAsync(IEnumerable<object> providers, CancellationToken cancellationToken)

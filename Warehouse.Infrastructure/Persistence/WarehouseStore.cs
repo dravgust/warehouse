@@ -38,14 +38,12 @@ namespace Warehouse.Infrastructure.Persistence
             return r;
         }
 
-        //SiteManagementContext
         public IRepository<WarehouseSiteEntity> Sites => Repository<WarehouseSiteEntity>();
         public IRepository<TrackedItem> TrackedItems => Repository<TrackedItem>();
         public IRepository<ProductEntity> Products => Repository<ProductEntity>();
         public IRepository<BeaconEvent> BeaconEvents => Repository<BeaconEvent>();
         public IRepository<AlertEvent> AlertEvents => Repository<AlertEvent>();
 
-        //PositioningSystem Context
         public IRepository<GatewayPayload> Payloads => Repository<GatewayPayload>();
 
         public IQueryable<T> Set<T>() where T : class, IEntity => 
