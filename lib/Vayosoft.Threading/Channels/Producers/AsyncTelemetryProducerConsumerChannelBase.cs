@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -9,6 +10,7 @@ using System.Threading.Channels;
 using System.Threading.Tasks;
 using Vayosoft.Threading.Channels.Consumers;
 using Vayosoft.Threading.Channels.Diagnostics;
+using Vayosoft.Threading.Channels.Handlers;
 using Vayosoft.Threading.Channels.Models;
 using Vayosoft.Threading.Utilities;
 
@@ -34,6 +36,10 @@ namespace Vayosoft.Threading.Channels.Producers
         private int _droppedItems;
 
         private readonly bool _enableTaskManagement;
+
+        protected AsyncTelemetryProducerConsumerChannelBase([NotNull] ChannelOptions options, CancellationToken cancellationToken = default)
+            : this(options.ChannelName, options.StartedNumberOfWorkerThreads, options.EnableTaskManagement, options.SingleWriter, cancellationToken)
+        { }
 
         protected AsyncTelemetryProducerConsumerChannelBase(string channelName, uint startedNumberOfWorkerThreads = 1,
             bool enableTaskManagement = false, bool singleWriter = true, CancellationToken globalCancellationToken = default)
@@ -62,7 +68,7 @@ namespace Vayosoft.Threading.Channels.Producers
 
             for (var i = 0; i < startedNumberOfWorkerThreads; i++)
             {
-                var w = new AsyncTelemetryConsumer<T>(_channel, ConsumerName, OnDataReceived, _cancellationToken);
+                var w = new AsyncTelemetryConsumer<T>(_channel, ConsumerName, OnDataReceivedAsync, _cancellationToken);
 
                 _workers.Add(w);
                 w.StartMeasurement();
@@ -83,7 +89,7 @@ namespace Vayosoft.Threading.Channels.Producers
                 _timer.Start();
         }
 
-        protected abstract ValueTask OnDataReceived(T item, CancellationToken token);
+        protected abstract ValueTask OnDataReceivedAsync(T item, CancellationToken token);
 
         public bool Enqueue(T item)
         {
@@ -143,7 +149,7 @@ namespace Vayosoft.Threading.Channels.Producers
                         if (_workers.Count >= MAX_WORKERS)
                             break;
 
-                        var w = new AsyncTelemetryConsumer<T>(_channel.Reader, ConsumerName, OnDataReceived, _cancellationToken);
+                        var w = new AsyncTelemetryConsumer<T>(_channel.Reader, ConsumerName, OnDataReceivedAsync, _cancellationToken);
                         _workers.Add(w);
                         w.StartConsume();
                         processedWorkers++;

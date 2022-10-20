@@ -6,7 +6,7 @@ using Vayosoft.Http.Extensions;
 
 namespace Vayosoft.Http.Clients
 {
-    public static class Config
+    public static class Configuration
     {
         public static IServiceCollection AddDefaultHttpClient(this IServiceCollection services, IConfiguration configuration)
         {

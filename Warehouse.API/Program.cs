@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using ErrorOr;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -109,6 +108,10 @@ try
 
     var app = builder.Build();
     {
+        //IHostApplicationLifetime lifetime = app.Lifetime;
+        //IWebHostEnvironment env = app.Environment;
+        //IServiceProvider services = app.Services;
+
         // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
         {

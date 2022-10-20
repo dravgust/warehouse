@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Vayosoft.Threading.Channels.Diagnostics;
@@ -80,19 +81,22 @@ namespace Vayosoft.Threading.Channels
     {
         private readonly TH _handler = new();
         private readonly HandlerMeasurement _measurement;
+        protected AsyncHandlerChannel([NotNull] ChannelOptions options, CancellationToken globalCancellationToken = default)
+            : this(options.ChannelName, options.StartedNumberOfWorkerThreads, options.EnableTaskManagement, options.SingleWriter, globalCancellationToken)
+        { }
 
         public AsyncHandlerChannel(
             string channelName = null,
             uint startedNumberOfWorkerThreads = 1,
             bool enableTaskManagement = false,
             bool singleWriter = true,
-            CancellationToken cancellationToken = default)
-            : base(channelName, startedNumberOfWorkerThreads, enableTaskManagement, singleWriter, cancellationToken)
+            CancellationToken globalCancellationToken = default)
+            : base(channelName, startedNumberOfWorkerThreads, enableTaskManagement, singleWriter, globalCancellationToken)
         {
             _measurement = new HandlerMeasurement();
         }
 
-        protected override async ValueTask OnDataReceived(T item, CancellationToken token)
+        protected override async ValueTask OnDataReceivedAsync(T item, CancellationToken token)
         {
             try
             {
