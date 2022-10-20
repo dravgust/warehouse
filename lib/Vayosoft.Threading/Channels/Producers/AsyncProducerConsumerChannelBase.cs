@@ -125,8 +125,7 @@ namespace Vayosoft.Threading.Channels.Producers
                     workersDiff = -workersDiff;
                     for (var i = 0; i < workersDiff; i++)
                     {
-                        if (_workers.Count >= MAX_WORKERS)
-                            break;
+                        if (_workers.Count >= MAX_WORKERS) break;
 
                         var w = new ConsumerAsync<T>(_channel.Reader, ConsumerName, OnDataReceivedAsync, _cancellationToken);
                         _workers.Add(w);

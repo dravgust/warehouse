@@ -35,7 +35,9 @@ namespace Vayosoft.Threading.Channels.Producers
             bool enableTaskManagement = false, CancellationToken globalCancellationToken = default)
         {
             if (startedNumberOfWorkerThreads == 0)
+            {
                 throw new ArgumentException($"{nameof(startedNumberOfWorkerThreads)} must be > 0");
+            }
 
             _channelName = channelName ?? GetType().Name;
             _enableTaskManagement = enableTaskManagement;
@@ -61,7 +63,9 @@ namespace Vayosoft.Threading.Channels.Producers
 
 
             if (globalCancellationToken != default)
+            {
                 globalCancellationToken.Register(Shutdown);
+            }
 
             Trace.TraceInformation("[{0}] started with {1} consumers. Options: maxWorkers: {2}, maxQueueLength: {3}, consumerManagementTimeout: {4} ms",
                 _channelName, startedNumberOfWorkerThreads, MAX_WORKERS, MAX_QUEUE, CONSUMER_MANAGEMENT_TIMEOUT_MS);

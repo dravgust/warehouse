@@ -32,7 +32,7 @@ namespace Vayosoft.Threading.Channels.Consumers
             _consumeAction = consumeAction ?? throw new ArgumentNullException(nameof(consumeAction));
         }
 
-        public override ValueTask OnDataReceived(T item, CancellationToken token, string _)
+        public override ValueTask OnDataReceivedAsync(T item, CancellationToken token, string _)
         {
             return _consumeAction.Invoke(item, token);
         }

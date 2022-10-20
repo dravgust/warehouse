@@ -25,7 +25,7 @@ namespace Vayosoft.Threading.Channels.Consumers
             ResetStatistic();
         }
 
-        public override ValueTask OnDataReceived(Metric<T> item, CancellationToken token, string workerName)
+        public override ValueTask OnDataReceivedAsync(Metric<T> item, CancellationToken token, string workerName)
         {
             if (_isTelemetryEnabled)
             {

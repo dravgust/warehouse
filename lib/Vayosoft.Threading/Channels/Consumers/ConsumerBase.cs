@@ -69,8 +69,7 @@ namespace Vayosoft.Threading.Channels.Consumers
             {
                 while (await ChannelReader.WaitToReadAsync(Cts.Token).ConfigureAwait(false))
                 {
-                    if (StopRequested)
-                        break;
+                    if (StopRequested) break;
                     try
                     {
                         if (ChannelReader.TryRead(out var item))
