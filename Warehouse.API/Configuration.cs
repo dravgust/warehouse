@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics;
+using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +9,8 @@ using Vayosoft.Core.Queries;
 using Vayosoft.Redis;
 using Vayosoft.Streaming.Redis;
 using Vayosoft.Streaming.Redis.Consumers;
+using Vayosoft.Threading.Channels;
+using Vayosoft.Threading.Channels.Handlers;
 using Warehouse.API.Services;
 using Warehouse.API.Services.Localization;
 using Warehouse.API.TagHelpers;
@@ -73,6 +76,9 @@ namespace Warehouse.API
 
             services.AddTransient<RedisConsumer>();
 
+            services.AddSingleton<AsyncMultiHandlerChannel<string, string, HandlerAsync>>();
+            services.AddSingleton<MultiHandlerChannel<string, string, Handler>>();
+
             return services;
         }
 
@@ -119,6 +125,24 @@ namespace Warehouse.API
             services.AddQueryHandler<GetResources, IEnumerable<ResourceGroup>, ResourcesQueryHandler>();
 
             return services;
+        }
+    }
+
+    public class Handler : ChannelHandlerBase<string>
+    {
+        protected override void Handle(string item, CancellationToken token = default)
+        {
+            Trace.WriteLine("Got message: {0}", item);
+            Thread.Sleep(200);
+        }
+    } 
+    
+    public class HandlerAsync : AsyncChannelHandlerBase<string>
+    {
+        protected override async ValueTask HandleAsync(string item, CancellationToken token = default)
+        {
+            Trace.WriteLine("Got message: {0}", item);
+            await Task.Delay(200, token);
         }
     }
 }

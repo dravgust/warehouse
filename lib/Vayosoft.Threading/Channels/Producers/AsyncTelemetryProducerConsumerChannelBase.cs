@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,7 +12,6 @@ using System.Threading.Channels;
 using System.Threading.Tasks;
 using Vayosoft.Threading.Channels.Consumers;
 using Vayosoft.Threading.Channels.Diagnostics;
-using Vayosoft.Threading.Channels.Handlers;
 using Vayosoft.Threading.Channels.Models;
 using Vayosoft.Threading.Utilities;
 
@@ -37,8 +38,12 @@ namespace Vayosoft.Threading.Channels.Producers
 
         private readonly bool _enableTaskManagement;
 
-        protected AsyncTelemetryProducerConsumerChannelBase([NotNull] ChannelOptions options, CancellationToken cancellationToken = default)
-            : this(options.ChannelName, options.StartedNumberOfWorkerThreads, options.EnableTaskManagement, options.SingleWriter, cancellationToken)
+        protected AsyncTelemetryProducerConsumerChannelBase(string channelName, ChannelOptions options, ILoggerFactory loggerFactory)
+            :this(options, CancellationToken.None)
+        { }
+
+        protected AsyncTelemetryProducerConsumerChannelBase(ChannelOptions options, CancellationToken cancellationToken = default)
+            : this(options?.ChannelName, options?.StartedNumberOfWorkerThreads ?? 1, options?.EnableTaskManagement ?? false, options?.SingleWriter ?? true, cancellationToken)
         { }
 
         protected AsyncTelemetryProducerConsumerChannelBase(string channelName, uint startedNumberOfWorkerThreads = 1,

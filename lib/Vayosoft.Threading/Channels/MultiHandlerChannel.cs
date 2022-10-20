@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Vayosoft.Threading.Channels.Diagnostics;
 using Vayosoft.Threading.Channels.Handlers;
 using Vayosoft.Threading.Channels.Models;
 
 namespace Vayosoft.Threading.Channels
 {
-    public class MultiHandlerChannel<T, TIdent, TH> where TH : ChannelHandlerBase<T>, new()
+    public class MultiHandlerChannel<T, TIdent, TH> : IDisposable where TH : ChannelHandlerBase<T>, new()
     {
         private const int ChannelManagementIntervalMin = 35 * 60 * 1000;
 
@@ -67,7 +71,7 @@ namespace Vayosoft.Threading.Channels
         {
             var type = typeof(HandlerChannel<T, TH>);
 
-            var constructor = type.GetConstructor(new[] { typeof(string), typeof(uint), typeof(bool) });
+            var constructor = type.GetConstructor(new[] { typeof(string), typeof(uint), typeof(bool), typeof(bool), typeof(CancellationToken) });
             if (constructor != null)
             {
                 return (HandlerChannel<T, TH>)Activator.CreateInstance(type, key, (uint)1, false, _singleWriter, CancellationToken.None);
@@ -116,22 +120,30 @@ namespace Vayosoft.Threading.Channels
             foreach (var channel in _channels)
                 ClearChannel(channel.Key);
         }
+
+        public void Dispose()
+        {
+            Shutdown();
+        }
     }
 
-    public class AsyncMultiHandlerChannel<T, TIdent, TH> where TH : AsyncChannelHandlerBase<T>, new()
+    public class AsyncMultiHandlerChannel<T, TIdent, TH> : IDisposable where TH : AsyncChannelHandlerBase<T>, new()
     {
+        private readonly IConfiguration _config;
+        private readonly ILoggerFactory _loggerFactory;
+
         private const int ChannelManagementIntervalMin = 35 * 60 * 1000;
 
         private readonly ConcurrentDictionary<TIdent, AsyncHandlerChannel<T, TH>> _channels = new();
         private Timer _timer;
-        private readonly bool _singleWriter;
 
-        public AsyncMultiHandlerChannel(bool singleWriter = true, CancellationToken cancellationToken = default)
+        [ActivatorUtilitiesConstructor]
+        public AsyncMultiHandlerChannel(IConfiguration config, ILoggerFactory loggerFactory)
         {
+            _config = config;
+            _loggerFactory = loggerFactory;
+
             _timer = new Timer(OnTimerCallback, null, ChannelManagementIntervalMin, ChannelManagementIntervalMin);
-            _singleWriter = singleWriter;
-            if (cancellationToken != default)
-                cancellationToken.Register(Shutdown);
         }
 
         private void OnTimerCallback(object state)
@@ -175,11 +187,11 @@ namespace Vayosoft.Threading.Channels
         protected AsyncHandlerChannel<T, TH> Factory(TIdent key)
         {
             var type = typeof(AsyncHandlerChannel<T, TH>);
-
-            var constructor = type.GetConstructor(new[] { typeof(string), typeof(uint), typeof(bool), typeof(bool), typeof(CancellationToken) });
+  
+            var constructor = type.GetConstructor(new[] { typeof(string), typeof(IConfiguration), typeof(ILoggerFactory) });
             if (constructor != null)
             {
-                return (AsyncHandlerChannel<T, TH>)Activator.CreateInstance(type, key, (uint)1, false, _singleWriter, CancellationToken.None);
+                return (AsyncHandlerChannel<T, TH>)Activator.CreateInstance(type, key, _config, _loggerFactory);
             }
 
             return Activator.CreateInstance<AsyncHandlerChannel<T, TH>>();
@@ -217,7 +229,7 @@ namespace Vayosoft.Threading.Channels
             Debug.WriteIf(counter > 0, $"{typeof(TH).Name} | Cleared {counter} controllers{Environment.NewLine}");
         }
 
-        public void Shutdown()
+        public void Dispose()
         {
             _timer.Dispose();
             _timer = null;

@@ -34,6 +34,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\lib\Vayosoft.Caching\Vayosoft.Caching.csproj" />
+    <ProjectReference Include="..\lib\Vayosoft.Threading\Vayosoft.Threading.csproj" />
     <ProjectReference Include="..\Warehouse.Core\Warehouse.Core.csproj" />
     <ProjectReference Include="..\Warehouse.Infrastructure\Warehouse.Infrastructure.csproj" />
   </ItemGroup>

@@ -18,7 +18,11 @@ namespace Vayosoft.Threading.Channels.Consumers
         private int TotalMessagesConsumed { set; get; }
 
 
-        public AsyncTelemetryConsumer(ChannelReader<Metric<T>> channelReader, string workerName, Func<T, CancellationToken, ValueTask> consumeAction, CancellationToken globalCancellationToken)
+        public AsyncTelemetryConsumer(
+            ChannelReader<Metric<T>> channelReader,
+            string workerName,
+            Func<T, CancellationToken, ValueTask> consumeAction, 
+            CancellationToken globalCancellationToken)
         : base(channelReader, workerName, globalCancellationToken)
         {
             _consumeAction = consumeAction;

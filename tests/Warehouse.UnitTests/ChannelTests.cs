@@ -1,4 +1,7 @@
 ﻿using System.Threading.Channels;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using NSubstitute;
 using Vayosoft.Core.Utilities;
 using Vayosoft.Threading.Channels;
 using Vayosoft.Threading.Channels.Handlers;
@@ -69,7 +72,11 @@ namespace Warehouse.UnitTests
             const int count = 10;
             const int delay = 1000;
 
-            var ch = new AsyncMultiHandlerChannel<string, string, Handler>();
+            var configBuilder = new ConfigurationBuilder();
+            IConfiguration configuration = configBuilder.Build();
+            var loggerFactory = new LoggerFactory();
+
+            using var ch = new AsyncMultiHandlerChannel<string, string, Handler>(configuration, loggerFactory);
 
             var producer = Task.Run(() =>
             {
@@ -82,7 +89,6 @@ namespace Warehouse.UnitTests
             await producer;
             await Task.Delay(count * delay);
             _logger.WriteLine(ch.GeTelemetryReport().ToJson());
-            ch.Shutdown();
         }
 
         [Fact]
@@ -165,7 +171,7 @@ namespace Warehouse.UnitTests
 
     internal class Handler : AsyncChannelHandlerBase<string>
     {
-        protected override async ValueTask Handle(string item, CancellationToken token = default)
+        protected override async ValueTask HandleAsync(string item, CancellationToken token = default)
         {
             //_logger.WriteLine("Got message: {0}", item);
             await Task.Delay(1000, token);

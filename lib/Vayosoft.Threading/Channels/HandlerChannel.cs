@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using Vayosoft.Threading.Channels.Diagnostics;
 using Vayosoft.Threading.Channels.Handlers;
 using Vayosoft.Threading.Channels.Models;
@@ -81,9 +84,14 @@ namespace Vayosoft.Threading.Channels
     {
         private readonly TH _handler = new();
         private readonly HandlerMeasurement _measurement;
-        protected AsyncHandlerChannel([NotNull] ChannelOptions options, CancellationToken globalCancellationToken = default)
-            : this(options.ChannelName, options.StartedNumberOfWorkerThreads, options.EnableTaskManagement, options.SingleWriter, globalCancellationToken)
-        { }
+
+
+        [ActivatorUtilitiesConstructor]
+        public AsyncHandlerChannel(string channelName, IConfiguration config, ILoggerFactory loggerFactory)
+            : base(channelName, config.GetSection(typeof(TH).Name).Get<ChannelOptions>(), loggerFactory)
+        {
+            _measurement = new HandlerMeasurement();
+        }
 
         public AsyncHandlerChannel(
             string channelName = null,

@@ -13,14 +13,14 @@ namespace Vayosoft.Threading.Channels.Handlers
         private volatile int _idleTimeout = DefaultIdleTimeout;
         private DateTime _lastActivityTime = DateTime.Now;
 
-        protected abstract ValueTask Handle(T item, CancellationToken token = default);
+        protected abstract ValueTask HandleAsync(T item, CancellationToken token = default);
 
         public async ValueTask HandleAction(T item, CancellationToken token = default)
         {
             try
             {
                 _lastActivityTime = DateTime.Now;
-                await Handle(item, token);
+                await HandleAsync(item, token);
             }
             catch (Exception e)
             {
