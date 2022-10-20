@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using BenchmarkDotNet.Attributes;
+using Vayosoft.Core.Utilities;
 
 //https://sharplab.io
 namespace Warehouse.Benchmarks;
@@ -27,7 +28,14 @@ public class Enumeration
             var item = _list[i];
         }
     }
-    
+
+    [Benchmark]
+    public void CustomForeach()
+    {
+        foreach (var i in .._list.Count)
+        { }
+    }
+
     [Benchmark]
     public void Foreach()
     {
