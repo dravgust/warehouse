@@ -85,7 +85,8 @@ namespace Warehouse.Core.Application.TrackingReports.Queries
         public IAsyncEnumerable<AlertEvent> Handle(GetUserNotificationStream query, CancellationToken cancellationToken)
         {
             var providerId = _userContext.User.Identity.GetProviderId();
-            return _notifications.StreamAsync(new Specification<AlertEvent>(n => n.ProviderId == providerId), cancellationToken);
+            var spec = new Specification<AlertEvent>(n => n.ProviderId == providerId);
+            return _notifications.StreamAsync(spec, cancellationToken);
         }
     }
 }
