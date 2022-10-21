@@ -133,7 +133,6 @@ namespace Warehouse.API
         protected override void Handle(string item, CancellationToken token = default)
         {
             Trace.WriteLine("Got message: {0}", item);
-            Thread.Sleep(200);
         }
     } 
     
@@ -142,7 +141,7 @@ namespace Warehouse.API
         protected override async ValueTask HandleAsync(string item, CancellationToken token = default)
         {
             Trace.WriteLine("Got message: {0}", item);
-            await Task.Delay(200, token);
+            await ValueTask.CompletedTask;
         }
     }
 }

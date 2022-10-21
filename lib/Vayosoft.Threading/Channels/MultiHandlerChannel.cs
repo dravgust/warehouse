@@ -188,10 +188,17 @@ namespace Vayosoft.Threading.Channels
         {
             var type = typeof(AsyncHandlerChannel<T, TH>);
   
-            var constructor = type.GetConstructor(new[] { typeof(string), typeof(IConfiguration), typeof(ILoggerFactory) });
+            var constructor = type.GetConstructor(new[] { typeof(ChannelOptions), typeof(ILogger) });
             if (constructor != null)
             {
-                return (AsyncHandlerChannel<T, TH>)Activator.CreateInstance(type, key, _config, _loggerFactory);
+                var options = _config.GetSection(typeof(TH).Name).Get<ChannelOptions>() ?? new ChannelOptions();
+                {
+                    options.ChannelName = key.ToString();
+                }
+
+                var logger = _loggerFactory.CreateLogger<TH>();
+
+                return (AsyncHandlerChannel<T, TH>)Activator.CreateInstance(type, options, logger);
             }
 
             return Activator.CreateInstance<AsyncHandlerChannel<T, TH>>();
@@ -208,7 +215,7 @@ namespace Vayosoft.Threading.Channels
             {
                 if (_channels.TryRemove(key, out var channel))
                 {
-                    channel.Shutdown();
+                    channel.Dispose();
                 }
             }
             catch { }

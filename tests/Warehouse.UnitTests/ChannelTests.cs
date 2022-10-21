@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Vayosoft.Core.Utilities;
+using Vayosoft.Testing;
 using Vayosoft.Threading.Channels;
 using Vayosoft.Threading.Channels.Handlers;
 using Xunit.Abstractions;
@@ -11,11 +12,26 @@ namespace Warehouse.UnitTests
 {
     public class ChannelTests
     {
-        private readonly ITestOutputHelper _logger;
+        private readonly ITestOutputHelper _outputHelper;
+
+        public readonly ILoggerFactory LoggerFactory;
+        public readonly IConfiguration Configuration;
 
         public ChannelTests(ITestOutputHelper helper)
         {
-            _logger = helper;
+            _outputHelper = helper;
+
+            Configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>
+            {
+                {"Handler:ChannelName", "TEST_CH"}
+            }).Build();
+
+            LoggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder =>
+            {
+                builder.SetMinimumLevel(LogLevel.Debug);
+            });
+            LoggerFactory.AddProvider(new XUnitLoggerProvider(_outputHelper));
         }
 
         [Fact]
@@ -26,7 +42,7 @@ namespace Warehouse.UnitTests
 
             var ch = new AsyncDefaultChannel<string>(async (str, token) =>
             {
-                _logger.WriteLine("Got message: {0}", str);
+                _outputHelper.WriteLine("Got message: {0}", str);
                 await Task.Delay(delay, token);
             }, startedNumberOfWorkerThreads: 2);
 
@@ -49,7 +65,7 @@ namespace Warehouse.UnitTests
             const int count = 10;
             const int delay = 1000;
 
-            var ch = new AsyncHandlerChannel<string, Handler>();
+            using var ch = new AsyncHandlerChannel<string, Handler>(Configuration, LoggerFactory);
 
             var producer = Task.Run(() =>
             {
@@ -61,8 +77,7 @@ namespace Warehouse.UnitTests
 
             await producer;
             await Task.Delay(count * delay);
-            _logger.WriteLine(ch.GetSnapshot().ToJson());
-            ch.Shutdown();
+            _outputHelper.WriteLine(ch.GetSnapshot().ToJson());
         }
 
 
@@ -72,23 +87,19 @@ namespace Warehouse.UnitTests
             const int count = 10;
             const int delay = 1000;
 
-            var configBuilder = new ConfigurationBuilder();
-            IConfiguration configuration = configBuilder.Build();
-            var loggerFactory = new LoggerFactory();
-
-            using var ch = new AsyncMultiHandlerChannel<string, string, Handler>(configuration, loggerFactory);
+            using var ch = new AsyncMultiHandlerChannel<string, string, Handler>(Configuration, LoggerFactory);
 
             var producer = Task.Run(() =>
             {
                 for (var i = 0; i < count; i++)
                 {
-                    ch.Queue((i % 2).ToString(), $"Message {i}");
+                    ch.Queue($"TEST_CH_{(i % 2)}", $"Message {i}");
                 }
             });
 
             await producer;
             await Task.Delay(count * delay);
-            _logger.WriteLine(ch.GeTelemetryReport().ToJson());
+            _outputHelper.WriteLine(ch.GeTelemetryReport().ToJson());
         }
 
         [Fact]
@@ -99,7 +110,7 @@ namespace Warehouse.UnitTests
             var consumer = Task.Run(async () =>
             {
                 while (await ch.Reader.WaitToReadAsync())
-                    _logger.WriteLine(await ch.Reader.ReadAsync());
+                    _outputHelper.WriteLine(await ch.Reader.ReadAsync());
             });
             var producer = Task.Run(async () =>
             {
@@ -125,7 +136,7 @@ namespace Warehouse.UnitTests
             await Task.Run(async () =>
             {
                 await foreach (var item in ch.ReadAllAsync())
-                    _logger.WriteLine(item);
+                    _outputHelper.WriteLine(item);
             });
         } 
         
@@ -143,7 +154,7 @@ namespace Warehouse.UnitTests
                 tasks.Add(Task.Run(async () =>
                 {
                     await foreach (var item in reader.ReadAllAsync())
-                        _logger.WriteLine($"Reader {index}: {item}");
+                        _outputHelper.WriteLine($"Reader {index}: {item}");
                 }));
             }
 

@@ -1,10 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -17,8 +15,10 @@ using Vayosoft.Threading.Utilities;
 
 namespace Vayosoft.Threading.Channels.Producers
 {
-    public abstract class AsyncTelemetryProducerConsumerChannelBase<T>
+    public abstract class AsyncTelemetryProducerConsumerChannelBase<T> : IDisposable
     {
+        private readonly ILogger _logger;
+
         private const BindingFlags BindFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.GetProperty;
 
         private readonly ConcurrentBag<AsyncTelemetryConsumer<T>> _workers = new();
@@ -38,17 +38,15 @@ namespace Vayosoft.Threading.Channels.Producers
 
         private readonly bool _enableTaskManagement;
 
-        protected AsyncTelemetryProducerConsumerChannelBase(string channelName, ChannelOptions options, ILoggerFactory loggerFactory)
-            :this(options, CancellationToken.None)
+        protected AsyncTelemetryProducerConsumerChannelBase(ChannelOptions options, ILogger logger)
+            :this(options?.ChannelName, logger, options?.StartedNumberOfWorkerThreads ?? 1, options?.EnableTaskManagement ?? false, options?.SingleWriter ?? true)
         { }
 
-        protected AsyncTelemetryProducerConsumerChannelBase(ChannelOptions options, CancellationToken cancellationToken = default)
-            : this(options?.ChannelName, options?.StartedNumberOfWorkerThreads ?? 1, options?.EnableTaskManagement ?? false, options?.SingleWriter ?? true, cancellationToken)
-        { }
-
-        protected AsyncTelemetryProducerConsumerChannelBase(string channelName, uint startedNumberOfWorkerThreads = 1,
-            bool enableTaskManagement = false, bool singleWriter = true, CancellationToken globalCancellationToken = default)
+        protected AsyncTelemetryProducerConsumerChannelBase(string channelName, ILogger logger, 
+            uint startedNumberOfWorkerThreads = 1, bool enableTaskManagement = false, bool singleWriter = true)
         {
+            _logger = logger;
+
             if (startedNumberOfWorkerThreads == 0)
                 throw new ArgumentException($"{nameof(startedNumberOfWorkerThreads)} must be > 0");
 
@@ -80,11 +78,7 @@ namespace Vayosoft.Threading.Channels.Producers
                 w.StartConsume();
             }
 
-
-            if (globalCancellationToken != default)
-                globalCancellationToken.Register(Shutdown);
-
-            Trace.TraceInformation("[{0}] started with {1} consumers. Options: maxWorkers: {2}, maxQueueLength: {3}, consumerManagementTimeout: {4} ms",
+            _logger.LogInformation("[{ChannelName}] started with {WorkerThreads} consumers. Options: maxWorkers: {MaxWorkers}, maxQueueLength: {MaxQueue}, consumerManagementTimeout: {Timeout} ms",
                 _channelName, startedNumberOfWorkerThreads, MAX_WORKERS, MAX_QUEUE, CONSUMER_MANAGEMENT_TIMEOUT_MS);
 
             _timer = new System.Timers.Timer { Interval = CONSUMER_MANAGEMENT_TIMEOUT_MS };
@@ -105,8 +99,7 @@ namespace Vayosoft.Threading.Channels.Producers
         private string ConsumerName => $"Consumer{_channelName}: {Guid.NewGuid().ToShortUID()}";
 
         protected virtual void OnItemDropped(T item)
-        {
-        }
+        { }
 
         private void ManageWorkers()
         {
@@ -141,7 +134,12 @@ namespace Vayosoft.Threading.Channels.Producers
 
                     }
 
-                    Debug.WriteLine($"[{_channelName}] Removed {processedWorkers} workers, now workers:{_workers.Count} because {count} queue");
+                    if (_logger.IsEnabled(LogLevel.Debug))
+                    {
+                        _logger.LogDebug(
+                            "[{ChannelName}] Removed {ProcessedWorkers} workers, now workers:{WorkersCount} because {Count} queue",
+                            _channelName, processedWorkers, _workers.Count, count);
+                    }
                 }
                 else if (workersDiff < 0) // missing workers, need to add
                 {
@@ -159,7 +157,12 @@ namespace Vayosoft.Threading.Channels.Producers
                         w.StartConsume();
                         processedWorkers++;
                     }
-                    Debug.WriteLine($"[{_channelName}] Added {processedWorkers} workers, now workers:{_workers.Count} because {count} queue");
+                    if (_logger.IsEnabled(LogLevel.Debug))
+                    {
+                        _logger.LogDebug(
+                            "[{ChannelName}] Added {ProcessedWorkers} workers, now workers:{WorkersCount} because {Count} queue",
+                            _channelName, processedWorkers, _workers.Count, count);
+                    }
                 }
             }
             finally
@@ -170,7 +173,23 @@ namespace Vayosoft.Threading.Channels.Producers
 
         public int Count => (int)_itemsCountForDebuggerOfReader.GetValue(_channel.Reader);
 
-        public virtual void Shutdown()
+        public virtual void StopMeasurement()
+        {
+            foreach (var telemetryConsumer in _workers)
+                telemetryConsumer.StopMeasurement();
+        }
+
+        public virtual IMetricsSnapshot GetSnapshot()
+        {
+            var snapshots = _workers.Select(w => w.GetSnapshot()).Cast<ChannelMetricsSnapshot>().ToList();
+            var result = new ChannelMeasurementsBuilder<ChannelMetricsSnapshot>(snapshots, Count).Build();
+            result.DroppedItems = _droppedItems;
+            _droppedItems = 0;
+
+            return result;
+        }
+
+        public virtual void Dispose()
         {
             _timer.Stop();
             try
@@ -190,28 +209,12 @@ namespace Vayosoft.Threading.Channels.Producers
             }
             catch (Exception e)
             {
-                Trace.TraceWarning($"[{_channelName}.Shutdown]: {e.Message}");
+                _logger.LogWarning("[{ChannelName}.Shutdown]: {Message}", _channelName, e.Message);
             }
             finally
             {
                 _cancellationSource.Dispose();
             }
-        }
-
-        public virtual void StopMeasurement()
-        {
-            foreach (var telemetryConsumer in _workers)
-                telemetryConsumer.StopMeasurement();
-        }
-
-        public virtual IMetricsSnapshot GetSnapshot()
-        {
-            var snapshots = _workers.Select(w => w.GetSnapshot()).Cast<ChannelMetricsSnapshot>().ToList();
-            var result = new ChannelMeasurementsBuilder<ChannelMetricsSnapshot>(snapshots, Count).Build();
-            result.DroppedItems = _droppedItems;
-            _droppedItems = 0;
-
-            return result;
         }
     }
 }

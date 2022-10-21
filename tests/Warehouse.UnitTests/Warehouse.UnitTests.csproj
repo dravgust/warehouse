@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\lib\Vayosoft.Testing\Vayosoft.Testing.csproj" />
     <ProjectReference Include="..\..\lib\Vayosoft.Threading\Vayosoft.Threading.csproj" />
     <ProjectReference Include="..\..\Warehouse.Core\Warehouse.Core.csproj" />
   </ItemGroup>

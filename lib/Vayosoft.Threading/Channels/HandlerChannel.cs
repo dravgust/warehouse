@@ -87,19 +87,12 @@ namespace Vayosoft.Threading.Channels
 
 
         [ActivatorUtilitiesConstructor]
-        public AsyncHandlerChannel(string channelName, IConfiguration config, ILoggerFactory loggerFactory)
-            : base(channelName, config.GetSection(typeof(TH).Name).Get<ChannelOptions>(), loggerFactory)
-        {
-            _measurement = new HandlerMeasurement();
-        }
+        public AsyncHandlerChannel(IConfiguration config, ILoggerFactory loggerFactory)
+            : this(config.GetSection(typeof(TH).Name).Get<ChannelOptions>(), loggerFactory.CreateLogger<TH>())
+        { }
 
-        public AsyncHandlerChannel(
-            string channelName = null,
-            uint startedNumberOfWorkerThreads = 1,
-            bool enableTaskManagement = false,
-            bool singleWriter = true,
-            CancellationToken globalCancellationToken = default)
-            : base(channelName, startedNumberOfWorkerThreads, enableTaskManagement, singleWriter, globalCancellationToken)
+        public AsyncHandlerChannel(ChannelOptions options, ILogger logger)
+            : base(options, logger)
         {
             _measurement = new HandlerMeasurement();
         }
@@ -125,9 +118,9 @@ namespace Vayosoft.Threading.Channels
             return Enqueue(item);
         }
 
-        public override void Shutdown()
+        public override void Dispose()
         {
-            base.Shutdown();
+            base.Dispose();
             try
             {
                 _handler.Dispose();
