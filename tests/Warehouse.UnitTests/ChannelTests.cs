@@ -185,7 +185,7 @@ namespace Warehouse.UnitTests
         protected override async ValueTask HandleAsync(string item, CancellationToken token = default)
         {
             //_logger.WriteLine("Got message: {0}", item);
-            await Task.Delay(1000, token);
+            await ValueTask.CompletedTask;
         }
     }
 }

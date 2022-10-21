@@ -76,9 +76,6 @@ namespace Warehouse.API
 
             services.AddTransient<RedisConsumer>();
 
-            services.AddSingleton<AsyncMultiHandlerChannel<string, string, HandlerAsync>>();
-            services.AddSingleton<MultiHandlerChannel<string, string, Handler>>();
-
             return services;
         }
 
@@ -125,23 +122,6 @@ namespace Warehouse.API
             services.AddQueryHandler<GetResources, IEnumerable<ResourceGroup>, ResourcesQueryHandler>();
 
             return services;
-        }
-    }
-
-    public class Handler : ChannelHandlerBase<string>
-    {
-        protected override void Handle(string item, CancellationToken token = default)
-        {
-            Trace.WriteLine("Got message: {0}", item);
-        }
-    } 
-    
-    public class HandlerAsync : AsyncChannelHandlerBase<string>
-    {
-        protected override async ValueTask HandleAsync(string item, CancellationToken token = default)
-        {
-            Trace.WriteLine("Got message: {0}", item);
-            await ValueTask.CompletedTask;
         }
     }
 }
