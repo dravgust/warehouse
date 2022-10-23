@@ -29,7 +29,7 @@ namespace Warehouse.Host
 
             services.AddHostedService<Worker>();
             services.AddHostedService<NotificationWorker>();
-            //services.AddHostedService<HostedService>();
+            //services.AddHostedService<MetricCollectorService>();
 
             return services;
         }
