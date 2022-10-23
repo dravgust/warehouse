@@ -1,4 +1,7 @@
 using System.Diagnostics;
+using App.Metrics;
+using App.Metrics.AspNetCore;
+using App.Metrics.Formatters.Ascii;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -53,7 +56,29 @@ try
                 tags: new[] {"infrastructure", "db"});
 
         // Metrics
-        //builder.Services.AddAppMetricsCollectors();
+        builder.Services
+            .AddMetrics()
+            //.AddMetricsTrackingMiddleware()
+            //.AddAppMetricsSystemMetricsCollector()
+            //.AddAppMetricsCollectors()
+            ;
+
+        builder.Host
+            .ConfigureMetrics(metricsBuilder =>
+            {
+                metricsBuilder.Configuration.Configure(metricsOptions =>
+                {
+                    metricsOptions.DefaultContextLabel = "default";
+                });
+            })
+            .UseMetrics(metricsWebHostOptions =>
+            {
+                metricsWebHostOptions.EndpointOptions = metricEndpointsOptions =>
+                {
+                    metricEndpointsOptions.MetricsTextEndpointOutputFormatter =
+                        new MetricsTextOutputFormatter();
+                };
+            });
 
         builder.Services.AddCors(options =>
         {
