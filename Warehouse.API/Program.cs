@@ -44,12 +44,15 @@ try
             .AddUserService(configuration)
             .AddLocalizationService();
 
+        // HealthCheck
         builder.Services
             .AddHealthChecks()
             .AddRedis(configuration["ConnectionStrings:RedisConnectionString"], tags: new[] {"infrastructure", "cache"})
             .AddMySql(configuration["ConnectionStrings:DefaultConnection"], tags: new[] {"infrastructure", "db"})
             .AddMongoDb(configuration[$"{nameof(MongoConnection)}:ConnectionString"],
                 tags: new[] {"infrastructure", "db"});
+
+        // Metrics
         //builder.Services.AddAppMetricsCollectors();
 
         builder.Services.AddCors(options =>
