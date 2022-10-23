@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Globalization;
+﻿using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Mvc;
@@ -9,8 +8,6 @@ using Vayosoft.Core.Queries;
 using Vayosoft.Redis;
 using Vayosoft.Streaming.Redis;
 using Vayosoft.Streaming.Redis.Consumers;
-using Vayosoft.Threading.Channels;
-using Vayosoft.Threading.Channels.Handlers;
 using Warehouse.API.Services;
 using Warehouse.API.Services.Localization;
 using Warehouse.API.TagHelpers;
