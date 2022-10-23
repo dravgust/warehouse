@@ -127,9 +127,10 @@ namespace Vayosoft.Threading.Channels
         }
     }
 
-    public class AsyncMultiHandlerChannel<T, TIdent, TH> : IDisposable where TH : AsyncChannelHandlerBase<T>, new()
+    public class AsyncMultiHandlerChannel<T, TIdent, TH> : IDisposable where TH : AsyncChannelHandlerBase<T>
     {
         private readonly IConfiguration _config;
+        private readonly ILogger<AsyncMultiHandlerChannel<T, TIdent, TH>> _logger;
         private readonly ILoggerFactory _loggerFactory;
 
         private const int ChannelManagementIntervalMin = 35 * 60 * 1000;
@@ -142,6 +143,7 @@ namespace Vayosoft.Threading.Channels
         {
             _config = config;
             _loggerFactory = loggerFactory;
+            _logger = loggerFactory.CreateLogger<AsyncMultiHandlerChannel<T, TIdent, TH>>();
 
             _timer = new Timer(OnTimerCallback, null, ChannelManagementIntervalMin, ChannelManagementIntervalMin);
         }
@@ -161,11 +163,11 @@ namespace Vayosoft.Threading.Channels
                     _channels.TryAdd(key, channel);
                 }
 
-                return channel.Queue;
+                return channel.Enqueue;
             }
         }
 
-        public bool Queue(TIdent key, T item)
+        public bool Enqueue(TIdent key, T item)
         {
             if (!_channels.TryGetValue(key, out var channel))
             {
@@ -173,7 +175,7 @@ namespace Vayosoft.Threading.Channels
                 _channels.TryAdd(key, channel);
             }
 
-            return channel.Queue(item);
+            return channel.Enqueue(item);
         }
 
         public QueueHandlerTelemetryReport GeTelemetryReport()
@@ -188,7 +190,7 @@ namespace Vayosoft.Threading.Channels
         {
             var type = typeof(AsyncHandlerChannel<T, TH>);
   
-            var constructor = type.GetConstructor(new[] { typeof(ChannelOptions), typeof(ILogger) });
+            var constructor = type.GetConstructor(new[] { typeof(ChannelOptions), typeof(ILoggerFactory) });
             if (constructor != null)
             {
                 var options = _config.GetSection(typeof(TH).Name).Get<ChannelOptions>() ?? new ChannelOptions();
@@ -196,9 +198,7 @@ namespace Vayosoft.Threading.Channels
                     options.ChannelName = key.ToString();
                 }
 
-                var logger = _loggerFactory.CreateLogger<TH>();
-
-                return (AsyncHandlerChannel<T, TH>)Activator.CreateInstance(type, options, logger);
+                return (AsyncHandlerChannel<T, TH>)Activator.CreateInstance(type, options, _loggerFactory);
             }
 
             return Activator.CreateInstance<AsyncHandlerChannel<T, TH>>();
@@ -233,7 +233,10 @@ namespace Vayosoft.Threading.Channels
                 }
             }
 
-            Debug.WriteIf(counter > 0, $"{typeof(TH).Name} | Cleared {counter} controllers{Environment.NewLine}");
+            if (counter > 0 && _logger.IsEnabled(LogLevel.Debug))
+            {
+                _logger.LogInformation("{Name} | Cleared {Counter} controllers.", typeof(TH).Name, counter);
+            }
         }
 
         public void Dispose()

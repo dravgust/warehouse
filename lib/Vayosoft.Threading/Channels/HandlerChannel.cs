@@ -80,21 +80,22 @@ namespace Vayosoft.Threading.Channels
         }
     }
 
-    public class AsyncHandlerChannel<T, TH> : AsyncTelemetryProducerConsumerChannelBase<T> where TH : AsyncChannelHandlerBase<T>, new()
+    public class AsyncHandlerChannel<T, TH> : AsyncTelemetryProducerConsumerChannelBase<T> where TH : AsyncChannelHandlerBase<T>
     {
-        private readonly TH _handler = new();
+        private readonly TH _handler;
         private readonly HandlerMeasurement _measurement;
 
 
         [ActivatorUtilitiesConstructor]
         public AsyncHandlerChannel(IConfiguration config, ILoggerFactory loggerFactory)
-            : this(config.GetSection(typeof(TH).Name).Get<ChannelOptions>(), loggerFactory.CreateLogger<TH>())
+            : this(config.GetSection(typeof(TH).Name).Get<ChannelOptions>(), loggerFactory)
         { }
 
-        public AsyncHandlerChannel(ChannelOptions options, ILogger logger)
-            : base(options, logger)
+        public AsyncHandlerChannel(ChannelOptions options, ILoggerFactory loggerFactory)
+            : base(options, loggerFactory.CreateLogger<AsyncHandlerChannel<T, TH>>())
         {
             _measurement = new HandlerMeasurement();
+            _handler = CreateHandler(loggerFactory.CreateLogger<TH>());
         }
 
         protected override async ValueTask OnDataReceivedAsync(T item, CancellationToken token)
@@ -105,17 +106,11 @@ namespace Vayosoft.Threading.Channels
 
                 await _handler.HandleAction(item, token);
             }
-            catch (OperationCanceledException)
-            { }
+            catch (OperationCanceledException) { /* ignored */  }
             finally
             {
                 _measurement.StopMeasurement();
             }
-        }
-
-        public bool Queue(T item)
-        {
-            return Enqueue(item);
         }
 
         public override void Dispose()
@@ -147,6 +142,19 @@ namespace Vayosoft.Threading.Channels
             };
 
             return snapshot;
+        }
+
+        protected TH CreateHandler(ILogger logger)
+        {
+            var type = typeof(TH);
+
+            var constructor = type.GetConstructor(new[] { typeof(ILogger) });
+            if (constructor != null)
+            {
+                return (TH)Activator.CreateInstance(type,  logger);
+            }
+
+            return Activator.CreateInstance<TH>();
         }
     }
 }

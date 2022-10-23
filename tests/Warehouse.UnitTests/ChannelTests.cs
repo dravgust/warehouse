@@ -62,21 +62,18 @@ namespace Warehouse.UnitTests
         [Fact]
         public async Task CreateHandlerAsyncChannel()
         {
-            const int count = 10;
-            const int delay = 1000;
-
             using var ch = new AsyncHandlerChannel<string, Handler>(Configuration, LoggerFactory);
 
             var producer = Task.Run(() =>
             {
-                for (var i = 0; i < count; i++)
+                for (var i = 0; i < 10; i++)
                 {
                     ch.Enqueue($"Message {i}");
                 }
             });
 
             await producer;
-            await Task.Delay(count * delay);
+            await Task.Delay(1000);
             _outputHelper.WriteLine(ch.GetSnapshot().ToJson());
         }
 
@@ -84,21 +81,18 @@ namespace Warehouse.UnitTests
         [Fact]
         public async Task CreateHandlerAsyncChannelManager()
         {
-            const int count = 10;
-            const int delay = 1000;
-
             using var ch = new AsyncMultiHandlerChannel<string, string, Handler>(Configuration, LoggerFactory);
 
             var producer = Task.Run(() =>
             {
-                for (var i = 0; i < count; i++)
+                for (var i = 0; i < 10; i++)
                 {
-                    ch.Queue($"TEST_CH_{(i % 2)}", $"Message {i}");
+                    ch.Enqueue($"TEST_CH_{(i % 2)}", $"Message {i}");
                 }
             });
 
             await producer;
-            await Task.Delay(count * delay);
+            await Task.Delay(1000);
             _outputHelper.WriteLine(ch.GeTelemetryReport().ToJson());
         }
 
@@ -182,9 +176,16 @@ namespace Warehouse.UnitTests
 
     internal class Handler : AsyncChannelHandlerBase<string>
     {
+        private readonly ILogger _logger;
+
+        public Handler(ILogger logger)
+        {
+            _logger = logger;
+        }
+
         protected override async ValueTask HandleAsync(string item, CancellationToken token = default)
         {
-            //_logger.WriteLine("Got message: {0}", item);
+            _logger.LogInformation("Got message: {0}", item);
             await ValueTask.CompletedTask;
         }
     }

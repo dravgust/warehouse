@@ -58,10 +58,5 @@ namespace Vayosoft.Threading.Channels
             }
             catch (OperationCanceledException) { }
         }
-
-        public bool Queue(T item)
-        {
-            return Enqueue(item);
-        }
     }
 }
