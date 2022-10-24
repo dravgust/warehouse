@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using App.Metrics;
 using App.Metrics.Counter;
+using App.Metrics.Filtering;
 using App.Metrics.Meter;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using Serilog;
 using Serilog.Events;
 using SerilogTimings;
 using Vayosoft.Core.Queries;
+using Vayosoft.Threading.Channels.Diagnostics;
 using Warehouse.API.Diagnostic;
 using Warehouse.API.Services.Authorization;
 using Warehouse.Core.Application.TrackingReports.Queries;
@@ -66,7 +68,7 @@ namespace Warehouse.API.Controllers.API
 
         [AllowAnonymous]
         [HttpGet("cache")]
-        public async Task<string> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
             var counter = new CounterOptions
             {
@@ -126,7 +128,10 @@ namespace Warehouse.API.Controllers.API
 
             _diagnosticContext.Set("CatalogLoadTime", 1423);
 
-            return CachedTimeUTC;
+            var filter = new MetricsFilter().WhereType(MetricType.Counter);
+            var snapshot = _metrics.Snapshot.Get();
+
+            return Ok(snapshot);
         }
     }
 }

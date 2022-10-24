@@ -13,8 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="App.Metrics" Version="4.3.0" />
-    <PackageReference Include="App.Metrics.AspNetCore.Mvc" Version="4.3.0" />
+    <PackageReference Include="App.Metrics.AspNetCore.All" Version="4.3.0" />
+    <PackageReference Include="App.Metrics.Formatters.Prometheus" Version="4.3.0" />
+    <PackageReference Include="App.Metrics.Reporting.TextFile" Version="4.3.0" />
     <PackageReference Include="AspNetCore.HealthChecks.MongoDb" Version="6.0.2" />
     <PackageReference Include="AspNetCore.HealthChecks.MySql" Version="6.0.2" />
     <PackageReference Include="AspNetCore.HealthChecks.Redis" Version="6.0.4" />

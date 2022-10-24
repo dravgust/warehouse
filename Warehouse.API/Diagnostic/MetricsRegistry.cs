@@ -1,5 +1,10 @@
 ﻿using App.Metrics;
+using App.Metrics.Apdex;
+using App.Metrics.Counter;
+using App.Metrics.Gauge;
+using App.Metrics.Histogram;
 using App.Metrics.Infrastructure;
+using App.Metrics.Meter;
 using App.Metrics.ReservoirSampling.ExponentialDecay;
 using App.Metrics.ReservoirSampling.SlidingWindow;
 using App.Metrics.ReservoirSampling.Uniform;
@@ -10,28 +15,30 @@ namespace Warehouse.API.Diagnostic
 {
     public static class MetricsRegistry
     {
-        public static readonly string Context = "Reservoirs";
+        public static readonly string Context = "API";
 
         public static TimerOptions TimerUsingAlgorithmRReservoir = new TimerOptions
-                                                                   {
-                                                                       Context = Context,
-                                                                       Name = "uniform",
-                                                                       Reservoir = () => new DefaultAlgorithmRReservoir()
-                                                                   };
+        {
+            Context = Context,
+            Name = "uniform",
+            Reservoir = () => new DefaultAlgorithmRReservoir()
+        };
 
         public static TimerOptions TimerUsingExponentialForwardDecayingReservoir = new TimerOptions
-                                                                                   {
-                                                                                       Context = Context,
-                                                                                       Name = "exponentially-decaying",
-            Reservoir = () => new DefaultForwardDecayingReservoir(AppMetricsReservoirSamplingConstants.DefaultSampleSize, AppMetricsReservoirSamplingConstants.DefaultExponentialDecayFactor, 0.0, new StopwatchClock())
+        {
+            Context = Context,
+            Name = "exponentially-decaying",
+            Reservoir = () =>
+                new DefaultForwardDecayingReservoir(AppMetricsReservoirSamplingConstants.DefaultSampleSize,
+                    AppMetricsReservoirSamplingConstants.DefaultExponentialDecayFactor, 0.0, new StopwatchClock())
         };
 
         public static TimerOptions TimerUsingSlidingWindowReservoir = new TimerOptions
-                                                                      {
-                                                                          Context = Context,
-                                                                          Name = "sliding-window",
-                                                                          Reservoir = () => new DefaultSlidingWindowReservoir()
-                                                                      };
+        {
+            Context = Context,
+            Name = "sliding-window",
+            Reservoir = () => new DefaultSlidingWindowReservoir()
+        };
 
         public static TimerOptions TimerUsingForwardDecayingLowWeightThresholdReservoir =
             new TimerOptions
@@ -45,5 +52,34 @@ namespace Warehouse.API.Diagnostic
                     new StopwatchClock(),
                     new DefaultReservoirRescaleScheduler(TimeSpan.FromSeconds(30)))
             };
+
+        public static CounterOptions Counter = new CounterOptions
+        {
+            Name = "Req Counter",
+            MeasurementUnit = Unit.Calls
+        };
+
+        public static MeterOptions CacheHitsMeter = new MeterOptions
+        {
+            Name = "Req Hits",
+            MeasurementUnit = Unit.Calls
+        };
+
+        public static HistogramOptions PostAndPutRequestSize = new HistogramOptions()
+        {
+            Name = "Размер веб - запроса Post и Put",
+            MeasurementUnit = Unit.Bytes
+        };
+
+        public static ApdexOptions SampleApdex = new ApdexOptions
+        {
+            Name = "Пример Apdex"
+        };
+
+        public static GaugeOptions CacheHitRatioGauge = new GaugeOptions
+        {
+            Name = "Cache Gauge",
+            MeasurementUnit = Unit.Calls
+        };
     }
 }
