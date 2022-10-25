@@ -17,7 +17,7 @@ export let options = {
         { duration:'10m', target:100 },//stay at 100 requests for 10 mins
         { duration:'5m', target:0 },   // ramp-down to 0 users
     ],*/
-    vus: 70,
+    vus: 1,
     duration: '1m',
     thresholds: {
         http_req_duration: ["p(99)<150"] //99% of request must complete below 150 ms

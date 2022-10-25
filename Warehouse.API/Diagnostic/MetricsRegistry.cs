@@ -15,7 +15,7 @@ namespace Warehouse.API.Diagnostic
 {
     public static class MetricsRegistry
     {
-        public static readonly string Context = "API";
+        public static readonly string Context = "Warehouse.API";
 
         public static TimerOptions TimerUsingAlgorithmRReservoir = new TimerOptions
         {
@@ -55,12 +55,14 @@ namespace Warehouse.API.Diagnostic
 
         public static CounterOptions Counter = new CounterOptions
         {
+            Context = Context,
             Name = "Req Counter",
             MeasurementUnit = Unit.Calls
         };
 
         public static MeterOptions CacheHitsMeter = new MeterOptions
         {
+            Context = Context,
             Name = "Req Hits",
             MeasurementUnit = Unit.Calls
         };

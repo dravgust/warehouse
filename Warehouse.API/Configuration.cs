@@ -130,95 +130,36 @@ namespace Warehouse.API
 
         public static IServiceCollection AddDiagnostics(this WebApplicationBuilder builder)
         {
-            //var filter = new MetricsFilter().WhereType(MetricType.Timer);
+            var filter = new MetricsFilter();
             var metrics = AppMetrics.CreateDefaultBuilder()
-                 //.Report.ToTextFile(
-                 //    options => {
-                 //        options.MetricsOutputFormatter = new MetricsTextOutputFormatter();
-                 //        options.AppendMetricsToTextFile = false;
-                 //        options.Filter = filter;
-                 //        options.FlushInterval = TimeSpan.FromSeconds(60);
-                 //        options.OutputPathAndFileName = @"../metrics/metrics.txt";
-                 //    })
-                 //.OutputMetrics.AsPlainText()
-                 //.OutputMetrics.AsJson()
-                 //.OutputMetrics.AsPrometheusProtobuf()
-                 .Configuration.Configure(options =>
-                 {
-                     options.WithGlobalTags((tags, envInfo) =>
-                     {
-                         tags.Add("app_version", envInfo.EntryAssemblyVersion);
-                     });
-                 })
-                 .Build();
+                .Report.ToTextFile(
+                    options =>
+                    {
+                        options.MetricsOutputFormatter = new MetricsTextOutputFormatter();
+                        options.AppendMetricsToTextFile = false;
+                        options.Filter = filter;
+                        options.FlushInterval = TimeSpan.FromSeconds(60);
+                        options.OutputPathAndFileName = @"../metrics/metrics.txt";
+                    })
+                .Build();
 
             builder.Services
-                .AddMetrics(metrics)
-                //.AddMetricsTrackingMiddleware() //web
-                //.AddMetricsEndpoints() //endpoints
-                //.AddAppMetricsSystemMetricsCollector()
-                //.AddAppMetricsCollectors() //all available collectors
-                ;
+                .AddMetrics(metrics);
 
             builder.Host
-                //.ConfigureMetrics(metricsBuilder =>
-                //{
-                //    metricsBuilder.Configuration.Configure(metricsOptions =>
-                //    {
-                //        metricsOptions.DefaultContextLabel = "default";
-                //    });
-                //})
-                //.ConfigureMetricsWithDefaults(
-                //    builder =>
-                //    {
-                //        builder.Report.ToConsole(TimeSpan.FromSeconds(2));
-                //        builder.Report.ToTextFile(@"C:\metrics.txt", TimeSpan.FromSeconds(20));
-                //    })
-                //.UseMetricsWebTracking()
+                .UseMetricsWebTracking()
                 .UseMetrics(metricsWebHostOptions =>
                 {
-                metricsWebHostOptions.EndpointOptions = metricEndpointsOptions =>
-                {
-                    metricEndpointsOptions.MetricsEndpointOutputFormatter =
-                        new MetricsTextOutputFormatter();
-                    metricEndpointsOptions.MetricsTextEndpointOutputFormatter =
-                        new MetricsPrometheusTextOutputFormatter();
-                    metricEndpointsOptions.EnvironmentInfoEndpointEnabled = false;
-                }; //endpoints
-                    //metricsWebHostOptions.TrackingMiddlewareOptions = options => { } //web
-                })
-                ;
+                    metricsWebHostOptions.EndpointOptions = metricEndpointsOptions =>
+                    {
+                        metricEndpointsOptions.MetricsEndpointOutputFormatter = new MetricsPrometheusProtobufOutputFormatter();
+                        metricEndpointsOptions.MetricsTextEndpointOutputFormatter = new MetricsPrometheusTextOutputFormatter();
 
-            //RunMetricsScheduler(metrics);
+                        metricEndpointsOptions.EnvironmentInfoEndpointEnabled = false;
+                    };
+                });
 
             return builder.Services;
-        }
-
-        private static void RunMetricsScheduler(IMetricsRoot metricsRoot)
-        {
-            //var httpClient = new HttpClient
-            //{
-            //    BaseAddress = new Uri("http://localhost:5243/")
-            //};
-
-            //var requestSamplesScheduler = new AppMetricsTaskScheduler(TimeSpan.FromMilliseconds(10), async () =>
-            //{
-            //    var uniform = httpClient.GetStringAsync("api/reservoirs/uniform");
-            //    var exponentiallyDecaying = httpClient.GetStringAsync("api/reservoirs/exponentially-decaying");
-            //    var exponentiallyDecayingLowWeight =
-            //        httpClient.GetStringAsync("api/reservoirs/exponentially-decaying-low-weight");
-            //    var slidingWindow = httpClient.GetStringAsync("api/reservoirs/sliding-window");
-
-            //    await Task.WhenAll(uniform, exponentiallyDecaying, exponentiallyDecayingLowWeight, slidingWindow);
-            //});
-            //requestSamplesScheduler.Start();
-
-
-            var scheduler = new AppMetricsTaskScheduler(
-                TimeSpan.FromMilliseconds(5000),
-                async () => { await Task.WhenAll(metricsRoot.ReportRunner.RunAllAsync()); });
-
-            scheduler.Start();
         }
     }
 }
