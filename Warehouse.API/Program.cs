@@ -153,6 +153,7 @@ try
         var locOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
         app.UseRequestLocalization(locOptions!.Value);
 
+        // HealthCheck
         app.MapHealthChecks("/health", new HealthCheckOptions()
         {
             AllowCachingResponses = false,

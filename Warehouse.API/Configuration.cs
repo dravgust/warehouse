@@ -147,7 +147,6 @@ namespace Warehouse.API
                 .AddMetrics(metrics);
 
             builder.Host
-                .UseMetricsWebTracking()
                 .UseMetrics(metricsWebHostOptions =>
                 {
                     metricsWebHostOptions.EndpointOptions = metricEndpointsOptions =>
