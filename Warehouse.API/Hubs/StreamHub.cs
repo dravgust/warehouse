@@ -1,9 +1,11 @@
 ﻿using System.Text.Json;
 using System.Threading.Channels;
+using App.Metrics;
 using Microsoft.AspNetCore.SignalR;
 using Vayosoft.Core.Utilities;
 using Vayosoft.Streaming.Consumers;
 using Vayosoft.Streaming.Redis.Consumers;
+using Warehouse.API.Diagnostic;
 using Warehouse.API.Services.Authorization;
 using Warehouse.Core.Application.Common.Persistence;
 using Warehouse.Core.Application.Common.Services.Security;
@@ -17,11 +19,13 @@ namespace Warehouse.API.Hubs
     {
         private readonly RedisConsumer _consumer;
         private readonly IWarehouseStore _store;
+        private readonly IMetrics _metrics;
 
-        public StreamHub(RedisConsumer consumer, IWarehouseStore store)
+        public StreamHub(RedisConsumer consumer, IWarehouseStore store, IMetrics metrics)
         {
             _consumer = consumer;
             _store = store;
+            _metrics = metrics;
         }
 
         public ChannelReader<Notification> Notifications(CancellationToken cancellationToken)
@@ -92,6 +96,18 @@ namespace Warehouse.API.Hubs
         private async Task<string> GetTrackedItemName(string id, CancellationToken token)
         {
             return (await _store.TrackedItems.FirstOrDefaultAsync(q => q.Id.Equals(id), token))?.Name ?? id;
+        }
+
+        public override Task OnConnectedAsync()
+        {
+            _metrics.Measure.Counter.Increment(MetricsRegistry.ActiveUserCounter);
+            return base.OnConnectedAsync();
+        }
+
+        public override Task OnDisconnectedAsync(Exception exception)
+        {
+            _metrics.Measure.Counter.Decrement(MetricsRegistry.ActiveUserCounter);
+            return base.OnDisconnectedAsync(exception);
         }
     }
 }

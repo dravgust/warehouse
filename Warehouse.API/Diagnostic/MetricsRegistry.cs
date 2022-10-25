@@ -53,10 +53,10 @@ namespace Warehouse.API.Diagnostic
                     new DefaultReservoirRescaleScheduler(TimeSpan.FromSeconds(30)))
             };
 
-        public static CounterOptions Counter = new CounterOptions
+        public static CounterOptions ActiveUserCounter => new()
         {
             Context = Context,
-            Name = "Req Counter",
+            Name = "Active User Counter",
             MeasurementUnit = Unit.Calls
         };
 
