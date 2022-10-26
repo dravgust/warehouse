@@ -3,10 +3,10 @@ import { API_SERVER } from "../config/constant";
 import * as auth from "services/auth-provider";
 import { queryClient } from "../context/app.context";
 
-const API_URL = process.env.REACT_APP_API_URL || API_SERVER;
+//const API_URL = process.env.REACT_APP_API_URL || API_SERVER;
 
 const axios = Axios.create({
-  baseURL: `${API_URL}`,
+  baseURL: `${API_SERVER}`,
   headers: { "Content-Type": "application/json" },
 });
 

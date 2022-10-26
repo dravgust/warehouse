@@ -1,8 +1,6 @@
 const localStorageKey = "__auth_provider_token__";
 import { API_SERVER } from "config/constant";
 
-const API_URL = process.env.REACT_APP_API_URL || API_SERVER;
-
 async function getToken() {
   return window.localStorage.getItem(localStorageKey);
 }
@@ -40,7 +38,7 @@ async function client(endpoint, data) {
     credentials: "include",
   };
 
-  return window.fetch(`${API_URL}/${base}/${endpoint}`, config).then(async (response) => {
+  return window.fetch(`${API_SERVER}/${base}/${endpoint}`, config).then(async (response) => {
     const data = await response.json();
     if (response.ok) {
       return data;
