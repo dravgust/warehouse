@@ -81,6 +81,8 @@ try
             });
 
         builder.Services.AddApiVersioningService();
+
+        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddSwaggerService();
 
         builder.Services.AddResponseCaching();

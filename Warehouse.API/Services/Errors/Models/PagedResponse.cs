@@ -1,6 +1,6 @@
 ﻿using Vayosoft.Core.SharedKernel.Models.Pagination;
 
-namespace Warehouse.Core.Application.SiteManagement.Models
+namespace Warehouse.API.Services.Errors.Models
 {
     public class PagedResponse<T>
     {

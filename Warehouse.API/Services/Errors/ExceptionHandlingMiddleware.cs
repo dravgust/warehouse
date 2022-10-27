@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
