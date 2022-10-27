@@ -5,6 +5,7 @@ using Vayosoft.Core.Persistence.Queries;
 using Vayosoft.Core.Queries;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Vayosoft.Core.Utilities;
+using Warehouse.API.Model;
 using Warehouse.API.Services.Authorization;
 using Warehouse.API.Services.Errors.Models;
 using Warehouse.Core.Application.Common.Services;

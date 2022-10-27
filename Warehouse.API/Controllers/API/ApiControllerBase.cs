@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Vayosoft.Core.SharedKernel.Models.Pagination;
 using Warehouse.API.Extensions;
+using Warehouse.API.Model;
 using Warehouse.API.Services.Errors.Models;
-using Warehouse.Core.Application.SiteManagement.Models;
 
 namespace Warehouse.API.Controllers.API
 {
