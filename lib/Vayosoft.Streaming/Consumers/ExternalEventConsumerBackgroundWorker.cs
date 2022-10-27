@@ -50,7 +50,7 @@ namespace Vayosoft.Streaming.Consumers
             await Task.WhenAny(executingTask, Task.Delay(-1, cancellationToken));
 
             // Throw if cancellation triggered
-            //cancellationToken.ThrowIfCancellationRequested();
+            cancellationToken.ThrowIfCancellationRequested();
 
             logger.LogInformation("External Event Consumer stopped");
         }
