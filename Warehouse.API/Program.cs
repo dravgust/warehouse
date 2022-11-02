@@ -167,6 +167,8 @@ try
             ResponseWriter = HealthCheckResponse.WriteRaw
         });
 
+        //app.UseMetricsAllMiddleware();
+
         app.MapHub<StreamHub>("/stream/notifications");
         app.MapHub<AsyncEnumerableHub>("/enumerable/notifications");
 
