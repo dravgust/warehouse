@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
 using MediatR;
-using Vayosoft.Core.Commands;
-using Vayosoft.Core.Persistence;
-using Vayosoft.Core.SharedKernel.Events;
+using Vayosoft.Commands;
+using Vayosoft.Persistence;
+using Vayosoft.Commons.Events;
 using Warehouse.Core.Application.Common.Services;
 using Warehouse.Core.Domain.Entities;
 using Warehouse.Core.Domain.Events;

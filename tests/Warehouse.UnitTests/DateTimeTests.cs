@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using NSubstitute;
-using Vayosoft.Core.Utilities;
+using Vayosoft.Utilities;
 
 namespace Warehouse.UnitTests
 {

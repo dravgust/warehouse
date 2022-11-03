@@ -4,8 +4,8 @@ using System.Text.Json.Serialization;
 using Bogus;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Vayosoft.Core.SharedKernel.Events;
-using Vayosoft.Core.SharedKernel.ValueObjects;
+using Vayosoft.Commons.Events;
+using Vayosoft.Commons.ValueObjects;
 using Warehouse.Core.Domain.Events;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 

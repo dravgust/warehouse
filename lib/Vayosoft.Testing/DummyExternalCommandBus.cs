@@ -1,5 +1,4 @@
-﻿using Vayosoft.Core.Commands;
-using Vayosoft.Core.Commands.External;
+﻿using Vayosoft.Commands;
 
 namespace Vayosoft.Testing;
 

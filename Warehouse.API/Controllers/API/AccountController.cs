@@ -1,9 +1,9 @@
 ﻿
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Vayosoft.Core.Caching;
-using Vayosoft.Core.Queries;
-using Vayosoft.Core.Utilities;
+using Vayosoft.Caching;
+using Vayosoft.Queries;
+using Vayosoft.Utilities;
 using Warehouse.API.Contracts.Authentication;
 using Warehouse.API.Extensions;
 using Warehouse.API.Services.Authorization;

@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using Vayosoft.Core.Utilities;
+using Vayosoft.Utilities;
 
 namespace Warehouse.Host
 {

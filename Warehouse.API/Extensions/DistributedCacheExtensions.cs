@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using Microsoft.Extensions.Caching.Distributed;
-using Vayosoft.Core.Utilities;
+using Vayosoft.Utilities;
 
 namespace Warehouse.API.Extensions
 {

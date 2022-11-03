@@ -1,5 +1,5 @@
-﻿using Vayosoft.Core.SharedKernel.Aggregates;
-using Vayosoft.Core.SharedKernel.Entities;
+﻿using Vayosoft.Commons.Aggregates;
+using Vayosoft.Commons.Entities;
 
 namespace Warehouse.Core.Domain.Entities
 {

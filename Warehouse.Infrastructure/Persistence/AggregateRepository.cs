@@ -1,6 +1,6 @@
-﻿using Vayosoft.Core.SharedKernel;
-using Vayosoft.Core.SharedKernel.Aggregates;
-using Vayosoft.Core.SharedKernel.Events;
+﻿using Vayosoft.Commons;
+using Vayosoft.Commons.Aggregates;
+using Vayosoft.Commons.Events;
 using Vayosoft.MongoDB;
 using Warehouse.Core.Application.Common.Persistence;
 

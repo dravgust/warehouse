@@ -2,7 +2,7 @@
 using System.Threading.Channels;
 using App.Metrics;
 using Microsoft.AspNetCore.SignalR;
-using Vayosoft.Core.Utilities;
+using Vayosoft.Utilities;
 using Vayosoft.Streaming.Consumers;
 using Vayosoft.Streaming.Redis.Consumers;
 using Warehouse.API.Diagnostic;

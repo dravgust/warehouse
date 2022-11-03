@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.Localization;
-using Vayosoft.Core.Caching;
-using Vayosoft.Core.Queries;
-using Vayosoft.Core.Utilities;
+using Vayosoft.Caching;
+using Vayosoft.Queries;
+using Vayosoft.Utilities;
 using Warehouse.API.TagHelpers;
 
 namespace Warehouse.API.UseCases.Resources

@@ -1,5 +1,5 @@
-﻿using Vayosoft.Core.Persistence;
-using Vayosoft.Core.SharedKernel.Events;
+﻿using Vayosoft.Persistence;
+using Vayosoft.Commons.Events;
 using Warehouse.Core.Domain.Entities;
 using Warehouse.Core.Domain.Events;
 

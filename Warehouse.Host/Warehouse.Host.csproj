@@ -11,11 +11,11 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="6.0.1" />
     <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
+    <PackageReference Include="Vayosoft.Caching" Version="1.0.0" />
+    <PackageReference Include="Vayosoft.Streaming.Redis" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\lib\Vayosoft.Caching\Vayosoft.Caching.csproj" />
-    <ProjectReference Include="..\lib\Vayosoft.Streaming.Redis\Vayosoft.Streaming.Redis.csproj" />
     <ProjectReference Include="..\Warehouse.Core\Warehouse.Core.csproj" />
     <ProjectReference Include="..\Warehouse.Infrastructure\Warehouse.Infrastructure.csproj" />
   </ItemGroup>

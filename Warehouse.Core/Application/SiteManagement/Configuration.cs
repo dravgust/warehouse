@@ -1,8 +1,8 @@
 ﻿using LanguageExt.Common;
 using Microsoft.Extensions.DependencyInjection;
-using Vayosoft.Core.Commands;
-using Vayosoft.Core.Queries;
-using Vayosoft.Core.SharedKernel.Models.Pagination;
+using Vayosoft.Commands;
+using Vayosoft.Queries;
+using Vayosoft.Commons.Models.Pagination;
 using Warehouse.Core.Application.SiteManagement.Commands;
 using Warehouse.Core.Application.SiteManagement.Models;
 using Warehouse.Core.Application.SiteManagement.Queries;

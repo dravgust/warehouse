@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using Vayosoft.Core.Commands;
-using Vayosoft.Core.Utilities;
+using Vayosoft.Commands;
+using Vayosoft.Utilities;
 using Warehouse.Core.Application.Common.Persistence;
 using Warehouse.Core.Application.Common.Services;
 using Warehouse.Core.Domain.Entities.Security;

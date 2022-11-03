@@ -1,6 +1,6 @@
-﻿using Vayosoft.Core.Mapping;
-using Vayosoft.Core.SharedKernel.Entities;
-using Vayosoft.Core.SharedKernel.Aggregates;
+﻿using Vayosoft.Mapping;
+using Vayosoft.Commons.Entities;
+using Vayosoft.Commons.Aggregates;
 using Warehouse.Core.Application.ItemTracking.Services;
 using Warehouse.PositioningSystem.Filters;
 using Warehouse.PositioningSystem.Methods;

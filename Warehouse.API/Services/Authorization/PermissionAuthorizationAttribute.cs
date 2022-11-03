@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Vayosoft.Core.Utilities;
+using Vayosoft.Utilities;
 using Warehouse.API.Services.Errors.Models;
 using Warehouse.Core.Application.Common.Services;
 using Warehouse.Core.Application.Common.Services.Security;

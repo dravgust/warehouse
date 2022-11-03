@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-using Vayosoft.Core.SharedKernel.Enums;
+using Vayosoft.Commons.Enums;
 
 namespace Warehouse.Core.Application.SystemAdministration.Models
 {

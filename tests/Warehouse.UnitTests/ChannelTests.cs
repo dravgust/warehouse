@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
-using Vayosoft.Core.Utilities;
+using Vayosoft.Utilities;
 using Vayosoft.Testing;
 using Vayosoft.Threading.Channels;
 using Vayosoft.Threading.Channels.Handlers;

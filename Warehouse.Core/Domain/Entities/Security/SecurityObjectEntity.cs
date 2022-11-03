@@ -1,4 +1,4 @@
-﻿using Vayosoft.Core.SharedKernel.Entities;
+﻿using Vayosoft.Commons.Entities;
 
 namespace Warehouse.Core.Domain.Entities.Security
 {

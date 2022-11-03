@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using Vayosoft.Core.Utilities;
+using Vayosoft.Utilities;
 using Warehouse.Core.Application.Common.Services;
 
 namespace Warehouse.Infrastructure.Identity

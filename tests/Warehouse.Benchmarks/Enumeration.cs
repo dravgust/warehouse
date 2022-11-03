@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using BenchmarkDotNet.Attributes;
-using Vayosoft.Core.Utilities;
+using Vayosoft.Utilities;
 
 //https://sharplab.io
 namespace Warehouse.Benchmarks;

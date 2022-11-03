@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Vayosoft.Core.Commands;
-using Vayosoft.Core.Persistence;
-using Vayosoft.Core.SharedKernel.Exceptions;
-using Vayosoft.Core.Utilities;
+using Vayosoft.Commands;
+using Vayosoft.Persistence;
+using Vayosoft.Commons.Exceptions;
+using Vayosoft.Utilities;
 using Warehouse.Core.Application.Common.Persistence;
 using Warehouse.Core.Application.Common.Services;
 using Warehouse.Core.Application.Common.Services.Security;

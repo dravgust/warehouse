@@ -1,6 +1,6 @@
-﻿using Vayosoft.Core.Persistence;
-using Vayosoft.Core.Queries;
-using Vayosoft.Core.Specifications;
+﻿using Vayosoft.Persistence;
+using Vayosoft.Queries;
+using Vayosoft.Specifications;
 using Warehouse.Core.Application.Common.Persistence;
 using Warehouse.Core.Application.Common.Services;
 using Warehouse.Core.Application.Common.Services.Security;

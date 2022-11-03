@@ -1,6 +1,6 @@
 using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Ogooreck.API;
-using Vayosoft.Core.Utilities;
+using Vayosoft.Utilities;
 using Vayosoft.Testing;
 using Warehouse.Core.Application.SiteManagement.Commands;
 using Warehouse.Core.Application.SiteManagement.Models;

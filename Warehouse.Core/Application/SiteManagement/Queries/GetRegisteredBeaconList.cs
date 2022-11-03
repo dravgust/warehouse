@@ -1,7 +1,7 @@
-﻿using Vayosoft.Core.Caching;
-using Vayosoft.Core.Queries;
-using Vayosoft.Core.Specifications;
-using Vayosoft.Core.Utilities;
+﻿using Vayosoft.Caching;
+using Vayosoft.Queries;
+using Vayosoft.Specifications;
+using Vayosoft.Utilities;
 using Warehouse.Core.Application.Common.Persistence;
 using Warehouse.Core.Application.Common.Services;
 using Warehouse.Core.Application.Common.Services.Security;

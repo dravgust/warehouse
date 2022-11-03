@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using Vayosoft.Core.Commands;
-using Vayosoft.Core.SharedKernel.Exceptions;
+using Vayosoft.Commands;
+using Vayosoft.Commons.Exceptions;
 using Warehouse.Core.Application.Common.Persistence;
 using Warehouse.Core.Application.Common.Services;
 using Warehouse.Core.Application.Common.Services.Security;

@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using MathNet.Numerics.Statistics;
-using Vayosoft.Core.Utilities;
+using Vayosoft.Utilities;
 using Warehouse.PositioningSystem.Filters;
 
 namespace Warehouse.Core.Application.ItemTracking.Services

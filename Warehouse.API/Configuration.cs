@@ -2,13 +2,12 @@
 using App.Metrics;
 using App.Metrics.AspNetCore;
 using App.Metrics.Formatters.Ascii;
-using App.Metrics.Formatters.Json;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Vayosoft.Caching;
-using Vayosoft.Core;
-using Vayosoft.Core.Queries;
+using Vayosoft;
+using Vayosoft.Queries;
 using Vayosoft.Redis;
 using Vayosoft.Streaming.Redis;
 using Vayosoft.Streaming.Redis.Consumers;
@@ -26,7 +25,6 @@ using Warehouse.Core.Application.Common.Services.Authentication;
 using Warehouse.Core.Application.ItemTracking.UseCases;
 using Warehouse.Core.Application.SystemAdministration;
 using Warehouse.Core.Application.TrackingReports;
-using App.Metrics.Scheduling;
 using App.Metrics.Filtering;
 using App.Metrics.Formatters.Prometheus;
 

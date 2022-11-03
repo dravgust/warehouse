@@ -1,7 +1,7 @@
 ﻿using System.Security.Principal;
 using MediatR;
-using Vayosoft.Core.SharedKernel.Events.External;
-using Vayosoft.Core.Utilities;
+using Vayosoft.Commons.Events.External;
+using Vayosoft.Utilities;
 using Warehouse.Core.Domain.Enums;
 
 namespace Warehouse.Core.Domain.Events

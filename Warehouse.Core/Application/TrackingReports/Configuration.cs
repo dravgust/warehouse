@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using Vayosoft.Core.Queries;
-using Vayosoft.Core.SharedKernel.Models.Pagination;
+using Vayosoft.Queries;
+using Vayosoft.Commons.Models.Pagination;
 using Warehouse.Core.Application.TrackingReports.Events;
 using Warehouse.Core.Application.TrackingReports.Models;
 using Warehouse.Core.Application.TrackingReports.Queries;

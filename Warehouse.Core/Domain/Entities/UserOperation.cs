@@ -1,6 +1,6 @@
-﻿using Vayosoft.Core.Mapping;
-using Vayosoft.Core.SharedKernel.Aggregates;
-using Vayosoft.Core.SharedKernel.Entities;
+﻿using Vayosoft.Mapping;
+using Vayosoft.Commons.Aggregates;
+using Vayosoft.Commons.Entities;
 using Warehouse.Core.Domain.Enums;
 
 namespace Warehouse.Core.Domain.Entities

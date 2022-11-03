@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
 using MediatR;
-using Vayosoft.Core.Commands;
-using Vayosoft.Core.Persistence;
-using Vayosoft.Core.SharedKernel;
-using Vayosoft.Core.Utilities;
+using Vayosoft.Commands;
+using Vayosoft.Persistence;
+using Vayosoft.Commons;
+using Vayosoft.Utilities;
 using Warehouse.Core.Application.SiteManagement.Models;
 using Warehouse.Core.Domain.Entities;
 

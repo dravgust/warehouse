@@ -1,7 +1,7 @@
 ﻿using ErrorOr;
 using MediatR;
-using Vayosoft.Core.SharedKernel.Aggregates;
-using Vayosoft.Core.SharedKernel.ValueObjects;
+using Vayosoft.Commons.Aggregates;
+using Vayosoft.Commons.ValueObjects;
 using Warehouse.Core.Domain.Enums;
 using Warehouse.Core.Domain.Events;
 using Warehouse.Core.Domain.ValueObjects;

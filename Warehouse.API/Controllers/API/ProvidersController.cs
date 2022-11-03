@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Vayosoft.Core.Commands;
-using Vayosoft.Core.Persistence;
-using Vayosoft.Core.Persistence.Commands;
-using Vayosoft.Core.Utilities;
+using Vayosoft.Commands;
+using Vayosoft.Persistence;
+using Vayosoft.Persistence.Commands;
+using Vayosoft.Utilities;
 using Warehouse.API.Services.Authorization;
 using Warehouse.Core.Application.Common.Services;
 using Warehouse.Core.Application.Common.Services.Security;

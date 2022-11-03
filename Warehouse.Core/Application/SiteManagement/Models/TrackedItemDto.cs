@@ -1,4 +1,4 @@
-﻿using Vayosoft.Core.SharedKernel.Entities;
+﻿using Vayosoft.Commons.Entities;
 using Warehouse.Core.Domain.ValueObjects;
 
 namespace Warehouse.Core.Application.SiteManagement.Models

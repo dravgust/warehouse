@@ -15,10 +15,10 @@
     <PackageReference Include="Serilog" Version="2.12.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
+    <PackageReference Include="Vayosoft.Streaming.Redis" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\lib\Vayosoft.Streaming.Redis\Vayosoft.Streaming.Redis.csproj" />
     <ProjectReference Include="..\..\Warehouse.Core\Warehouse.Core.csproj" />
   </ItemGroup>
 

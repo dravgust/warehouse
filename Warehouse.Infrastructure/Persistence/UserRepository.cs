@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Vayosoft.Core.Utilities;
+using Vayosoft.Utilities;
 using Warehouse.Core.Application.Common.Persistence;
 using Warehouse.Core.Domain.Entities;
 using Warehouse.Core.Domain.Entities.Security;

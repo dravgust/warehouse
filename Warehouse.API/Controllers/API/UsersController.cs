@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Vayosoft.Core.Commands;
-using Vayosoft.Core.Persistence.Commands;
-using Vayosoft.Core.Persistence.Queries;
-using Vayosoft.Core.Queries;
-using Vayosoft.Core.SharedKernel.Models.Pagination;
-using Vayosoft.Core.Utilities;
+using Vayosoft.Commands;
+using Vayosoft.Persistence.Commands;
+using Vayosoft.Persistence.Queries;
+using Vayosoft.Queries;
+using Vayosoft.Commons.Models.Pagination;
+using Vayosoft.Utilities;
 using Warehouse.API.Model;
 using Warehouse.API.Services.Authorization;
 using Warehouse.API.Services.Errors.Models;

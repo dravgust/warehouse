@@ -1,7 +1,7 @@
-﻿using Vayosoft.Core.Caching;
-using Vayosoft.Core.Persistence;
-using Vayosoft.Core.Queries;
-using Vayosoft.Core.Utilities;
+﻿using Vayosoft.Caching;
+using Vayosoft.Persistence;
+using Vayosoft.Queries;
+using Vayosoft.Utilities;
 using Warehouse.Core.Domain.Entities;
 using Warehouse.Core.Domain.ValueObjects;
 

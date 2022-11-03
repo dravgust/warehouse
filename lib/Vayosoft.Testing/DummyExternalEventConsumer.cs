@@ -1,4 +1,4 @@
-﻿using Vayosoft.Core.SharedKernel.Events.External;
+﻿using Vayosoft.Commons.Events.External;
 
 namespace Vayosoft.Testing;
 

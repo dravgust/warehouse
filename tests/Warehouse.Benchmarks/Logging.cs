@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Core;
 using Serilog.Extensions.Logging;
-using Vayosoft.Core.SharedKernel;
+using Vayosoft.Commons;
 
 namespace Warehouse.Benchmarks
 {

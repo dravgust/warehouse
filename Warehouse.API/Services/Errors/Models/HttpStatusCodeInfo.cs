@@ -1,5 +1,5 @@
 using System.Net;
-using Vayosoft.Core.SharedKernel.Exceptions;
+using Vayosoft.Commons.Exceptions;
 
 namespace Warehouse.API.Services.Errors.Models
 {

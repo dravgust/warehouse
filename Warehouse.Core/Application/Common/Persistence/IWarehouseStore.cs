@@ -1,6 +1,6 @@
-﻿using Vayosoft.Core.Persistence;
-using Vayosoft.Core.SharedKernel.Entities;
-using Vayosoft.Core.SharedKernel.ValueObjects;
+﻿using Vayosoft.Persistence;
+using Vayosoft.Commons.Entities;
+using Vayosoft.Commons.ValueObjects;
 using Warehouse.Core.Application.TrackingReports.Models;
 using Warehouse.Core.Domain.Entities;
 using Warehouse.Core.Domain.Entities.Payloads;

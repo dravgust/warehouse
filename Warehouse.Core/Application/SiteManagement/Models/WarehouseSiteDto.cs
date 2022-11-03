@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Vayosoft.Core.SharedKernel.Entities;
+using Vayosoft.Commons.Entities;
 
 namespace Warehouse.Core.Application.SiteManagement.Models
 {

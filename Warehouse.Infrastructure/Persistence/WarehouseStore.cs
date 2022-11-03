@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
-using Vayosoft.Core.Persistence;
-using Vayosoft.Core.SharedKernel.Aggregates;
-using Vayosoft.Core.SharedKernel.Entities;
-using Vayosoft.Core.SharedKernel.Events;
-using Vayosoft.Core.SharedKernel.ValueObjects;
-using Vayosoft.Core.Utilities;
+using Vayosoft.Persistence;
+using Vayosoft.Commons.Aggregates;
+using Vayosoft.Commons.Entities;
+using Vayosoft.Commons.Events;
+using Vayosoft.Commons.ValueObjects;
+using Vayosoft.Utilities;
 using Vayosoft.MongoDB;
 using Warehouse.Core.Application.Common.Persistence;
 using Warehouse.Core.Application.TrackingReports.Models;

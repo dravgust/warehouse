@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Throw;
-using Vayosoft.Core.Commands;
-using Vayosoft.Core.Persistence;
-using Vayosoft.Core.Queries;
+using Vayosoft.Commands;
+using Vayosoft.Persistence;
+using Vayosoft.Queries;
 using Warehouse.API.Services.Authorization;
 using Warehouse.Core.Application.SiteManagement.Commands;
 using Warehouse.Core.Application.SiteManagement.Queries;

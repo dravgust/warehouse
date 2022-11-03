@@ -1,5 +1,5 @@
-﻿using Vayosoft.Core.SharedKernel.Entities;
-using Vayosoft.Core.Utilities;
+﻿using Vayosoft.Commons.Entities;
+using Vayosoft.Utilities;
 using Warehouse.Core.Domain.Entities.Identity;
 using Warehouse.Core.Domain.Enums;
 using Warehouse.Core.Domain.ValueObjects;

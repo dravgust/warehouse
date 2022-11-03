@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Text;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Localization;
-using Vayosoft.Core.Utilities;
+using Vayosoft.Utilities;
 
 namespace Warehouse.API.TagHelpers
 {

@@ -1,6 +1,6 @@
 ﻿using MediatR;
+using Vayosoft;
 using Vayosoft.Caching;
-using Vayosoft.Core;
 using Vayosoft.Streaming.Redis;
 using Warehouse.Core.Application.Common.Services;
 using Warehouse.Core.Application.ItemTracking.UseCases;

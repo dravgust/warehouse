@@ -1,8 +1,8 @@
-﻿using Vayosoft.Core.Persistence;
-using Vayosoft.Core.Queries;
-using Vayosoft.Core.SharedKernel.Models.Pagination;
-using Vayosoft.Core.Specifications;
-using Vayosoft.Core.Utilities;
+﻿using Vayosoft.Persistence;
+using Vayosoft.Queries;
+using Vayosoft.Commons.Models.Pagination;
+using Vayosoft.Specifications;
+using Vayosoft.Utilities;
 using Warehouse.Core.Application.Common.Services;
 using Warehouse.Core.Application.Common.Services.Security;
 using Warehouse.Core.Domain.Entities;

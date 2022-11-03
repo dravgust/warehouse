@@ -5,9 +5,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson.Serialization;
 using Vayosoft.AutoMapper;
-using Vayosoft.Core.Persistence;
-using Vayosoft.Core.SharedKernel;
-using Vayosoft.Core.SharedKernel.ValueObjects;
+using Vayosoft.Persistence;
+using Vayosoft.Commons;
+using Vayosoft.Commons.ValueObjects;
 using Vayosoft.Dapper.MySQL;
 using Vayosoft.EF.MySQL;
 using Vayosoft.MongoDB;
@@ -18,7 +18,7 @@ using Warehouse.Core.Application.SiteManagement.Events;
 using Warehouse.Core.Domain.Events;
 using Warehouse.Infrastructure.Mapping;
 using Warehouse.Infrastructure.Persistence;
-using IMapper = Vayosoft.Core.SharedKernel.IMapper;
+using IMapper = Vayosoft.Commons.IMapper;
 
 namespace Warehouse.Infrastructure
 {

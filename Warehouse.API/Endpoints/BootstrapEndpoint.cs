@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Vayosoft.Core.Queries;
+using Vayosoft.Queries;
 using Warehouse.API.Resources;
 using Warehouse.API.Services.Authorization;
 using Warehouse.API.UseCases.Resources;

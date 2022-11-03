@@ -2,7 +2,7 @@
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.IdGenerators;
 using MongoDB.Bson.Serialization.Serializers;
-using Vayosoft.Core.SharedKernel.Entities;
+using Vayosoft.Commons.Entities;
 using Vayosoft.MongoDB;
 
 namespace Warehouse.Infrastructure.Persistence.Mapping

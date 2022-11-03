@@ -3,9 +3,9 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Vayosoft.Core.Commands.External;
-using Vayosoft.Core.SharedKernel.Events;
-using Vayosoft.Core.SharedKernel.Events.External;
+using Vayosoft.Commands;
+using Vayosoft.Commons.Events;
+using Vayosoft.Commons.Events.External;
 
 namespace Vayosoft.Testing
 {

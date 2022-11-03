@@ -2,7 +2,7 @@
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Vayosoft.Core.Utilities;
+using Vayosoft.Utilities;
 
 namespace Warehouse.Core.Application.Common.Services.Validation
 {

@@ -1,4 +1,4 @@
-﻿using Vayosoft.Core.SharedKernel.ValueObjects;
+﻿using Vayosoft.Commons.ValueObjects;
 
 namespace Warehouse.PositioningSystem.Entities
 {

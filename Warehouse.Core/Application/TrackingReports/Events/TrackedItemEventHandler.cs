@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
-using Vayosoft.Core.Persistence;
-using Vayosoft.Core.SharedKernel.Events;
-using Vayosoft.Core.Utilities;
+using Vayosoft.Persistence;
+using Vayosoft.Commons.Events;
+using Vayosoft.Utilities;
 using Warehouse.Core.Domain.Entities;
 using Warehouse.Core.Domain.Events;
 

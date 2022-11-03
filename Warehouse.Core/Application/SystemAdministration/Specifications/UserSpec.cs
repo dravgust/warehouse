@@ -1,6 +1,6 @@
-﻿using Vayosoft.Core.SharedKernel.Models;
-using Vayosoft.Core.SharedKernel.Models.Pagination;
-using Vayosoft.Core.Specifications;
+﻿using Vayosoft.Commons.Models;
+using Vayosoft.Commons.Models.Pagination;
+using Vayosoft.Specifications;
 using Warehouse.Core.Application.SystemAdministration.Models;
 using Warehouse.Core.Domain.Entities;
 

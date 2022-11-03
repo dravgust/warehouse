@@ -1,4 +1,4 @@
-﻿using Vayosoft.Core.SharedKernel.ValueObjects;
+﻿using Vayosoft.Commons.ValueObjects;
 using Warehouse.PositioningSystem.Filters;
 using Warehouse.PositioningSystem.Methods;
 

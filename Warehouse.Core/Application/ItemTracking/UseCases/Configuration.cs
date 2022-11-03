@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Vayosoft.Core.Queries;
+using Vayosoft.Queries;
 using Warehouse.Core.Application.ItemTracking.UseCases.Queries;
 using Warehouse.PositioningSystem.Entities;
 

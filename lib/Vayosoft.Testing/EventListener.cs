@@ -1,4 +1,4 @@
-﻿using Vayosoft.Core.SharedKernel.Events;
+﻿using Vayosoft.Commons.Events;
 
 namespace Vayosoft.Testing;
 

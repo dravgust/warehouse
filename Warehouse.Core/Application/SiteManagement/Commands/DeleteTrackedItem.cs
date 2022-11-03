@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
-using Vayosoft.Core.Commands;
-using Vayosoft.Core.Persistence;
+using Vayosoft.Commands;
+using Vayosoft.Persistence;
 using Warehouse.Core.Domain.Entities;
 
 namespace Warehouse.Core.Application.SiteManagement.Commands

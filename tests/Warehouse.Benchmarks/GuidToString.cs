@@ -1,6 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
 using System.Text.RegularExpressions;
-using Vayosoft.Core.Utilities;
+using Vayosoft.Utilities;
 
 namespace Warehouse.Benchmarks
 {

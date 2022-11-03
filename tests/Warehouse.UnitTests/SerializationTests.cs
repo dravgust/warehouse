@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using Newtonsoft.Json;
-using Vayosoft.Core.SharedKernel.Events;
-using Vayosoft.Core.SharedKernel.ValueObjects;
+using Vayosoft.Commons.Events;
+using Vayosoft.Commons.ValueObjects;
 using Warehouse.Core.Domain.Events;
 using Xunit.Abstractions;
 

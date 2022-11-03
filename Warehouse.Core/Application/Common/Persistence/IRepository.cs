@@ -1,5 +1,5 @@
-﻿using Vayosoft.Core.Persistence;
-using Vayosoft.Core.SharedKernel.Aggregates;
+﻿using Vayosoft.Persistence;
+using Vayosoft.Commons.Aggregates;
 
 namespace Warehouse.Core.Application.Common.Persistence
 {

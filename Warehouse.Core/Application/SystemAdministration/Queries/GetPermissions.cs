@@ -1,5 +1,5 @@
-﻿using Vayosoft.Core.Queries;
-using Vayosoft.Core.Utilities;
+﻿using Vayosoft.Queries;
+using Vayosoft.Utilities;
 using Warehouse.Core.Application.Common.Persistence;
 using Warehouse.Core.Application.SystemAdministration.Models;
 using Warehouse.Core.Domain.Entities.Security;

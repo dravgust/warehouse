@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
-using Vayosoft.Core.Caching;
-using Vayosoft.Core.Persistence;
-using Vayosoft.Core.Queries;
-using Vayosoft.Core.SharedKernel.ValueObjects;
-using Vayosoft.Core.Utilities;
+using Vayosoft.Caching;
+using Vayosoft.Persistence;
+using Vayosoft.Queries;
+using Vayosoft.Commons.ValueObjects;
+using Vayosoft.Utilities;
 using Warehouse.Core.Application.Common.Services;
 using Warehouse.Core.Application.Common.Services.Security;
 using Warehouse.Core.Application.ItemTracking.UseCases.Queries;

@@ -2,7 +2,7 @@
 using LanguageExt.Common;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using Vayosoft.Core.SharedKernel.Models.Pagination;
+using Vayosoft.Commons.Models.Pagination;
 using Warehouse.API.Extensions;
 using Warehouse.API.Model;
 using Warehouse.API.Services.Errors.Models;

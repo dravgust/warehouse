@@ -1,5 +1,5 @@
-﻿using Vayosoft.Core.Queries;
-using Vayosoft.Core.SharedKernel.ValueObjects;
+﻿using Vayosoft.Queries;
+using Vayosoft.Commons.ValueObjects;
 using Warehouse.Core.Application.Common.Persistence;
 using Warehouse.Core.Application.TrackingReports.Models;
 

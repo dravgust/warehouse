@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Vayosoft.Core.Commands;
-using Vayosoft.Core.Persistence.Commands;
-using Vayosoft.Core.Persistence.Queries;
-using Vayosoft.Core.Queries;
-using Vayosoft.Core.SharedKernel.Models.Pagination;
+using Vayosoft.Commands;
+using Vayosoft.Persistence.Commands;
+using Vayosoft.Persistence.Queries;
+using Vayosoft.Queries;
+using Vayosoft.Commons.Models.Pagination;
 using Warehouse.Core.Application.SystemAdministration.Commands;
 using Warehouse.Core.Application.SystemAdministration.Models;
 using Warehouse.Core.Application.SystemAdministration.Queries;

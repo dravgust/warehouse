@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using Vayosoft.Core.SharedKernel.Events;
+using Vayosoft.Commons.Events;
 using Vayosoft.Streaming.Consumers;
 using Vayosoft.Testing;
 using Warehouse.Core.Domain.Events;

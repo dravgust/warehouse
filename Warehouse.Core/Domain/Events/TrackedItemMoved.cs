@@ -1,5 +1,5 @@
-﻿using Vayosoft.Core.SharedKernel.Events.External;
-using Vayosoft.Core.SharedKernel.ValueObjects;
+﻿using Vayosoft.Commons.Events.External;
+using Vayosoft.Commons.ValueObjects;
 
 namespace Warehouse.Core.Domain.Events
 {
