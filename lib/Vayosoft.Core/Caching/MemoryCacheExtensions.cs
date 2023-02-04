@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using AsyncKeyedLock;
 using Microsoft.Extensions.Caching.Memory;
+using System.Collections.Concurrent;
 using Vayosoft.Core.SharedKernel.Entities;
 using Vayosoft.Core.Utilities;
 
@@ -13,6 +10,11 @@ namespace Vayosoft.Core.Caching
     {
         private static readonly StringComparer _ignoreCase = StringComparer.OrdinalIgnoreCase;
         private static readonly ConcurrentDictionary<string, object> _lockLookup = new ConcurrentDictionary<string, object>();
+        private static readonly AsyncKeyedLocker<string> _asyncKeyedLocker = new(o =>
+        {
+            o.PoolSize = 20;
+            o.PoolInitialFill = 1;
+        });
 
         public static async Task<IList<TItem>> GetOrLoadByIdsAsync<TItem>(
             this IMemoryCache memoryCache,
@@ -30,7 +32,7 @@ namespace Vayosoft.Core.Caching
 
             if (!TryGetByIds<TItem>(memoryCache, keyPrefix, ids, out var result))
             {
-                using (await AsyncLock.GetLockByKey(keyPrefix).GetReleaserAsync())
+                using (await _asyncKeyedLocker.LockAsync(keyPrefix).ConfigureAwait(false))
                 {
                     if (!TryGetByIds(memoryCache, keyPrefix, ids, out result))
                     {
@@ -96,7 +98,7 @@ namespace Vayosoft.Core.Caching
         {
             if (!cache.TryGetValue(key, out var result))
             {
-                using (await AsyncLock.GetLockByKey(key).GetReleaserAsync())
+                using (await _asyncKeyedLocker.LockAsync(key).ConfigureAwait(false))
                 {
                     if (!cache.TryGetValue(key, out result))
                     {
